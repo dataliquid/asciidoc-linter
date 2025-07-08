@@ -1,0 +1,70 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: https://dataliquid.com/asciidoc/linter/schemas/rules/blocks/quote-block-schema.yaml
+title: Quote Block Configuration Schema
+description: Schema for validating quote block configuration in AsciiDoc linter
+type: object
+properties:
+  name:
+    type: string
+    description: Optional name for the quote block for better error messages
+    minLength: 1
+    maxLength: 50
+  severity:
+    type: string
+    description: Default severity level for all rules in this block
+    enum: [error, warn, info]
+  order:
+    type: integer
+    description: Order in which this block should appear relative to other blocks
+    minimum: 1
+  occurrence:
+    type: object
+    description: Occurrence rules for this block type
+    properties:
+      min:
+        type: integer
+        description: Minimum number of occurrences
+        minimum: 0
+      max:
+        type: integer
+        description: Maximum number of occurrences
+        minimum: 1
+      severity:
+        type: string
+        enum: [error, warn, info]
+        description: Severity for occurrence violations
+    additionalProperties: false
+  attribution:
+    type: object
+    description: Attribution rules for quote blocks
+    properties:
+      required:
+        type: boolean
+        description: Whether attribution is required
+      pattern:
+        type: string
+        description: Regular expression pattern for attribution validation
+        format: regex
+      severity:
+        type: string
+        enum: [error, warn, info]
+        description: Severity for attribution violations
+    additionalProperties: false
+  citation:
+    type: object
+    description: Citation rules for quote blocks
+    properties:
+      required:
+        type: boolean
+        description: Whether citation is required
+      pattern:
+        type: string
+        description: Regular expression pattern for citation validation
+        format: regex
+      severity:
+        type: string
+        enum: [error, warn, info]
+        description: Severity for citation violations
+    additionalProperties: false
+required: [severity]
+additionalProperties: false

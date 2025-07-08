@@ -1,0 +1,25 @@
+= AsciiDoc Linter
+:toc:
+:toc-placement: auto
+:toc-title: Table of Contents
+:icons: font
+:source-highlighter: rouge
+
+== Overview
+
+Power AsciiDoc Linter is a tool for checking and validating AsciiDoc documents.
+
+== Prerequisites
+
+* Java 17 or higher
+* Maven 3.8 or higher
+
+== Technologies
+
+* Java 17
+* Maven
+* AsciidoctorJ 2.5.13
+
+== License
+
+This project is licensed under the Apache License 2.0 - see the link:LICENSE[LICENSE] file for details.

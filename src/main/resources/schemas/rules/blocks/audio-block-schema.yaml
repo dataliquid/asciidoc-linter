@@ -1,0 +1,120 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: https://dataliquid.com/asciidoc/linter/schemas/rules/blocks/audio-block.schema.yaml
+title: Audio Block Configuration Schema
+description: Schema for validating audio block configuration in AsciiDoc linter
+type: object
+properties:
+  name:
+    type: string
+    description: Optional name for the audio block for better error messages
+    minLength: 1
+    maxLength: 50
+  severity:
+    type: string
+    description: Default severity level for all rules in this block
+    enum: [error, warn, info]
+  order:
+    type: integer
+    description: Order in which this block should appear relative to other blocks
+    minimum: 1
+  occurrence:
+    type: object
+    description: Occurrence rules for this block type
+    properties:
+      min:
+        type: integer
+        description: Minimum number of occurrences
+        minimum: 0
+      max:
+        type: integer
+        description: Maximum number of occurrences
+        minimum: 1
+      severity:
+        type: string
+        enum: [error, warn, info]
+        description: Severity for occurrence violations
+    additionalProperties: false
+  url:
+    type: object
+    description: URL validation rules for audio files
+    properties:
+      required:
+        type: boolean
+        description: Whether the URL is required
+      pattern:
+        type: string
+        description: Regular expression pattern for URL validation (e.g., audio file extensions)
+        format: regex
+      severity:
+        type: string
+        enum: [error, warn, info]
+        description: Severity for URL validation violations
+    required: [required]
+    additionalProperties: false
+  options:
+    type: object
+    description: Audio playback options validation
+    properties:
+      autoplay:
+        type: object
+        description: Autoplay option validation
+        properties:
+          allowed:
+            type: boolean
+            description: Whether autoplay is allowed
+          severity:
+            type: string
+            enum: [error, warn, info]
+            description: Severity for autoplay violations
+        required: [allowed]
+        additionalProperties: false
+      controls:
+        type: object
+        description: Controls display validation
+        properties:
+          required:
+            type: boolean
+            description: Whether controls must be displayed
+          severity:
+            type: string
+            enum: [error, warn, info]
+            description: Severity for controls violations
+        required: [required]
+        additionalProperties: false
+      loop:
+        type: object
+        description: Loop option validation
+        properties:
+          allowed:
+            type: boolean
+            description: Whether loop is allowed
+          severity:
+            type: string
+            enum: [error, warn, info]
+            description: Severity for loop violations
+        required: [allowed]
+        additionalProperties: false
+    additionalProperties: false
+  title:
+    type: object
+    description: Title/description validation rules
+    properties:
+      required:
+        type: boolean
+        description: Whether title is required
+      minLength:
+        type: integer
+        description: Minimum length for title
+        minimum: 1
+      maxLength:
+        type: integer
+        description: Maximum length for title
+        minimum: 1
+      severity:
+        type: string
+        enum: [error, warn, info]
+        description: Severity for title violations
+    required: [required]
+    additionalProperties: false
+required: [severity]
+additionalProperties: false

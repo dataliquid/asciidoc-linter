@@ -1,0 +1,94 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: https://dataliquid.com/asciidoc/linter/schemas/rules/blocks/paragraph-block.schema.yaml
+title: Paragraph Block Configuration Schema
+description: Schema for validating paragraph block configuration in AsciiDoc linter
+type: object
+properties:
+  name:
+    type: string
+    description: Optional name for the paragraph block for better error messages
+    minLength: 1
+    maxLength: 50
+  severity:
+    type: string
+    description: Default severity level for all rules in this block
+    enum: [error, warn, info]
+  order:
+    type: integer
+    description: Order in which this block should appear relative to other blocks
+    minimum: 1
+  occurrence:
+    type: object
+    description: Occurrence rules for this block type
+    properties:
+      min:
+        type: integer
+        description: Minimum number of occurrences
+        minimum: 0
+      max:
+        type: integer
+        description: Maximum number of occurrences
+        minimum: 1
+      severity:
+        type: string
+        enum: [error, warn, info]
+        description: Severity for occurrence violations
+    additionalProperties: false
+  lines:
+    type: object
+    description: Line count validation rules
+    properties:
+      min:
+        type: integer
+        description: Minimum number of lines in the paragraph
+        minimum: 1
+      max:
+        type: integer
+        description: Maximum number of lines in the paragraph
+        minimum: 1
+      severity:
+        type: string
+        enum: [error, warn, info]
+        description: Severity for line count violations (overrides block severity)
+    additionalProperties: false
+  sentence:
+    type: object
+    description: Sentence-level validation rules
+    properties:
+      occurrence:
+        type: object
+        description: Sentence count validation rules
+        properties:
+          min:
+            type: integer
+            description: Minimum number of sentences per paragraph
+            minimum: 1
+          max:
+            type: integer
+            description: Maximum number of sentences per paragraph
+            minimum: 1
+          severity:
+            type: string
+            enum: [error, warn, info]
+            description: Severity for sentence count violations (overrides block severity)
+        additionalProperties: false
+      words:
+        type: object
+        description: Word count validation rules for sentences
+        properties:
+          min:
+            type: integer
+            description: Minimum number of words per sentence
+            minimum: 1
+          max:
+            type: integer
+            description: Maximum number of words per sentence
+            minimum: 1
+          severity:
+            type: string
+            enum: [error, warn, info]
+            description: Severity for word count violations (overrides block severity)
+        additionalProperties: false
+    additionalProperties: false
+required: [severity]
+additionalProperties: false

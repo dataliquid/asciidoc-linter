@@ -1,0 +1,195 @@
+= Professional Documentation Template: Best Practices Guide
+Maria Schmidt
+:version: v1.2.3
+:revdate: 2024-01-20
+:keywords: documentation, standards, best practices, technical writing
+
+This document provides comprehensive guidelines for creating professional technical documentation using AsciiDoc. It demonstrates strict formatting standards and structural requirements.
+
+== Table of Contents
+
+* <<Introduction>>
+* <<Documentation Standards>>
+* <<Writing Guidelines>>
+* <<Code Documentation>>
+* <<Visual Elements>>
+* <<Quality Assurance>>
+* <<Conclusion>>
+* <<References>>
+
+== Introduction
+
+Professional documentation is essential for effective knowledge transfer and project success. This guide establishes standards for creating high-quality technical documentation. Following these guidelines ensures consistency and professionalism.
+
+Clear documentation reduces support requests and improves user satisfaction. It serves as a single source of truth for technical information.
+
+== Documentation Standards
+
+This section outlines the core standards for professional documentation. Each standard is designed to improve readability and maintainability.
+
+.Listing 1. Configuration example for documentation tools
+[source,yaml]
+----
+documentation:
+  format: asciidoc
+  style: professional
+  review: mandatory
+  version_control: git
+----
+
+Standards help maintain consistency across different documents and authors. They provide a framework for quality documentation.
+
+.Table 1. Documentation requirements by type
+|===
+|Document Type |Required Sections |Review Level |Update Frequency
+
+|API Reference
+|Overview, Authentication, Endpoints
+|Technical Lead
+|Per Release
+
+|User Guide
+|Introduction, Features, Examples
+|Product Owner
+|Monthly
+
+|Architecture
+|Overview, Components, Decisions
+|Architect
+|Quarterly
+
+|Installation
+|Requirements, Steps, Verification
+|DevOps
+|Per Release
+|===
+
+image::images/documentation-workflow.png[Figure 1. Documentation workflow diagram showing review process]
+
+NOTE: All documentation must pass review before publication.
+
+== Writing Guidelines
+
+Technical writing requires clarity and precision. Each sentence should convey exactly one idea. Avoid ambiguous language and jargon.
+
+.Example 1. Clear vs unclear writing
+[source,java]
+----
+// Clear: Check user permissions before processing
+if (user.hasPermission("write")) {
+    processDocument();
+}
+
+// Unclear: Do the thing if okay
+if (check()) {
+    doIt();
+}
+----
+
+TIP: Use active voice and present tense for instructions.
+
+.Table 2. Writing style guidelines
+|===
+|Element |Style |Example
+
+|Headings
+|Title Case
+|Writing Effective Documentation
+
+|Lists
+|Parallel Structure
+|Configure, Deploy, Monitor
+
+|Code References
+|Inline Monospace
+|Use the `configure()` method
+|===
+
+== Code Documentation
+
+Code examples must be complete and functional. Include all necessary imports and dependencies. Provide context for each example.
+
+.Listing 2. Complete code example with context
+[source,python]
+----
+"""
+Example: Database connection with error handling
+This demonstrates proper resource management
+"""
+import psycopg2
+from contextlib import contextmanager
+
+@contextmanager
+def get_db_connection():
+    conn = None
+    try:
+        conn = psycopg2.connect(
+            host="localhost",
+            database="myapp",
+            user="appuser"
+        )
+        yield conn
+    finally:
+        if conn:
+            conn.close()
+----
+
+IMPORTANT: Always include error handling in production examples.
+
+image::images/code-structure.svg[Figure 2. Code organization diagram showing module relationships]
+
+== Visual Elements
+
+Visual elements enhance understanding and break up text. Use diagrams to illustrate complex concepts. Ensure all images have descriptive captions.
+
+.Figure 3. System architecture overview
+image::images/system-architecture.png[Figure 3. Three-tier architecture diagram showing presentation, business, and data layers]
+
+WARNING: Images must be optimized for web display (max 1MB).
+
+.Table 3. Image requirements
+|===
+|Type |Format |Max Size |Min Resolution
+
+|Diagrams
+|SVG, PNG
+|500 KB
+|800x600
+
+|Screenshots
+|PNG
+|1 MB
+|1024x768
+|===
+
+== Quality Assurance
+
+Documentation quality directly impacts user experience. Regular reviews ensure accuracy and completeness. Automated testing catches common issues.
+
+.Listing 3. Documentation validation script
+[source,bash]
+----
+#!/bin/bash
+# Validate documentation before commit
+
+echo "Running documentation checks..."
+asciidoctor-lint *.adoc
+if [ $? -eq 0 ]; then
+    echo "Documentation validation passed"
+else
+    echo "Fix documentation issues before committing"
+    exit 1
+fi
+----
+
+CAUTION: Never publish documentation without peer review.
+
+== Conclusion
+
+Professional documentation is a critical component of successful software projects. Following established standards ensures consistency and quality. Regular reviews and updates maintain documentation relevance.
+
+== References
+
+* ISO/IEC 26514:2008 - Software and systems engineering documentation
+* Microsoft Manual of Style for Technical Publications
+* Google Developer Documentation Style Guide

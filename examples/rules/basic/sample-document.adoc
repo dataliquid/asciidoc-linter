@@ -1,0 +1,44 @@
+= Getting Started with AsciiDoc
+John Doe
+:revdate: 2024-01-15
+:keywords: asciidoc, documentation, tutorial
+
+This is a simple introduction to AsciiDoc that demonstrates basic document structure and formatting options.
+
+== Introduction
+
+AsciiDoc is a lightweight markup language for creating documentation. It's designed to be easy to read and write while providing powerful features for technical documentation.
+
+This section contains multiple paragraphs to show how content is structured within sections. Each paragraph should be clear and concise.
+
+== Basic Syntax
+
+Here are some basic AsciiDoc syntax examples:
+
+[source,python]
+----
+def hello_world():
+    print("Hello, World!")
+----
+
+You can also include code without specifying a language:
+
+[source]
+----
+This is a code block without language specification
+----
+
+== Including Images
+
+Images enhance documentation and make it more engaging:
+
+image::example-diagram.png[Architecture diagram showing system components]
+
+== Conclusion
+
+AsciiDoc provides a simple yet powerful way to create professional documentation. With its extensive feature set, you can create everything from simple README files to complete technical books.
+
+== References
+
+* https://asciidoctor.org[Asciidoctor Website]
+* https://docs.asciidoctor.org[AsciiDoc Documentation]

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+    <Appenders>
+        <!-- Console appender for standard output -->
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+        </Console>
+        
+        <!-- Console appender for error output -->
+        <Console name="ConsoleError" target="SYSTEM_ERR">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+            <ThresholdFilter level="ERROR" onMatch="ACCEPT" onMismatch="DENY"/>
+        </Console>
+    </Appenders>
+    
+    <Loggers>
+        <!-- Logger for the linter package -->
+        <Logger name="com.example.linter" level="INFO" additivity="false">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="ConsoleError"/>
+        </Logger>
+        
+        <!-- Logger for CLI specific messages (progress, status) -->
+        <Logger name="com.example.linter.cli" level="INFO" additivity="false">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="ConsoleError"/>
+        </Logger>
+        
+        <!-- Suppress verbose logging from dependencies -->
+        <Logger name="org.asciidoctor" level="WARN"/>
+        <Logger name="com.networknt" level="WARN"/>
+        <Logger name="org.yaml.snakeyaml" level="WARN"/>
+        
+        <!-- Root logger -->
+        <Root level="INFO">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="ConsoleError"/>
+        </Root>
+    </Loggers>
+</Configuration>
