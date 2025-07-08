@@ -1,0 +1,141 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: https://dataliquid.com/asciidoc/linter/schemas/rules/blocks/video-block.schema.yaml
+title: Video Block Configuration Schema
+description: Schema for validating video block configuration in AsciiDoc linter
+type: object
+properties:
+  name:
+    type: string
+    description: Optional name for the video block for better error messages
+    minLength: 1
+    maxLength: 50
+  severity:
+    type: string
+    description: Default severity level for all rules in this block
+    enum: [error, warn, info]
+  order:
+    type: integer
+    description: Order in which this block should appear relative to other blocks
+    minimum: 1
+  occurrence:
+    type: object
+    description: Occurrence rules for this block type
+    properties:
+      min:
+        type: integer
+        description: Minimum number of occurrences
+        minimum: 0
+      max:
+        type: integer
+        description: Maximum number of occurrences
+        minimum: 0
+      severity:
+        type: string
+        description: Severity level for occurrence violations
+        enum: [error, warn, info]
+    additionalProperties: false
+  url:
+    type: object
+    description: URL validation configuration
+    properties:
+      required:
+        type: boolean
+        description: Whether the video URL is required
+      pattern:
+        type: string
+        description: Regular expression pattern for valid video URLs
+      severity:
+        type: string
+        description: Severity level for URL validation issues
+        enum: [error, warn, info]
+    additionalProperties: false
+  width:
+    type: object
+    description: Width dimension configuration
+    properties:
+      required:
+        type: boolean
+        description: Whether width is required
+      minValue:
+        type: integer
+        description: Minimum allowed width in pixels
+      maxValue:
+        type: integer
+        description: Maximum allowed width in pixels
+      severity:
+        type: string
+        description: Severity level for width validation issues
+        enum: [error, warn, info]
+    additionalProperties: false
+  height:
+    type: object
+    description: Height dimension configuration
+    properties:
+      required:
+        type: boolean
+        description: Whether height is required
+      minValue:
+        type: integer
+        description: Minimum allowed height in pixels
+      maxValue:
+        type: integer
+        description: Maximum allowed height in pixels
+      severity:
+        type: string
+        description: Severity level for height validation issues
+        enum: [error, warn, info]
+    additionalProperties: false
+  poster:
+    type: object
+    description: Poster image configuration
+    properties:
+      required:
+        type: boolean
+        description: Whether a poster image is required
+      pattern:
+        type: string
+        description: Regular expression pattern for valid poster image files
+      severity:
+        type: string
+        description: Severity level for poster validation issues
+        enum: [error, warn, info]
+    additionalProperties: false
+  options:
+    type: object
+    description: Video options configuration
+    properties:
+      controls:
+        type: object
+        description: Controls configuration
+        properties:
+          required:
+            type: boolean
+            description: Whether video controls are required
+          severity:
+            type: string
+            description: Severity level for controls validation issues
+            enum: [error, warn, info]
+        additionalProperties: false
+    additionalProperties: false
+  caption:
+    type: object
+    description: Caption configuration
+    properties:
+      required:
+        type: boolean
+        description: Whether a caption is required
+      minLength:
+        type: integer
+        description: Minimum caption length
+        minimum: 1
+      maxLength:
+        type: integer
+        description: Maximum caption length
+        minimum: 1
+      severity:
+        type: string
+        description: Severity level for caption validation issues
+        enum: [error, warn, info]
+    additionalProperties: false
+required: [severity]
+additionalProperties: false

@@ -1,0 +1,63 @@
+# Basic Linting Rules
+# This configuration demonstrates document structure validation with the fixed implementation
+
+document:
+  metadata:
+    attributes:
+      - name: author
+        required: true
+        severity: warn
+      - name: revdate
+        pattern: "\\d{4}-\\d{2}-\\d{2}"
+        severity: info
+      - name: keywords
+        required: false
+        severity: info
+  
+  sections:
+    # Document title (level 0) with subsections structure
+    - name: documentTitle
+      level: 0
+      min: 1
+      max: 1
+      title:
+        pattern: "^[A-Z].*"
+        severity: error
+      allowedBlocks:
+        - paragraph:
+            name: Document preamble
+            severity: info
+            occurrence:
+              min: 1
+              max: 1
+      subsections:
+        # Level 1 sections defined as subsections of level 0
+        - name: mainSections
+          level: 1
+          title:
+            pattern: "^[A-Z].*"
+            severity: info
+          allowedBlocks:
+            - paragraph:
+                name: Section paragraphs
+                severity: info
+            - listing:
+                name: Code blocks
+                severity: info
+                language:
+                  required: false
+                  severity: info
+            - image:
+                name: Images
+                severity: info
+                alt:
+                  required: true
+                  minLength: 10
+            - ulist:
+                name: Unordered lists
+                severity: info
+
+# Note: 
+# 1. The refactored code now properly handles Level 0 subsections
+# 2. Block validation within sections is improved with the new implementation
+# 3. Unordered lists (ulist) are now implemented and supported

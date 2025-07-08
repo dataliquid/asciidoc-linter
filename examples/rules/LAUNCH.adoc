@@ -1,0 +1,47 @@
+= Run Asciidoc Rules
+:toc:
+
+This document provides commands for manually testing the example rule configurations with the AsciiDoc Linter.
+
+== Prerequisites
+
+Before running the examples, ensure you have:
+
+Built the project:
++
+[source,bash]
+----
+mvn clean package
+----
+
+== Running Examples with Maven
+
+=== Basic Rules Example
+
+Test the basic rules configuration:
+
+[source,bash]
+----
+mvn exec:java -Dexec.mainClass="com.dataliquid.asciidoc.linter.cli.LinterCLI" \
+  -Dexec.args="-i examples/rules/basic/sample-document.adoc -c examples/rules/basic/basic-rules.yaml"
+----
+
+=== Strict Rules Example
+
+Test the strict professional documentation rules:
+
+[source,bash]
+----
+mvn exec:java -Dexec.mainClass="com.dataliquid.asciidoc.linter.cli.LinterCLI" \
+  -Dexec.args="-i examples/rules/strict/professional-document.adoc -c examples/rules/strict/strict-rules.yaml"
+----
+
+=== Technical Documentation Example
+
+Test the API documentation rules:
+
+[source,bash]
+----
+mvn exec:java -Dexec.mainClass="com.dataliquid.asciidoc.linter.cli.LinterCLI" \
+  -Dexec.args="-i examples/rules/technical-docs/api-documentation.adoc -c examples/rules/technical-docs/technical-docs-rules.yaml"
+----

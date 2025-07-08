@@ -1,0 +1,212 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: https://dataliquid.com/asciidoc/linter/schemas/rules/section-schema.yaml
+title: Document Section Configuration Schema
+description: Schema for validating document section configuration in AsciiDoc linter
+type: object
+properties:
+  name:
+    type: string
+    description: Optional name identifier for this section
+    minLength: 1
+    maxLength: 100
+    pattern: "^[a-zA-Z][a-zA-Z0-9_-]*$"
+  order:
+    type: integer
+    description: Optional order in which this section should appear relative to siblings
+    minimum: 1
+  level:
+    type: integer
+    description: The heading level of this section (0 = document title, 1 = main section, 2 = subsection, etc.)
+    minimum: 0
+    maximum: 6
+  min:
+    type: integer
+    description: Minimum number of times this section type must appear
+    minimum: 0
+    default: 0
+  max:
+    type: integer
+    description: Maximum number of times this section type can appear
+    minimum: 1
+    default: 2147483647
+  title:
+    type: object
+    description: Title validation rules for this section
+    properties:
+      pattern:
+        type: string
+        description: Regular expression pattern the section title must match
+        minLength: 1
+      exactMatch:
+        type: string
+        description: Exact string the section title must match
+        minLength: 1
+      severity:
+        type: string
+        description: Severity level for title validation violations
+        enum: [error, warn, info]
+        default: error
+    oneOf:
+      - required: [pattern, severity]
+      - required: [exactMatch, severity]
+    additionalProperties: false
+  allowedBlocks:
+    type: array
+    description: List of block types allowed in this section
+    items:
+      type: object
+      properties:
+        paragraph:
+          $ref: "./blocks/paragraph-block-schema.yaml"
+        listing:
+          $ref: "./blocks/listing-block-schema.yaml"
+        image:
+          $ref: "./blocks/image-block-schema.yaml"
+        table:
+          $ref: "./blocks/table-block-schema.yaml"
+        verse:
+          $ref: "./blocks/verse-block-schema.yaml"
+        sidebar:
+          $ref: "./blocks/sidebar-block-schema.yaml"
+        admonition:
+          $ref: "./blocks/admonition-block-schema.yaml"
+        pass:
+          $ref: "./blocks/pass-block-schema.yaml"
+        literal:
+          $ref: "./blocks/literal-block-schema.yaml"
+        audio:
+          $ref: "./blocks/audio-block-schema.yaml"
+        quote:
+          $ref: "./blocks/quote-block-schema.yaml"
+        example:
+          $ref: "./blocks/example-block-schema.yaml"
+        video:
+          $ref: "./blocks/video-block-schema.yaml"
+        ulist:
+          $ref: "./blocks/ulist-block-schema.yaml"
+      minProperties: 1
+      maxProperties: 1
+      additionalProperties: false
+    minItems: 0
+    uniqueItems: true
+  subsections:
+    type: array
+    description: List of subsections allowed within this section
+    items:
+      $ref: "#"
+    minItems: 0
+    uniqueItems: true
+required: [level]
+additionalProperties: false
+# Conditional validation: Document title (level 0) can only appear once
+if:
+  properties:
+    level:
+      const: 0
+then:
+  properties:
+    max:
+      const: 1
+    min:
+      maximum: 1
+examples:
+  - name: documentTitle
+    level: 0
+    min: 1
+    max: 1
+    title:
+      pattern: "^[A-Z].*"
+      severity: error
+  - name: introduction
+    order: 1
+    level: 1
+    min: 1
+    max: 1
+    title:
+      pattern: "^(Introduction|Einführung)$"
+      severity: error
+    allowedBlocks:
+      - paragraph:
+          name: intro-paragraph
+          severity: warn
+          occurrence:
+            min: 1
+            max: 3
+            severity: error
+          lines:
+            max: 15
+      - image:
+          severity: info
+          occurrence:
+            min: 0
+            max: 1
+    subsections:
+      - name: motivation
+        order: 1
+        level: 2
+        min: 0
+        max: 1
+        title:
+          pattern: "^Motivation$"
+          severity: error
+        allowedBlocks:
+          - paragraph:
+              severity: warn
+              lines:
+                max: 20
+      - name: goals
+        order: 2
+        level: 2
+        min: 0
+        max: 1
+        title:
+          pattern: "^(Goals|Ziele)$"
+          severity: error
+        allowedBlocks:
+          - paragraph:
+              severity: warn
+              lines:
+                max: 15
+  - name: mainContent
+    order: 2
+    level: 1
+    min: 1
+    max: 5
+    title:
+      pattern: "^Chapter.*"
+      severity: error
+    allowedBlocks:
+      - paragraph:
+          severity: warn
+          lines:
+            min: 5
+            max: 50
+      - listing:
+          severity: error
+          language:
+            required: true
+            allowed: ["java", "python", "javascript"]
+            severity: error
+      - table:
+          severity: warn
+          columns:
+            min: 2
+            max: 10
+            severity: error
+    subsections:
+      - name: details
+        order: 1
+        level: 2
+        min: 1
+        max: 3
+        title:
+          pattern: "^Details.*"
+          severity: error
+      - name: examples
+        order: 2
+        level: 2
+        min: 0
+        max: 10
+        title:
+          pattern: "^Example.*"
+          severity: error

@@ -1,0 +1,134 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: https://dataliquid.com/asciidoc/linter/schemas/rules/blocks/admonition-block.schema.yaml
+title: Admonition Block Configuration Schema
+description: Schema for validating admonition block configuration in AsciiDoc linter
+type: object
+properties:
+  name:
+    type: string
+    description: Optional name for the admonition block for better error messages
+    minLength: 1
+    maxLength: 50
+  severity:
+    type: string
+    description: Default severity level for all rules in this block
+    enum: [error, warn, info]
+  order:
+    type: integer
+    description: Order in which this block should appear relative to other blocks
+    minimum: 1
+  occurrence:
+    type: object
+    description: Occurrence rules for this block type
+    properties:
+      min:
+        type: integer
+        description: Minimum number of occurrences
+        minimum: 0
+      max:
+        type: integer
+        description: Maximum number of occurrences
+        minimum: 1
+      severity:
+        type: string
+        enum: [error, warn, info]
+        description: Severity for occurrence violations
+    additionalProperties: false
+  type:
+    type: object
+    description: Type validation rules for admonition blocks
+    properties:
+      required:
+        type: boolean
+        description: Whether type specification is required
+      allowed:
+        type: array
+        description: List of allowed admonition types
+        items:
+          type: string
+          enum: [NOTE, TIP, IMPORTANT, WARNING, CAUTION]
+        uniqueItems: true
+      severity:
+        type: string
+        enum: [error, warn, info]
+        description: Severity for type violations
+    additionalProperties: false
+  title:
+    type: object
+    description: Title validation rules for admonition blocks
+    properties:
+      required:
+        type: boolean
+        description: Whether title is required
+      pattern:
+        type: string
+        description: Regular expression pattern for title validation
+        format: regex
+      minLength:
+        type: integer
+        description: Minimum length of title
+        minimum: 1
+      maxLength:
+        type: integer
+        description: Maximum length of title
+        minimum: 1
+      severity:
+        type: string
+        enum: [error, warn, info]
+        description: Severity for title violations
+    additionalProperties: false
+  content:
+    type: object
+    description: Content validation rules
+    properties:
+      required:
+        type: boolean
+        description: Whether content is required
+      minLength:
+        type: integer
+        description: Minimum length of content in characters
+        minimum: 1
+      maxLength:
+        type: integer
+        description: Maximum length of content in characters
+        minimum: 1
+      lines:
+        type: object
+        description: Line count validation rules
+        properties:
+          min:
+            type: integer
+            description: Minimum number of lines
+            minimum: 1
+          max:
+            type: integer
+            description: Maximum number of lines
+            minimum: 1
+          severity:
+            type: string
+            enum: [error, warn, info]
+            description: Severity for line count violations
+        additionalProperties: false
+      severity:
+        type: string
+        enum: [error, warn, info]
+        description: Severity for content violations
+    additionalProperties: false
+  icon:
+    type: object
+    description: Icon validation rules
+    properties:
+      required:
+        type: boolean
+        description: Whether icon is required
+      pattern:
+        type: string
+        description: Regular expression pattern for icon validation
+        format: regex
+      severity:
+        type: string
+        enum: [error, warn, info]
+        description: Severity for icon violations
+    additionalProperties: false
+required: [severity]
+additionalProperties: false

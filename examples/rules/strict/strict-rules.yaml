@@ -1,0 +1,161 @@
+# Strict Linting Rules
+# This configuration enforces strict standards for professional documentation
+
+document:
+  metadata:
+    attributes:
+      - name: author
+        required: true
+        severity: error
+        pattern: "^[A-Z][a-z]+ [A-Z][a-z]+$"
+      - name: version
+        required: true
+        severity: error
+        pattern: "^v?\\d+\\.\\d+\\.\\d+$"
+      - name: revdate
+        required: true
+        severity: error
+        pattern: "^\\d{4}-\\d{2}-\\d{2}$"
+      - name: keywords
+        required: true
+        severity: error
+        minLength: 10
+  
+  sections:
+    # Document title validation (level 0)
+    - name: documentTitle
+      level: 0
+      min: 1
+      max: 1
+      title:
+        pattern: "^[A-Z][\\w\\s\\-:]+$"
+        severity: error
+    - name: document-root
+      level: 1
+      allowedBlocks:
+        - paragraph:
+            name: Abstract
+            severity: error
+            occurrence:
+              min: 1
+              max: 1
+            lines:
+              min: 3
+              max: 5
+      subsections:
+        - name: table-of-contents
+          level: 2
+          title:
+            pattern: "^Table of Contents$"
+            severity: info
+          min: 1
+          max: 1
+        
+        - name: introduction
+          level: 2
+          title:
+            pattern: "^Introduction$"
+            severity: error
+          min: 1
+          max: 1
+          allowedBlocks:
+            - paragraph:
+                name: Introduction content
+                severity: error
+                occurrence:
+                  min: 2
+                lines:
+                  min: 3
+                  max: 20
+        
+        - name: main-content
+          level: 2
+          title:
+            pattern: "^[A-Z].*"
+            severity: error
+          min: 2
+          allowedBlocks:
+            - paragraph:
+                name: Section paragraphs
+                severity: error
+                lines:
+                  min: 2
+                  max: 30
+            
+            - listing:
+                name: Code examples
+                severity: error
+                title:
+                  required: true
+                  pattern: "^(Listing|Example|Code)\\s+\\d+\\..*"
+                  severity: error
+                language:
+                  required: true
+                  allowed:
+                    - java
+                    - python
+                    - javascript
+                    - yaml
+                    - json
+                    - xml
+                  severity: error
+                callouts:
+                  max: 10
+                  severity: warn
+            
+            - table:
+                name: Data tables
+                severity: error
+                caption:
+                  required: true
+                  pattern: "^Table\\s+\\d+\\..*"
+                  severity: error
+                columns:
+                  min: 2
+                  max: 8
+                  severity: error
+                rows:
+                  min: 2
+                  max: 50
+                  severity: error
+            
+            - image:
+                name: Figures
+                severity: error
+                alt:
+                  required: true
+                  minLength: 20
+                  maxLength: 200
+                url:
+                  required: true
+                  pattern: "^images/.*\\.(png|jpg|svg)$"
+                width:
+                  minValue: 200
+                  maxValue: 1200
+                height:
+                  minValue: 150
+                  maxValue: 900
+            
+            - admonition:
+                name: Warnings and notes
+                severity: warn
+                content:
+                  lines:
+                    min: 1
+                    max: 5
+        
+        - name: conclusion
+          level: 2
+          title:
+            pattern: "^Conclusion$"
+            severity: error
+          min: 1
+          max: 1
+        
+        - name: references
+          level: 2
+          title:
+            pattern: "^References$"
+            severity: error
+          min: 1
+          max: 1

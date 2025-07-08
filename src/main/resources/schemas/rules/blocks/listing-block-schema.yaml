@@ -1,0 +1,105 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: https://dataliquid.com/asciidoc/linter/schemas/rules/blocks/listing-block.schema.yaml
+title: Listing Block Configuration Schema
+description: Schema for validating listing/code block configuration in AsciiDoc linter
+type: object
+properties:
+  name:
+    type: string
+    description: Optional name for the listing block for better error messages
+    minLength: 1
+    maxLength: 50
+  severity:
+    type: string
+    description: Default severity level for all rules in this block
+    enum: [error, warn, info]
+  order:
+    type: integer
+    description: Order in which this block should appear relative to other blocks
+    minimum: 1
+  occurrence:
+    type: object
+    description: Occurrence rules for this block type
+    properties:
+      min:
+        type: integer
+        description: Minimum number of occurrences
+        minimum: 0
+      max:
+        type: integer
+        description: Maximum number of occurrences
+        minimum: 1
+      severity:
+        type: string
+        enum: [error, warn, info]
+        description: Severity for occurrence violations
+    additionalProperties: false
+  language:
+    type: object
+    description: Programming language validation rules
+    properties:
+      required:
+        type: boolean
+        description: Whether language specification is required
+      allowed:
+        type: array
+        description: List of allowed programming languages
+        items:
+          type: string
+          minLength: 1
+        uniqueItems: true
+      severity:
+        type: string
+        enum: [error, warn, info]
+        description: Severity for language violations
+    required: [severity]
+    additionalProperties: false
+  lines:
+    type: object
+    description: Line count validation rules
+    properties:
+      min:
+        type: integer
+        description: Minimum number of lines
+        minimum: 1
+      max:
+        type: integer
+        description: Maximum number of lines
+        minimum: 1
+    additionalProperties: false
+  title:
+    type: object
+    description: Title validation rules
+    properties:
+      required:
+        type: boolean
+        description: Whether title is required
+      pattern:
+        type: string
+        description: Regular expression pattern for title validation
+        format: regex
+      severity:
+        type: string
+        enum: [error, warn, info]
+        description: Severity for title violations
+    required: [severity]
+    additionalProperties: false
+  callouts:
+    type: object
+    description: Callout validation rules
+    properties:
+      allowed:
+        type: boolean
+        description: Whether callouts are allowed
+      max:
+        type: integer
+        description: Maximum number of callouts
+        minimum: 1
+      severity:
+        type: string
+        enum: [error, warn, info]
+        description: Severity for callout violations
+    required: [severity]
+    additionalProperties: false
+required: [severity]
+additionalProperties: false

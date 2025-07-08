@@ -1,0 +1,116 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: https://dataliquid.com/asciidoc/linter/schemas/rules/linter-config-schema.yaml
+title: AsciiDoc Linter Configuration Schema
+description: Complete schema for the AsciiDoc linter configuration file
+type: object
+required:
+  - document
+additionalProperties: false
+properties:
+  document:
+    type: object
+    additionalProperties: false
+    properties:
+      metadata:
+        $ref: "#/$defs/metadata"
+      sections:
+        type: array
+        minItems: 0
+        items:
+          $ref: "#/$defs/section"
+
+$defs:
+  severity:
+    type: string
+    enum: [error, warn, info]
+  
+  metadata:
+    $ref: './metadata-schema.yaml'
+  
+  section:
+    $ref: './section-schema.yaml'
+
+examples:
+  - document:
+      metadata:
+        attributes:
+          - name: title
+            order: 1
+            required: true
+            minLength: 5
+            maxLength: 100
+            pattern: "^[A-Z].*"
+            severity: error
+          - name: author
+            order: 2
+            required: true
+            minLength: 5
+            maxLength: 50
+            pattern: "^[A-Z][a-zA-Z\\s\\.]+$"
+            severity: error
+          - name: revdate
+            order: 3
+            required: true
+            pattern: "^\\d{4}-\\d{2}-\\d{2}$"
+            severity: error
+          - name: version
+            order: 4
+            required: true
+            pattern: "^\\d+\\.\\d+(\\.\\d+)?$"
+            severity: error
+          - name: email
+            required: false
+            pattern: "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$"
+            severity: warn
+      sections:
+        - name: introduction
+          order: 1
+          level: 1
+          min: 1
+          max: 1
+          title:
+            pattern: "^(Introduction|Einführung|Einleitung)$"
+          allowedBlocks:
+            - paragraph:
+                name: intro-paragraph
+                severity: warn
+                occurrence:
+                  min: 1
+                  max: 3
+                  severity: error
+                lines:
+                  max: 15
+            - image:
+                name: intro-image
+                severity: info
+                occurrence:
+                  min: 0
+                  max: 1
+                url:
+                  required: true
+                  pattern: "^https?://.*\\.(jpg|jpeg|png|gif|svg)$"
+                height:
+                  required: false
+                  minValue: 50
+                  maxValue: 2000
+                width:
+                  required: false
+                  minValue: 50
+                  maxValue: 3000
+                alt:
+                  required: true
+                  minLength: 10
+                  maxLength: 200
+          subsections:
+            - name: motivation
+              level: 2
+              order: 1
+              min: 0
+              max: 1
+              title:
+                pattern: "^(Motivation|Background|Hintergrund)$"
+              allowedBlocks:
+                - paragraph:
+                    severity: error
+                    occurrence:
+                      min: 1

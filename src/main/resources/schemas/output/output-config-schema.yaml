@@ -1,0 +1,152 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: https://dataliquid.com/asciidoc/linter/schemas/output/output-config-schema.yaml
+title: Output Configuration Schema
+description: Schema for configuring the output format of the AsciiDoc linter
+type: object
+properties:
+  output:
+    type: object
+    description: Root output configuration
+    properties:
+      format:
+        type: string
+        enum: [enhanced, simple, compact]
+        default: enhanced
+        description: Output format style
+      
+      display:
+        type: object
+        description: Display settings for console output
+        properties:
+          contextLines:
+            type: integer
+            minimum: 0
+            maximum: 5
+            default: 2
+            description: Number of context lines before/after error
+          
+          highlightStyle:
+            type: string
+            enum: [underline, box, arrow, none]
+            default: underline
+            description: Style for highlighting errors
+          
+          useColors:
+            type: boolean
+            default: true
+            description: Enable ANSI color codes for terminal output
+          
+          showLineNumbers:
+            type: boolean
+            default: true
+            description: Show line numbers in context
+          
+          maxLineWidth:
+            type: integer
+            minimum: 40
+            maximum: 200
+            default: 120
+            description: Maximum width for line display
+          
+          showHeader:
+            type: boolean
+            default: true
+            description: Show validation report header
+        
+        additionalProperties: false
+        
+      suggestions:
+        type: object
+        description: Configuration for fix suggestions
+        properties:
+          enabled:
+            type: boolean
+            default: true
+            description: Enable fix suggestions
+          
+          maxPerError:
+            type: integer
+            minimum: 1
+            maximum: 10
+            default: 3
+            description: Maximum suggestions per error
+          
+          showExamples:
+            type: boolean
+            default: true
+            description: Show examples in suggestions
+          
+          showAutoFixHint:
+            type: boolean
+            default: true
+            description: Show hint about auto-fixable errors
+        
+        additionalProperties: false
+      
+      errorGrouping:
+        type: object
+        description: Configuration for grouping similar errors
+        properties:
+          enabled:
+            type: boolean
+            default: true
+            description: Enable error grouping
+            
+          threshold:
+            type: integer
+            minimum: 2
+            default: 3
+            description: Minimum errors to trigger grouping
+        
+        additionalProperties: false
+      
+      summary:
+        type: object
+        description: Configuration for validation summary
+        properties:
+          enabled:
+            type: boolean
+            default: true
+            description: Show validation summary
+            
+          showStatistics:
+            type: boolean
+            default: true
+            description: Show error statistics with visual bars
+            
+          showMostCommon:
+            type: boolean
+            default: true
+            description: Show most common issues
+            
+          showFileList:
+            type: boolean
+            default: false
+            description: Show list of files with errors
+        
+        additionalProperties: false
+    
+    required: [format]
+    additionalProperties: false
+
+required: [output]
+additionalProperties: false
+
+examples:
+  - output:
+      format: enhanced
+      display:
+        contextLines: 3
+        highlightStyle: underline
+        useColors: true
+      suggestions:
+        enabled: true
+        maxPerError: 3
+  
+  - output:
+      format: compact
+      display:
+        contextLines: 0
+        useColors: false
+      suggestions:
+        enabled: false

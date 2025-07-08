@@ -1,0 +1,18 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: https://dataliquid.com/asciidoc/linter/schemas/rules/document.schema.yaml
+title: Document Configuration Schema
+description: Schema for validating document configuration in AsciiDoc linter
+type: object
+properties:
+  metadata:
+    $ref: './metadata-schema.yaml'
+    description: Metadata validation rules for the document
+  sections:
+    type: array
+    description: List of section configurations for the document structure
+    items:
+      $ref: './section-schema.yaml'
+    minItems: 0
+    uniqueItems: true
+required: []
+additionalProperties: false

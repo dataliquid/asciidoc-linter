@@ -1,0 +1,104 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: https://dataliquid.com/asciidoc/linter/schemas/rules/blocks/verse-block.schema.yaml
+title: Verse Block Configuration Schema
+description: Schema for validating verse block configuration in AsciiDoc linter
+type: object
+properties:
+  name:
+    type: string
+    description: Optional name for the verse block for better error messages
+    minLength: 1
+    maxLength: 50
+  severity:
+    type: string
+    description: Default severity level for all rules in this block
+    enum: [error, warn, info]
+  order:
+    type: integer
+    description: Order in which this block should appear relative to other blocks
+    minimum: 1
+  occurrence:
+    type: object
+    description: Occurrence rules for this block type
+    properties:
+      min:
+        type: integer
+        description: Minimum number of occurrences
+        minimum: 0
+      max:
+        type: integer
+        description: Maximum number of occurrences
+        minimum: 1
+      severity:
+        type: string
+        enum: [error, warn, info]
+        description: Severity for occurrence violations
+    additionalProperties: false
+  author:
+    type: object
+    description: Author validation rules
+    properties:
+      defaultValue:
+        type: string
+        description: Default value for author if not specified
+      minLength:
+        type: integer
+        description: Minimum length for author
+        minimum: 1
+      maxLength:
+        type: integer
+        description: Maximum length for author
+        minimum: 1
+      pattern:
+        type: string
+        description: Regular expression pattern for author validation
+        format: regex
+      required:
+        type: boolean
+        description: Whether author is required
+    additionalProperties: false
+  attribution:
+    type: object
+    description: Attribution/source validation rules
+    properties:
+      defaultValue:
+        type: string
+        description: Default value for attribution if not specified
+      minLength:
+        type: integer
+        description: Minimum length for attribution
+        minimum: 1
+      maxLength:
+        type: integer
+        description: Maximum length for attribution
+        minimum: 1
+      pattern:
+        type: string
+        description: Regular expression pattern for attribution validation
+        format: regex
+      required:
+        type: boolean
+        description: Whether attribution is required
+    additionalProperties: false
+  content:
+    type: object
+    description: Content validation rules
+    properties:
+      minLength:
+        type: integer
+        description: Minimum length for content
+        minimum: 1
+      maxLength:
+        type: integer
+        description: Maximum length for content
+        minimum: 1
+      pattern:
+        type: string
+        description: Regular expression pattern for content validation
+        format: regex
+      required:
+        type: boolean
+        description: Whether content is required
+    additionalProperties: false
+required: [severity]
+additionalProperties: false

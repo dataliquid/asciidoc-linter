@@ -1,0 +1,99 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: https://dataliquid.com/asciidoc/linter/schemas/rules/blocks/image-block.schema.yaml
+title: Image Block Configuration Schema
+description: Schema for validating image block configuration in AsciiDoc linter
+type: object
+properties:
+  name:
+    type: string
+    description: Optional name for the image block for better error messages
+    minLength: 1
+    maxLength: 50
+  severity:
+    type: string
+    description: Default severity level for all rules in this block
+    enum: [error, warn, info]
+  order:
+    type: integer
+    description: Order in which this block should appear relative to other blocks
+    minimum: 1
+  occurrence:
+    type: object
+    description: Occurrence rules for this block type
+    properties:
+      min:
+        type: integer
+        description: Minimum number of occurrences
+        minimum: 0
+      max:
+        type: integer
+        description: Maximum number of occurrences
+        minimum: 1
+      severity:
+        type: string
+        enum: [error, warn, info]
+        description: Severity for occurrence violations
+    additionalProperties: false
+  url:
+    type: object
+    description: URL validation rules
+    properties:
+      required:
+        type: boolean
+        description: Whether the URL is required
+      pattern:
+        type: string
+        description: Regular expression pattern for URL validation
+        format: regex
+    required: [required]
+    additionalProperties: false
+  height:
+    type: object
+    description: Height validation rules
+    properties:
+      required:
+        type: boolean
+        description: Whether height is required
+      minValue:
+        type: integer
+        description: Minimum height in pixels
+        minimum: 1
+      maxValue:
+        type: integer
+        description: Maximum height in pixels
+        minimum: 1
+    additionalProperties: false
+  width:
+    type: object
+    description: Width validation rules
+    properties:
+      required:
+        type: boolean
+        description: Whether width is required
+      minValue:
+        type: integer
+        description: Minimum width in pixels
+        minimum: 1
+      maxValue:
+        type: integer
+        description: Maximum width in pixels
+        minimum: 1
+    additionalProperties: false
+  alt:
+    type: object
+    description: Alt text validation rules
+    properties:
+      required:
+        type: boolean
+        description: Whether alt text is required
+      minLength:
+        type: integer
+        description: Minimum length for alt text
+        minimum: 1
+      maxLength:
+        type: integer
+        description: Maximum length for alt text
+        minimum: 1
+    additionalProperties: false
+required: [severity]
+additionalProperties: false

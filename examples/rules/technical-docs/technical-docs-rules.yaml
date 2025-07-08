@@ -1,0 +1,169 @@
+# Technical Documentation Rules
+# This configuration is optimized for API documentation and technical specifications
+
+document:
+  metadata:
+    attributes:
+      - name: api-version
+        required: true
+        severity: error
+        pattern: "^\\d+\\.\\d+$"
+      - name: status
+        required: true
+        severity: error
+        pattern: "^(draft|review|stable|deprecated)$"
+      - name: toc
+        required: false
+        severity: info
+        pattern: "^(left|right|preamble)?$"
+  
+  sections:
+    # Document title validation (level 0)
+    - name: documentTitle
+      level: 0
+      min: 1
+      max: 1
+      title:
+        pattern: "^\\w+ (API|SDK|Library) Documentation$"
+        severity: error
+    - name: api-root
+      level: 1
+      subsections:
+        - name: overview
+          level: 2
+          title:
+            pattern: "^Overview$"
+            severity: error
+          min: 1
+          max: 1
+          allowedBlocks:
+            - paragraph:
+                name: API description
+                severity: error
+                occurrence:
+                  min: 1
+                lines:
+                  min: 2
+                  max: 10
+        
+        - name: authentication
+          level: 2
+          title:
+            pattern: "^Authentication$"
+            severity: error
+          max: 1
+          allowedBlocks:
+            - listing:
+                name: Auth examples
+                severity: error
+                language:
+                  required: true
+                  allowed:
+                    - bash
+                    - curl
+                    - http
+                    - javascript
+                  severity: error
+                title:
+                  required: true
+                  severity: error
+        
+        - name: endpoints
+          level: 2
+          title:
+            pattern: "^(Endpoints|API Endpoints|Methods)$"
+            severity: error
+          min: 1
+          max: 1
+          subsections:
+            - name: endpoint-details
+              level: 3
+              title:
+                pattern: "^(GET|POST|PUT|DELETE|PATCH)\\s+/.*"
+                severity: error
+              allowedBlocks:
+                - paragraph:
+                    name: Endpoint description
+                    severity: error
+                    occurrence:
+                      min: 1
+                      max: 1
+                    lines:
+                      max: 5
+                
+                - table:
+                    name: Parameters table
+                    severity: error
+                    caption:
+                      pattern: "^(Parameters|Query Parameters|Path Parameters)$"
+                      severity: error
+                    columns:
+                      min: 3
+                      max: 5
+                      severity: error
+                
+                - listing:
+                    name: Request example
+                    severity: error
+                    title:
+                      required: true
+                      pattern: "^Request Example$"
+                      severity: error
+                    language:
+                      required: true
+                      allowed:
+                        - json
+                        - xml
+                        - curl
+                        - http
+                      severity: error
+                
+                - listing:
+                    name: Response example
+                    severity: error
+                    title:
+                      required: true
+                      pattern: "^Response Example$"
+                      severity: error
+                    language:
+                      required: true
+                      allowed:
+                        - json
+                        - xml
+                      severity: error
+                
+                - table:
+                    name: Response codes
+                    severity: error
+                    caption:
+                      pattern: "^Response Codes$"
+                      severity: error
+                    columns:
+                      min: 2
+                      max: 2
+                      severity: error
+        
+        - name: examples
+          level: 2
+          title:
+            pattern: "^(Examples|Code Examples|Usage Examples)$"
+            severity: info
+          allowedBlocks:
+            - listing:
+                name: Code samples
+                severity: warn
+                language:
+                  required: true
+                  severity: warn
+                title:
+                  required: true
+                  pattern: "^Example:.*"
+                  severity: warn
+        
+        - name: error-handling
+          level: 2
+          title:
+            pattern: "^Error Handling$"
+            severity: error
+          min: 1
+          max: 1

@@ -1,0 +1,131 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: https://dataliquid.com/asciidoc/linter/schemas/rules/blocks/table-block.schema.yaml
+title: Table Block Configuration Schema
+description: Schema for validating table block configuration in AsciiDoc linter
+type: object
+properties:
+  name:
+    type: string
+    description: Optional name for the table block for better error messages
+    minLength: 1
+    maxLength: 50
+  severity:
+    type: string
+    description: Default severity level for all rules in this block
+    enum: [error, warn, info]
+  order:
+    type: integer
+    description: Order in which this block should appear relative to other blocks
+    minimum: 1
+  occurrence:
+    type: object
+    description: Occurrence rules for this block type
+    properties:
+      min:
+        type: integer
+        description: Minimum number of occurrences
+        minimum: 0
+      max:
+        type: integer
+        description: Maximum number of occurrences
+        minimum: 1
+      severity:
+        type: string
+        enum: [error, warn, info]
+        description: Severity for occurrence violations
+    additionalProperties: false
+  columns:
+    type: object
+    description: Column count validation rules
+    properties:
+      min:
+        type: integer
+        description: Minimum number of columns
+        minimum: 1
+      max:
+        type: integer
+        description: Maximum number of columns
+        minimum: 1
+      severity:
+        type: string
+        enum: [error, warn, info]
+        description: Severity for column count violations
+    additionalProperties: false
+  rows:
+    type: object
+    description: Row count validation rules
+    properties:
+      min:
+        type: integer
+        description: Minimum number of rows
+        minimum: 1
+      max:
+        type: integer
+        description: Maximum number of rows
+        minimum: 1
+      severity:
+        type: string
+        enum: [error, warn, info]
+        description: Severity for row count violations
+    additionalProperties: false
+  header:
+    type: object
+    description: Header validation rules
+    properties:
+      required:
+        type: boolean
+        description: Whether table header is required
+      pattern:
+        type: string
+        description: Regular expression pattern for header validation
+        format: regex
+      severity:
+        type: string
+        enum: [error, warn, info]
+        description: Severity for header violations
+    required: [severity]
+    additionalProperties: false
+  caption:
+    type: object
+    description: Caption validation rules
+    properties:
+      required:
+        type: boolean
+        description: Whether table caption is required
+      pattern:
+        type: string
+        description: Regular expression pattern for caption validation
+        format: regex
+      minLength:
+        type: integer
+        description: Minimum length for caption
+        minimum: 1
+      maxLength:
+        type: integer
+        description: Maximum length for caption
+        minimum: 1
+      severity:
+        type: string
+        enum: [error, warn, info]
+        description: Severity for caption violations
+    required: [severity]
+    additionalProperties: false
+  format:
+    type: object
+    description: Table format validation rules
+    properties:
+      style:
+        type: string
+        description: Table style (e.g., grid, simple, borderless)
+        minLength: 1
+      borders:
+        type: boolean
+        description: Whether table should have borders
+      severity:
+        type: string
+        enum: [error, warn, info]
+        description: Severity for format violations
+    required: [severity]
+    additionalProperties: false
+required: [severity]
+additionalProperties: false

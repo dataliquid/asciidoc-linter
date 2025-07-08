@@ -1,0 +1,115 @@
+= AsciiDoc Linter - Example Rules and Documents
+
+This directory contains example configurations and sample documents demonstrating different validation rule sets for the AsciiDoc Linter.
+
+== Overview
+
+Each subdirectory contains:
+
+* A YAML configuration file defining validation rules
+* A sample AsciiDoc document that can be validated against those rules
+* Expected validation results
+
+== Available Examples
+
+=== 1. Basic Rules (`basic/`)
+
+* **Configuration**: `basic-rules.yaml`
+* **Sample Document**: `sample-document.adoc`
+* **Purpose**: Demonstrates basic validation for general documentation
+
+Features:
+- Simple metadata requirements (title, author)
+- Basic section structure validation
+- Paragraph length limits
+- Optional code language specification
+- Image alt-text requirements
+
+=== 2. Strict Rules (`strict/`)
+
+* **Configuration**: `strict-rules.yaml`
+* **Sample Document**: `professional-document.adoc`
+* **Purpose**: Enforces strict standards for professional documentation
+
+Features:
+- Comprehensive metadata validation (title, author, version, date, keywords)
+- Enforced document structure (Abstract, ToC, Introduction, Conclusion, References)
+- Strict naming conventions for figures, tables, and listings
+- Sentence count validation
+- Required table captions and image dimensions
+- Admonition type restrictions
+
+=== 3. Technical Documentation Rules (`technical-docs/`)
+
+* **Configuration**: `technical-docs-rules.yaml`
+* **Sample Document**: `api-documentation.adoc`
+* **Purpose**: Optimized for API documentation and technical specifications
+
+Features:
+- API-specific metadata (api-version, status)
+- Enforced sections for API docs (Overview, Authentication, Endpoints)
+- HTTP method patterns in section titles
+- Required parameter tables with specific column counts
+- Language restrictions for code examples
+- Response code documentation requirements
+
+== Understanding Validation Results
+
+Each example is designed to demonstrate both passing and failing validations:
+
+=== Expected Results
+
+.Basic Rules Validation
+- ✅ PASS: Document has required metadata
+- ✅ PASS: Sections have proper titles
+- ⚠️ WARN: Some code blocks lack language specification
+- ℹ️ INFO: Optional metadata like `revdate` follows correct format
+
+.Strict Rules Validation
+- ✅ PASS: All required sections present
+- ✅ PASS: Tables and figures properly numbered
+- ✅ PASS: Code listings have required titles
+- ❌ ERROR: Missing if any required section is absent
+
+.Technical Docs Validation
+- ✅ PASS: API endpoints follow REST conventions
+- ✅ PASS: Request/response examples provided
+- ✅ PASS: Parameter tables have correct structure
+- ❌ ERROR: Missing if authentication section absent
+
+== Creating Custom Rules
+
+Use these examples as templates for your own validation rules:
+
+1. Copy a configuration that's closest to your needs
+2. Modify the rules according to your requirements
+3. Test with your documents
+4. Iterate until the validation matches your standards
+
+=== Rule Severity Levels
+
+* **ERROR**: Critical issues that must be fixed
+* **WARN**: Important issues that should be addressed
+* **INFO**: Suggestions for improvement
+
+== Tips for Rule Development
+
+1. **Start Simple**: Begin with basic rules and add complexity gradually
+2. **Test Iteratively**: Validate frequently during rule development
+3. **Document Intent**: Add comments to your YAML explaining why rules exist
+4. **Balance Strictness**: Too many rules can hinder productivity
+5. **Version Control**: Track rule changes alongside code changes
+
+== Contributing
+
+To add new examples:
+
+1. Create a new subdirectory under `examples/rules/`
+2. Add a descriptive configuration file
+3. Create a sample document that demonstrates the rules
+4. Update this README with the new example
+5. Submit a pull request
+
+== License
+
+These examples are part of the AsciiDoc Linter project and follow the same license terms.
