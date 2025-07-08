@@ -1,30 +1,136 @@
-= AsciiDoc Linter
-:toc:
-:toc-placement: auto
-:toc-title: Table of Contents
-:icons: font
-:source-highlighter: rouge
-
 image:https://github.com/dataliquid/asciidoc-linter/actions/workflows/ci.yml/badge.svg[CI Build,link=https://github.com/dataliquid/asciidoc-linter/actions/workflows/ci.yml]
 image:https://maven-badges.herokuapp.com/maven-central/com.dataliquid/asciidoc-linter/badge.svg[Maven Central,link=https://maven-badges.herokuapp.com/maven-central/com.dataliquid/asciidoc-linter]
 image:https://img.shields.io/badge/license-Apache%202.0-blue.svg[License,link=https://opensource.org/licenses/Apache-2.0]
 image:https://img.shields.io/badge/Java-17%2B-blue.svg[Java Version]
 image:https://img.shields.io/badge/Maven-3.8%2B-blue.svg[Maven Version]
 
+= AsciiDoc Linter
+:icons: font
+:source-highlighter: rouge
+
+== Fact Sheet
+
+AsciiDoc Linter is a powerful and configurable validation tool for AsciiDoc documents, designed to ensure document quality and consistency across your documentation projects.
+
+=== Key Features
+
+* **15 Block Type Validators** - Validates admonitions, code blocks, tables, images, lists, and more
+* **Configurable Rules** - YAML-based configuration with JSON Schema validation
+* **Multiple Output Formats** - Console (with syntax highlighting) and JSON reporting
+* **CI/CD Ready** - Exit codes based on severity levels for pipeline integration
+* **Extensible Architecture** - Easy to add custom validators and rules
+* **Performance Optimized** - Pattern caching and efficient file processing
+
+=== Supported Validations
+
+[cols="2,3", options="header"]
+|===
+|Validation Type |Description
+
+|**Structure Validation**
+|Document hierarchy, section ordering, metadata requirements
+
+|**Block Validation**
+|Block types, ordering, occurrences, and content rules
+
+|**Pattern Validation**
+|Regex-based content validation for text patterns
+
+|**Attribute Validation**
+|Document and block attribute requirements
+
+|**Length Validation**
+|Min/max length constraints for content
+|===
+
+=== Quick Start
+
+[source,bash]
+----
+# Install from Maven Central
+mvn dependency:get -Dartifact=com.dataliquid:asciidoc-linter:0.1.0
+
+# Run with default configuration
+java -jar asciidoc-linter.jar -i "**/*.adoc"
+
+# Run with custom rules
+java -jar asciidoc-linter.jar -i "docs/**/*.adoc" -c my-rules.yaml
+----
+
 == Overview
 
-Power AsciiDoc Linter is a tool for checking and validating AsciiDoc documents.
+AsciiDoc Linter provides comprehensive validation for AsciiDoc documents, helping teams maintain consistent documentation standards. It supports complex validation scenarios including:
+
+* Enforcing document structure and hierarchy
+* Validating required metadata and attributes
+* Ensuring consistent use of AsciiDoc blocks
+* Pattern matching for terminology and style guides
+* Integration with CI/CD pipelines for automated checks
+
+The linter processes AsciiDoc files using AsciidoctorJ and applies configurable validation rules, making it suitable for projects ranging from small documentation sets to large-scale technical documentation systems.
 
 == Prerequisites
 
 * Java 17 or higher
-* Maven 3.8 or higher
+* Maven 3.8 or higher (for building from source)
 
-== Technologies
+== Usage
 
-* Java 17
-* Maven
-* AsciidoctorJ 2.5.13
+=== Command Line Interface
+
+[source,bash]
+----
+# Basic usage
+java -jar asciidoc-linter.jar -i "**/*.adoc"
+
+# With custom configuration
+java -jar asciidoc-linter.jar -i "docs/**/*.adoc" -c .linter-config.yaml
+
+# JSON output for CI/CD
+java -jar asciidoc-linter.jar -i "**/*.adoc" -f json -o report.json
+
+# Generate documentation for your configuration
+java -jar asciidoc-linter.jar -c my-rules.yaml --generate-docs
+----
+
+=== Configuration Example
+
+[source,yaml]
+----
+document:
+  metadata:
+    attributes:
+      - name: author
+        required: true
+        severity: error
+      - name: version
+        required: true
+        pattern: "^v?\\d+\\.\\d+\\.\\d+$"
+        severity: error
+  
+  sections:
+    - name: introduction
+      level: 1
+      min: 1
+      max: 1
+      title:
+        pattern: "^Introduction$"
+        severity: error
+      allowedBlocks:
+        - paragraph:
+            severity: warn
+            occurrence:
+              min: 1
+              max: 3
+            lines:
+              min: 3
+              max: 20
+        - listing:
+            severity: error
+            language:
+              required: true
+              allowed: ["java", "python", "yaml"]
+----
 
 == License
 
