@@ -5,6 +5,10 @@
 :icons: font
 :source-highlighter: rouge
 
+image:https://img.shields.io/badge/license-Apache%202.0-blue.svg[License,link=https://opensource.org/licenses/Apache-2.0]
+image:https://img.shields.io/badge/Java-17%2B-blue.svg[Java Version]
+image:https://img.shields.io/badge/Maven-3.8%2B-blue.svg[Maven Version]
+
 == Overview
 
 Power AsciiDoc Linter is a tool for checking and validating AsciiDoc documents.
