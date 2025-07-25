@@ -852,9 +852,6 @@ class LinterValidationIntegrationTest {
                           level: 1
                           min: 1
                           max: 1
-                          title:
-                            exactMatch: "Introduction"
-                            severity: error
                           allowedBlocks:
                             - paragraph:
                                 severity: error
@@ -913,7 +910,7 @@ class LinterValidationIntegrationTest {
                           min: 1
                           max: 1
                           title:
-                            exactMatch: "Einleitung"
+                            pattern: "^Einleitung$"
                             severity: error
                           allowedBlocks:
                             - paragraph:
@@ -927,7 +924,7 @@ class LinterValidationIntegrationTest {
                           min: 1
                           max: 1
                           title:
-                            exactMatch: "Tutorial"
+                            pattern: "^Tutorial$"
                             severity: error
                           allowedBlocks:
                             - paragraph:
@@ -1003,9 +1000,6 @@ class LinterValidationIntegrationTest {
                           level: 1
                           min: 1
                           max: 1
-                          title:
-                            exactMatch: "Einleitung"
-                            severity: error
                           allowedBlocks:
                             - paragraph:
                                 severity: error
@@ -1387,9 +1381,6 @@ class LinterValidationIntegrationTest {
                   sections:
                     - name: mainSection
                       level: 1
-                      title:
-                        exactMatch: "Implementation"
-                        severity: error
                       allowedBlocks:
                         - paragraph:
                             severity: error
@@ -1434,9 +1425,6 @@ class LinterValidationIntegrationTest {
                   sections:
                     - name: mainSection
                       level: 1
-                      title:
-                        exactMatch: "Overview"
-                        severity: error
                       allowedBlocks:
                         - paragraph:
                             severity: error
@@ -1489,9 +1477,6 @@ class LinterValidationIntegrationTest {
                   sections:
                     - name: mainSection
                       level: 1
-                      title:
-                        exactMatch: "Configuration"
-                        severity: error
                       allowedBlocks:
                         - paragraph:
                             severity: error
@@ -1608,7 +1593,7 @@ class LinterValidationIntegrationTest {
                     - name: introSection
                       level: 1
                       title:
-                        exactMatch: "Introduction"
+                        pattern: "^Introduction$"
                         severity: error
                       allowedBlocks:
                         - paragraph:
@@ -1620,7 +1605,7 @@ class LinterValidationIntegrationTest {
                     - name: detailsSection
                       level: 1
                       title:
-                        exactMatch: "Details"
+                        pattern: "^Details$"
                         severity: error
                       allowedBlocks:
                         - paragraph:

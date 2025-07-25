@@ -157,7 +157,7 @@ class SectionValidatorTest {
                 .min(1)
                 .max(1)
                 .title(TitleConfig.builder()
-                    .exactMatch("Introduction")
+                    .pattern("^Introduction$")
                     .severity(Severity.ERROR)
                     .build())
                 .build();
@@ -168,7 +168,7 @@ class SectionValidatorTest {
                 .min(0)
                 .max(1)
                 .title(TitleConfig.builder()
-                    .exactMatch("Getting Started")
+                    .pattern("^Getting Started$")
                     .severity(Severity.ERROR)
                     .build())
                 .build();
@@ -204,7 +204,7 @@ class SectionValidatorTest {
                 .min(1)
                 .max(1)
                 .title(TitleConfig.builder()
-                    .exactMatch("Introduction")
+                    .pattern("^Introduction$")
                     .severity(Severity.ERROR)
                     .build())
                 .build();
@@ -252,10 +252,6 @@ class SectionValidatorTest {
                 .level(1)
                 .min(0)
                 .max(1)
-                .title(TitleConfig.builder()
-                    .exactMatch("Introduction")
-                    .severity(Severity.ERROR)
-                    .build())
                 .build();
             
             DocumentConfiguration config = DocumentConfiguration.builder()
@@ -482,10 +478,6 @@ class SectionValidatorTest {
                 .level(1)
                 .min(0)
                 .max(1)
-                .title(TitleConfig.builder()
-                    .exactMatch("Introduction")
-                    .severity(Severity.ERROR)
-                    .build())
                 .build();
             
             DocumentConfiguration config = DocumentConfiguration.builder()
@@ -537,7 +529,7 @@ class SectionValidatorTest {
                 .level(1)
                 .order(1)
                 .title(TitleConfig.builder()
-                    .exactMatch("Introduction")
+                    .pattern("^Introduction$")
                     .severity(Severity.ERROR)
                     .build())
                 .build();
@@ -547,7 +539,7 @@ class SectionValidatorTest {
                 .level(1)
                 .order(2)
                 .title(TitleConfig.builder()
-                    .exactMatch("Prerequisites")
+                    .pattern("^Prerequisites$")
                     .severity(Severity.ERROR)
                     .build())
                 .build();
@@ -557,7 +549,7 @@ class SectionValidatorTest {
                 .level(1)
                 .order(3)
                 .title(TitleConfig.builder()
-                    .exactMatch("Installation")
+                    .pattern("^Installation$")
                     .severity(Severity.ERROR)
                     .build())
                 .build();
@@ -595,7 +587,7 @@ class SectionValidatorTest {
                 .level(1)
                 .order(1)
                 .title(TitleConfig.builder()
-                    .exactMatch("Introduction")
+                    .pattern("^Introduction$")
                     .severity(Severity.ERROR)
                     .build())
                 .build();
@@ -605,7 +597,7 @@ class SectionValidatorTest {
                 .level(1)
                 .order(2)
                 .title(TitleConfig.builder()
-                    .exactMatch("Installation")
+                    .pattern("^Installation$")
                     .severity(Severity.ERROR)
                     .build())
                 .build();
@@ -658,7 +650,7 @@ class SectionValidatorTest {
                 .min(1)
                 .max(1)
                 .title(TitleConfig.builder()
-                    .exactMatch("Core Features")
+                    .pattern("^Core Features$")
                     .severity(Severity.ERROR)
                     .build())
                 .build();
@@ -669,7 +661,7 @@ class SectionValidatorTest {
                 .min(0)
                 .max(1)
                 .title(TitleConfig.builder()
-                    .exactMatch("Advanced Features")
+                    .pattern("^Advanced Features$")
                     .severity(Severity.ERROR)
                     .build())
                 .build();
@@ -680,7 +672,7 @@ class SectionValidatorTest {
                 .min(1)
                 .max(1)
                 .title(TitleConfig.builder()
-                    .exactMatch("Features")
+                    .pattern("^Features$")
                     .severity(Severity.ERROR)
                     .build())
                 .subsections(Arrays.asList(coreFeatures, advancedFeatures))
@@ -720,7 +712,7 @@ class SectionValidatorTest {
                 .min(1)
                 .max(1)
                 .title(TitleConfig.builder()
-                    .exactMatch("Core Features")
+                    .pattern("^Core Features$")
                     .severity(Severity.ERROR)
                     .build())
                 .build();
@@ -731,7 +723,7 @@ class SectionValidatorTest {
                 .min(1)
                 .max(1)
                 .title(TitleConfig.builder()
-                    .exactMatch("Features")
+                    .pattern("^Features$")
                     .severity(Severity.ERROR)
                     .build())
                 .subsections(Arrays.asList(coreFeatures))

@@ -97,17 +97,13 @@ public final class SectionValidator {
                 // Find the first config with a pattern to show in error message
                 SectionConfig configWithPattern = levelConfigs.stream()
                     .filter(config -> config.title() != null && 
-                           (config.title().pattern() != null || config.title().exactMatch() != null))
+                           config.title().pattern() != null)
                     .findFirst()
                     .orElse(levelConfigs.get(0));
                 
                 String expectedPattern = null;
-                if (configWithPattern.title() != null) {
-                    if (configWithPattern.title().pattern() != null) {
-                        expectedPattern = "Pattern: " + configWithPattern.title().pattern();
-                    } else if (configWithPattern.title().exactMatch() != null) {
-                        expectedPattern = "Exact match: " + configWithPattern.title().exactMatch();
-                    }
+                if (configWithPattern.title() != null && configWithPattern.title().pattern() != null) {
+                    expectedPattern = "Pattern: " + configWithPattern.title().pattern();
                 }
                 
                 ValidationMessage message = ValidationMessage.builder()
@@ -174,18 +170,6 @@ public final class SectionValidator {
                     .build();
                 resultBuilder.addMessage(message);
             }
-        }
-        
-        if (titleConfig.exactMatch() != null && !title.equals(titleConfig.exactMatch())) {
-            ValidationMessage message = ValidationMessage.builder()
-                .severity(titleConfig.severity())
-                .ruleId("section.title.exact")
-                .location(location)
-                .message("Section title does not match expected value")
-                .actualValue(title)
-                .expectedValue(titleConfig.exactMatch())
-                .build();
-            resultBuilder.addMessage(message);
         }
     }
 
@@ -287,18 +271,6 @@ public final class SectionValidator {
                 resultBuilder.addMessage(message);
             }
         }
-        
-        if (titleConfig.exactMatch() != null && !title.equals(titleConfig.exactMatch())) {
-            ValidationMessage message = ValidationMessage.builder()
-                .severity(titleConfig.severity())
-                .ruleId("section.title.exactMatch")
-                .location(location)
-                .message("Document title does not match expected value")
-                .actualValue(title)
-                .expectedValue(titleConfig.exactMatch())
-                .build();
-            resultBuilder.addMessage(message);
-        }
     }
     
     private void validateDocumentTitle(Document document, String filename, ValidationResult.Builder resultBuilder) {
@@ -332,7 +304,7 @@ public final class SectionValidator {
             return;
         }
         
-        // Validate title pattern/exactMatch if title exists
+        // Validate title pattern if title exists
         if (documentTitle != null && titleConfig.title() != null) {
             validateDocumentTitleConfig(documentTitle, titleConfig.title(), location, resultBuilder);
         }
@@ -399,17 +371,10 @@ public final class SectionValidator {
                 continue;
             }
             
-            if (config.title() != null) {
-                if (config.title().exactMatch() != null && 
-                    config.title().exactMatch().equals(title)) {
+            if (config.title() != null && config.title().pattern() != null) {
+                Pattern pattern = Pattern.compile(config.title().pattern());
+                if (pattern.matcher(title).matches()) {
                     return config;
-                }
-                
-                if (config.title().pattern() != null) {
-                    Pattern pattern = Pattern.compile(config.title().pattern());
-                    if (pattern.matcher(title).matches()) {
-                        return config;
-                    }
                 }
             } else if (config.name() != null) {
                 return config;
