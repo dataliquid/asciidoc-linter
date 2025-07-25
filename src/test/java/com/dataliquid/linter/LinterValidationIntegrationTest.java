@@ -1892,7 +1892,7 @@ class LinterValidationIntegrationTest {
                     - name: glossary
                       level: 1
                       title:
-                        exactMatch: "Glossary"
+                        pattern: "^Glossary$"
                         severity: error
                       allowedBlocks:
                         - dlist:
