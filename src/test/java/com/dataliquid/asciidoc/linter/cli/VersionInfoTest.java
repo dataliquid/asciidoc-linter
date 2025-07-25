@@ -24,7 +24,7 @@ class VersionInfoTest {
     void testGetArtifactId() {
         VersionInfo versionInfo = VersionInfo.getInstance();
         
-        assertEquals("<unknown>", versionInfo.getArtifactId());
+        assertEquals("asciidoc-linter", versionInfo.getArtifactId());
     }
     
     @Test
@@ -32,7 +32,7 @@ class VersionInfoTest {
     void testGetGroupId() {
         VersionInfo versionInfo = VersionInfo.getInstance();
         
-        assertEquals("<unknown>", versionInfo.getGroupId());
+        assertEquals("com.dataliquid", versionInfo.getGroupId());
     }
     
     @Test
@@ -52,7 +52,7 @@ class VersionInfoTest {
         String fullVersion = versionInfo.getFullVersion();
         
         assertNotNull(fullVersion);
-        assertEquals("<unknown> <unknown>", fullVersion);
+        assertEquals("asciidoc-linter <unknown>", fullVersion);
         // Should be "<unknown> <unknown>" in dev or "asciidoc-linter X.Y.Z" in JAR
     }
 }

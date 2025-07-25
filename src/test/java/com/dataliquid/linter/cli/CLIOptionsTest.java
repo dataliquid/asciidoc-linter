@@ -104,4 +104,30 @@ class CLIOptionsTest {
         // Then
         assertEquals("warn", cmd.getOptionValue("fail-level"));
     }
+    
+    @Test
+    @DisplayName("should parse no-splash option")
+    void shouldParseNoSplashOption() throws ParseException {
+        // Given
+        String[] args = {"-i", "**/*.adoc", "--no-splash"};
+        
+        // When
+        CommandLine cmd = parser.parse(cliOptions.getOptions(), args);
+        
+        // Then
+        assertTrue(cmd.hasOption("no-splash"));
+    }
+    
+    @Test
+    @DisplayName("should not have no-splash option by default")
+    void shouldNotHaveNoSplashByDefault() throws ParseException {
+        // Given
+        String[] args = {"-i", "**/*.adoc"};
+        
+        // When
+        CommandLine cmd = parser.parse(cliOptions.getOptions(), args);
+        
+        // Then
+        assertFalse(cmd.hasOption("no-splash"));
+    }
 }

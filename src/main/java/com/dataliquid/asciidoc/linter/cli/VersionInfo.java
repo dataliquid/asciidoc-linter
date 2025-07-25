@@ -30,8 +30,8 @@ public class VersionInfo {
         }
         
         this.version = props.getProperty("version", UNKNOWN);
-        this.artifactId = props.getProperty("artifactId", UNKNOWN);
-        this.groupId = props.getProperty("groupId", UNKNOWN);
+        this.artifactId = props.getProperty("artifactId", "asciidoc-linter");
+        this.groupId = props.getProperty("groupId", "com.dataliquid");
     }
     
     /**
