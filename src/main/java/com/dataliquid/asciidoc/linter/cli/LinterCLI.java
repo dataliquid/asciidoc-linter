@@ -14,6 +14,7 @@ import org.apache.commons.cli.ParseException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.dataliquid.asciidoc.linter.cli.display.SplashScreen;
 import com.dataliquid.asciidoc.linter.config.Severity;
 
 /**
@@ -188,4 +189,5 @@ public class LinterCLI {
     private void printVersion() {
         System.out.println(VersionInfo.getInstance().getFullVersion());
     }
+
 }
