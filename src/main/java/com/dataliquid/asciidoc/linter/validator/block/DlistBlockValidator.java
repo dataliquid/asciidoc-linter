@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import org.asciidoctor.ast.StructuralNode;
 import org.asciidoctor.ast.DescriptionList;
 import org.asciidoctor.ast.DescriptionListEntry;
 import org.asciidoctor.ast.ListItem;
+import org.asciidoctor.ast.StructuralNode;
 
 import com.dataliquid.asciidoc.linter.config.BlockType;
 import com.dataliquid.asciidoc.linter.config.Severity;
