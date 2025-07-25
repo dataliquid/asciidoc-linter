@@ -81,6 +81,12 @@ public class LinterCLI {
             // Parse configuration
             CLIConfig config = parseConfiguration(cmd);
             
+            // Display configuration
+            if (showSplash || !cmd.hasOption("no-splash")) {
+                ConfigurationDisplay configDisplay = new ConfigurationDisplay();
+                configDisplay.display(config);
+            }
+            
             // Run linter
             CLIRunner runner = new CLIRunner();
             return runner.run(config);
