@@ -89,6 +89,12 @@ public class CLIOptions {
             .argName("styles")
             .desc("Comma-separated visualization styles: tree, nested, breadcrumb, table (default: tree)")
             .build());
+        
+        // No splash screen
+        options.addOption(Option.builder()
+            .longOpt("no-splash")
+            .desc("Suppress splash screen on startup")
+            .build());
     }
     
     public Options getOptions() {

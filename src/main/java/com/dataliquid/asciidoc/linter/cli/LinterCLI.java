@@ -49,6 +49,16 @@ public class LinterCLI {
                 return 0;
             }
             
+            // Show splash screen unless suppressed or special options
+            boolean showSplash = !cmd.hasOption("no-splash") 
+                && !cmd.hasOption("help") 
+                && !cmd.hasOption("version")
+                && !cmd.hasOption("generate-docs");
+            
+            if (showSplash) {
+                SplashScreen.display();
+            }
+            
             // Handle documentation generation
             if (cmd.hasOption("generate-docs")) {
                 // Input is not required for doc generation
