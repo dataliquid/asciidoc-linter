@@ -58,6 +58,7 @@ public final class BlockValidatorFactory {
         registerValidator(map, new ExampleBlockValidator());
         registerValidator(map, new VideoBlockValidator());
         registerValidator(map, new UlistBlockValidator());
+        registerValidator(map, new DlistBlockValidator());
         
         return map;
     }

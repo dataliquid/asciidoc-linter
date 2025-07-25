@@ -17,7 +17,8 @@ public enum BlockType {
     SIDEBAR,
     EXAMPLE,
     VIDEO,
-    ULIST;
+    ULIST,
+    DLIST;
     
     @JsonValue
     public String toValue() {
@@ -42,6 +43,7 @@ public enum BlockType {
             case "example" -> EXAMPLE;
             case "video" -> VIDEO;
             case "ulist" -> ULIST;
+            case "dlist" -> DLIST;
             default -> throw new IllegalArgumentException("Unknown block type: " + value);
         };
     }

@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 
 import com.dataliquid.asciidoc.linter.Linter;
 import com.dataliquid.asciidoc.linter.config.LinterConfiguration;
+import com.dataliquid.asciidoc.linter.config.Severity;
 import com.dataliquid.asciidoc.linter.config.loader.ConfigurationLoader;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
 import com.dataliquid.asciidoc.linter.validator.ValidationResult;
@@ -1874,6 +1875,265 @@ class LinterValidationIntegrationTest {
                 result.getMessages().stream()
                     .map(msg -> msg.getMessage())
                     .collect(Collectors.joining(", ")));
+        }
+    }
+    
+    @Nested
+    @DisplayName("Definition List Validation")
+    class DefinitionListValidation {
+        
+        @Test
+        @DisplayName("should validate definition list term count")
+        void shouldValidateDefinitionListTermCount() {
+            // Given
+            String rules = """
+                document:
+                  sections:
+                    - name: glossary
+                      level: 1
+                      title:
+                        pattern: "^Glossary$"
+                        severity: error
+                      allowedBlocks:
+                        - dlist:
+                            severity: error
+                            terms:
+                              min: 3
+                              severity: warn
+                """;
+            
+            String adocContent = """
+                = Document
+                
+                == Glossary
+                
+                API:: Application Programming Interface
+                HTTP:: Hypertext Transfer Protocol
+                """;
+            
+            LinterConfiguration config = configLoader.loadConfiguration(rules);
+            
+            // When
+            ValidationResult result = linter.validateContent(adocContent, config);
+            
+            // Then
+            assertTrue(result.hasWarnings());
+            assertEquals(1, result.getMessages().size());
+            ValidationMessage msg = result.getMessages().get(0);
+            assertEquals(Severity.WARN, msg.getSeverity());
+            assertTrue(msg.getMessage().contains("too few terms"));
+        }
+        
+        @Test
+        @DisplayName("should validate definition list term pattern")
+        void shouldValidateDefinitionListTermPattern() {
+            // Given
+            String rules = """
+                document:
+                  sections:
+                    - level: 1
+                      title:
+                        pattern: ".*"
+                        severity: error
+                      allowedBlocks:
+                        - dlist:
+                            severity: error
+                            terms:
+                              pattern: "^[A-Z].*"
+                              severity: error
+                """;
+            
+            String adocContent = """
+                = Document
+                
+                == Section
+                
+                API:: Good - starts with uppercase
+                http:: Bad - starts with lowercase
+                REST:: Good - all uppercase
+                """;
+            
+            LinterConfiguration config = configLoader.loadConfiguration(rules);
+            
+            // When
+            ValidationResult result = linter.validateContent(adocContent, config);
+            
+            // Then
+            assertTrue(result.hasErrors());
+            assertEquals(1, result.getMessages().size());
+            ValidationMessage msg = result.getMessages().get(0);
+            assertEquals("http", msg.getActualValue().orElse(""));
+            assertTrue(msg.getMessage().contains("does not match required pattern"));
+        }
+        
+        @Test
+        @DisplayName("should validate definition list description requirements")
+        void shouldValidateDefinitionListDescriptionRequirements() {
+            // Given
+            String rules = """
+                document:
+                  sections:
+                    - level: 1
+                      title:
+                        pattern: ".*"
+                        severity: error
+                      allowedBlocks:
+                        - dlist:
+                            severity: error
+                            descriptions:
+                              required: true
+                              pattern: ".*\\\\.$"
+                              severity: error
+                """;
+            
+            String adocContent = """
+                = Document
+                
+                == Section
+                
+                Term1:: Description with period.
+                Term2:: Description without period
+                Term3::
+                """;
+            
+            LinterConfiguration config = configLoader.loadConfiguration(rules);
+            
+            // When
+            ValidationResult result = linter.validateContent(adocContent, config);
+            
+            // Then
+            assertTrue(result.hasErrors());
+            assertEquals(2, result.getMessages().size());
+            
+            // Check for pattern violation
+            assertTrue(result.getMessages().stream()
+                .anyMatch(msg -> msg.getMessage().contains("does not match required pattern") 
+                    && msg.getActualValue().orElse("").equals("Description without period")));
+            
+            // Check for missing description
+            assertTrue(result.getMessages().stream()
+                .anyMatch(msg -> msg.getMessage().contains("missing required description")));
+        }
+        
+        @Test
+        @DisplayName("should skip nesting level validation - not supported by AsciiDoctor AST")
+        void shouldSkipNestingLevelValidation() {
+            // Given
+            String rules = """
+                document:
+                  sections:
+                    - level: 1
+                      title:
+                        pattern: ".*"
+                        severity: error
+                      allowedBlocks:
+                        - dlist:
+                            severity: error
+                            nestingLevel:
+                              max: 1
+                              severity: warn
+                """;
+            
+            String adocContent = """
+                = Document
+                
+                == Section
+                
+                Level1::
+                  Nested::
+                    DoubleNested:::
+                      This exceeds max nesting level
+                """;
+            
+            LinterConfiguration config = configLoader.loadConfiguration(rules);
+            
+            // When
+            ValidationResult result = linter.validateContent(adocContent, config);
+            
+            // Then - nesting validation is not implemented
+            assertFalse(result.hasWarnings());
+            assertFalse(result.hasErrors());
+        }
+        
+        @Test
+        @DisplayName("should skip delimiter style validation - not supported by AsciiDoctor AST")
+        void shouldSkipDelimiterStyleValidation() {
+            // Given
+            String rules = """
+                document:
+                  sections:
+                    - level: 1
+                      title:
+                        pattern: ".*"
+                        severity: error
+                      allowedBlocks:
+                        - dlist:
+                            severity: error
+                            delimiterStyle:
+                              allowedDelimiters: ["::", ":::"]
+                              severity: error
+                """;
+            
+            String adocContent = """
+                = Document
+                
+                == Section
+                
+                Term1:: Valid delimiter
+                Term2::: Also valid
+                Term3:::: Invalid delimiter
+                """;
+            
+            LinterConfiguration config = configLoader.loadConfiguration(rules);
+            
+            // When
+            ValidationResult result = linter.validateContent(adocContent, config);
+            
+            // Then - delimiter validation is not implemented
+            assertFalse(result.hasErrors());
+            assertFalse(result.hasWarnings());
+        }
+        
+        @Test
+        @DisplayName("should pass valid definition list")
+        void shouldPassValidDefinitionList() {
+            // Given
+            String rules = """
+                document:
+                  sections:
+                    - level: 1
+                      title:
+                        pattern: ".*"
+                        severity: error
+                      allowedBlocks:
+                        - dlist:
+                            severity: error
+                            terms:
+                              min: 2
+                              max: 5
+                              pattern: "^[A-Z].*"
+                            descriptions:
+                              required: true
+                """;
+            
+            String adocContent = """
+                = Document
+                
+                == Section
+                
+                API:: Application Programming Interface
+                HTTP:: Hypertext Transfer Protocol
+                REST:: Representational State Transfer
+                """;
+            
+            LinterConfiguration config = configLoader.loadConfiguration(rules);
+            
+            // When
+            ValidationResult result = linter.validateContent(adocContent, config);
+            
+            // Then
+            assertFalse(result.hasErrors());
+            assertFalse(result.hasWarnings());
         }
     }
 }
