@@ -14,6 +14,7 @@ import org.apache.commons.cli.ParseException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.dataliquid.asciidoc.linter.cli.display.SplashScreen;
 import com.dataliquid.asciidoc.linter.config.Severity;
 
 /**
@@ -80,6 +81,12 @@ public class LinterCLI {
             
             // Parse configuration
             CLIConfig config = parseConfiguration(cmd);
+            
+            // Display configuration
+            if (showSplash || !cmd.hasOption("no-splash")) {
+                ConfigurationDisplay configDisplay = new ConfigurationDisplay();
+                configDisplay.display(config);
+            }
             
             // Run linter
             CLIRunner runner = new CLIRunner();
@@ -182,4 +189,5 @@ public class LinterCLI {
     private void printVersion() {
         System.out.println(VersionInfo.getInstance().getFullVersion());
     }
+
 }

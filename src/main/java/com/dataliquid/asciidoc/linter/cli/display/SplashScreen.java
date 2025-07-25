@@ -1,6 +1,8 @@
-package com.dataliquid.asciidoc.linter.cli;
+package com.dataliquid.asciidoc.linter.cli.display;
 
 import java.time.Year;
+
+import com.dataliquid.asciidoc.linter.cli.VersionInfo;
 
 /**
  * Displays a splash screen for the AsciiDoc Linter CLI.
