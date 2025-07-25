@@ -72,6 +72,9 @@ public final class BlockTypeDetector {
             case "ulist":
                 return BlockType.ULIST;
                 
+            case "dlist":
+                return BlockType.DLIST;
+                
             default:
                 return null;
         }

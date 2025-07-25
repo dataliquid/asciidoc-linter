@@ -385,21 +385,14 @@ public class Linter {
         }
         
         // Then check title constraints if configured
-        if (config.title() != null) {
+        if (config.title() != null && config.title().pattern() != null) {
             String title = section.getTitle();
             if (title == null) {
                 return false;
             }
             
-            // Check exact match
-            if (config.title().exactMatch() != null) {
-                return title.equals(config.title().exactMatch());
-            }
-            
             // Check pattern match
-            if (config.title().pattern() != null) {
-                return title.matches(config.title().pattern());
-            }
+            return title.matches(config.title().pattern());
         }
         
         // Level matches and no title constraints

@@ -10,20 +10,15 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 @JsonDeserialize(builder = TitleConfig.Builder.class)
 public final class TitleConfig {
     private final String pattern;
-    private final String exactMatch;
     private final Severity severity;
 
     private TitleConfig(Builder builder) {
         this.pattern = builder.pattern;
-        this.exactMatch = builder.exactMatch;
         this.severity = builder.severity;
     }
 
     @JsonProperty("pattern")
     public String pattern() { return pattern; }
-    
-    @JsonProperty("exactMatch")
-    public String exactMatch() { return exactMatch; }
     
     @JsonProperty("severity")
     public Severity severity() { return severity; }
@@ -35,18 +30,11 @@ public final class TitleConfig {
     @JsonPOJOBuilder(withPrefix = "")
     public static class Builder {
         private String pattern;
-        private String exactMatch;
         private Severity severity = Severity.ERROR;
 
         @JsonProperty("pattern")
         public Builder pattern(String pattern) {
             this.pattern = pattern;
-            return this;
-        }
-
-        @JsonProperty("exactMatch")
-        public Builder exactMatch(String exactMatch) {
-            this.exactMatch = exactMatch;
             return this;
         }
 
@@ -57,11 +45,8 @@ public final class TitleConfig {
         }
 
         public TitleConfig build() {
-            if (pattern == null && exactMatch == null) {
-                throw new IllegalStateException("Either pattern or exactMatch must be specified");
-            }
-            if (pattern != null && exactMatch != null) {
-                throw new IllegalStateException("Cannot specify both pattern and exactMatch");
+            if (pattern == null) {
+                throw new IllegalStateException("Pattern must be specified");
             }
             return new TitleConfig(this);
         }
@@ -73,12 +58,11 @@ public final class TitleConfig {
         if (o == null || getClass() != o.getClass()) return false;
         TitleConfig that = (TitleConfig) o;
         return Objects.equals(pattern, that.pattern) &&
-               Objects.equals(exactMatch, that.exactMatch) &&
                severity == that.severity;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(pattern, exactMatch, severity);
+        return Objects.hash(pattern, severity);
     }
 }

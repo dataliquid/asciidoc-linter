@@ -8,6 +8,7 @@ import com.dataliquid.asciidoc.linter.config.BlockType;
 import com.dataliquid.asciidoc.linter.config.blocks.AdmonitionBlock;
 import com.dataliquid.asciidoc.linter.config.blocks.AudioBlock;
 import com.dataliquid.asciidoc.linter.config.blocks.Block;
+import com.dataliquid.asciidoc.linter.config.blocks.DlistBlock;
 import com.dataliquid.asciidoc.linter.config.blocks.ExampleBlock;
 import com.dataliquid.asciidoc.linter.config.blocks.ImageBlock;
 import com.dataliquid.asciidoc.linter.config.blocks.ListingBlock;
@@ -86,6 +87,7 @@ public class BlockListDeserializer extends JsonDeserializer<List<Block>> {
                 case EXAMPLE -> mapper.treeToValue(blockData, ExampleBlock.class);
                 case VIDEO -> mapper.treeToValue(blockData, VideoBlock.class);
                 case ULIST -> mapper.treeToValue(blockData, UlistBlock.class);
+                case DLIST -> mapper.treeToValue(blockData, DlistBlock.class);
             };
             
             blocks.add(block);

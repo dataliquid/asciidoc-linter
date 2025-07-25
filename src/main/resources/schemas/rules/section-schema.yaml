@@ -37,18 +37,12 @@ properties:
         type: string
         description: Regular expression pattern the section title must match
         minLength: 1
-      exactMatch:
-        type: string
-        description: Exact string the section title must match
-        minLength: 1
       severity:
         type: string
         description: Severity level for title validation violations
         enum: [error, warn, info]
         default: error
-    oneOf:
-      - required: [pattern, severity]
-      - required: [exactMatch, severity]
+    required: [pattern, severity]
     additionalProperties: false
   allowedBlocks:
     type: array
@@ -84,6 +78,8 @@ properties:
           $ref: "./blocks/video-block-schema.yaml"
         ulist:
           $ref: "./blocks/ulist-block-schema.yaml"
+        dlist:
+          $ref: "./blocks/dlist-block-schema.yaml"
       minProperties: 1
       maxProperties: 1
       additionalProperties: false
