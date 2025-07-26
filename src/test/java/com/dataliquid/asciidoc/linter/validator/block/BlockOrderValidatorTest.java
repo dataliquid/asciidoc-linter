@@ -1,8 +1,10 @@
 package com.dataliquid.asciidoc.linter.validator.block;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.List;
@@ -379,6 +381,99 @@ class BlockOrderValidatorTest {
             assertEquals(Severity.INFO, msg.getSeverity());
             assertEquals("block.order.after", msg.getRuleId());
             assertEquals("Block 'summary' must appear after 'header'", msg.getMessage());
+        }
+    }
+    
+    @Nested
+    @DisplayName("location validation")
+    class LocationValidation {
+        
+        @Test
+        @DisplayName("should use section line number in order violations")
+        void shouldUseSectionLineNumberInOrderViolations() {
+            // Given
+            Section mockSectionWithLocation = mock(Section.class);
+            org.asciidoctor.ast.Cursor mockCursor = mock(org.asciidoctor.ast.Cursor.class);
+            when(mockSectionWithLocation.getSourceLocation()).thenReturn(mockCursor);
+            when(mockCursor.getLineNumber()).thenReturn(100);
+            
+            BlockValidationContext contextWithLocation = new BlockValidationContext(mockSectionWithLocation, "test.adoc");
+            
+            OrderConfig.OrderConstraint constraint = OrderConfig.OrderConstraint.of(
+                "intro", "summary", Severity.ERROR);
+            OrderConfig orderConfig = OrderConfig.builder()
+                .before(Arrays.asList(constraint))
+                .severity(Severity.ERROR)
+                .build();
+            
+            // Add blocks in wrong order
+            ParagraphBlock introBlock = ParagraphBlock.builder()
+                .name("intro")
+                .severity(Severity.ERROR)
+                .build();
+            TableBlock summaryBlock = TableBlock.builder()
+                .name("summary")
+                .severity(Severity.ERROR)
+                .build();
+            
+            StructuralNode node1 = mock(StructuralNode.class);
+            StructuralNode node2 = mock(StructuralNode.class);
+            
+            contextWithLocation.trackBlock(summaryBlock, node1);  // Wrong order
+            contextWithLocation.trackBlock(introBlock, node2);
+            
+            // When
+            List<ValidationMessage> messages = validator.validate(contextWithLocation, orderConfig);
+            
+            // Then
+            assertEquals(1, messages.size());
+            ValidationMessage msg = messages.get(0);
+            assertNotNull(msg.getLocation());
+            assertEquals(100, msg.getLocation().getStartLine());
+            assertEquals("test.adoc", msg.getLocation().getFilename());
+        }
+        
+        @Test
+        @DisplayName("should use -1 when section has no source location")
+        void shouldUseNegativeOneWhenSectionHasNoSourceLocation() {
+            // Given
+            Section mockSectionNoLocation = mock(Section.class);
+            when(mockSectionNoLocation.getSourceLocation()).thenReturn(null);
+            
+            BlockValidationContext contextNoLocation = new BlockValidationContext(mockSectionNoLocation, "test.adoc");
+            
+            OrderConfig.OrderConstraint constraint = OrderConfig.OrderConstraint.of(
+                "header", "footer", Severity.WARN);
+            OrderConfig orderConfig = OrderConfig.builder()
+                .after(Arrays.asList(constraint))
+                .severity(Severity.ERROR)
+                .build();
+            
+            // Add blocks
+            ParagraphBlock headerBlock = ParagraphBlock.builder()
+                .name("header")
+                .severity(Severity.ERROR)
+                .build();
+            ParagraphBlock footerBlock = ParagraphBlock.builder()
+                .name("footer")
+                .severity(Severity.ERROR)
+                .build();
+            
+            StructuralNode node1 = mock(StructuralNode.class);
+            StructuralNode node2 = mock(StructuralNode.class);
+            
+            // Wrong order for after constraint (header before footer, but header should be after)
+            contextNoLocation.trackBlock(headerBlock, node1);
+            contextNoLocation.trackBlock(footerBlock, node2);
+            
+            // When
+            List<ValidationMessage> messages = validator.validate(contextNoLocation, orderConfig);
+            
+            // Then
+            assertEquals(1, messages.size());
+            ValidationMessage msg = messages.get(0);
+            assertNotNull(msg.getLocation());
+            assertEquals(-1, msg.getLocation().getStartLine());
         }
     }
     
