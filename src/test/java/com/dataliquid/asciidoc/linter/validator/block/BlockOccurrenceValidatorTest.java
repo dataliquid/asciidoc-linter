@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -350,6 +351,85 @@ class BlockOccurrenceValidatorTest {
             ValidationMessage msg = messages.get(0);
             assertEquals(Severity.INFO, msg.getSeverity());
             assertTrue(msg.getMessage().contains("paragraph")); // Uses type name
+        }
+    }
+    
+    @Nested
+    @DisplayName("location validation")
+    class LocationValidation {
+        
+        @Test
+        @DisplayName("should use section line number in validation messages")
+        void shouldUseSectionLineNumberInValidationMessages() {
+            // Given
+            Section mockSectionWithLocation = mock(Section.class);
+            org.asciidoctor.ast.Cursor mockCursor = mock(org.asciidoctor.ast.Cursor.class);
+            when(mockSectionWithLocation.getSourceLocation()).thenReturn(mockCursor);
+            when(mockCursor.getLineNumber()).thenReturn(42);
+            
+            BlockValidationContext contextWithLocation = new BlockValidationContext(mockSectionWithLocation, "test.adoc");
+            
+            OccurrenceConfig occurrenceConfig = OccurrenceConfig.builder()
+                .min(2)
+                .max(5)
+                .severity(Severity.ERROR)
+                .build();
+            ParagraphBlock block = ParagraphBlock.builder()
+                .name("introduction")
+                .occurrence(occurrenceConfig)
+                .severity(Severity.ERROR)
+                .build();
+            List<Block> blocks = Arrays.asList(block);
+            
+            // Add only one occurrence to context (violates min)
+            StructuralNode node = mock(StructuralNode.class);
+            contextWithLocation.trackBlock(block, node);
+            
+            // When
+            List<ValidationMessage> messages = validator.validate(contextWithLocation, blocks);
+            
+            // Then
+            assertEquals(1, messages.size());
+            ValidationMessage msg = messages.get(0);
+            assertNotNull(msg.getLocation());
+            assertEquals(42, msg.getLocation().getStartLine());
+            assertEquals("test.adoc", msg.getLocation().getFilename());
+        }
+        
+        @Test
+        @DisplayName("should use -1 when section has no source location")
+        void shouldUseNegativeOneWhenSectionHasNoSourceLocation() {
+            // Given
+            Section mockSectionNoLocation = mock(Section.class);
+            when(mockSectionNoLocation.getSourceLocation()).thenReturn(null);
+            
+            BlockValidationContext contextNoLocation = new BlockValidationContext(mockSectionNoLocation, "test.adoc");
+            
+            OccurrenceConfig occurrenceConfig = OccurrenceConfig.builder()
+                .min(1)
+                .max(1)
+                .severity(Severity.WARN)
+                .build();
+            TableBlock block = TableBlock.builder()
+                .occurrence(occurrenceConfig)
+                .severity(Severity.ERROR)
+                .build();
+            List<Block> blocks = Arrays.asList(block);
+            
+            // Add two occurrences (violates max)
+            StructuralNode node1 = mock(StructuralNode.class);
+            StructuralNode node2 = mock(StructuralNode.class);
+            contextNoLocation.trackBlock(block, node1);
+            contextNoLocation.trackBlock(block, node2);
+            
+            // When
+            List<ValidationMessage> messages = validator.validate(contextNoLocation, blocks);
+            
+            // Then
+            assertEquals(1, messages.size());
+            ValidationMessage msg = messages.get(0);
+            assertNotNull(msg.getLocation());
+            assertEquals(-1, msg.getLocation().getStartLine());
         }
     }
     

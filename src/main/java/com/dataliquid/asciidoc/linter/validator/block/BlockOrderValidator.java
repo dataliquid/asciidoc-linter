@@ -197,9 +197,17 @@ public final class BlockOrderValidator {
     private com.dataliquid.asciidoc.linter.validator.SourceLocation createSectionLocation(
             BlockValidationContext context) {
         
+        int lineNumber = -1; // Default if no source location (should not happen)
+        
+        // Get the actual line number from the container (Section or Document)
+        org.asciidoctor.ast.StructuralNode container = context.getContainer();
+        if (container != null && container.getSourceLocation() != null) {
+            lineNumber = container.getSourceLocation().getLineNumber();
+        }
+        
         return com.dataliquid.asciidoc.linter.validator.SourceLocation.builder()
             .filename(context.getFilename())
-            .startLine(1) // Section start
+            .startLine(lineNumber)
             .build();
     }
 }
