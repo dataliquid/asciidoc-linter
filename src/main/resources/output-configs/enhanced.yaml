@@ -1,0 +1,27 @@
+# Enhanced output configuration - Full featured output with all bells and whistles
+output:
+  format: enhanced
+  
+  display:
+    contextLines: 3
+    highlightStyle: underline
+    useColors: true
+    showLineNumbers: true
+    maxLineWidth: 120
+    showHeader: true
+  
+  suggestions:
+    enabled: true
+    maxPerError: 3
+    showExamples: true
+    showAutoFixHint: true
+  
+  errorGrouping:
+    enabled: true
+    threshold: 3
+  
+  summary:
+    enabled: true
+    showStatistics: true
+    showMostCommon: true
+    showFileList: false

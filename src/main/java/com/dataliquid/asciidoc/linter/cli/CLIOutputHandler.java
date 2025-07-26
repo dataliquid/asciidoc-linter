@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
 
+import com.dataliquid.asciidoc.linter.config.output.OutputConfiguration;
 import com.dataliquid.asciidoc.linter.report.ReportWriter;
 import com.dataliquid.asciidoc.linter.validator.ValidationResult;
 
@@ -24,18 +25,18 @@ public class CLIOutputHandler {
     /**
      * Writes a single validation result based on the CLI configuration.
      */
-    public void writeReport(ValidationResult result, CLIConfig config) throws IOException {
+    public void writeReport(ValidationResult result, CLIConfig config, OutputConfiguration outputConfig) throws IOException {
         if (config.isOutputToFile()) {
             // Write to file
             Path outputFile = config.getReportOutput();
             ensureParentDirectoryExists(outputFile);
             
             try (PrintWriter writer = new PrintWriter(new FileWriter(outputFile.toFile()))) {
-                reportWriter.write(result, config.getReportFormat(), writer);
+                reportWriter.write(result, config.getReportFormat(), writer, outputConfig);
             }
         } else {
             // Write to console (stdout)
-            reportWriter.writeToConsole(result, config.getReportFormat());
+            reportWriter.writeToConsole(result, config.getReportFormat(), outputConfig);
         }
     }
     
@@ -43,10 +44,10 @@ public class CLIOutputHandler {
      * Writes multiple validation results for directory input.
      */
     public void writeMultipleReports(Map<Path, ValidationResult> results, CLIConfig config, 
-                                   ValidationResult aggregated) throws IOException {
+                                   ValidationResult aggregated, OutputConfiguration outputConfig) throws IOException {
         if (!config.isOutputToFile()) {
             // Write aggregated result to console
-            reportWriter.writeToConsole(aggregated, config.getReportFormat());
+            reportWriter.writeToConsole(aggregated, config.getReportFormat(), outputConfig);
             return;
         }
         
@@ -54,15 +55,15 @@ public class CLIOutputHandler {
         
         if (Files.isDirectory(output) || output.toString().endsWith("/") || output.toString().endsWith("\\")) {
             // Write individual reports to directory
-            writeIndividualReports(results, config, output);
+            writeIndividualReports(results, config, output, outputConfig);
         } else {
             // Write aggregated report to single file
-            writeReport(aggregated, config);
+            writeReport(aggregated, config, outputConfig);
         }
     }
     
     private void writeIndividualReports(Map<Path, ValidationResult> results, CLIConfig config, 
-                                      Path outputDir) throws IOException {
+                                      Path outputDir, OutputConfiguration outputConfig) throws IOException {
         // Ensure output directory exists
         if (!Files.exists(outputDir)) {
             Files.createDirectories(outputDir);
@@ -77,7 +78,7 @@ public class CLIOutputHandler {
             Path outputFile = outputDir.resolve(outputFileName);
             
             try (PrintWriter writer = new PrintWriter(new FileWriter(outputFile.toFile()))) {
-                reportWriter.write(result, config.getReportFormat(), writer);
+                reportWriter.write(result, config.getReportFormat(), writer, outputConfig);
             }
         }
     }
