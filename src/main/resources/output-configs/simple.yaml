@@ -1,0 +1,27 @@
+# Simple output configuration - Basic output for quick scanning
+output:
+  format: simple
+  
+  display:
+    contextLines: 1
+    highlightStyle: arrow
+    useColors: true
+    showLineNumbers: true
+    maxLineWidth: 100
+    showHeader: false
+  
+  suggestions:
+    enabled: false
+    maxPerError: 1
+    showExamples: false
+    showAutoFixHint: false
+  
+  errorGrouping:
+    enabled: false
+    threshold: 5
+  
+  summary:
+    enabled: true
+    showStatistics: false
+    showMostCommon: false
+    showFileList: false

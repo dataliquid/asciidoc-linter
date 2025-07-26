@@ -66,8 +66,11 @@ public class ConfigurationDisplay {
             config.getConfigFile().toString() : "default";
         drawConfigLine("Configuration:", configFile);
         
-        // Output config file - only shown if specified
-        if (config.getOutputConfigFile() != null) {
+        // Output config - show name or file if specified
+        if (config.getOutputConfigName() != null) {
+            drawConfigLine("Output config:", 
+                config.getOutputConfigName() + " (predefined)");
+        } else if (config.getOutputConfigFile() != null) {
             drawConfigLine("Output config:", 
                 config.getOutputConfigFile().toString());
         }

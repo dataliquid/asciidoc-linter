@@ -126,9 +126,22 @@ public class LinterCLI {
             builder.configFile(Paths.get(cmd.getOptionValue("config")));
         }
         
-        // Output config file
+        // Output configuration
+        if (cmd.hasOption("output-config") && cmd.hasOption("output-config-file")) {
+            throw new IllegalArgumentException("Cannot use both --output-config and --output-config-file. Choose one.");
+        }
+        
         if (cmd.hasOption("output-config")) {
-            builder.outputConfigFile(Paths.get(cmd.getOptionValue("output-config")));
+            String configName = cmd.getOptionValue("output-config");
+            // Validate predefined names
+            if (!configName.equals("enhanced") && !configName.equals("simple") && !configName.equals("compact")) {
+                throw new IllegalArgumentException("Invalid output config name: " + configName + ". Valid options: enhanced, simple, compact");
+            }
+            builder.outputConfigName(configName);
+        }
+        
+        if (cmd.hasOption("output-config-file")) {
+            builder.outputConfigFile(Paths.get(cmd.getOptionValue("output-config-file")));
         }
         
         // Report format
@@ -172,7 +185,8 @@ public class LinterCLI {
             "  " + programName + " -i \"**/*.adoc\"\n" +
             "  " + programName + " -i \"docs/**/*.adoc,examples/**/*.asciidoc\" -f json -o report.json\n" +
             "  " + programName + " --input \"src/*/docs/**/*.adoc,README.adoc\" --config strict.yaml --fail-level warn\n" +
-            "  " + programName + " -i \"**/*.adoc\" --output-config enhanced-output.yaml\n" +
+            "  " + programName + " -i \"**/*.adoc\" --output-config simple\n" +
+            "  " + programName + " -i \"**/*.adoc\" --output-config-file my-output.yaml\n" +
             "\nAnt Pattern Syntax:\n" +
             "  **  - matches any number of directories\n" +
             "  *   - matches any number of characters (except /)\n" +
