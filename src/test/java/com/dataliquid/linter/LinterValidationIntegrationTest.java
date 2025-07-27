@@ -2396,4 +2396,446 @@ class LinterValidationIntegrationTest {
             assertFalse(result.hasWarnings());
         }
     }
+    
+    @Nested
+    @DisplayName("Section Occurrence Validation")
+    class SectionOccurrenceValidation {
+        
+        @Test
+        @DisplayName("should detect missing section with improved error message including parent context")
+        void shouldDetectMissingSectionWithImprovedErrorMessage() {
+            // Given - Minimal configuration with subsections
+            String rules = """
+                document:
+                  sections:
+                    - name: mainDoc
+                      level: 0
+                      min: 1
+                      max: 1
+                      subsections:
+                        - name: intro
+                          level: 1
+                          min: 1
+                          max: 1
+                          title:
+                            pattern: "^Intro$"
+                            severity: error
+                        - name: content
+                          level: 1
+                          min: 1
+                          max: 1
+                          title:
+                            pattern: "^Content$"
+                            severity: error
+                """;
+            
+            String adocContent = """
+                = Test Doc
+                
+                == Intro
+                
+                This is the intro.
+                """;
+            
+            LinterConfiguration config = configLoader.loadConfiguration(rules);
+            
+            // When
+            ValidationResult result = linter.validateContent(adocContent, config);
+            
+            // Then
+            assertTrue(result.hasErrors());
+            assertEquals(1, result.getErrorCount());
+            
+            ValidationMessage msg = result.getMessages().get(0);
+            assertEquals("section.min-occurrences", msg.getRuleId());
+            assertTrue(msg.getMessage().contains("Missing required section 'content'"));
+            assertTrue(msg.getMessage().contains("at level 1"));
+            assertTrue(msg.getMessage().contains("expected in mainDoc at level 0"));
+            assertEquals("ERROR", msg.getSeverity().toString());
+            assertEquals("0 occurrences", msg.getActualValue().orElse(null));
+            assertEquals("At least 1 occurrence(s)", msg.getExpectedValue().orElse(null));
+            assertNotNull(msg.getLocation());
+            assertEquals(1, msg.getLocation().getStartLine());
+        }
+        
+        @Test
+        @DisplayName("should not produce duplicate errors for missing sections")
+        void shouldNotProduceDuplicateErrorsForMissingSections() {
+            // Given - Config that previously would cause duplicates
+            String rules = """
+                document:
+                  sections:
+                    - name: doc
+                      level: 0
+                      min: 1
+                      max: 1
+                      subsections:
+                        - name: required
+                          level: 1
+                          min: 1
+                          max: 1
+                          title:
+                            pattern: "^Required Section$"
+                            severity: error
+                """;
+            
+            String adocContent = """
+                = Document
+                
+                No required section here.
+                """;
+            
+            LinterConfiguration config = configLoader.loadConfiguration(rules);
+            
+            // When
+            ValidationResult result = linter.validateContent(adocContent, config);
+            
+            // Then
+            assertTrue(result.hasErrors());
+            assertEquals(1, result.getErrorCount(), 
+                "Should only report missing section once, not duplicate");
+            
+            ValidationMessage msg = result.getMessages().get(0);
+            assertEquals("section.min-occurrences", msg.getRuleId());
+            assertTrue(msg.getMessage().contains("Missing required section 'required'"));
+            assertNotNull(msg.getLocation());
+            assertEquals(1, msg.getLocation().getStartLine());
+        }
+        
+        @Test
+        @DisplayName("should validate section pattern mismatch with clear message")
+        void shouldValidateSectionPatternMismatchWithClearMessage() {
+            // Given - Minimal config with pattern
+            String rules = """
+                document:
+                  sections:
+                    - name: api
+                      level: 1
+                      min: 1
+                      max: 1
+                      title:
+                        pattern: "^API-\\\\d+$"
+                        severity: error
+                """;
+            
+            String adocContent = """
+                = Doc
+                
+                == API-Test
+                
+                Wrong pattern.
+                """;
+            
+            LinterConfiguration config = configLoader.loadConfiguration(rules);
+            
+            // When
+            ValidationResult result = linter.validateContent(adocContent, config);
+            
+            // Then
+            assertTrue(result.hasErrors());
+            assertEquals(2, result.getErrorCount());
+            
+            ValidationMessage patternMsg = result.getMessages().stream()
+                .filter(msg -> "section.title.pattern".equals(msg.getRuleId()))
+                .findFirst()
+                .orElseThrow(() -> new AssertionError("Expected pattern error not found"));
+            
+            assertTrue(patternMsg.getMessage().contains("Section title 'API-Test' doesn't match required pattern at level 1"));
+            assertEquals("API-Test", patternMsg.getActualValue().orElse(null));
+            assertEquals("Pattern: ^API-\\d+$", patternMsg.getExpectedValue().orElse(null));
+            assertNotNull(patternMsg.getLocation());
+            assertEquals(3, patternMsg.getLocation().getStartLine());
+            
+            ValidationMessage missingMsg = result.getMessages().stream()
+                .filter(msg -> "section.min-occurrences".equals(msg.getRuleId()))
+                .findFirst()
+                .orElseThrow(() -> new AssertionError("Expected missing section error not found"));
+            
+            assertTrue(missingMsg.getMessage().contains("Missing required section 'api' at level 1"));
+            assertNotNull(missingMsg.getLocation());
+            assertEquals(1, missingMsg.getLocation().getStartLine());
+        }
+        
+        @Test
+        @DisplayName("should detect missing level 2 subsection with parent context")
+        void shouldDetectMissingLevel2SubsectionWithParentContext() {
+            // Given - Level 1 section with required level 2 subsections
+            String rules = """
+                document:
+                  sections:
+                    - name: features
+                      level: 1
+                      min: 1
+                      max: 1
+                      title:
+                        pattern: "^Features$"
+                        severity: error
+                      subsections:
+                        - name: coreFeatures
+                          level: 2
+                          min: 1
+                          max: 1
+                          title:
+                            pattern: "^Core Features$"
+                            severity: error
+                        - name: advancedFeatures
+                          level: 2
+                          min: 1
+                          max: 1
+                          title:
+                            pattern: "^Advanced Features$"
+                            severity: error
+                """;
+            
+            String adocContent = """
+                = Product Guide
+                
+                == Features
+                
+                === Core Features
+                
+                Basic functionality here.
+                """;
+            
+            LinterConfiguration config = configLoader.loadConfiguration(rules);
+            
+            // When
+            ValidationResult result = linter.validateContent(adocContent, config);
+            
+            // Then
+            assertTrue(result.hasErrors());
+            assertEquals(1, result.getErrorCount());
+            
+            ValidationMessage msg = result.getMessages().get(0);
+            assertEquals("section.min-occurrences", msg.getRuleId());
+            assertTrue(msg.getMessage().contains("Missing required section 'advancedFeatures'"));
+            assertTrue(msg.getMessage().contains("at level 2"));
+            assertTrue(msg.getMessage().contains("expected in features at level 1"));
+            assertNotNull(msg.getLocation());
+            assertEquals(1, msg.getLocation().getStartLine());
+        }
+        
+        @Test
+        @DisplayName("should detect missing level 3 subsection with nested context")
+        void shouldDetectMissingLevel3SubsectionWithNestedContext() {
+            // Given - Deeply nested structure: level 0 → 1 → 2 → 3
+            String rules = """
+                document:
+                  sections:
+                    - name: doc
+                      level: 0
+                      min: 1
+                      max: 1
+                      subsections:
+                        - name: chapter
+                          level: 1
+                          min: 1
+                          max: 1
+                          title:
+                            pattern: "^Chapter \\\\d+$"
+                            severity: error
+                          subsections:
+                            - name: section
+                              level: 2
+                              min: 1
+                              max: 1
+                              title:
+                                pattern: "^Section \\\\d+\\\\.\\\\d+$"
+                                severity: error
+                              subsections:
+                                - name: details
+                                  level: 3
+                                  min: 1
+                                  max: 1
+                                  title:
+                                    pattern: "^Details$"
+                                    severity: error
+                                - name: examples
+                                  level: 3
+                                  min: 1
+                                  max: 1
+                                  title:
+                                    pattern: "^Examples$"
+                                    severity: error
+                """;
+            
+            String adocContent = """
+                = Document
+                
+                == Chapter 1
+                
+                === Section 1.1
+                
+                ==== Details
+                
+                Some details here.
+                """;
+            
+            LinterConfiguration config = configLoader.loadConfiguration(rules);
+            
+            // When
+            ValidationResult result = linter.validateContent(adocContent, config);
+            
+            // Then
+            assertTrue(result.hasErrors());
+            assertEquals(1, result.getErrorCount());
+            
+            ValidationMessage msg = result.getMessages().get(0);
+            assertEquals("section.min-occurrences", msg.getRuleId());
+            assertTrue(msg.getMessage().contains("Missing required section 'examples'"));
+            assertTrue(msg.getMessage().contains("at level 3"));
+            assertTrue(msg.getMessage().contains("expected in section at level 2"));
+            assertNotNull(msg.getLocation());
+            assertEquals(1, msg.getLocation().getStartLine());
+        }
+        
+        @Test
+        @DisplayName("should detect multiple missing subsections at different levels")
+        void shouldDetectMultipleMissingSubsectionsAtDifferentLevels() {
+            // Given - Complex structure with missing sections at multiple levels
+            String rules = """
+                document:
+                  sections:
+                    - name: guide
+                      level: 1
+                      min: 1
+                      max: 1
+                      title:
+                        pattern: "^User Guide$"
+                        severity: error
+                      subsections:
+                        - name: installation
+                          level: 2
+                          min: 1
+                          max: 1
+                          title:
+                            pattern: "^Installation$"
+                            severity: error
+                        - name: usage
+                          level: 2
+                          min: 1
+                          max: 1
+                          title:
+                            pattern: "^Usage$"
+                            severity: error
+                          subsections:
+                            - name: basic
+                              level: 3
+                              min: 1
+                              max: 1
+                              title:
+                                pattern: "^Basic Usage$"
+                                severity: error
+                            - name: advanced
+                              level: 3
+                              min: 1
+                              max: 1
+                              title:
+                                pattern: "^Advanced Usage$"
+                                severity: error
+                """;
+            
+            String adocContent = """
+                = Manual
+                
+                == User Guide
+                
+                === Usage
+                
+                ==== Basic Usage
+                
+                Basic instructions.
+                """;
+            
+            LinterConfiguration config = configLoader.loadConfiguration(rules);
+            
+            // When
+            ValidationResult result = linter.validateContent(adocContent, config);
+            
+            // Then
+            assertTrue(result.hasErrors());
+            assertEquals(2, result.getErrorCount());
+            
+            ValidationMessage installMsg = result.getMessages().stream()
+                .filter(msg -> msg.getMessage().contains("Missing required section 'installation'"))
+                .findFirst()
+                .orElseThrow(() -> new AssertionError("Expected missing installation error not found"));
+            
+            assertEquals("section.min-occurrences", installMsg.getRuleId());
+            assertTrue(installMsg.getMessage().contains("at level 2"));
+            assertTrue(installMsg.getMessage().contains("expected in guide at level 1"));
+            assertEquals(1, installMsg.getLocation().getStartLine());
+            
+            ValidationMessage advancedMsg = result.getMessages().stream()
+                .filter(msg -> msg.getMessage().contains("Missing required section 'advanced'"))
+                .findFirst()
+                .orElseThrow(() -> new AssertionError("Expected missing advanced usage error not found"));
+            
+            assertEquals("section.min-occurrences", advancedMsg.getRuleId());
+            assertTrue(advancedMsg.getMessage().contains("at level 3"));
+            assertTrue(advancedMsg.getMessage().contains("expected in usage at level 2"));
+            assertEquals(1, advancedMsg.getLocation().getStartLine());
+        }
+        
+        @Test
+        @DisplayName("should validate subsection within named parent section")
+        void shouldValidateSubsectionWithinNamedParentSection() {
+            // Given - Subsections specific to a named parent
+            String rules = """
+                document:
+                  sections:
+                    - name: setup
+                      level: 1
+                      min: 1
+                      max: 1
+                      title:
+                        pattern: "^Setup$"
+                        severity: error
+                      subsections:
+                        - name: prereq
+                          level: 2
+                          min: 1
+                          max: 1
+                          title:
+                            pattern: "^Prerequisites$"
+                            severity: error
+                        - name: steps
+                          level: 2
+                          min: 1
+                          max: 1
+                          title:
+                            pattern: "^Installation Steps$"
+                            severity: error
+                """;
+            
+            String adocContent = """
+                = Guide
+                
+                == Setup
+                
+                === Prerequisites
+                
+                List of requirements.
+                """;
+            
+            LinterConfiguration config = configLoader.loadConfiguration(rules);
+            
+            // When
+            ValidationResult result = linter.validateContent(adocContent, config);
+            
+            // Then
+            assertTrue(result.hasErrors());
+            assertEquals(1, result.getErrorCount());
+            
+            ValidationMessage msg = result.getMessages().get(0);
+            assertEquals("section.min-occurrences", msg.getRuleId());
+            assertTrue(msg.getMessage().contains("Missing required section 'steps'"));
+            assertTrue(msg.getMessage().contains("at level 2"));
+            assertTrue(msg.getMessage().contains("expected in setup at level 1"));
+            assertEquals("0 occurrences", msg.getActualValue().orElse(null));
+            assertEquals("At least 1 occurrence(s)", msg.getExpectedValue().orElse(null));
+            assertNotNull(msg.getLocation());
+            assertEquals(1, msg.getLocation().getStartLine());
+        }
+    }
 }

@@ -3,9 +3,11 @@ package com.dataliquid.asciidoc.linter.validator;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -110,7 +112,7 @@ public final class SectionValidator {
                     .severity(Severity.ERROR)
                     .ruleId("section.title.pattern")
                     .location(location)
-                    .message("Section title doesn't match required pattern at level " + level + ": '" + title + "'")
+                    .message("Section title '" + title + "' doesn't match required pattern at level " + level)
                     .actualValue(title)
                     .expectedValue(expectedPattern != null ? expectedPattern : "One of configured patterns")
                     .build();
@@ -193,23 +195,36 @@ public final class SectionValidator {
     }
 
     private void validateMinMaxOccurrences(String filename, ValidationResult.Builder resultBuilder) {
-        // Validate root level configs
-        for (SectionConfig config : rootSections) {
-            validateOccurrenceForConfig(config, filename, resultBuilder);
-        }
+        // Track already validated configs to avoid duplicates
+        Set<String> validatedConfigs = new HashSet<>();
         
-        // For level 0 configs with subsections, validate those subsections too
+        // Validate all configs recursively starting from root
         for (SectionConfig config : rootSections) {
-            if (config.level() == 0 && config.subsections() != null) {
+            validateOccurrenceRecursive(config, filename, resultBuilder, null, validatedConfigs);
+        }
+    }
+    
+    private void validateOccurrenceRecursive(SectionConfig config, String filename, 
+                                           ValidationResult.Builder resultBuilder,
+                                           SectionConfig parentConfig,
+                                           Set<String> validatedConfigs) {
+        String configKey = createOccurrenceKey(config);
+        if (!validatedConfigs.contains(configKey)) {
+            validateOccurrenceForConfig(config, filename, resultBuilder, parentConfig);
+            validatedConfigs.add(configKey);
+            
+            // Recursively validate subsections
+            if (config.subsections() != null) {
                 for (SectionConfig subsection : config.subsections()) {
-                    validateOccurrenceForConfig(subsection, filename, resultBuilder);
+                    validateOccurrenceRecursive(subsection, filename, resultBuilder, config, validatedConfigs);
                 }
             }
         }
     }
 
     private void validateOccurrenceForConfig(SectionConfig config, String filename, 
-                                            ValidationResult.Builder resultBuilder) {
+                                            ValidationResult.Builder resultBuilder,
+                                            SectionConfig parentConfig) {
         String key = createOccurrenceKey(config);
         int occurrences = sectionOccurrences.getOrDefault(key, 0);
         
@@ -219,13 +234,19 @@ public final class SectionValidator {
                 .line(1)
                 .build();
             
+            // Build context message
+            String context = "";
+            if (parentConfig != null) {
+                context = " (expected in " + parentConfig.name() + " at level " + parentConfig.level() + ")";
+            }
+            
             ValidationMessage message = ValidationMessage.builder()
                 .severity(Severity.ERROR)
                 .ruleId("section.min-occurrences")
                 .location(location)
-                .message("Too few occurrences of section: " + config.name())
-                .actualValue(String.valueOf(occurrences))
-                .expectedValue("At least " + config.min())
+                .message("Missing required section '" + config.name() + "' at level " + config.level() + context)
+                .actualValue(String.valueOf(occurrences) + " occurrences")
+                .expectedValue("At least " + config.min() + " occurrence(s)")
                 .build();
             resultBuilder.addMessage(message);
         }
@@ -247,12 +268,8 @@ public final class SectionValidator {
             resultBuilder.addMessage(message);
         }
         
-        // Recursively validate subsection occurrences
-        if (config.subsections() != null) {
-            for (SectionConfig subsection : config.subsections()) {
-                validateOccurrenceForConfig(subsection, filename, resultBuilder);
-            }
-        }
+        // Recursively validate subsection occurrences - removed to avoid duplicates
+        // Subsections are already validated in validateMinMaxOccurrences
     }
 
     private void validateDocumentTitleConfig(String title, TitleConfig titleConfig, 

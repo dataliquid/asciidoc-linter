@@ -2,6 +2,7 @@ package com.dataliquid.asciidoc.linter.validator;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
@@ -65,8 +66,11 @@ class SectionValidatorTest {
             // Then
             assertTrue(result.hasErrors());
             assertEquals(1, result.getErrorCount());
-            assertTrue(result.getMessages().stream()
-                .anyMatch(msg -> msg.getRuleId().equals("section.title.pattern")));
+            
+            ValidationMessage message = result.getMessages().get(0);
+            assertEquals("section.title.pattern", message.getRuleId());
+            assertNotNull(message.getLocation());
+            assertEquals(1, message.getLocation().getStartLine());
         }
         
         @Test
@@ -95,7 +99,10 @@ class SectionValidatorTest {
             
             // Then
             assertTrue(result.hasErrors());
-            assertEquals("Document title is required", result.getMessages().get(0).getMessage());
+            ValidationMessage message = result.getMessages().get(0);
+            assertEquals("Document title is required", message.getMessage());
+            assertNotNull(message.getLocation());
+            assertEquals(1, message.getLocation().getStartLine());
         }
         
         @Test
@@ -223,14 +230,16 @@ class SectionValidatorTest {
             assertEquals(2, result.getMessages().size());
             
             ValidationMessage minMessage = result.getMessages().stream()
-                .filter(msg -> msg.getMessage().equals("Too few occurrences of section: introduction"))
+                .filter(msg -> msg.getMessage().contains("Missing required section 'introduction'"))
                 .findFirst()
                 .orElseThrow();
             
             assertEquals(Severity.ERROR, minMessage.getSeverity());
-            assertEquals("Too few occurrences of section: introduction", minMessage.getMessage());
-            assertEquals("0", minMessage.getActualValue().orElse(null));
-            assertEquals("At least 1", minMessage.getExpectedValue().orElse(null));
+            assertTrue(minMessage.getMessage().contains("Missing required section 'introduction'"));
+            assertEquals("0 occurrences", minMessage.getActualValue().orElse(null));
+            assertEquals("At least 1 occurrence(s)", minMessage.getExpectedValue().orElse(null));
+            assertNotNull(minMessage.getLocation());
+            assertEquals(1, minMessage.getLocation().getStartLine());
         }
         
         @Test
@@ -272,6 +281,8 @@ class SectionValidatorTest {
             assertEquals("Too many occurrences of section: introduction", message.getMessage());
             assertEquals("2", message.getActualValue().orElse(null));
             assertEquals("At most 1", message.getExpectedValue().orElse(null));
+            assertNotNull(message.getLocation());
+            assertEquals(1, message.getLocation().getStartLine());
         }
     }
     
@@ -325,6 +336,8 @@ class SectionValidatorTest {
             if (levelError != null) {
                 assertEquals("Section not allowed at level 2: 'Unexpected Subsection'", levelError.getMessage());
                 assertEquals("No sections configured for level 2", levelError.getExpectedValue().orElse(null));
+                assertNotNull(levelError.getLocation());
+                assertEquals(7, levelError.getLocation().getStartLine());
             }
         }
         
@@ -363,14 +376,16 @@ class SectionValidatorTest {
             assertFalse(result.isValid());
             
             ValidationMessage message = result.getMessages().stream()
-                .filter(msg -> msg.getMessage().contains("Section title doesn't match required pattern"))
+                .filter(msg -> msg.getMessage().contains("doesn't match required pattern"))
                 .findFirst()
                 .orElseThrow();
             
             assertEquals(Severity.ERROR, message.getSeverity());
-            assertEquals("Section title doesn't match required pattern at level 1: 'conclusion'", message.getMessage());
+            assertTrue(message.getMessage().contains("Section title 'conclusion' doesn't match required pattern at level 1"));
             assertEquals("conclusion", message.getActualValue().orElse(null));
             assertEquals("Pattern: ^Conclusion$", message.getExpectedValue().orElse(null));
+            assertNotNull(message.getLocation());
+            assertEquals(3, message.getLocation().getStartLine());
         }
         
         @Test
@@ -447,14 +462,16 @@ class SectionValidatorTest {
             assertFalse(result.isValid());
             
             ValidationMessage message = result.getMessages().stream()
-                .filter(msg -> msg.getMessage().contains("Section title doesn't match required pattern"))
+                .filter(msg -> msg.getMessage().contains("doesn't match required pattern"))
                 .findFirst()
                 .orElseThrow();
             
             assertEquals(Severity.ERROR, message.getSeverity());
-            assertEquals("Section title doesn't match required pattern at level 1: 'Introduction'", message.getMessage());
+            assertTrue(message.getMessage().contains("Section title 'Introduction' doesn't match required pattern at level 1"));
             assertEquals("Introduction", message.getActualValue().orElse(null));
             assertEquals("Pattern: Chapter \\d+: .*", message.getExpectedValue().orElse(null));
+            assertNotNull(message.getLocation());
+            assertEquals(3, message.getLocation().getStartLine());
         }
     }
     
@@ -500,6 +517,8 @@ class SectionValidatorTest {
             assertEquals("Section not allowed at level 2: 'Introduction'", unexpectedMessage.getMessage());
             assertEquals("Introduction", unexpectedMessage.getActualValue().orElse(null));
             assertEquals("No sections configured for level 2", unexpectedMessage.getExpectedValue().orElse(null));
+            assertNotNull(unexpectedMessage.getLocation());
+            assertEquals(3, unexpectedMessage.getLocation().getStartLine());
         }
     }
     
@@ -620,6 +639,8 @@ class SectionValidatorTest {
             assertEquals("Section order violation", message.getMessage());
             assertEquals("introduction appears after installation", message.getActualValue().orElse(null));
             assertEquals("introduction should appear before installation", message.getExpectedValue().orElse(null));
+            assertNotNull(message.getLocation());
+            assertEquals(1, message.getLocation().getStartLine());
         }
     }
     
@@ -743,14 +764,26 @@ class SectionValidatorTest {
             assertEquals(2, result.getMessages().size());
             
             ValidationMessage minMessage = result.getMessages().stream()
-                .filter(msg -> msg.getMessage().equals("Too few occurrences of section: core-features"))
+                .filter(msg -> msg.getMessage().contains("Missing required section 'core-features'"))
                 .findFirst()
                 .orElseThrow();
             
             assertEquals(Severity.ERROR, minMessage.getSeverity());
-            assertEquals("Too few occurrences of section: core-features", minMessage.getMessage());
-            assertEquals("0", minMessage.getActualValue().orElse(null));
-            assertEquals("At least 1", minMessage.getExpectedValue().orElse(null));
+            assertTrue(minMessage.getMessage().contains("Missing required section 'core-features'"));
+            assertEquals("0 occurrences", minMessage.getActualValue().orElse(null));
+            assertEquals("At least 1 occurrence(s)", minMessage.getExpectedValue().orElse(null));
+            assertNotNull(minMessage.getLocation());
+            assertEquals(1, minMessage.getLocation().getStartLine());
+            
+            ValidationMessage patternMessage = result.getMessages().stream()
+                .filter(msg -> msg.getMessage().contains("doesn't match required pattern"))
+                .findFirst()
+                .orElse(null);
+            
+            if (patternMessage != null) {
+                assertNotNull(patternMessage.getLocation());
+                assertEquals(6, patternMessage.getLocation().getStartLine());
+            }
         }
     }
     
