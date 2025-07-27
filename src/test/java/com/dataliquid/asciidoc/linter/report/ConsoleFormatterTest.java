@@ -133,8 +133,8 @@ class ConsoleFormatterTest {
         }
         
         @Test
-        @DisplayName("should include actual and expected values")
-        void shouldIncludeActualAndExpectedValues() {
+        @DisplayName("should include actual and expected values in SIMPLE format")
+        void shouldIncludeActualAndExpectedValuesInSimpleFormat() {
             // Given
             ValidationMessage message = ValidationMessage.builder()
                 .severity(Severity.ERROR)
@@ -161,6 +161,91 @@ class ConsoleFormatterTest {
             String output = stringWriter.toString();
             assertTrue(output.contains("Actual: 100"));
             assertTrue(output.contains("Expected: 80"));
+        }
+        
+        @Test
+        @DisplayName("should include actual and expected values in ENHANCED format")
+        void shouldIncludeActualAndExpectedValuesInEnhancedFormat() {
+            // Given
+            OutputConfiguration enhancedConfig = OutputConfiguration.builder()
+                .format(OutputFormat.ENHANCED)
+                .display(DisplayConfig.builder()
+                    .useColors(false)
+                    .contextLines(0) // Disable context for cleaner test
+                    .build())
+                .build();
+            ConsoleFormatter enhancedFormatter = new ConsoleFormatter(enhancedConfig);
+            
+            ValidationMessage message = ValidationMessage.builder()
+                .severity(Severity.ERROR)
+                .ruleId("listing.language.allowed")
+                .location(SourceLocation.builder()
+                    .filename("test.adoc")
+                    .startLine(15)
+                    .build())
+                .message("Listing block has unsupported language")
+                .actualValue("ruby")
+                .expectedValue("One of: java, python, javascript")
+                .build();
+            
+            ValidationResult result = ValidationResult.builder()
+                .addMessage(message)
+                .complete()
+                .build();
+            
+            // When
+            StringWriter sw = new StringWriter();
+            PrintWriter pw = new PrintWriter(sw);
+            enhancedFormatter.format(result, pw);
+            pw.flush();
+            
+            // Then
+            String output = sw.toString();
+            assertTrue(output.contains("Actual: ruby"), 
+                "Enhanced format should display actual value. Output was:\n" + output);
+            assertTrue(output.contains("Expected: One of: java, python, javascript"), 
+                "Enhanced format should display expected value. Output was:\n" + output);
+        }
+        
+        @Test
+        @DisplayName("should include actual and expected values inline in COMPACT format")
+        void shouldIncludeActualAndExpectedValuesInCompactFormat() {
+            // Given
+            OutputConfiguration compactConfig = OutputConfiguration.builder()
+                .format(OutputFormat.COMPACT)
+                .display(DisplayConfig.builder()
+                    .useColors(false)
+                    .build())
+                .build();
+            ConsoleFormatter compactFormatter = new ConsoleFormatter(compactConfig);
+            
+            ValidationMessage message = ValidationMessage.builder()
+                .severity(Severity.ERROR)
+                .ruleId("listing.language.allowed")
+                .location(SourceLocation.builder()
+                    .filename("test.adoc")
+                    .startLine(15)
+                    .build())
+                .message("Listing block has unsupported language")
+                .actualValue("ruby")
+                .expectedValue("One of: java, python, javascript")
+                .build();
+            
+            ValidationResult result = ValidationResult.builder()
+                .addMessage(message)
+                .complete()
+                .build();
+            
+            // When
+            StringWriter sw = new StringWriter();
+            PrintWriter pw = new PrintWriter(sw);
+            compactFormatter.format(result, pw);
+            pw.flush();
+            
+            // Then
+            String output = sw.toString();
+            assertTrue(output.contains("(actual: ruby, expected: One of: java, python, javascript)"), 
+                "Compact format should display actual/expected values inline. Output was:\n" + output);
         }
         
         @Test
