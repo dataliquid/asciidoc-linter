@@ -73,6 +73,8 @@ public class ConfigurationDisplay {
         } else if (config.getOutputConfigFile() != null) {
             drawConfigLine("Output config:", 
                 config.getOutputConfigFile().toString());
+        } else {
+            drawConfigLine("Output config:", "enhanced (default)");
         }
         
         // Report format - always shown
@@ -119,9 +121,14 @@ public class ConfigurationDisplay {
             config.getConfigFile().toString() : "default";
         entries.add(new ConfigEntry("Configuration", configFile));
         
-        if (config.getOutputConfigFile() != null) {
+        if (config.getOutputConfigName() != null) {
+            entries.add(new ConfigEntry("Output config", 
+                config.getOutputConfigName() + " (predefined)"));
+        } else if (config.getOutputConfigFile() != null) {
             entries.add(new ConfigEntry("Output config", 
                 config.getOutputConfigFile().toString()));
+        } else {
+            entries.add(new ConfigEntry("Output config", "enhanced (default)"));
         }
         
         entries.add(new ConfigEntry("Report format", config.getReportFormat()));
