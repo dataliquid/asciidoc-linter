@@ -105,10 +105,8 @@ public class HighlightRenderer {
             return false;
         }
         
-        // Show underline for pattern/range/enum errors
-        return message.getErrorType() == ErrorType.INVALID_PATTERN ||
-               message.getErrorType() == ErrorType.OUT_OF_RANGE ||
-               message.getErrorType() == ErrorType.INVALID_ENUM;
+        // Show underline for all other error types
+        return true;
     }
     
     private void renderUnderline(SourceContext.ContextLine line, 
