@@ -82,19 +82,19 @@ public class HighlightRenderer {
     
     private String insertPlaceholder(String line, ValidationMessage message) {
         int col = message.getLocation().getStartColumn();
+        String prefix = message.getPlaceholderPrefix() != null ? message.getPlaceholderPrefix() : "";
+        String placeholder = colorScheme.error(
+            prefix + PLACEHOLDER_START + message.getMissingValueHint() + PLACEHOLDER_END
+        );
+        
         if (col <= 0 || col > line.length()) {
             // Append at end if column is invalid
-            return line + colorScheme.error(
-                PLACEHOLDER_START + message.getMissingValueHint() + PLACEHOLDER_END
-            );
+            return line + placeholder;
         }
         
         // Insert at specific position
         String before = line.substring(0, col - 1);
-        String after = col < line.length() ? line.substring(col - 1) : "";
-        String placeholder = colorScheme.error(
-            PLACEHOLDER_START + message.getMissingValueHint() + PLACEHOLDER_END
-        );
+        String after = col <= line.length() ? line.substring(col - 1) : "";
         
         return before + placeholder + after;
     }
@@ -105,7 +105,7 @@ public class HighlightRenderer {
             return false;
         }
         
-        // Show underline for all other error types
+        // Show underline for ALL other error types
         return true;
     }
     
@@ -116,8 +116,13 @@ public class HighlightRenderer {
         int endCol = message.getLocation().getEndColumn();
         
         // Validate columns
-        if (startCol <= 0) {
+        if (startCol < 0) {
             return;
+        }
+        
+        // Default to column 1 if not specified
+        if (startCol == 0) {
+            startCol = 1;
         }
         
         if (endCol <= 0 || endCol < startCol) {
@@ -128,8 +133,8 @@ public class HighlightRenderer {
         
         // Padding for line number
         if (config.isShowLineNumbers()) {
-            underline.append("     ");  // 5 spaces for line number
-            underline.append("   ");    // 3 spaces for " | "
+            underline.append("    ");   // 4 spaces for line number
+            underline.append(" | ");    // 3 spaces for " | "
         }
         
         // Spaces before error

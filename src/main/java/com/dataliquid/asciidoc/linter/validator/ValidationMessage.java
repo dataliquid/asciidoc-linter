@@ -19,6 +19,7 @@ public final class ValidationMessage {
     // Enhanced fields for improved console output
     private final ErrorType errorType;
     private final String missingValueHint;
+    private final String placeholderPrefix;
     private final List<Suggestion> suggestions;
     private final List<String> contextLines;
     private final Throwable cause;
@@ -33,6 +34,7 @@ public final class ValidationMessage {
         this.expectedValue = builder.expectedValue;
         this.errorType = builder.errorType != null ? builder.errorType : ErrorType.GENERIC;
         this.missingValueHint = builder.missingValueHint;
+        this.placeholderPrefix = builder.placeholderPrefix;
         this.suggestions = new ArrayList<>(builder.suggestions);
         this.contextLines = new ArrayList<>(builder.contextLines);
         this.cause = builder.cause;
@@ -72,6 +74,10 @@ public final class ValidationMessage {
     
     public String getMissingValueHint() {
         return missingValueHint;
+    }
+    
+    public String getPlaceholderPrefix() {
+        return placeholderPrefix;
     }
     
     public List<Suggestion> getSuggestions() {
@@ -132,6 +138,7 @@ public final class ValidationMessage {
                 Objects.equals(expectedValue, that.expectedValue) &&
                 errorType == that.errorType &&
                 Objects.equals(missingValueHint, that.missingValueHint) &&
+                Objects.equals(placeholderPrefix, that.placeholderPrefix) &&
                 Objects.equals(suggestions, that.suggestions) &&
                 Objects.equals(contextLines, that.contextLines) &&
                 Objects.equals(cause, that.cause);
@@ -140,7 +147,7 @@ public final class ValidationMessage {
     @Override
     public int hashCode() {
         return Objects.hash(severity, ruleId, message, location, attributeName, actualValue, 
-                          expectedValue, errorType, missingValueHint, suggestions, contextLines, cause);
+                          expectedValue, errorType, missingValueHint, placeholderPrefix, suggestions, contextLines, cause);
     }
 
     @Override
@@ -162,6 +169,7 @@ public final class ValidationMessage {
         private String expectedValue;
         private ErrorType errorType;
         private String missingValueHint;
+        private String placeholderPrefix;
         private final List<Suggestion> suggestions = new ArrayList<>();
         private final List<String> contextLines = new ArrayList<>();
         private Throwable cause;
@@ -211,6 +219,11 @@ public final class ValidationMessage {
         
         public Builder missingValueHint(String missingValueHint) {
             this.missingValueHint = missingValueHint;
+            return this;
+        }
+        
+        public Builder placeholderPrefix(String placeholderPrefix) {
+            this.placeholderPrefix = placeholderPrefix;
             return this;
         }
         

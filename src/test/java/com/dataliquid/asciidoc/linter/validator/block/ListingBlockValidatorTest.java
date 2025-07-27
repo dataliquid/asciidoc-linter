@@ -22,6 +22,8 @@ import com.dataliquid.asciidoc.linter.config.Severity;
 import com.dataliquid.asciidoc.linter.config.blocks.ListingBlock;
 import com.dataliquid.asciidoc.linter.config.rule.LineConfig;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
+import com.dataliquid.asciidoc.linter.validator.ErrorType;
+import org.asciidoctor.ast.Cursor;
 
 /**
  * Unit tests for {@link ListingBlockValidator}.
@@ -216,6 +218,80 @@ class ListingBlockValidatorTest {
             assertEquals(Severity.INFO, msg.getSeverity(), 
                 "Should use block severity (INFO) when language severity is not defined");
             assertEquals("listing.language.required", msg.getRuleId());
+        }
+        
+        @Test
+        @DisplayName("should include placeholder and exact position for missing language - based on test-errors.adoc line 17")
+        void shouldIncludePlaceholderAndColumnForMissingLanguage() {
+            // Given - Based on test-errors.adoc line 17: [source]
+            ListingBlock.LanguageConfig languageConfig = ListingBlock.LanguageConfig.builder()
+                .required(true)
+                .severity(Severity.ERROR)
+                .build();
+            ListingBlock config = ListingBlock.builder()
+                .language(languageConfig)
+                .severity(Severity.ERROR)
+                .build();
+            
+            // Mock source location for line 17 from test-errors.adoc
+            Cursor mockCursor = mock(Cursor.class);
+            when(mockCursor.getLineNumber()).thenReturn(17);
+            when(mockBlock.getSourceLocation()).thenReturn(mockCursor);
+            when(mockBlock.hasAttribute("language")).thenReturn(false);
+            
+            // When
+            List<ValidationMessage> messages = validator.validate(mockBlock, config, context);
+            
+            // Then
+            assertEquals(1, messages.size());
+            ValidationMessage msg = messages.get(0);
+            assertEquals("listing.language.required", msg.getRuleId());
+            assertEquals(ErrorType.MISSING_VALUE, msg.getErrorType());
+            assertEquals("language", msg.getMissingValueHint());
+            assertEquals(",", msg.getPlaceholderPrefix());
+            
+            // Check exact column positions for "[source]"
+            // Column 8 is the position of the closing bracket ]
+            assertEquals(8, msg.getLocation().getStartColumn(), "Should point to ] in [source]");
+            assertEquals(8, msg.getLocation().getEndColumn(), "Should point to ] in [source]");
+            assertEquals(17, msg.getLocation().getStartLine());
+            assertEquals(17, msg.getLocation().getEndLine());
+        }
+        
+        @Test
+        @DisplayName("should include exact position for invalid language - based on test-errors.adoc line 25")
+        void shouldIncludeExactPositionForInvalidLanguage() {
+            // Given - Based on test-errors.adoc line 25: [source,invalidlang]
+            ListingBlock.LanguageConfig languageConfig = ListingBlock.LanguageConfig.builder()
+                .allowed(Arrays.asList("java", "python", "yaml", "bash"))
+                .severity(Severity.ERROR)
+                .build();
+            ListingBlock config = ListingBlock.builder()
+                .language(languageConfig)
+                .severity(Severity.ERROR)
+                .build();
+            
+            // Mock source location for line 25
+            Cursor mockCursor = mock(Cursor.class);
+            when(mockCursor.getLineNumber()).thenReturn(25);
+            when(mockBlock.getSourceLocation()).thenReturn(mockCursor);
+            when(mockBlock.hasAttribute("language")).thenReturn(true);
+            when(mockBlock.getAttribute("language")).thenReturn("invalidlang");
+            
+            // When
+            List<ValidationMessage> messages = validator.validate(mockBlock, config, context);
+            
+            // Then
+            assertEquals(1, messages.size());
+            ValidationMessage msg = messages.get(0);
+            assertEquals("listing.language.allowed", msg.getRuleId());
+            
+            // Check exact column positions for "invalidlang" in "[source,invalidlang]"
+            // invalidlang starts at column 9 and ends at column 19
+            assertEquals(9, msg.getLocation().getStartColumn(), "Should point to start of 'invalidlang'");
+            assertEquals(19, msg.getLocation().getEndColumn(), "Should point to end of 'invalidlang'");
+            assertEquals(25, msg.getLocation().getStartLine());
+            assertEquals(25, msg.getLocation().getEndLine());
         }
         
         @Test

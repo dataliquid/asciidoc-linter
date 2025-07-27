@@ -8,6 +8,9 @@ import org.asciidoctor.ast.StructuralNode;
 import com.dataliquid.asciidoc.linter.config.BlockType;
 import com.dataliquid.asciidoc.linter.config.Severity;
 import com.dataliquid.asciidoc.linter.config.blocks.ListingBlock;
+import com.dataliquid.asciidoc.linter.report.console.FileContentCache;
+import com.dataliquid.asciidoc.linter.validator.ErrorType;
+import com.dataliquid.asciidoc.linter.validator.SourceLocation;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
 
 /**
@@ -33,6 +36,7 @@ import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
  * @see BlockTypeValidator
  */
 public final class ListingBlockValidator extends AbstractBlockValidator<ListingBlock> {
+    private final FileContentCache fileCache = new FileContentCache();
     
     @Override
     public BlockType getSupportedType() {
@@ -113,23 +117,42 @@ public final class ListingBlockValidator extends AbstractBlockValidator<ListingB
         
         // Check if language is required
         if (config.isRequired() && (language == null || language.trim().isEmpty())) {
+            // Find column position for missing language
+            LanguagePosition pos = findLanguagePosition(block, context);
             messages.add(ValidationMessage.builder()
                 .severity(severity)
                 .ruleId("listing.language.required")
-                .location(context.createLocation(block))
+                .location(SourceLocation.builder()
+                    .filename(context.getFilename())
+                    .startLine(pos.lineNumber)
+                    .endLine(pos.lineNumber)
+                    .startColumn(pos.startColumn)
+                    .endColumn(pos.endColumn)
+                    .build())
                 .message("Listing block must specify a language")
                 .actualValue("No language")
                 .expectedValue("Language required")
+                .errorType(ErrorType.MISSING_VALUE)
+                .missingValueHint("language")
+                .placeholderPrefix(",")
                 .build());
         }
         
         // Validate allowed languages if specified
         if (language != null && config.getAllowed() != null && !config.getAllowed().isEmpty()) {
             if (!config.getAllowed().contains(language)) {
+                // Find column position for invalid language
+                LanguagePosition pos = findLanguagePosition(block, context, language);
                 messages.add(ValidationMessage.builder()
                     .severity(severity)
                     .ruleId("listing.language.allowed")
-                    .location(context.createLocation(block))
+                    .location(SourceLocation.builder()
+                        .filename(context.getFilename())
+                        .startLine(pos.lineNumber)
+                        .endLine(pos.lineNumber)
+                        .startColumn(pos.startColumn)
+                        .endColumn(pos.endColumn)
+                        .build())
                     .message("Listing block has unsupported language")
                     .actualValue(language)
                     .expectedValue("One of: " + String.join(", ", config.getAllowed()))
@@ -266,5 +289,77 @@ public final class ListingBlockValidator extends AbstractBlockValidator<ListingB
         }
         
         return count;
+    }
+    
+    /**
+     * Finds the column position where a language attribute should be or is located.
+     */
+    private LanguagePosition findLanguagePosition(StructuralNode block, BlockValidationContext context) {
+        return findLanguagePosition(block, context, null);
+    }
+    
+    private LanguagePosition findLanguagePosition(StructuralNode block, BlockValidationContext context, String language) {
+        // Get the source line
+        List<String> fileLines = fileCache.getFileLines(context.getFilename());
+        if (fileLines.isEmpty() || block.getSourceLocation() == null) {
+            return new LanguagePosition(1, 1, block.getSourceLocation() != null ? block.getSourceLocation().getLineNumber() : 1);
+        }
+        
+        int blockLineNum = block.getSourceLocation().getLineNumber();
+        if (blockLineNum <= 0 || blockLineNum > fileLines.size()) {
+            return new LanguagePosition(1, 1, blockLineNum);
+        }
+        
+        // For listing blocks, the source location often points to the delimiter (----)
+        // We need to look at the previous line for the [source] attribute
+        int attributeLineNum = blockLineNum;
+        String sourceLine = fileLines.get(blockLineNum - 1);
+        
+        // Check if current line is the delimiter
+        if (sourceLine.trim().equals("----") && blockLineNum > 1) {
+            // Look at previous line for [source] attribute
+            attributeLineNum = blockLineNum - 1;
+            sourceLine = fileLines.get(attributeLineNum - 1);
+        }
+        
+        // Look for [source] or [source,language] pattern
+        int sourceStart = sourceLine.indexOf("[source");
+        if (sourceStart >= 0) {
+            int sourceEnd = sourceLine.indexOf("]", sourceStart);
+            if (sourceEnd > sourceStart) {
+                if (language != null) {
+                    // Find the specific language position
+                    int langStart = sourceLine.indexOf(language, sourceStart);
+                    if (langStart > sourceStart && langStart < sourceEnd) {
+                        return new LanguagePosition(langStart + 1, langStart + language.length(), attributeLineNum);
+                    }
+                }
+                // For missing language, position after "[source"
+                int commaPos = sourceLine.indexOf(",", sourceStart);
+                if (commaPos > sourceStart && commaPos < sourceEnd) {
+                    // Language should be after the comma
+                    return new LanguagePosition(commaPos + 2, commaPos + 2, attributeLineNum);
+                } else {
+                    // No comma, language should be added before "]"
+                    // sourceEnd is 0-based index of ], add 1 for 1-based column
+                    return new LanguagePosition(sourceEnd + 1, sourceEnd + 1, attributeLineNum);
+                }
+            }
+        }
+        
+        // Default to beginning of line
+        return new LanguagePosition(1, 1, blockLineNum);
+    }
+    
+    private static class LanguagePosition {
+        final int startColumn;
+        final int endColumn;
+        final int lineNumber;
+        
+        LanguagePosition(int startColumn, int endColumn, int lineNumber) {
+            this.startColumn = startColumn;
+            this.endColumn = endColumn;
+            this.lineNumber = lineNumber;
+        }
     }
 }

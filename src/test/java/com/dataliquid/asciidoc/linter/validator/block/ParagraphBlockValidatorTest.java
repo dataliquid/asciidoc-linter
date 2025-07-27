@@ -21,6 +21,9 @@ import com.dataliquid.asciidoc.linter.config.blocks.ParagraphBlock;
 import com.dataliquid.asciidoc.linter.config.rule.LineConfig;
 import com.dataliquid.asciidoc.linter.config.rule.OccurrenceConfig;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
+import com.dataliquid.asciidoc.linter.validator.ErrorType;
+import org.asciidoctor.ast.Cursor;
+import org.asciidoctor.ast.Block;
 
 /**
  * Unit tests for {@link ParagraphBlockValidator}.
@@ -117,6 +120,43 @@ class ParagraphBlockValidatorTest {
             assertEquals("Paragraph has too few lines", msg.getMessage());
             assertEquals("2", msg.getActualValue().orElse(null));
             assertEquals("At least 3 lines", msg.getExpectedValue().orElse(null));
+        }
+        
+        @Test
+        @DisplayName("should include placeholder and exact position for too few lines - based on test-errors.adoc line 11")
+        void shouldIncludePlaceholderForTooFewLines() {
+            // Given - Based on test-errors.adoc line 11: "This section has a paragraph without any errors."
+            LineConfig lineConfig = LineConfig.builder()
+                .min(2)
+                .severity(Severity.INFO)
+                .build();
+            ParagraphBlock config = ParagraphBlock.builder()
+                .lines(lineConfig)
+                .severity(Severity.ERROR)
+                .build();
+            
+            // Mock source location
+            Cursor mockCursor = mock(Cursor.class);
+            when(mockCursor.getLineNumber()).thenReturn(11);
+            when(mockBlock.getSourceLocation()).thenReturn(mockCursor);
+            when(mockBlock.getContent()).thenReturn("This section has a paragraph without any errors.");
+            
+            // When
+            List<ValidationMessage> messages = validator.validate(mockBlock, config, context);
+            
+            // Then
+            assertEquals(1, messages.size());
+            ValidationMessage msg = messages.get(0);
+            assertEquals("paragraph.lines.min", msg.getRuleId());
+            assertEquals(ErrorType.MISSING_VALUE, msg.getErrorType());
+            assertEquals("Add more content here...", msg.getMissingValueHint());
+            
+            // Position should be at end of the single line paragraph
+            // Line 11 has 48 characters, so position should be at column 49
+            assertEquals(49, msg.getLocation().getStartColumn(), "Should point to end of paragraph");
+            assertEquals(49, msg.getLocation().getEndColumn());
+            assertEquals(11, msg.getLocation().getStartLine());
+            assertEquals(11, msg.getLocation().getEndLine());
         }
         
         @Test

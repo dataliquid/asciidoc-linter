@@ -10,6 +10,9 @@ import com.dataliquid.asciidoc.linter.config.Severity;
 import com.dataliquid.asciidoc.linter.config.blocks.ParagraphBlock;
 import com.dataliquid.asciidoc.linter.config.rule.OccurrenceConfig;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
+import com.dataliquid.asciidoc.linter.validator.ErrorType;
+import com.dataliquid.asciidoc.linter.validator.SourceLocation;
+import com.dataliquid.asciidoc.linter.report.console.FileContentCache;
 
 /**
  * Validator for paragraph blocks in AsciiDoc documents.
@@ -37,6 +40,7 @@ import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
  * @see BlockTypeValidator
  */
 public final class ParagraphBlockValidator extends AbstractBlockValidator<ParagraphBlock> {
+    private final FileContentCache fileCache = new FileContentCache();
     
     @Override
     public BlockType getSupportedType() {
@@ -101,13 +105,22 @@ public final class ParagraphBlockValidator extends AbstractBlockValidator<Paragr
         Severity severity = lineConfig.severity() != null ? lineConfig.severity() : blockConfig.getSeverity();
         
         if (lineConfig.min() != null && actualLines < lineConfig.min()) {
+            LinePosition pos = findLinePosition(block, context, actualLines);
             messages.add(ValidationMessage.builder()
                 .severity(severity)
                 .ruleId("paragraph.lines.min")
-                .location(context.createLocation(block))
+                .location(SourceLocation.builder()
+                    .filename(context.getFilename())
+                    .startLine(pos.lineNumber)
+                    .endLine(pos.lineNumber)
+                    .startColumn(pos.startColumn)
+                    .endColumn(pos.endColumn)
+                    .build())
                 .message("Paragraph has too few lines")
                 .actualValue(String.valueOf(actualLines))
                 .expectedValue("At least " + lineConfig.min() + " lines")
+                .errorType(ErrorType.MISSING_VALUE)
+                .missingValueHint("Add more content here...")
                 .build());
         }
         
@@ -272,5 +285,54 @@ public final class ParagraphBlockValidator extends AbstractBlockValidator<Paragr
         // Split by whitespace and count non-empty parts
         String[] words = text.trim().split("\\s+");
         return words.length;
+    }
+    
+    /**
+     * Finds the position where additional lines should be added.
+     */
+    private LinePosition findLinePosition(StructuralNode block, BlockValidationContext context, int currentLines) {
+        List<String> fileLines = fileCache.getFileLines(context.getFilename());
+        if (fileLines.isEmpty() || block.getSourceLocation() == null) {
+            return new LinePosition(1, 1, block.getSourceLocation() != null ? block.getSourceLocation().getLineNumber() : 1);
+        }
+        
+        int startLine = block.getSourceLocation().getLineNumber();
+        if (startLine <= 0 || startLine > fileLines.size()) {
+            return new LinePosition(1, 1, startLine);
+        }
+        
+        // For paragraphs, we want to position at the end of the current content
+        String content = getBlockContent(block);
+        if (content != null && !content.isEmpty()) {
+            String[] lines = content.split("\n");
+            int lastNonEmptyLine = startLine;
+            
+            // Find the last line of the paragraph
+            for (int i = 0; i < lines.length && startLine + i <= fileLines.size(); i++) {
+                if (!lines[i].trim().isEmpty()) {
+                    lastNonEmptyLine = startLine + i;
+                }
+            }
+            
+            // Position at the end of the last line
+            if (lastNonEmptyLine > 0 && lastNonEmptyLine <= fileLines.size()) {
+                String lastLine = fileLines.get(lastNonEmptyLine - 1);
+                return new LinePosition(lastLine.length() + 1, lastLine.length() + 1, lastNonEmptyLine);
+            }
+        }
+        
+        return new LinePosition(1, 1, startLine);
+    }
+    
+    private static class LinePosition {
+        final int startColumn;
+        final int endColumn;
+        final int lineNumber;
+        
+        LinePosition(int startColumn, int endColumn, int lineNumber) {
+            this.startColumn = startColumn;
+            this.endColumn = endColumn;
+            this.lineNumber = lineNumber;
+        }
     }
 }
