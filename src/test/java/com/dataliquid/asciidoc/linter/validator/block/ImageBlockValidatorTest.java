@@ -173,6 +173,8 @@ class ImageBlockValidatorTest {
         @DisplayName("should include placeholder for missing URL - based on test-errors.adoc line 36")
         void shouldIncludePlaceholderForMissingUrl() {
             // Given - Based on test-errors.adoc line 36: image::[]
+            BlockValidationContext testContext = new BlockValidationContext(mockSection, "test-errors.adoc");
+            
             ImageBlock.UrlConfig urlConfig = ImageBlock.UrlConfig.builder()
                 .required(true)
                 .build();
@@ -188,7 +190,7 @@ class ImageBlockValidatorTest {
             when(mockBlock.hasAttribute("target")).thenReturn(false);
             
             // When
-            List<ValidationMessage> messages = validator.validate(mockBlock, config, context);
+            List<ValidationMessage> messages = validator.validate(mockBlock, config, testContext);
             
             // Then
             assertEquals(1, messages.size());
@@ -207,6 +209,8 @@ class ImageBlockValidatorTest {
         @DisplayName("should highlight invalid URL pattern - based on test-errors.adoc line 38")
         void shouldHighlightInvalidUrlPattern() {
             // Given - Based on test-errors.adoc line 38: image::invalid file name.png[...]
+            BlockValidationContext testContext = new BlockValidationContext(mockSection, "test-errors.adoc");
+            
             ImageBlock.UrlConfig urlConfig = ImageBlock.UrlConfig.builder()
                 .pattern(Pattern.compile("^[a-zA-Z0-9/_-]+\\.(png|jpg|jpeg|gif|svg)$"))
                 .build();
@@ -223,7 +227,7 @@ class ImageBlockValidatorTest {
             when(mockBlock.getAttribute("target")).thenReturn("invalid file name.png");
             
             // When
-            List<ValidationMessage> messages = validator.validate(mockBlock, config, context);
+            List<ValidationMessage> messages = validator.validate(mockBlock, config, testContext);
             
             // Then
             assertEquals(1, messages.size());
@@ -246,6 +250,8 @@ class ImageBlockValidatorTest {
         @DisplayName("should highlight width too small - based on test-errors.adoc line 40")
         void shouldHighlightWidthTooSmall() {
             // Given - Based on line 40: image::valid-image.png[...,width=50,height=30]
+            BlockValidationContext testContext = new BlockValidationContext(mockSection, "test-errors.adoc");
+            
             ImageBlock.DimensionConfig widthConfig = ImageBlock.DimensionConfig.builder()
                 .minValue(100)
                 .build();
@@ -262,7 +268,7 @@ class ImageBlockValidatorTest {
             when(mockBlock.getAttribute("width")).thenReturn("50");
             
             // When
-            List<ValidationMessage> messages = validator.validate(mockBlock, config, context);
+            List<ValidationMessage> messages = validator.validate(mockBlock, config, testContext);
             
             // Then
             assertEquals(1, messages.size());
@@ -282,6 +288,8 @@ class ImageBlockValidatorTest {
         @DisplayName("should include placeholder for missing width - based on test-errors.adoc line 42")
         void shouldIncludePlaceholderForMissingWidth() {
             // Given - Based on line 42: image::another-valid.jpg[...,width=,height=]
+            BlockValidationContext testContext = new BlockValidationContext(mockSection, "test-errors.adoc");
+            
             ImageBlock.DimensionConfig widthConfig = ImageBlock.DimensionConfig.builder()
                 .required(true)
                 .build();
@@ -298,7 +306,7 @@ class ImageBlockValidatorTest {
             when(mockBlock.getAttribute("width")).thenReturn("");
             
             // When
-            List<ValidationMessage> messages = validator.validate(mockBlock, config, context);
+            List<ValidationMessage> messages = validator.validate(mockBlock, config, testContext);
             
             // Then
             assertEquals(1, messages.size());
@@ -317,6 +325,8 @@ class ImageBlockValidatorTest {
         @DisplayName("should highlight width too large - based on test-errors.adoc line 44")
         void shouldHighlightWidthTooLarge() {
             // Given - Based on line 44: image::sized-image.svg[...,width=2000,height=1500]
+            BlockValidationContext testContext = new BlockValidationContext(mockSection, "test-errors.adoc");
+            
             ImageBlock.DimensionConfig widthConfig = ImageBlock.DimensionConfig.builder()
                 .maxValue(1200)
                 .build();
@@ -333,7 +343,7 @@ class ImageBlockValidatorTest {
             when(mockBlock.getAttribute("width")).thenReturn("2000");
             
             // When
-            List<ValidationMessage> messages = validator.validate(mockBlock, config, context);
+            List<ValidationMessage> messages = validator.validate(mockBlock, config, testContext);
             
             // Then
             assertEquals(1, messages.size());
@@ -458,6 +468,8 @@ class ImageBlockValidatorTest {
         @DisplayName("should include placeholder and exact position for missing alt text - based on test-errors.adoc line 32")
         void shouldIncludePlaceholderAndExactPositionForMissingAltText() {
             // Given - Based on test-errors.adoc line 32: image::missing-image.png[]
+            BlockValidationContext testContext = new BlockValidationContext(mockSection, "test-errors.adoc");
+            
             ImageBlock.AltTextConfig altConfig = ImageBlock.AltTextConfig.builder()
                 .required(true)
                 .build();
@@ -474,7 +486,7 @@ class ImageBlockValidatorTest {
             when(mockBlock.getAttribute("target")).thenReturn("missing-image.png");
             
             // When
-            List<ValidationMessage> messages = validator.validate(mockBlock, config, context);
+            List<ValidationMessage> messages = validator.validate(mockBlock, config, testContext);
             
             // Then
             assertEquals(1, messages.size());

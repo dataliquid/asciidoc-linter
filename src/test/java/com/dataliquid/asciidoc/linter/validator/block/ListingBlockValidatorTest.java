@@ -224,6 +224,8 @@ class ListingBlockValidatorTest {
         @DisplayName("should include placeholder and exact position for missing language - based on test-errors.adoc line 17")
         void shouldIncludePlaceholderAndColumnForMissingLanguage() {
             // Given - Based on test-errors.adoc line 17: [source]
+            BlockValidationContext testContext = new BlockValidationContext(mockSection, "test-errors.adoc");
+            
             ListingBlock.LanguageConfig languageConfig = ListingBlock.LanguageConfig.builder()
                 .required(true)
                 .severity(Severity.ERROR)
@@ -240,7 +242,7 @@ class ListingBlockValidatorTest {
             when(mockBlock.hasAttribute("language")).thenReturn(false);
             
             // When
-            List<ValidationMessage> messages = validator.validate(mockBlock, config, context);
+            List<ValidationMessage> messages = validator.validate(mockBlock, config, testContext);
             
             // Then
             assertEquals(1, messages.size());
@@ -262,6 +264,8 @@ class ListingBlockValidatorTest {
         @DisplayName("should include exact position for invalid language - based on test-errors.adoc line 25")
         void shouldIncludeExactPositionForInvalidLanguage() {
             // Given - Based on test-errors.adoc line 25: [source,invalidlang]
+            BlockValidationContext testContext = new BlockValidationContext(mockSection, "test-errors.adoc");
+            
             ListingBlock.LanguageConfig languageConfig = ListingBlock.LanguageConfig.builder()
                 .allowed(Arrays.asList("java", "python", "yaml", "bash"))
                 .severity(Severity.ERROR)
@@ -279,7 +283,7 @@ class ListingBlockValidatorTest {
             when(mockBlock.getAttribute("language")).thenReturn("invalidlang");
             
             // When
-            List<ValidationMessage> messages = validator.validate(mockBlock, config, context);
+            List<ValidationMessage> messages = validator.validate(mockBlock, config, testContext);
             
             // Then
             assertEquals(1, messages.size());

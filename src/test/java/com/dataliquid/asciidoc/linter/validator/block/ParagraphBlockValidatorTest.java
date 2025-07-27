@@ -126,6 +126,8 @@ class ParagraphBlockValidatorTest {
         @DisplayName("should include placeholder and exact position for too few lines - based on test-errors.adoc line 11")
         void shouldIncludePlaceholderForTooFewLines() {
             // Given - Based on test-errors.adoc line 11: "This section has a paragraph without any errors."
+            BlockValidationContext testContext = new BlockValidationContext(mockSection, "test-errors.adoc");
+            
             LineConfig lineConfig = LineConfig.builder()
                 .min(2)
                 .severity(Severity.INFO)
@@ -142,7 +144,7 @@ class ParagraphBlockValidatorTest {
             when(mockBlock.getContent()).thenReturn("This section has a paragraph without any errors.");
             
             // When
-            List<ValidationMessage> messages = validator.validate(mockBlock, config, context);
+            List<ValidationMessage> messages = validator.validate(mockBlock, config, testContext);
             
             // Then
             assertEquals(1, messages.size());
