@@ -91,6 +91,15 @@ public class HighlightRenderer {
                     // Don't add placeholder to existing content lines
                     return line;
                 }
+            }
+            // For audio.title.required, only insert placeholder on empty lines
+            else if ("audio.title.required".equals(message.getRuleId())) {
+                if (line.isEmpty()) {
+                    return insertPlaceholder(line, message);
+                } else {
+                    // Don't add placeholder to existing content lines
+                    return line;
+                }
             } else {
                 return insertPlaceholder(line, message);
             }
@@ -109,6 +118,12 @@ public class HighlightRenderer {
         
         // For video.caption.required errors with empty lines, show placeholder at start
         if ("video.caption.required".equals(message.getRuleId()) && line.isEmpty()) {
+            String placeholderText = PLACEHOLDER_START + message.getMissingValueHint() + PLACEHOLDER_END;
+            return colorScheme.error(placeholderText);
+        }
+        
+        // For audio.title.required errors with empty lines, show placeholder at start
+        if ("audio.title.required".equals(message.getRuleId()) && line.isEmpty()) {
             String placeholderText = PLACEHOLDER_START + message.getMissingValueHint() + PLACEHOLDER_END;
             return colorScheme.error(placeholderText);
         }

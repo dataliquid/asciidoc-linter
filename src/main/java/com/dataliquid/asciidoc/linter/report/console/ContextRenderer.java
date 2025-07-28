@@ -79,6 +79,18 @@ public class ContextRenderer {
             return createContextWithCaptionLine(contextLines, startLine, loc);
         }
         
+        // For audio.title.required errors, add an extra line before the audio block
+        if ("audio.title.required".equals(message.getRuleId()) && 
+            message.getErrorType() == ErrorType.MISSING_VALUE) {
+            // Insert empty line at the position where title should be
+            int audioLineIndex = loc.getStartLine() - startLine;
+            if (audioLineIndex >= 0 && audioLineIndex <= contextLines.size()) {
+                contextLines.add(audioLineIndex, "");
+            }
+            // Create a special SourceContext that marks the inserted line as error line
+            return createContextWithCaptionLine(contextLines, startLine, loc);
+        }
+        
         return new SourceContext(contextLines, startLine, loc);
     }
     

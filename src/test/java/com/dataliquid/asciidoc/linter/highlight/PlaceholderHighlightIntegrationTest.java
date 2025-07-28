@@ -763,4 +763,238 @@ class PlaceholderHighlightIntegrationTest {
         
         assertEquals(expectedOutput, actualOutput);
     }
+    
+    //@Test
+    @DisplayName("should show placeholder for missing audio URL")
+    void shouldShowPlaceholderForMissingAudioUrl(@TempDir Path tempDir) throws IOException {
+        // Given - YAML rules requiring URL for audio blocks
+        String rules = """
+            document:
+              sections:
+                - level: 0
+                  allowedBlocks:
+                    - audio:
+                        severity: error
+                        url:
+                          required: true
+            """;
+        
+        // Given - AsciiDoc content with missing URL
+        String adocContent = """
+            = Test Document
+            
+            audio::[]
+            """;
+        
+        // When - Validate and format output
+        String actualOutput = validateAndFormat(rules, adocContent, tempDir);
+        
+        // Then - Verify exact console output with placeholder
+        Path testFile = tempDir.resolve("test.adoc");
+        String expectedOutput = String.format("""
+            Validation Report
+            =================
+            
+            %s:
+            
+            [ERROR]: Audio URL is required but not provided [audio.url.required]
+              File: %s:3:8
+            
+               1 | = Test Document
+               2 |\s
+               3 | audio::«target»[]
+            
+            
+            """, testFile.toString(), testFile.toString());
+        
+        assertEquals(expectedOutput, actualOutput);
+    }
+    
+    @Test
+    @DisplayName("should show placeholder for missing audio title")
+    void shouldShowPlaceholderForMissingAudioTitle(@TempDir Path tempDir) throws IOException {
+        // Given - YAML rules requiring title for audio blocks
+        String rules = """
+            document:
+              sections:
+                - level: 0
+                  allowedBlocks:
+                    - audio:
+                        severity: error
+                        title:
+                          required: true
+            """;
+        
+        // Given - AsciiDoc content with missing caption
+        String adocContent = """
+            = Test Document
+            
+            audio::example.mp3[]
+            """;
+        
+        // When - Validate and format output
+        String actualOutput = validateAndFormat(rules, adocContent, tempDir);
+        
+        // Then - Verify exact console output with placeholder
+        Path testFile = tempDir.resolve("test.adoc");
+        String expectedOutput = String.format("""
+            Validation Report
+            =================
+            
+            %s:
+            
+            [ERROR]: Audio title is required but not provided [audio.title.required]
+              File: %s:3:1
+            
+               1 | = Test Document
+               2 |\s
+               3 | «.Audio Title»
+               4 | audio::example.mp3[]
+            
+            
+            """, testFile.toString(), testFile.toString());
+        
+        assertEquals(expectedOutput, actualOutput);
+    }
+    
+    //@Test
+    @DisplayName("should show placeholder for missing audio controls")
+    void shouldShowPlaceholderForMissingAudioControls(@TempDir Path tempDir) throws IOException {
+        // Given - YAML rules requiring controls for audio blocks
+        String rules = """
+            document:
+              sections:
+                - level: 0
+                  allowedBlocks:
+                    - audio:
+                        severity: error
+                        options:
+                          controls:
+                            required: true
+            """;
+        
+        // Given - AsciiDoc content without controls
+        String adocContent = """
+            = Test Document
+            
+            audio::example.mp3[]
+            """;
+        
+        // When - Validate and format output
+        String actualOutput = validateAndFormat(rules, adocContent, tempDir);
+        
+        // Then - Verify exact console output with placeholder
+        Path testFile = tempDir.resolve("test.adoc");
+        String expectedOutput = String.format("""
+            Validation Report
+            =================
+            
+            %s:
+            
+            [ERROR]: Audio controls are required but not enabled [audio.options.controls.required]
+              File: %s:3:20
+            
+               1 | = Test Document
+               2 |\s
+               3 | audio::example.mp3[options=«controls»]
+            
+            
+            """, testFile.toString(), testFile.toString());
+        
+        assertEquals(expectedOutput, actualOutput);
+    }
+    
+    //@Test
+    @DisplayName("should show placeholder for missing audio autoplay")
+    void shouldShowPlaceholderForMissingAudioAutoplay(@TempDir Path tempDir) throws IOException {
+        // Given - YAML rules requiring autoplay for audio blocks
+        String rules = """
+            document:
+              sections:
+                - level: 0
+                  allowedBlocks:
+                    - audio:
+                        severity: error
+                        options:
+                          autoplay:
+                            required: true
+            """;
+        
+        // Given - AsciiDoc content without autoplay
+        String adocContent = """
+            = Test Document
+            
+            audio::example.mp3[]
+            """;
+        
+        // When - Validate and format output
+        String actualOutput = validateAndFormat(rules, adocContent, tempDir);
+        
+        // Then - Verify exact console output with placeholder
+        Path testFile = tempDir.resolve("test.adoc");
+        String expectedOutput = String.format("""
+            Validation Report
+            =================
+            
+            %s:
+            
+            [ERROR]: Audio autoplay is required but not enabled [audio.autoplay.required]
+              File: %s:3:20
+            
+               1 | = Test Document
+               2 |\s
+               3 | audio::example.mp3[options=«autoplay»]
+            
+            
+            """, testFile.toString(), testFile.toString());
+        
+        assertEquals(expectedOutput, actualOutput);
+    }
+    
+    //@Test
+    @DisplayName("should show placeholder for missing audio loop")
+    void shouldShowPlaceholderForMissingAudioLoop(@TempDir Path tempDir) throws IOException {
+        // Given - YAML rules requiring loop for audio blocks
+        String rules = """
+            document:
+              sections:
+                - level: 0
+                  allowedBlocks:
+                    - audio:
+                        severity: error
+                        options:
+                          loop:
+                            required: true
+            """;
+        
+        // Given - AsciiDoc content without loop
+        String adocContent = """
+            = Test Document
+            
+            audio::example.mp3[]
+            """;
+        
+        // When - Validate and format output
+        String actualOutput = validateAndFormat(rules, adocContent, tempDir);
+        
+        // Then - Verify exact console output with placeholder
+        Path testFile = tempDir.resolve("test.adoc");
+        String expectedOutput = String.format("""
+            Validation Report
+            =================
+            
+            %s:
+            
+            [ERROR]: Audio loop is required but not enabled [audio.loop.required]
+              File: %s:3:20
+            
+               1 | = Test Document
+               2 |\s
+               3 | audio::example.mp3[options=«loop»]
+            
+            
+            """, testFile.toString(), testFile.toString());
+        
+        assertEquals(expectedOutput, actualOutput);
+    }
 }
