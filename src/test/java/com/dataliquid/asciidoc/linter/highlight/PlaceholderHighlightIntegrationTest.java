@@ -485,4 +485,282 @@ class PlaceholderHighlightIntegrationTest {
         
         assertEquals(expectedOutput, actualOutput);
     }
+    
+    @Test
+    @DisplayName("should show placeholder for missing video URL")
+    void shouldShowPlaceholderForMissingVideoUrl(@TempDir Path tempDir) throws IOException {
+        // Given - YAML rules requiring URL for video blocks
+        String rules = """
+            document:
+              sections:
+                - level: 0
+                  allowedBlocks:
+                    - video:
+                        severity: error
+                        url:
+                          required: true
+            """;
+        
+        // Given - AsciiDoc content with missing video URL
+        String adocContent = """
+            = Test Document
+            
+            video::[]
+            """;
+        
+        // When - Validate and format output
+        String actualOutput = validateAndFormat(rules, adocContent, tempDir);
+        
+        // Then - Verify exact console output with placeholder
+        Path testFile = tempDir.resolve("test.adoc");
+        String expectedOutput = String.format("""
+            Validation Report
+            =================
+            
+            %s:
+            
+            [ERROR]: Video URL is required but not provided [video.url.required]
+              File: %s:3:8
+            
+               1 | = Test Document
+               2 |\s
+               3 | video::«target»[]
+            
+            
+            """, testFile.toString(), testFile.toString());
+        
+        assertEquals(expectedOutput, actualOutput);
+    }
+    
+    @Test
+    @DisplayName("should show placeholder for missing video width")
+    void shouldShowPlaceholderForMissingVideoWidth(@TempDir Path tempDir) throws IOException {
+        // Given - YAML rules requiring width for video blocks
+        String rules = """
+            document:
+              sections:
+                - level: 0
+                  allowedBlocks:
+                    - video:
+                        severity: error
+                        width:
+                          required: true
+            """;
+        
+        // Given - AsciiDoc content with missing width
+        String adocContent = """
+            = Test Document
+            
+            video::example.mp4[]
+            """;
+        
+        // When - Validate and format output
+        String actualOutput = validateAndFormat(rules, adocContent, tempDir);
+        
+        // Then - Verify exact console output with placeholder
+        Path testFile = tempDir.resolve("test.adoc");
+        String expectedOutput = String.format("""
+            Validation Report
+            =================
+            
+            %s:
+            
+            [ERROR]: Video width is required but not provided [video.width.required]
+              File: %s:3:20
+            
+               1 | = Test Document
+               2 |\s
+               3 | video::example.mp4[width=«640»]
+            
+            
+            """, testFile.toString(), testFile.toString());
+        
+        assertEquals(expectedOutput, actualOutput);
+    }
+    
+    @Test
+    @DisplayName("should show placeholder for missing video height")
+    void shouldShowPlaceholderForMissingVideoHeight(@TempDir Path tempDir) throws IOException {
+        // Given - YAML rules requiring height for video blocks
+        String rules = """
+            document:
+              sections:
+                - level: 0
+                  allowedBlocks:
+                    - video:
+                        severity: error
+                        height:
+                          required: true
+            """;
+        
+        // Given - AsciiDoc content with missing height
+        String adocContent = """
+            = Test Document
+            
+            video::example.mp4[width=640]
+            """;
+        
+        // When - Validate and format output
+        String actualOutput = validateAndFormat(rules, adocContent, tempDir);
+        
+        // Then - Verify exact console output with placeholder
+        Path testFile = tempDir.resolve("test.adoc");
+        String expectedOutput = String.format("""
+            Validation Report
+            =================
+            
+            %s:
+            
+            [ERROR]: Video height is required but not provided [video.height.required]
+              File: %s:3:29
+            
+               1 | = Test Document
+               2 |\s
+               3 | video::example.mp4[width=640,height=«360»]
+            
+            
+            """, testFile.toString(), testFile.toString());
+        
+        assertEquals(expectedOutput, actualOutput);
+    }
+    
+    @Test
+    @DisplayName("should show placeholder for missing video poster")
+    void shouldShowPlaceholderForMissingVideoPoster(@TempDir Path tempDir) throws IOException {
+        // Given - YAML rules requiring poster for video blocks
+        String rules = """
+            document:
+              sections:
+                - level: 0
+                  allowedBlocks:
+                    - video:
+                        severity: error
+                        poster:
+                          required: true
+            """;
+        
+        // Given - AsciiDoc content with missing poster
+        String adocContent = """
+            = Test Document
+            
+            video::example.mp4[width=640,height=360]
+            """;
+        
+        // When - Validate and format output
+        String actualOutput = validateAndFormat(rules, adocContent, tempDir);
+        
+        // Then - Verify exact console output with placeholder
+        Path testFile = tempDir.resolve("test.adoc");
+        String expectedOutput = String.format("""
+            Validation Report
+            =================
+            
+            %s:
+            
+            [ERROR]: Video poster image is required but not provided [video.poster.required]
+              File: %s:3:40
+            
+               1 | = Test Document
+               2 |\s
+               3 | video::example.mp4[width=640,height=360,poster=«thumbnail.jpg»]
+            
+            
+            """, testFile.toString(), testFile.toString());
+        
+        assertEquals(expectedOutput, actualOutput);
+    }
+    
+    @Test
+    @DisplayName("should show placeholder for missing video controls")
+    void shouldShowPlaceholderForMissingVideoControls(@TempDir Path tempDir) throws IOException {
+        // Given - YAML rules requiring controls for video blocks
+        String rules = """
+            document:
+              sections:
+                - level: 0
+                  allowedBlocks:
+                    - video:
+                        severity: error
+                        options:
+                          controls:
+                            required: true
+            """;
+        
+        // Given - AsciiDoc content with missing controls
+        String adocContent = """
+            = Test Document
+            
+            video::example.mp4[]
+            """;
+        
+        // When - Validate and format output
+        String actualOutput = validateAndFormat(rules, adocContent, tempDir);
+        
+        // Then - Verify exact console output with placeholder
+        Path testFile = tempDir.resolve("test.adoc");
+        String expectedOutput = String.format("""
+            Validation Report
+            =================
+            
+            %s:
+            
+            [ERROR]: Video controls are required but not enabled [video.controls.required]
+              File: %s:3:20
+            
+               1 | = Test Document
+               2 |\s
+               3 | video::example.mp4[options=«controls»]
+            
+            
+            """, testFile.toString(), testFile.toString());
+        
+        assertEquals(expectedOutput, actualOutput);
+    }
+    
+    @Test
+    @DisplayName("should show placeholder for missing video caption")
+    void shouldShowPlaceholderForMissingVideoCaption(@TempDir Path tempDir) throws IOException {
+        // Given - YAML rules requiring caption for video blocks
+        String rules = """
+            document:
+              sections:
+                - level: 0
+                  allowedBlocks:
+                    - video:
+                        severity: error
+                        caption:
+                          required: true
+            """;
+        
+        // Given - AsciiDoc content with missing caption
+        String adocContent = """
+            = Test Document
+            
+            video::example.mp4[]
+            """;
+        
+        // When - Validate and format output
+        String actualOutput = validateAndFormat(rules, adocContent, tempDir);
+        
+        // Then - Verify exact console output with placeholder
+        Path testFile = tempDir.resolve("test.adoc");
+        String expectedOutput = String.format("""
+            Validation Report
+            =================
+            
+            %s:
+            
+            [ERROR]: Video caption is required but not provided [video.caption.required]
+              File: %s:3:1
+            
+               1 | = Test Document
+               2 |\s
+               3 | «.Video Title»
+               4 | video::example.mp4[]
+            
+            
+            """, testFile.toString(), testFile.toString());
+        
+        assertEquals(expectedOutput, actualOutput);
+    }
 }
