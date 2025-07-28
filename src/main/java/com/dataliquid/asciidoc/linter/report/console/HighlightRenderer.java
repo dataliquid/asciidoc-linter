@@ -74,7 +74,17 @@ public class HighlightRenderer {
         // For missing values: insert placeholder
         if (message.getErrorType() == ErrorType.MISSING_VALUE && 
             message.getMissingValueHint() != null) {
-            return insertPlaceholder(line, message);
+            // For paragraph.lines.min, only insert placeholder on empty lines
+            if ("paragraph.lines.min".equals(message.getRuleId())) {
+                if (line.isEmpty()) {
+                    return insertPlaceholder(line, message);
+                } else {
+                    // Don't add placeholder to existing content lines
+                    return line;
+                }
+            } else {
+                return insertPlaceholder(line, message);
+            }
         }
         
         // For invalid values: keep original (will be underlined)
@@ -82,6 +92,12 @@ public class HighlightRenderer {
     }
     
     private String insertPlaceholder(String line, ValidationMessage message) {
+        // For paragraph.lines.min errors with empty lines, show placeholder at start
+        if ("paragraph.lines.min".equals(message.getRuleId()) && line.isEmpty()) {
+            String placeholderText = PLACEHOLDER_START + message.getMissingValueHint() + PLACEHOLDER_END;
+            return colorScheme.error(placeholderText);
+        }
+        
         int col = message.getLocation().getStartColumn();
         
         // Generate complete placeholder based on context

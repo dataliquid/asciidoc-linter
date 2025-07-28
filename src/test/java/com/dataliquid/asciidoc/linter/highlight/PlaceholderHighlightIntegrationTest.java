@@ -338,4 +338,151 @@ class PlaceholderHighlightIntegrationTest {
         
         assertEquals(expectedOutput, actualOutput);
     }
+    
+    @Test
+    @DisplayName("should show placeholder for paragraph with too few lines")
+    void shouldShowPlaceholderForParagraphWithTooFewLines(@TempDir Path tempDir) throws IOException {
+        // Given - YAML rules requiring minimum 2 lines for paragraphs
+        String rules = """
+            document:
+              sections:
+                - level: 0
+                  allowedBlocks:
+                    - paragraph:
+                        severity: error
+                        lines:
+                          min: 2
+                          severity: error
+            """;
+        
+        // Given - AsciiDoc content with single-line paragraph
+        String adocContent = """
+            = Test Document
+            
+            This is a single line paragraph.
+            """;
+        
+        // When - Validate and format output
+        String actualOutput = validateAndFormat(rules, adocContent, tempDir);
+        
+        // Then - Verify exact console output with placeholder
+        Path testFile = tempDir.resolve("test.adoc");
+        String expectedOutput = String.format("""
+            Validation Report
+            =================
+            
+            %s:
+            
+            [ERROR]: Paragraph has too few lines [paragraph.lines.min]
+              File: %s:3:33
+            
+               1 | = Test Document
+               2 |\s
+               3 | This is a single line paragraph.
+               4 | «Add more content here...»
+            
+            
+            """, testFile.toString(), testFile.toString());
+        
+        assertEquals(expectedOutput, actualOutput);
+    }
+    
+    @Test
+    @DisplayName("should show placeholder for paragraph missing second line")
+    void shouldShowPlaceholderForParagraphMissingSecondLine(@TempDir Path tempDir) throws IOException {
+        // Given - YAML rules requiring minimum 3 lines for paragraphs
+        String rules = """
+            document:
+              sections:
+                - level: 0
+                  allowedBlocks:
+                    - paragraph:
+                        severity: error
+                        lines:
+                          min: 3
+                          severity: warn
+            """;
+        
+        // Given - AsciiDoc content with two-line paragraph
+        String adocContent = """
+            = Test Document
+            
+            This is the first line of content.
+            This is the second line of content.
+            """;
+        
+        // When - Validate and format output
+        String actualOutput = validateAndFormat(rules, adocContent, tempDir);
+        
+        // Then - Verify exact console output with placeholder
+        Path testFile = tempDir.resolve("test.adoc");
+        String expectedOutput = String.format("""
+            Validation Report
+            =================
+            
+            %s:
+            
+            [WARN]: Paragraph has too few lines [paragraph.lines.min]
+              File: %s:4:36
+            
+               1 | = Test Document
+               2 |\s
+               3 | This is the first line of content.
+               4 | This is the second line of content.
+               5 | «Add more content here...»
+            
+            
+            """, testFile.toString(), testFile.toString());
+        
+        assertEquals(expectedOutput, actualOutput);
+    }
+    
+    @Test
+    @DisplayName("should show placeholder for paragraph with one line when three required")
+    void shouldShowPlaceholderForParagraphWithOneLineWhenThreeRequired(@TempDir Path tempDir) throws IOException {
+        // Given - YAML rules requiring minimum 3 lines for paragraphs
+        String rules = """
+            document:
+              sections:
+                - level: 0
+                  allowedBlocks:
+                    - paragraph:
+                        severity: error
+                        lines:
+                          min: 3
+                          severity: error
+            """;
+        
+        // Given - AsciiDoc content with single-line paragraph
+        String adocContent = """
+            = Test Document
+            
+            This is only one line when three are required.
+            """;
+        
+        // When - Validate and format output
+        String actualOutput = validateAndFormat(rules, adocContent, tempDir);
+        
+        // Then - Verify exact console output with placeholder
+        Path testFile = tempDir.resolve("test.adoc");
+        String expectedOutput = String.format("""
+            Validation Report
+            =================
+            
+            %s:
+            
+            [ERROR]: Paragraph has too few lines [paragraph.lines.min]
+              File: %s:3:47
+            
+               1 | = Test Document
+               2 |\s
+               3 | This is only one line when three are required.
+               4 | «Add more content here...»
+               5 | «Add more content here...»
+            
+            
+            """, testFile.toString(), testFile.toString());
+        
+        assertEquals(expectedOutput, actualOutput);
+    }
 }
