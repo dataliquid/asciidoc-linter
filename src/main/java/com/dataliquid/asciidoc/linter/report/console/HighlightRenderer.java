@@ -6,6 +6,7 @@ import java.util.Objects;
 import com.dataliquid.asciidoc.linter.config.output.DisplayConfig;
 import com.dataliquid.asciidoc.linter.config.output.HighlightStyle;
 import com.dataliquid.asciidoc.linter.validator.ErrorType;
+import com.dataliquid.asciidoc.linter.validator.PlaceholderContext;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
 
 /**
@@ -82,19 +83,32 @@ public class HighlightRenderer {
     
     private String insertPlaceholder(String line, ValidationMessage message) {
         int col = message.getLocation().getStartColumn();
-        String prefix = message.getPlaceholderPrefix() != null ? message.getPlaceholderPrefix() : "";
-        String placeholder = colorScheme.error(
-            prefix + PLACEHOLDER_START + message.getMissingValueHint() + PLACEHOLDER_END
-        );
         
-        if (col <= 0 || col > line.length()) {
+        // Generate complete placeholder based on context
+        String placeholderText;
+        PlaceholderContext context = message.getPlaceholderContext();
+        if (context != null) {
+            placeholderText = context.generatePlaceholder(message.getMissingValueHint());
+        } else {
+            // Fallback to simple placeholder
+            placeholderText = PLACEHOLDER_START + message.getMissingValueHint() + PLACEHOLDER_END;
+        }
+        
+        String placeholder = colorScheme.error(placeholderText);
+        
+        if (col <= 0 || col > line.length() + 1) {
             // Append at end if column is invalid
             return line + placeholder;
         }
         
-        // Insert at specific position
+        // Insert at specific position (col is 1-based)
+        if (col > line.length()) {
+            // Insert at end of line
+            return line + placeholder;
+        }
+        
         String before = line.substring(0, col - 1);
-        String after = col <= line.length() ? line.substring(col - 1) : "";
+        String after = line.substring(col - 1);
         
         return before + placeholder + after;
     }

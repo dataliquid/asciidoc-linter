@@ -9,6 +9,7 @@ import com.dataliquid.asciidoc.linter.config.BlockType;
 import com.dataliquid.asciidoc.linter.config.blocks.ImageBlock;
 import com.dataliquid.asciidoc.linter.report.console.FileContentCache;
 import com.dataliquid.asciidoc.linter.validator.ErrorType;
+import com.dataliquid.asciidoc.linter.validator.PlaceholderContext;
 import com.dataliquid.asciidoc.linter.validator.SourceLocation;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
 import org.apache.logging.log4j.LogManager;
@@ -149,6 +150,9 @@ public final class ImageBlockValidator extends AbstractBlockValidator<ImageBlock
                 .expectedValue("URL required")
                 .errorType(ErrorType.MISSING_VALUE)
                 .missingValueHint("filename.png")
+                .placeholderContext(PlaceholderContext.builder()
+                    .type(PlaceholderContext.PlaceholderType.SIMPLE_VALUE)
+                    .build())
                 .build());
             return;
         }
@@ -200,6 +204,11 @@ public final class ImageBlockValidator extends AbstractBlockValidator<ImageBlock
                 .expectedValue(dimensionName + " required")
                 .errorType(ErrorType.MISSING_VALUE)
                 .missingValueHint("100")
+                .placeholderContext(PlaceholderContext.builder()
+                    .type(PlaceholderContext.PlaceholderType.ATTRIBUTE_IN_LIST)
+                    .attributeName(dimensionName)
+                    .hasExistingAttributes(true)
+                    .build())
                 .build());
             return;
         }
@@ -284,6 +293,9 @@ public final class ImageBlockValidator extends AbstractBlockValidator<ImageBlock
                 .expectedValue("Alt text required")
                 .errorType(ErrorType.MISSING_VALUE)
                 .missingValueHint("Alt text")
+                .placeholderContext(PlaceholderContext.builder()
+                    .type(PlaceholderContext.PlaceholderType.SIMPLE_VALUE)
+                    .build())
                 .build());
             return;
         }
@@ -474,7 +486,8 @@ public final class ImageBlockValidator extends AbstractBlockValidator<ImageBlock
             // Find position before closing bracket
             int bracketEnd = sourceLine.lastIndexOf("]");
             if (bracketEnd > 0) {
-                return new DimensionPosition(bracketEnd, bracketEnd, lineNum);
+                // Return position of the bracket (1-based)
+                return new DimensionPosition(bracketEnd + 1, bracketEnd + 1, lineNum);
             }
         }
         

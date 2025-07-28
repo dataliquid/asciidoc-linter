@@ -1,6 +1,7 @@
 package com.dataliquid.asciidoc.linter.validator.block;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -23,6 +24,7 @@ import com.dataliquid.asciidoc.linter.config.blocks.ListingBlock;
 import com.dataliquid.asciidoc.linter.config.rule.LineConfig;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
 import com.dataliquid.asciidoc.linter.validator.ErrorType;
+import com.dataliquid.asciidoc.linter.validator.PlaceholderContext;
 import org.asciidoctor.ast.Cursor;
 
 /**
@@ -250,7 +252,9 @@ class ListingBlockValidatorTest {
             assertEquals("listing.language.required", msg.getRuleId());
             assertEquals(ErrorType.MISSING_VALUE, msg.getErrorType());
             assertEquals("language", msg.getMissingValueHint());
-            assertEquals(",", msg.getPlaceholderPrefix());
+            assertNotNull(msg.getPlaceholderContext());
+            assertEquals(PlaceholderContext.PlaceholderType.LIST_VALUE, 
+                         msg.getPlaceholderContext().getType());
             
             // Check exact column positions for "[source]"
             // Column 8 is the position of the closing bracket ]

@@ -10,6 +10,7 @@ import com.dataliquid.asciidoc.linter.config.Severity;
 import com.dataliquid.asciidoc.linter.config.blocks.ListingBlock;
 import com.dataliquid.asciidoc.linter.report.console.FileContentCache;
 import com.dataliquid.asciidoc.linter.validator.ErrorType;
+import com.dataliquid.asciidoc.linter.validator.PlaceholderContext;
 import com.dataliquid.asciidoc.linter.validator.SourceLocation;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
 
@@ -134,7 +135,9 @@ public final class ListingBlockValidator extends AbstractBlockValidator<ListingB
                 .expectedValue("Language required")
                 .errorType(ErrorType.MISSING_VALUE)
                 .missingValueHint("language")
-                .placeholderPrefix(",")
+                .placeholderContext(PlaceholderContext.builder()
+                    .type(PlaceholderContext.PlaceholderType.LIST_VALUE)
+                    .build())
                 .build());
         }
         

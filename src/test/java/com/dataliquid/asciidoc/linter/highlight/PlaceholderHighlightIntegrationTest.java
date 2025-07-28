@@ -281,7 +281,7 @@ class PlaceholderHighlightIntegrationTest {
             %s:
             
             [ERROR]: Image must have width specified [image.width.required]
-              File: %s:3:40
+              File: %s:3:39
             
                1 | = Test Document
                2 |\s
@@ -327,7 +327,7 @@ class PlaceholderHighlightIntegrationTest {
             %s:
             
             [ERROR]: Image must have height specified [image.height.required]
-              File: %s:3:50
+              File: %s:3:49
             
                1 | = Test Document
                2 |\s
