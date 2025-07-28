@@ -2,13 +2,17 @@ package com.dataliquid.asciidoc.linter.highlight;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import com.dataliquid.asciidoc.linter.Linter;
 import com.dataliquid.asciidoc.linter.config.LinterConfiguration;
@@ -49,7 +53,7 @@ class PlaceholderHighlightIntegrationTest {
     
     @Test
     @DisplayName("should show placeholder for missing listing language")
-    void shouldShowPlaceholderForMissingListingLanguage() {
+    void shouldShowPlaceholderForMissingListingLanguage(@TempDir Path tempDir) throws IOException {
         // Given - YAML rules requiring language for listing blocks
         String rules = """
             document:
@@ -63,11 +67,9 @@ class PlaceholderHighlightIntegrationTest {
                           severity: error
             """;
         
-        // Given - AsciiDoc content with missing language
+        // Given - AsciiDoc content with missing language  
         String adocContent = """
             = Test Document
-            
-            == Code Example
             
             [source]
             ----
@@ -77,6 +79,10 @@ class PlaceholderHighlightIntegrationTest {
             ----
             """;
         
+        // Create temporary file with content
+        Path testFile = tempDir.resolve("test.adoc");
+        Files.writeString(testFile, adocContent);
+        
         // Given - Enhanced output configuration
         OutputConfiguration outputConfig = OutputConfiguration.builder()
             .format(OutputFormat.ENHANCED)
@@ -84,7 +90,7 @@ class PlaceholderHighlightIntegrationTest {
                 .contextLines(3)
                 .useColors(false)  // No colors for easier testing
                 .showLineNumbers(true)
-                .showHeader(false)
+                .showHeader(true)  // Enable header to match expected output
                 .highlightStyle(HighlightStyle.UNDERLINE)
                 .maxLineWidth(120)
                 .build())
@@ -98,7 +104,7 @@ class PlaceholderHighlightIntegrationTest {
         
         // When - Validate and format output
         LinterConfiguration config = configLoader.loadConfiguration(rules);
-        ValidationResult result = linter.validateContent(adocContent, config);
+        ValidationResult result = linter.validateFile(testFile, config);
         
         ConsoleFormatter formatter = new ConsoleFormatter(outputConfig);
         formatter.format(result, printWriter);
@@ -106,24 +112,27 @@ class PlaceholderHighlightIntegrationTest {
         
         // Then - Verify exact console output with placeholder
         String actualOutput = stringWriter.toString();
-        String expectedOutput = """
+        
+        // The empty line in the adoc file gets a trailing space when rendered
+        // Expected output with placeholder for missing language
+        String expectedOutput = String.format("""
             Validation Report
             =================
             
-            test.adoc:
+            %s:
             
             [ERROR]: Listing block must specify a language [listing.language.required]
-              File: test.adoc:5:8
+              File: %s:3:8
             
-               3 | == Code Example
-               4 | 
-               5 | [source,«language»]
-               6 | ----
-               7 | public class Example {
-               8 |     // Some code here
+               1 | = Test Document
+               2 |\s
+               3 | [source,«language»]
+               4 | ----
+               5 | public class Example {
+               6 |     // Some code here
             
             
-            """;
+            """, testFile.toString(), testFile.toString());
         
         assertEquals(expectedOutput, actualOutput);
     }
