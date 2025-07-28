@@ -51,6 +51,53 @@ class PlaceholderHighlightIntegrationTest {
         linter.close();
     }
     
+    /**
+     * Creates the default output configuration for enhanced placeholder display.
+     */
+    private OutputConfiguration createDefaultOutputConfig() {
+        return OutputConfiguration.builder()
+            .format(OutputFormat.ENHANCED)
+            .display(DisplayConfig.builder()
+                .contextLines(3)
+                .useColors(false)  // No colors for easier testing
+                .showLineNumbers(true)
+                .showHeader(true)  // Enable header to match expected output
+                .highlightStyle(HighlightStyle.UNDERLINE)
+                .maxLineWidth(120)
+                .build())
+            .suggestions(SuggestionsConfig.builder()
+                .enabled(false)
+                .build())
+            .summary(SummaryConfig.builder()
+                .enabled(false)
+                .build())
+            .build();
+    }
+    
+    /**
+     * Validates content and returns the formatted console output.
+     */
+    private String validateAndFormat(String rules, String adocContent, Path tempDir) throws IOException {
+        // Clear any previous output
+        stringWriter.getBuffer().setLength(0);
+        
+        // Create temporary file with content
+        Path testFile = tempDir.resolve("test.adoc");
+        Files.writeString(testFile, adocContent);
+        
+        // Load configuration and validate
+        LinterConfiguration config = configLoader.loadConfiguration(rules);
+        ValidationResult result = linter.validateFile(testFile, config);
+        
+        // Format output
+        ConsoleFormatter formatter = new ConsoleFormatter(createDefaultOutputConfig());
+        formatter.format(result, printWriter);
+        printWriter.flush();
+        
+        return stringWriter.toString();
+    }
+    
+    
     @Test
     @DisplayName("should show placeholder for missing listing language")
     void shouldShowPlaceholderForMissingListingLanguage(@TempDir Path tempDir) throws IOException {
@@ -79,42 +126,11 @@ class PlaceholderHighlightIntegrationTest {
             ----
             """;
         
-        // Create temporary file with content
-        Path testFile = tempDir.resolve("test.adoc");
-        Files.writeString(testFile, adocContent);
-        
-        // Given - Enhanced output configuration
-        OutputConfiguration outputConfig = OutputConfiguration.builder()
-            .format(OutputFormat.ENHANCED)
-            .display(DisplayConfig.builder()
-                .contextLines(3)
-                .useColors(false)  // No colors for easier testing
-                .showLineNumbers(true)
-                .showHeader(true)  // Enable header to match expected output
-                .highlightStyle(HighlightStyle.UNDERLINE)
-                .maxLineWidth(120)
-                .build())
-            .suggestions(SuggestionsConfig.builder()
-                .enabled(false)
-                .build())
-            .summary(SummaryConfig.builder()
-                .enabled(false)
-                .build())
-            .build();
-        
         // When - Validate and format output
-        LinterConfiguration config = configLoader.loadConfiguration(rules);
-        ValidationResult result = linter.validateFile(testFile, config);
-        
-        ConsoleFormatter formatter = new ConsoleFormatter(outputConfig);
-        formatter.format(result, printWriter);
-        printWriter.flush();
+        String actualOutput = validateAndFormat(rules, adocContent, tempDir);
         
         // Then - Verify exact console output with placeholder
-        String actualOutput = stringWriter.toString();
-        
-        // The empty line in the adoc file gets a trailing space when rendered
-        // Expected output with placeholder for missing language
+        Path testFile = tempDir.resolve("test.adoc");
         String expectedOutput = String.format("""
             Validation Report
             =================
@@ -160,39 +176,11 @@ class PlaceholderHighlightIntegrationTest {
             image::[]
             """;
         
-        // Create temporary file with content
-        Path testFile = tempDir.resolve("test.adoc");
-        Files.writeString(testFile, adocContent);
-        
-        // Given - Enhanced output configuration
-        OutputConfiguration outputConfig = OutputConfiguration.builder()
-            .format(OutputFormat.ENHANCED)
-            .display(DisplayConfig.builder()
-                .contextLines(3)
-                .useColors(false)
-                .showLineNumbers(true)
-                .showHeader(true)
-                .highlightStyle(HighlightStyle.UNDERLINE)
-                .maxLineWidth(120)
-                .build())
-            .suggestions(SuggestionsConfig.builder()
-                .enabled(false)
-                .build())
-            .summary(SummaryConfig.builder()
-                .enabled(false)
-                .build())
-            .build();
-        
         // When - Validate and format output
-        LinterConfiguration config = configLoader.loadConfiguration(rules);
-        ValidationResult result = linter.validateFile(testFile, config);
-        
-        ConsoleFormatter formatter = new ConsoleFormatter(outputConfig);
-        formatter.format(result, printWriter);
-        printWriter.flush();
+        String actualOutput = validateAndFormat(rules, adocContent, tempDir);
         
         // Then - Verify exact console output with placeholder
-        String actualOutput = stringWriter.toString();
+        Path testFile = tempDir.resolve("test.adoc");
         
         String expectedOutput = String.format("""
             Validation Report
@@ -204,7 +192,7 @@ class PlaceholderHighlightIntegrationTest {
               File: %s:3:8
             
                1 | = Test Document
-               2 |\s
+               2 | 
                3 | image::«filename.png»[]
             
             
@@ -235,40 +223,11 @@ class PlaceholderHighlightIntegrationTest {
             image::example.png[]
             """;
         
-        // Create temporary file with content
-        Path testFile = tempDir.resolve("test.adoc");
-        Files.writeString(testFile, adocContent);
-        
-        // Given - Enhanced output configuration
-        OutputConfiguration outputConfig = OutputConfiguration.builder()
-            .format(OutputFormat.ENHANCED)
-            .display(DisplayConfig.builder()
-                .contextLines(3)
-                .useColors(false)
-                .showLineNumbers(true)
-                .showHeader(true)
-                .highlightStyle(HighlightStyle.UNDERLINE)
-                .maxLineWidth(120)
-                .build())
-            .suggestions(SuggestionsConfig.builder()
-                .enabled(false)
-                .build())
-            .summary(SummaryConfig.builder()
-                .enabled(false)
-                .build())
-            .build();
-        
         // When - Validate and format output
-        LinterConfiguration config = configLoader.loadConfiguration(rules);
-        ValidationResult result = linter.validateFile(testFile, config);
-        
-        ConsoleFormatter formatter = new ConsoleFormatter(outputConfig);
-        formatter.format(result, printWriter);
-        printWriter.flush();
+        String actualOutput = validateAndFormat(rules, adocContent, tempDir);
         
         // Then - Verify exact console output with placeholder
-        String actualOutput = stringWriter.toString();
-        
+        Path testFile = tempDir.resolve("test.adoc");
         String expectedOutput = String.format("""
             Validation Report
             =================
@@ -310,40 +269,11 @@ class PlaceholderHighlightIntegrationTest {
             image::example.png[alt="Example image"]
             """;
         
-        // Create temporary file with content
-        Path testFile = tempDir.resolve("test.adoc");
-        Files.writeString(testFile, adocContent);
-        
-        // Given - Enhanced output configuration
-        OutputConfiguration outputConfig = OutputConfiguration.builder()
-            .format(OutputFormat.ENHANCED)
-            .display(DisplayConfig.builder()
-                .contextLines(3)
-                .useColors(false)
-                .showLineNumbers(true)
-                .showHeader(true)
-                .highlightStyle(HighlightStyle.UNDERLINE)
-                .maxLineWidth(120)
-                .build())
-            .suggestions(SuggestionsConfig.builder()
-                .enabled(false)
-                .build())
-            .summary(SummaryConfig.builder()
-                .enabled(false)
-                .build())
-            .build();
-        
         // When - Validate and format output
-        LinterConfiguration config = configLoader.loadConfiguration(rules);
-        ValidationResult result = linter.validateFile(testFile, config);
-        
-        ConsoleFormatter formatter = new ConsoleFormatter(outputConfig);
-        formatter.format(result, printWriter);
-        printWriter.flush();
+        String actualOutput = validateAndFormat(rules, adocContent, tempDir);
         
         // Then - Verify exact console output with placeholder
-        String actualOutput = stringWriter.toString();
-        
+        Path testFile = tempDir.resolve("test.adoc");
         String expectedOutput = String.format("""
             Validation Report
             =================
@@ -385,40 +315,11 @@ class PlaceholderHighlightIntegrationTest {
             image::example.png[alt="Example image",width=200]
             """;
         
-        // Create temporary file with content
-        Path testFile = tempDir.resolve("test.adoc");
-        Files.writeString(testFile, adocContent);
-        
-        // Given - Enhanced output configuration
-        OutputConfiguration outputConfig = OutputConfiguration.builder()
-            .format(OutputFormat.ENHANCED)
-            .display(DisplayConfig.builder()
-                .contextLines(3)
-                .useColors(false)
-                .showLineNumbers(true)
-                .showHeader(true)
-                .highlightStyle(HighlightStyle.UNDERLINE)
-                .maxLineWidth(120)
-                .build())
-            .suggestions(SuggestionsConfig.builder()
-                .enabled(false)
-                .build())
-            .summary(SummaryConfig.builder()
-                .enabled(false)
-                .build())
-            .build();
-        
         // When - Validate and format output
-        LinterConfiguration config = configLoader.loadConfiguration(rules);
-        ValidationResult result = linter.validateFile(testFile, config);
-        
-        ConsoleFormatter formatter = new ConsoleFormatter(outputConfig);
-        formatter.format(result, printWriter);
-        printWriter.flush();
+        String actualOutput = validateAndFormat(rules, adocContent, tempDir);
         
         // Then - Verify exact console output with placeholder
-        String actualOutput = stringWriter.toString();
-        
+        Path testFile = tempDir.resolve("test.adoc");
         String expectedOutput = String.format("""
             Validation Report
             =================
