@@ -9,7 +9,10 @@ import org.asciidoctor.ast.StructuralNode;
 import com.dataliquid.asciidoc.linter.config.BlockType;
 import com.dataliquid.asciidoc.linter.config.Severity;
 import com.dataliquid.asciidoc.linter.config.blocks.VideoBlock;
+import com.dataliquid.asciidoc.linter.report.console.FileContentCache;
 import com.dataliquid.asciidoc.linter.validator.ErrorType;
+import com.dataliquid.asciidoc.linter.validator.PlaceholderContext;
+import com.dataliquid.asciidoc.linter.validator.SourceLocation;
 import com.dataliquid.asciidoc.linter.validator.Suggestion;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
 
@@ -24,6 +27,7 @@ import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
  * - Caption validation
  */
 public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock> {
+    private final FileContentCache fileCache = new FileContentCache();
     
     @Override
     public BlockType getSupportedType() {
@@ -83,13 +87,23 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
         
         // Check if required
         if (Boolean.TRUE.equals(urlConfig.getRequired()) && (url == null || url.trim().isEmpty())) {
+            UrlPosition pos = findUrlPosition(node, context, url);
             messages.add(ValidationMessage.builder()
                     .severity(severity)
                     .ruleId("video.url.required")
                     .message("Video URL is required but not provided")
-                    .location(context.createLocation(node))
+                    .location(SourceLocation.builder()
+                        .filename(context.getFilename())
+                        .startLine(pos.lineNumber)
+                        .endLine(pos.lineNumber)
+                        .startColumn(pos.startColumn)
+                        .endColumn(pos.endColumn)
+                        .build())
                     .errorType(ErrorType.MISSING_VALUE)
                     .missingValueHint("target")
+                    .placeholderContext(PlaceholderContext.builder()
+                        .type(PlaceholderContext.PlaceholderType.SIMPLE_VALUE)
+                        .build())
                     .addSuggestion(Suggestion.builder()
                         .description("Add a video URL using the target attribute")
                         .addExample("video::https://www.youtube.com/embed/VIDEO_ID[width=640,height=360]")
@@ -133,13 +147,39 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
         // Check if required
         if (Boolean.TRUE.equals(dimensionConfig.getRequired()) && 
             (dimensionStr == null || dimensionStr.trim().isEmpty())) {
+            DimensionPosition pos = findDimensionPosition(node, context, dimensionType, dimensionStr);
+            
+            // Check if there are existing attributes
+            boolean hasOtherAttributes = false;
+            if (dimensionType.equals("width")) {
+                hasOtherAttributes = node.getAttribute("height") != null || 
+                                   node.getAttribute("poster") != null || 
+                                   node.getAttribute("options") != null;
+            } else if (dimensionType.equals("height")) {
+                hasOtherAttributes = node.getAttribute("width") != null || 
+                                   node.getAttribute("poster") != null || 
+                                   node.getAttribute("options") != null;
+            }
+            
             messages.add(ValidationMessage.builder()
                     .severity(severity)
                     .ruleId("video." + dimensionType + ".required")
                     .message(String.format("Video %s is required but not provided", dimensionType))
-                    .location(context.createLocation(node))
+                    .location(SourceLocation.builder()
+                        .filename(context.getFilename())
+                        .startLine(pos.lineNumber)
+                        .endLine(pos.lineNumber)
+                        .startColumn(pos.startColumn)
+                        .endColumn(pos.endColumn)
+                        .build())
                     .errorType(ErrorType.MISSING_VALUE)
-                    .missingValueHint(dimensionType)
+                    .missingValueHint(dimensionType.equals("width") ? "640" : "360")
+                    .placeholderContext(PlaceholderContext.builder()
+                        .type(hasOtherAttributes ? PlaceholderContext.PlaceholderType.ATTRIBUTE_IN_LIST : 
+                                                  PlaceholderContext.PlaceholderType.ATTRIBUTE_VALUE)
+                        .attributeName(dimensionType)
+                        .hasExistingAttributes(hasOtherAttributes)
+                        .build())
                     .addSuggestion(Suggestion.builder()
                         .description(String.format("Add %s attribute to video block", dimensionType))
                         .addExample(String.format("video::video.mp4[%s=640]", dimensionType))
@@ -213,13 +253,32 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
         
         // Check if required
         if (Boolean.TRUE.equals(posterConfig.getRequired()) && (poster == null || poster.trim().isEmpty())) {
+            PosterPosition pos = findPosterPosition(node, context, poster);
+            
+            // Check if there are existing attributes
+            boolean hasOtherAttributes = node.getAttribute("width") != null || 
+                                       node.getAttribute("height") != null || 
+                                       node.getAttribute("options") != null;
+            
             messages.add(ValidationMessage.builder()
                     .severity(severity)
                     .ruleId("video.poster.required")
                     .message("Video poster image is required but not provided")
-                    .location(context.createLocation(node))
+                    .location(SourceLocation.builder()
+                        .filename(context.getFilename())
+                        .startLine(pos.lineNumber)
+                        .endLine(pos.lineNumber)
+                        .startColumn(pos.startColumn)
+                        .endColumn(pos.endColumn)
+                        .build())
                     .errorType(ErrorType.MISSING_VALUE)
-                    .missingValueHint("poster")
+                    .missingValueHint("thumbnail.jpg")
+                    .placeholderContext(PlaceholderContext.builder()
+                        .type(hasOtherAttributes ? PlaceholderContext.PlaceholderType.ATTRIBUTE_IN_LIST : 
+                                                  PlaceholderContext.PlaceholderType.ATTRIBUTE_VALUE)
+                        .attributeName("poster")
+                        .hasExistingAttributes(hasOtherAttributes)
+                        .build())
                     .addSuggestion(Suggestion.builder()
                         .description("Add a poster image for the video")
                         .addExample("video::video.mp4[poster=thumbnail.jpg]")
@@ -263,13 +322,32 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
             boolean hasControls = controlsAttr != null && controlsAttr.contains("controls");
             
             if (!hasControls) {
+                ControlsPosition pos = findControlsPosition(node, context);
+                
+                // Check if there are existing attributes
+                boolean hasOtherAttributes = node.getAttribute("width") != null || 
+                                           node.getAttribute("height") != null || 
+                                           node.getAttribute("poster") != null;
+                
                 messages.add(ValidationMessage.builder()
                         .severity(severity)
                         .ruleId("video.controls.required")
                         .message("Video controls are required but not enabled")
-                        .location(context.createLocation(node))
+                        .location(SourceLocation.builder()
+                            .filename(context.getFilename())
+                            .startLine(pos.lineNumber)
+                            .endLine(pos.lineNumber)
+                            .startColumn(pos.startColumn)
+                            .endColumn(pos.endColumn)
+                            .build())
                         .errorType(ErrorType.MISSING_VALUE)
-                        .missingValueHint("options=controls")
+                        .missingValueHint("controls")
+                        .placeholderContext(PlaceholderContext.builder()
+                            .type(hasOtherAttributes ? PlaceholderContext.PlaceholderType.ATTRIBUTE_IN_LIST : 
+                                                      PlaceholderContext.PlaceholderType.ATTRIBUTE_VALUE)
+                            .attributeName("options")
+                            .hasExistingAttributes(hasOtherAttributes)
+                            .build())
                         .actualValue(controlsAttr)
                         .expectedValue("controls")
                         .addSuggestion(Suggestion.builder()
@@ -298,13 +376,23 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
         
         // Check if required
         if (Boolean.TRUE.equals(captionConfig.getRequired()) && (caption == null || caption.trim().isEmpty())) {
+            CaptionPosition pos = findCaptionPosition(node, context);
             messages.add(ValidationMessage.builder()
                     .severity(severity)
                     .ruleId("video.caption.required")
                     .message("Video caption is required but not provided")
-                    .location(context.createLocation(node))
+                    .location(SourceLocation.builder()
+                        .filename(context.getFilename())
+                        .startLine(pos.lineNumber)
+                        .endLine(pos.lineNumber)
+                        .startColumn(pos.startColumn)
+                        .endColumn(pos.endColumn)
+                        .build())
                     .errorType(ErrorType.MISSING_VALUE)
-                    .missingValueHint("caption or .Title")
+                    .missingValueHint(".Video Title")
+                    .placeholderContext(PlaceholderContext.builder()
+                        .type(PlaceholderContext.PlaceholderType.INSERT_BEFORE)
+                        .build())
                     .addSuggestion(Suggestion.builder()
                         .description("Add a caption or title to the video")
                         .addExample(".Video Title\nvideo::video.mp4[]")
@@ -349,6 +437,218 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
                             .build())
                         .build());
             }
+        }
+    }
+    
+    /**
+     * Finds the column position of URL in video macro.
+     */
+    private UrlPosition findUrlPosition(StructuralNode block, BlockValidationContext context, String url) {
+        List<String> fileLines = fileCache.getFileLines(context.getFilename());
+        if (fileLines.isEmpty() || block.getSourceLocation() == null) {
+            return new UrlPosition(1, 1, block.getSourceLocation() != null ? block.getSourceLocation().getLineNumber() : 1);
+        }
+        
+        int lineNum = block.getSourceLocation().getLineNumber();
+        if (lineNum <= 0 || lineNum > fileLines.size()) {
+            return new UrlPosition(1, 1, lineNum);
+        }
+        
+        String sourceLine = fileLines.get(lineNum - 1);
+        
+        // Look for video:: macro pattern
+        int videoStart = sourceLine.indexOf("video::");
+        if (videoStart >= 0) {
+            int urlEnd = sourceLine.indexOf("[", videoStart);
+            if (urlEnd == -1) {
+                urlEnd = sourceLine.length();
+            }
+            
+            if (url != null && !url.isEmpty()) {
+                // Find the specific URL position
+                int urlStart = sourceLine.indexOf(url, videoStart + 7);
+                if (urlStart > videoStart && urlStart < urlEnd) {
+                    return new UrlPosition(urlStart + 1, urlStart + url.length(), lineNum);
+                }
+            } else {
+                // No URL - position after "video::"
+                return new UrlPosition(videoStart + 8, videoStart + 8, lineNum);
+            }
+        }
+        
+        return new UrlPosition(1, 1, lineNum);
+    }
+    
+    /**
+     * Finds the column position of a dimension attribute (width/height) in video macro.
+     */
+    private DimensionPosition findDimensionPosition(StructuralNode block, BlockValidationContext context, 
+                                                   String dimensionType, String dimensionValue) {
+        List<String> fileLines = fileCache.getFileLines(context.getFilename());
+        if (fileLines.isEmpty() || block.getSourceLocation() == null) {
+            return new DimensionPosition(1, 1, block.getSourceLocation() != null ? block.getSourceLocation().getLineNumber() : 1);
+        }
+        
+        int lineNum = block.getSourceLocation().getLineNumber();
+        if (lineNum <= 0 || lineNum > fileLines.size()) {
+            return new DimensionPosition(1, 1, lineNum);
+        }
+        
+        String sourceLine = fileLines.get(lineNum - 1);
+        
+        // Look for attributes bracket
+        int bracketStart = sourceLine.indexOf("[");
+        if (bracketStart >= 0) {
+            int bracketEnd = sourceLine.indexOf("]", bracketStart);
+            if (bracketEnd > bracketStart) {
+                String attributes = sourceLine.substring(bracketStart + 1, bracketEnd);
+                
+                if (dimensionValue != null && !dimensionValue.isEmpty()) {
+                    // Find specific dimension
+                    String pattern = dimensionType + "=" + dimensionValue;
+                    int dimStart = attributes.indexOf(pattern);
+                    if (dimStart >= 0) {
+                        return new DimensionPosition(bracketStart + 2 + dimStart, 
+                                                   bracketStart + 2 + dimStart + pattern.length() - 1, lineNum);
+                    }
+                } else {
+                    // Missing dimension - position at end of attributes
+                    return new DimensionPosition(bracketEnd + 1, bracketEnd + 1, lineNum);
+                }
+            }
+        }
+        
+        return new DimensionPosition(1, 1, lineNum);
+    }
+    
+    /**
+     * Finds the column position of poster attribute in video macro.
+     */
+    private PosterPosition findPosterPosition(StructuralNode block, BlockValidationContext context, String poster) {
+        List<String> fileLines = fileCache.getFileLines(context.getFilename());
+        if (fileLines.isEmpty() || block.getSourceLocation() == null) {
+            return new PosterPosition(1, 1, block.getSourceLocation() != null ? block.getSourceLocation().getLineNumber() : 1);
+        }
+        
+        int lineNum = block.getSourceLocation().getLineNumber();
+        if (lineNum <= 0 || lineNum > fileLines.size()) {
+            return new PosterPosition(1, 1, lineNum);
+        }
+        
+        String sourceLine = fileLines.get(lineNum - 1);
+        
+        // Look for attributes bracket
+        int bracketStart = sourceLine.indexOf("[");
+        if (bracketStart >= 0) {
+            int bracketEnd = sourceLine.indexOf("]", bracketStart);
+            if (bracketEnd > bracketStart) {
+                return new PosterPosition(bracketEnd + 1, bracketEnd + 1, lineNum);
+            }
+        }
+        
+        return new PosterPosition(1, 1, lineNum);
+    }
+    
+    /**
+     * Finds the column position for controls attribute in video macro.
+     */
+    private ControlsPosition findControlsPosition(StructuralNode block, BlockValidationContext context) {
+        List<String> fileLines = fileCache.getFileLines(context.getFilename());
+        if (fileLines.isEmpty() || block.getSourceLocation() == null) {
+            return new ControlsPosition(1, 1, block.getSourceLocation() != null ? block.getSourceLocation().getLineNumber() : 1);
+        }
+        
+        int lineNum = block.getSourceLocation().getLineNumber();
+        if (lineNum <= 0 || lineNum > fileLines.size()) {
+            return new ControlsPosition(1, 1, lineNum);
+        }
+        
+        String sourceLine = fileLines.get(lineNum - 1);
+        
+        // Look for attributes bracket
+        int bracketStart = sourceLine.indexOf("[");
+        if (bracketStart >= 0) {
+            int bracketEnd = sourceLine.indexOf("]", bracketStart);
+            if (bracketEnd > bracketStart) {
+                return new ControlsPosition(bracketEnd + 1, bracketEnd + 1, lineNum);
+            }
+        }
+        
+        return new ControlsPosition(1, 1, lineNum);
+    }
+    
+    /**
+     * Finds the column position for caption in video macro.
+     */
+    private CaptionPosition findCaptionPosition(StructuralNode block, BlockValidationContext context) {
+        if (block.getSourceLocation() == null) {
+            return new CaptionPosition(1, 1, 1);
+        }
+        
+        int lineNum = block.getSourceLocation().getLineNumber();
+        
+        // Caption is typically on the line before the video macro
+        // Return position for the line before the video
+        return new CaptionPosition(1, 1, lineNum);
+    }
+    
+    private static class UrlPosition {
+        final int startColumn;
+        final int endColumn;
+        final int lineNumber;
+        
+        UrlPosition(int startColumn, int endColumn, int lineNumber) {
+            this.startColumn = startColumn;
+            this.endColumn = endColumn;
+            this.lineNumber = lineNumber;
+        }
+    }
+    
+    private static class DimensionPosition {
+        final int startColumn;
+        final int endColumn;
+        final int lineNumber;
+        
+        DimensionPosition(int startColumn, int endColumn, int lineNumber) {
+            this.startColumn = startColumn;
+            this.endColumn = endColumn;
+            this.lineNumber = lineNumber;
+        }
+    }
+    
+    private static class PosterPosition {
+        final int startColumn;
+        final int endColumn;
+        final int lineNumber;
+        
+        PosterPosition(int startColumn, int endColumn, int lineNumber) {
+            this.startColumn = startColumn;
+            this.endColumn = endColumn;
+            this.lineNumber = lineNumber;
+        }
+    }
+    
+    private static class ControlsPosition {
+        final int startColumn;
+        final int endColumn;
+        final int lineNumber;
+        
+        ControlsPosition(int startColumn, int endColumn, int lineNumber) {
+            this.startColumn = startColumn;
+            this.endColumn = endColumn;
+            this.lineNumber = lineNumber;
+        }
+    }
+    
+    private static class CaptionPosition {
+        final int startColumn;
+        final int endColumn;
+        final int lineNumber;
+        
+        CaptionPosition(int startColumn, int endColumn, int lineNumber) {
+            this.startColumn = startColumn;
+            this.endColumn = endColumn;
+            this.lineNumber = lineNumber;
         }
     }
 }

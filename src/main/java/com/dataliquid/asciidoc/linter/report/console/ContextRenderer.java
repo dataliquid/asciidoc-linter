@@ -67,6 +67,18 @@ public class ContextRenderer {
             return createContextWithExtraLines(contextLines, startLine, loc, missingLines);
         }
         
+        // For video.caption.required errors, add an extra line before the video block
+        if ("video.caption.required".equals(message.getRuleId()) && 
+            message.getErrorType() == ErrorType.MISSING_VALUE) {
+            // Insert empty line at the position where caption should be
+            int videoLineIndex = loc.getStartLine() - startLine;
+            if (videoLineIndex >= 0 && videoLineIndex <= contextLines.size()) {
+                contextLines.add(videoLineIndex, "");
+            }
+            // Create a special SourceContext that marks the inserted line as error line
+            return createContextWithCaptionLine(contextLines, startLine, loc);
+        }
+        
         return new SourceContext(contextLines, startLine, loc);
     }
     
@@ -114,6 +126,32 @@ public class ContextRenderer {
             
             // Mark the last extraLineCount lines (the added empty lines) as error lines too
             if (i >= contextLines.size() - extraLineCount && content.isEmpty()) {
+                isErrorLine = true;
+            }
+            
+            lines.add(new SourceContext.ContextLine(lineNum, content, isErrorLine));
+            lineNum++;
+        }
+        
+        return new SourceContext(lines, loc);
+    }
+    
+    /**
+     * Creates a SourceContext with a caption line inserted before the video block.
+     * Used for video.caption.required errors where we need to show where the caption should be.
+     */
+    private SourceContext createContextWithCaptionLine(List<String> contextLines, int startLine, SourceLocation loc) {
+        List<SourceContext.ContextLine> lines = new ArrayList<>();
+        
+        int lineNum = startLine;
+        int videoLineIndex = loc.getStartLine() - startLine;
+        
+        for (int i = 0; i < contextLines.size(); i++) {
+            String content = contextLines.get(i);
+            boolean isErrorLine = false;
+            
+            // Mark the inserted empty line (where caption should be) as error line
+            if (i == videoLineIndex && content.isEmpty()) {
                 isErrorLine = true;
             }
             

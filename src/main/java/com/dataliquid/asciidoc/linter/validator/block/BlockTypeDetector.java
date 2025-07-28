@@ -60,6 +60,9 @@ public final class BlockTypeDetector {
             case "audio":
                 return BlockType.AUDIO;
                 
+            case "video":
+                return BlockType.VIDEO;
+                
             case "example":
             case "open":
                 // These could contain other blocks, check content
@@ -134,6 +137,11 @@ public final class BlockTypeDetector {
         // Check if it's an image block by role
         if (node.hasRole("image") || "image".equals(node.getNodeName())) {
             return BlockType.IMAGE;
+        }
+        
+        // Check if it's a video block by role
+        if (node.hasRole("video") || "video".equals(node.getNodeName())) {
+            return BlockType.VIDEO;
         }
         
         // Default to null for unknown container blocks
