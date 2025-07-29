@@ -1253,7 +1253,7 @@ class PlaceholderHighlightIntegrationTest {
             
                1 | = Test Document
                2 | 
-               3 | [quote,«Author Name»]
+               3 | [quote,«attribution»]
                4 | ____
                5 | This is a quote without attribution.
                6 | ____
@@ -1306,7 +1306,7 @@ class PlaceholderHighlightIntegrationTest {
             
                1 | = Test Document
                2 | 
-               3 | [quote,John Doe,«Book Title»]
+               3 | [quote,John Doe,«citation»]
                4 | ____
                5 | This is a quote without citation.
                6 | ____
