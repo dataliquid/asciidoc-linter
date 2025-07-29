@@ -91,6 +91,33 @@ public class ContextRenderer {
             return createContextWithCaptionLine(contextLines, startLine, loc);
         }
         
+        // For table.caption.required errors, add an extra line before the table block
+        if ("table.caption.required".equals(message.getRuleId()) && 
+            message.getErrorType() == ErrorType.MISSING_VALUE) {
+            // Insert empty line at the position where caption should be
+            int tableLineIndex = loc.getStartLine() - startLine;
+            if (tableLineIndex >= 0 && tableLineIndex <= contextLines.size()) {
+                contextLines.add(tableLineIndex, "");
+            }
+            // Create a special SourceContext that marks the inserted line as error line
+            return createContextWithCaptionLine(contextLines, startLine, loc);
+        }
+        
+        // For table.header.required errors, add an extra line after |===
+        if ("table.header.required".equals(message.getRuleId()) && 
+            message.getErrorType() == ErrorType.MISSING_VALUE) {
+            // Insert empty line after |===
+            int headerLineIndex = loc.getStartLine() - startLine;
+            if (headerLineIndex >= 0 && headerLineIndex <= contextLines.size()) {
+                contextLines.add(headerLineIndex, "");
+            }
+            // Create a special SourceContext that marks the inserted line as error line
+            return createContextWithCaptionLine(contextLines, startLine, loc);
+        }
+        
+        // For quote.attribution.required or quote.citation.required, don't add extra lines
+        // The placeholders will be inserted inline in the existing [quote] line
+        
         return new SourceContext(contextLines, startLine, loc);
     }
     

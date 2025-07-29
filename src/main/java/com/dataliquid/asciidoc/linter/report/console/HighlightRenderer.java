@@ -100,6 +100,24 @@ public class HighlightRenderer {
                     // Don't add placeholder to existing content lines
                     return line;
                 }
+            }
+            // For table.caption.required, only insert placeholder on empty lines
+            else if ("table.caption.required".equals(message.getRuleId())) {
+                if (line.isEmpty()) {
+                    return insertPlaceholder(line, message);
+                } else {
+                    // Don't add placeholder to existing content lines
+                    return line;
+                }
+            }
+            // For table.header.required, only insert placeholder on empty lines
+            else if ("table.header.required".equals(message.getRuleId())) {
+                if (line.isEmpty()) {
+                    return insertPlaceholder(line, message);
+                } else {
+                    // Don't add placeholder to existing content lines
+                    return line;
+                }
             } else {
                 return insertPlaceholder(line, message);
             }
@@ -124,6 +142,18 @@ public class HighlightRenderer {
         
         // For audio.title.required errors with empty lines, show placeholder at start
         if ("audio.title.required".equals(message.getRuleId()) && line.isEmpty()) {
+            String placeholderText = PLACEHOLDER_START + message.getMissingValueHint() + PLACEHOLDER_END;
+            return colorScheme.error(placeholderText);
+        }
+        
+        // For table.caption.required errors with empty lines, show placeholder at start
+        if ("table.caption.required".equals(message.getRuleId()) && line.isEmpty()) {
+            String placeholderText = PLACEHOLDER_START + message.getMissingValueHint() + PLACEHOLDER_END;
+            return colorScheme.error(placeholderText);
+        }
+        
+        // For table.header.required errors with empty lines, show placeholder at start
+        if ("table.header.required".equals(message.getRuleId()) && line.isEmpty()) {
             String placeholderText = PLACEHOLDER_START + message.getMissingValueHint() + PLACEHOLDER_END;
             return colorScheme.error(placeholderText);
         }

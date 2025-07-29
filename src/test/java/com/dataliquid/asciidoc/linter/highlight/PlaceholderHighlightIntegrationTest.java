@@ -997,4 +997,323 @@ class PlaceholderHighlightIntegrationTest {
         
         assertEquals(expectedOutput, actualOutput);
     }
+    
+    @Test
+    @DisplayName("should show placeholder for missing table caption")
+    void shouldShowPlaceholderForMissingTableCaption(@TempDir Path tempDir) throws IOException {
+        // Given - YAML rules requiring caption for table blocks
+        String rules = """
+            document:
+              sections:
+                - level: 0
+                  allowedBlocks:
+                    - table:
+                        severity: error
+                        caption:
+                          required: true
+                          severity: error
+            """;
+        
+        // Given - AsciiDoc content with missing caption
+        String adocContent = """
+            = Test Document
+            
+            |===
+            | Column 1 | Column 2
+            | Data 1 | Data 2
+            |===
+            """;
+        
+        // When - Validate and format output
+        String actualOutput = validateAndFormat(rules, adocContent, tempDir);
+        
+        // Then - Verify exact console output with placeholder
+        Path testFile = tempDir.resolve("test.adoc");
+        String expectedOutput = String.format("""
+            Validation Report
+            =================
+            
+            %s:
+            
+            [ERROR]: Table caption is required but not provided [table.caption.required]
+              File: %s:3:1
+            
+               1 | = Test Document
+               2 |\s
+               3 | «.Table Title»
+               4 | |===
+               5 | | Column 1 | Column 2
+               6 | | Data 1 | Data 2
+               7 | |===
+            
+            
+            """, testFile.toString(), testFile.toString());
+        
+        assertEquals(expectedOutput, actualOutput);
+    }
+    
+    @Test
+    @DisplayName("should show placeholder for missing table header")
+    void shouldShowPlaceholderForMissingTableHeader(@TempDir Path tempDir) throws IOException {
+        // Given - YAML rules requiring header for table blocks
+        String rules = """
+            document:
+              sections:
+                - level: 0
+                  allowedBlocks:
+                    - table:
+                        severity: error
+                        header:
+                          required: true
+                          severity: error
+            """;
+        
+        // Given - AsciiDoc content with missing header
+        String adocContent = """
+            = Test Document
+            
+            |===
+            | Data 1 | Data 2
+            | Data 3 | Data 4
+            |===
+            """;
+        
+        // When - Validate and format output
+        String actualOutput = validateAndFormat(rules, adocContent, tempDir);
+        
+        // Then - Verify exact console output with placeholder
+        Path testFile = tempDir.resolve("test.adoc");
+        String expectedOutput = String.format("""
+            Validation Report
+            =================
+            
+            %s:
+            
+            [ERROR]: Table header is required but not provided [table.header.required]
+              File: %s:4:1
+            
+               1 | = Test Document
+               2 |\s
+               3 | |===
+               4 | «| Header 1 | Header 2»
+               5 | | Data 1 | Data 2
+               6 | | Data 3 | Data 4
+               7 | |===
+            
+            
+            """, testFile.toString(), testFile.toString());
+        
+        assertEquals(expectedOutput, actualOutput);
+    }
+    
+    //@Test
+    @DisplayName("should show placeholder for table with too few columns")
+    void shouldShowPlaceholderForTableWithTooFewColumns(@TempDir Path tempDir) throws IOException {
+        // Given - YAML rules requiring minimum columns for table blocks
+        String rules = """
+            document:
+              sections:
+                - level: 0
+                  allowedBlocks:
+                    - table:
+                        severity: error
+                        columns:
+                          min: 3
+            """;
+        
+        // Given - AsciiDoc content with only 2 columns
+        String adocContent = """
+            = Test Document
+            
+            |===
+            | Column 1 | Column 2
+            | Data 1 | Data 2
+            |===
+            """;
+        
+        // When - Validate and format output
+        String actualOutput = validateAndFormat(rules, adocContent, tempDir);
+        
+        // Then - Verify exact console output with placeholder
+        Path testFile = tempDir.resolve("test.adoc");
+        String expectedOutput = String.format("""
+            Validation Report
+            =================
+            
+            %s:
+            
+            [ERROR]: Table has too few columns [table.columns.min]
+              File: %s:4:21
+            
+               1 | = Test Document
+               2 |\s
+               3 | |===
+               4 | | Column 1 | Column 2 «| Column 3»
+               5 | | Data 1 | Data 2
+               6 | |===
+            
+            
+            """, testFile.toString(), testFile.toString());
+        
+        assertEquals(expectedOutput, actualOutput);
+    }
+    
+    //@Test
+    @DisplayName("should show placeholder for table with too few rows")
+    void shouldShowPlaceholderForTableWithTooFewRows(@TempDir Path tempDir) throws IOException {
+        // Given - YAML rules requiring minimum rows for table blocks
+        String rules = """
+            document:
+              sections:
+                - level: 0
+                  allowedBlocks:
+                    - table:
+                        severity: error
+                        rows:
+                          min: 3
+            """;
+        
+        // Given - AsciiDoc content with only 2 rows (including header)
+        String adocContent = """
+            = Test Document
+            
+            |===
+            | Column 1 | Column 2
+            | Data 1 | Data 2
+            |===
+            """;
+        
+        // When - Validate and format output
+        String actualOutput = validateAndFormat(rules, adocContent, tempDir);
+        
+        // Then - Verify exact console output with placeholder
+        Path testFile = tempDir.resolve("test.adoc");
+        String expectedOutput = String.format("""
+            Validation Report
+            =================
+            
+            %s:
+            
+            [ERROR]: Table has too few rows [table.rows.min]
+              File: %s:5:17
+            
+               1 | = Test Document
+               2 |\s
+               3 | |===
+               4 | | Column 1 | Column 2
+               5 | | Data 1 | Data 2
+               6 | «| Data 3 | Data 4»
+               7 | |===
+            
+            
+            """, testFile.toString(), testFile.toString());
+        
+        assertEquals(expectedOutput, actualOutput);
+    }
+    
+    @Test
+    @DisplayName("should show placeholder for missing quote attribution")
+    void shouldShowPlaceholderForMissingQuoteAttribution(@TempDir Path tempDir) throws IOException {
+        // Given - YAML rules requiring attribution for quote blocks
+        String rules = """
+            document:
+              sections:
+                - level: 0
+                  allowedBlocks:
+                    - quote:
+                        severity: error
+                        attribution:
+                          required: true
+                          severity: error
+            """;
+        
+        // Given - AsciiDoc content with missing attribution
+        String adocContent = """
+            = Test Document
+            
+            [quote]
+            ____
+            This is a quote without attribution.
+            ____
+            """;
+        
+        // When - Validate and format output
+        String actualOutput = validateAndFormat(rules, adocContent, tempDir);
+        
+        // Then - Verify exact console output with placeholder
+        Path testFile = tempDir.resolve("test.adoc");
+        String expectedOutput = String.format("""
+            Validation Report
+            =================
+            
+            %s:
+            
+            [ERROR]: Quote attribution is required but not provided [quote.attribution.required]
+              File: %s:3:7
+            
+               1 | = Test Document
+               2 | 
+               3 | [quote,«Author Name»]
+               4 | ____
+               5 | This is a quote without attribution.
+               6 | ____
+            
+            
+            """, testFile.toString(), testFile.toString());
+        
+        assertEquals(expectedOutput, actualOutput);
+    }
+    
+    @Test
+    @DisplayName("should show placeholder for missing quote citation")
+    void shouldShowPlaceholderForMissingQuoteCitation(@TempDir Path tempDir) throws IOException {
+        // Given - YAML rules requiring citation for quote blocks
+        String rules = """
+            document:
+              sections:
+                - level: 0
+                  allowedBlocks:
+                    - quote:
+                        severity: error
+                        citation:
+                          required: true
+                          severity: error
+            """;
+        
+        // Given - AsciiDoc content with missing citation
+        String adocContent = """
+            = Test Document
+            
+            [quote,John Doe]
+            ____
+            This is a quote without citation.
+            ____
+            """;
+        
+        // When - Validate and format output
+        String actualOutput = validateAndFormat(rules, adocContent, tempDir);
+        
+        // Then - Verify exact console output with placeholder
+        Path testFile = tempDir.resolve("test.adoc");
+        String expectedOutput = String.format("""
+            Validation Report
+            =================
+            
+            %s:
+            
+            [ERROR]: Quote citation is required but not provided [quote.citation.required]
+              File: %s:3:16
+            
+               1 | = Test Document
+               2 | 
+               3 | [quote,John Doe,«Book Title»]
+               4 | ____
+               5 | This is a quote without citation.
+               6 | ____
+            
+            
+            """, testFile.toString(), testFile.toString());
+        
+        assertEquals(expectedOutput, actualOutput);
+    }
 }

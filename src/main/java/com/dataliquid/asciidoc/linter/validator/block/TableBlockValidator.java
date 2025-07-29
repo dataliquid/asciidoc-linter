@@ -12,6 +12,10 @@ import org.asciidoctor.ast.Table;
 import com.dataliquid.asciidoc.linter.config.BlockType;
 import com.dataliquid.asciidoc.linter.config.Severity;
 import com.dataliquid.asciidoc.linter.config.blocks.TableBlock;
+import com.dataliquid.asciidoc.linter.report.console.FileContentCache;
+import com.dataliquid.asciidoc.linter.validator.ErrorType;
+import com.dataliquid.asciidoc.linter.validator.PlaceholderContext;
+import com.dataliquid.asciidoc.linter.validator.SourceLocation;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
 
 /**
@@ -38,6 +42,7 @@ import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
  * @see BlockTypeValidator
  */
 public final class TableBlockValidator extends AbstractBlockValidator<TableBlock> {
+    private final FileContentCache fileCache = new FileContentCache();
     
     @Override
     public BlockType getSupportedType() {
@@ -167,13 +172,23 @@ public final class TableBlockValidator extends AbstractBlockValidator<TableBlock
         boolean hasHeader = !table.getHeader().isEmpty();
         
         if (config.isRequired() && !hasHeader) {
+            HeaderPosition pos = findHeaderPosition(table, context);
             messages.add(ValidationMessage.builder()
                 .severity(severity)
                 .ruleId("table.header.required")
-                .location(context.createLocation(table))
-                .message("Table must have a header row")
-                .actualValue("No header")
-                .expectedValue("Header row required")
+                .location(SourceLocation.builder()
+                    .filename(context.getFilename())
+                    .startLine(pos.lineNumber)
+                    .endLine(pos.lineNumber)
+                    .startColumn(pos.startColumn)
+                    .endColumn(pos.endColumn)
+                    .build())
+                .message("Table header is required but not provided")
+                .errorType(ErrorType.MISSING_VALUE)
+                .missingValueHint("| Header 1 | Header 2")
+                .placeholderContext(PlaceholderContext.builder()
+                    .type(PlaceholderContext.PlaceholderType.INSERT_BEFORE)
+                    .build())
                 .build());
         }
         
@@ -210,13 +225,23 @@ public final class TableBlockValidator extends AbstractBlockValidator<TableBlock
         String caption = table.getTitle();
         
         if (config.isRequired() && (caption == null || caption.trim().isEmpty())) {
+            CaptionPosition pos = findCaptionPosition(table, context);
             messages.add(ValidationMessage.builder()
                 .severity(severity)
                 .ruleId("table.caption.required")
-                .location(context.createLocation(table))
-                .message("Table must have a caption")
-                .actualValue("No caption")
-                .expectedValue("Caption required")
+                .location(SourceLocation.builder()
+                    .filename(context.getFilename())
+                    .startLine(pos.lineNumber)
+                    .endLine(pos.lineNumber)
+                    .startColumn(pos.startColumn)
+                    .endColumn(pos.endColumn)
+                    .build())
+                .message("Table caption is required but not provided")
+                .errorType(ErrorType.MISSING_VALUE)
+                .missingValueHint(".Table Title")
+                .placeholderContext(PlaceholderContext.builder()
+                    .type(PlaceholderContext.PlaceholderType.INSERT_BEFORE)
+                    .build())
                 .build());
             return;
         }
@@ -300,6 +325,71 @@ public final class TableBlockValidator extends AbstractBlockValidator<TableBlock
                     .expectedValue("Borders required")
                     .build());
             }
+        }
+    }
+    
+    /**
+     * Finds the position for table caption.
+     */
+    private CaptionPosition findCaptionPosition(Table table, BlockValidationContext context) {
+        if (table.getSourceLocation() == null) {
+            return new CaptionPosition(1, 1, 1);
+        }
+        
+        int lineNum = table.getSourceLocation().getLineNumber();
+        
+        // Caption is typically on the line before the table
+        // Return position for the line before the table
+        return new CaptionPosition(1, 1, lineNum);
+    }
+    
+    /**
+     * Finds the position for table header.
+     */
+    private HeaderPosition findHeaderPosition(Table table, BlockValidationContext context) {
+        List<String> fileLines = fileCache.getFileLines(context.getFilename());
+        if (fileLines.isEmpty() || table.getSourceLocation() == null) {
+            return new HeaderPosition(1, 1, table.getSourceLocation() != null ? table.getSourceLocation().getLineNumber() : 1);
+        }
+        
+        int lineNum = table.getSourceLocation().getLineNumber();
+        if (lineNum <= 0 || lineNum > fileLines.size()) {
+            return new HeaderPosition(1, 1, lineNum);
+        }
+        
+        // Find the line after |===
+        for (int i = lineNum - 1; i < fileLines.size(); i++) {
+            String line = fileLines.get(i);
+            if (line.trim().equals("|===")) {
+                // Header should be on the next line
+                return new HeaderPosition(1, 1, i + 2);
+            }
+        }
+        
+        return new HeaderPosition(1, 1, lineNum + 1);
+    }
+    
+    private static class CaptionPosition {
+        final int startColumn;
+        final int endColumn;
+        final int lineNumber;
+        
+        CaptionPosition(int startColumn, int endColumn, int lineNumber) {
+            this.startColumn = startColumn;
+            this.endColumn = endColumn;
+            this.lineNumber = lineNumber;
+        }
+    }
+    
+    private static class HeaderPosition {
+        final int startColumn;
+        final int endColumn;
+        final int lineNumber;
+        
+        HeaderPosition(int startColumn, int endColumn, int lineNumber) {
+            this.startColumn = startColumn;
+            this.endColumn = endColumn;
+            this.lineNumber = lineNumber;
         }
     }
 }
