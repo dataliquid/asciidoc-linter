@@ -11,6 +11,7 @@ import java.nio.file.Path;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -102,10 +103,14 @@ class UnderlineHighlightIntegrationTest {
         return stringWriter.toString();
     }
     
-    @Test
-    @DisplayName("should show underline for dlist term exceeding max length")
-    void shouldShowUnderlineForDlistTermExceedingMaxLength(@TempDir Path tempDir) throws IOException {
-        // Given - YAML rules with max length for dlist terms
+    @Nested
+    @DisplayName("DList Validation Tests")
+    class DlistValidationTests {
+        
+        @Test
+        @DisplayName("should show underline for dlist term exceeding max length")
+        void shouldShowUnderlineForDlistTermExceedingMaxLength(@TempDir Path tempDir) throws IOException {
+            // Given - YAML rules with max length for dlist terms
         String rules = """
             document:
               sections:
@@ -157,9 +162,9 @@ class UnderlineHighlightIntegrationTest {
         assertEquals(expectedOutput, actualOutput);
     }
     
-    @Test
-    @DisplayName("should show underline for dlist term below min length")
-    void shouldShowUnderlineForDlistTermBelowMinLength(@TempDir Path tempDir) throws IOException {
+        @Test
+        @DisplayName("should show underline for dlist term below min length")
+        void shouldShowUnderlineForDlistTermBelowMinLength(@TempDir Path tempDir) throws IOException {
         // Given - YAML rules with min length for dlist terms
         String rules = """
             document:
@@ -223,9 +228,9 @@ class UnderlineHighlightIntegrationTest {
     }
     
     
-    @Test
-    @DisplayName("should show underline for dlist term not matching pattern")
-    void shouldShowUnderlineForDlistTermNotMatchingPattern(@TempDir Path tempDir) throws IOException {
+        @Test
+        @DisplayName("should show underline for dlist term not matching pattern")
+        void shouldShowUnderlineForDlistTermNotMatchingPattern(@TempDir Path tempDir) throws IOException {
         // Given - YAML rules with pattern for dlist terms
         String rules = """
             document:
@@ -289,5 +294,6 @@ class UnderlineHighlightIntegrationTest {
             """, testFile.toString(), testFile.toString(), testFile.toString());
         
         assertEquals(expectedOutput, actualOutput);
+        }
     }
 }
