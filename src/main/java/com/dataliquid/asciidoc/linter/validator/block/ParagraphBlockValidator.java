@@ -11,6 +11,7 @@ import com.dataliquid.asciidoc.linter.config.blocks.ParagraphBlock;
 import com.dataliquid.asciidoc.linter.config.rule.OccurrenceConfig;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
 import com.dataliquid.asciidoc.linter.validator.ErrorType;
+import com.dataliquid.asciidoc.linter.validator.PlaceholderContext;
 import com.dataliquid.asciidoc.linter.validator.SourceLocation;
 import com.dataliquid.asciidoc.linter.report.console.FileContentCache;
 
@@ -121,6 +122,9 @@ public final class ParagraphBlockValidator extends AbstractBlockValidator<Paragr
                 .expectedValue("At least " + lineConfig.min() + " lines")
                 .errorType(ErrorType.MISSING_VALUE)
                 .missingValueHint("Add more content here...")
+                .placeholderContext(PlaceholderContext.builder()
+                    .type(PlaceholderContext.PlaceholderType.INSERT_BEFORE)
+                    .build())
                 .build());
         }
         
@@ -158,6 +162,11 @@ public final class ParagraphBlockValidator extends AbstractBlockValidator<Paragr
                     .message("Paragraph has too few sentences")
                     .actualValue("0")
                     .expectedValue("At least " + sentenceConfig.getOccurrence().min() + " sentences")
+                    .errorType(ErrorType.MISSING_VALUE)
+                    .missingValueHint("Add sentence content.")
+                    .placeholderContext(PlaceholderContext.builder()
+                        .type(PlaceholderContext.PlaceholderType.SIMPLE_VALUE)
+                        .build())
                     .build());
             }
             return;
@@ -223,6 +232,11 @@ public final class ParagraphBlockValidator extends AbstractBlockValidator<Paragr
                 .message("Paragraph has too few sentences")
                 .actualValue(String.valueOf(sentenceCount))
                 .expectedValue("At least " + occurrenceConfig.min() + " sentences")
+                .errorType(ErrorType.MISSING_VALUE)
+                .missingValueHint("Add more sentences.")
+                .placeholderContext(PlaceholderContext.builder()
+                    .type(PlaceholderContext.PlaceholderType.SIMPLE_VALUE)
+                    .build())
                 .build());
         }
         

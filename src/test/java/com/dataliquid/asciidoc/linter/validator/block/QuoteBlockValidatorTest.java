@@ -56,7 +56,7 @@ class QuoteBlockValidatorTest {
     
     @Nested
     @DisplayName("Author Validation Tests")
-    class AuthorValidationTests {
+    class AttributionValidationTests {
         
         @Test
         @DisplayName("should validate required author when missing")
@@ -67,7 +67,7 @@ class QuoteBlockValidatorTest {
             
             QuoteBlock block = QuoteBlock.builder()
                     .severity(Severity.WARN)
-                    .author(QuoteBlock.AuthorConfig.builder()
+                    .attribution(QuoteBlock.AttributionConfig.builder()
                             .required(true)
                             .severity(Severity.ERROR)
                             .build())
@@ -87,7 +87,7 @@ class QuoteBlockValidatorTest {
             
             QuoteBlock block = QuoteBlock.builder()
                     .severity(Severity.WARN)
-                    .author(QuoteBlock.AuthorConfig.builder()
+                    .attribution(QuoteBlock.AttributionConfig.builder()
                             .minLength(3)
                             .build())
                     .build();
@@ -109,7 +109,7 @@ class QuoteBlockValidatorTest {
             
             QuoteBlock block = QuoteBlock.builder()
                     .severity(Severity.INFO)
-                    .author(QuoteBlock.AuthorConfig.builder()
+                    .attribution(QuoteBlock.AttributionConfig.builder()
                             .maxLength(100)
                             .severity(Severity.ERROR)
                             .build())
@@ -131,7 +131,7 @@ class QuoteBlockValidatorTest {
             
             QuoteBlock block = QuoteBlock.builder()
                     .severity(Severity.WARN)
-                    .author(QuoteBlock.AuthorConfig.builder()
+                    .attribution(QuoteBlock.AttributionConfig.builder()
                             .pattern("^[A-Z][a-zA-Z\\s\\.\\-,]+$")
                             .build())
                     .build();
@@ -150,7 +150,7 @@ class QuoteBlockValidatorTest {
             
             QuoteBlock block = QuoteBlock.builder()
                     .severity(Severity.WARN)
-                    .author(QuoteBlock.AuthorConfig.builder()
+                    .attribution(QuoteBlock.AttributionConfig.builder()
                             .required(true)
                             .minLength(3)
                             .maxLength(100)
@@ -171,7 +171,7 @@ class QuoteBlockValidatorTest {
             
             QuoteBlock block = QuoteBlock.builder()
                     .severity(Severity.WARN)
-                    .author(QuoteBlock.AuthorConfig.builder()
+                    .attribution(QuoteBlock.AttributionConfig.builder()
                             .required(true)
                             .build())
                     .build();
@@ -184,7 +184,7 @@ class QuoteBlockValidatorTest {
     
     @Nested
     @DisplayName("Source Validation Tests")
-    class SourceValidationTests {
+    class CitationValidationTests {
         
         @Test
         @DisplayName("should validate required source when missing")
@@ -195,7 +195,7 @@ class QuoteBlockValidatorTest {
             
             QuoteBlock block = QuoteBlock.builder()
                     .severity(Severity.WARN)
-                    .source(QuoteBlock.SourceConfig.builder()
+                    .citation(QuoteBlock.CitationConfig.builder()
                             .required(true)
                             .severity(Severity.ERROR)
                             .build())
@@ -215,7 +215,7 @@ class QuoteBlockValidatorTest {
             
             QuoteBlock block = QuoteBlock.builder()
                     .severity(Severity.WARN)
-                    .source(QuoteBlock.SourceConfig.builder()
+                    .citation(QuoteBlock.CitationConfig.builder()
                             .pattern("^[A-Za-z0-9\\s,\\.\\-\\(\\)]+$")
                             .build())
                     .build();
@@ -235,7 +235,7 @@ class QuoteBlockValidatorTest {
             
             QuoteBlock block = QuoteBlock.builder()
                     .severity(Severity.WARN)
-                    .source(QuoteBlock.SourceConfig.builder()
+                    .citation(QuoteBlock.CitationConfig.builder()
                             .required(true)
                             .minLength(5)
                             .build())
@@ -368,7 +368,7 @@ class QuoteBlockValidatorTest {
             
             QuoteBlock block = QuoteBlock.builder()
                     .severity(Severity.INFO)  // Block level
-                    .author(QuoteBlock.AuthorConfig.builder()
+                    .attribution(QuoteBlock.AttributionConfig.builder()
                             .minLength(3)
                             .severity(Severity.ERROR)  // Nested level
                             .build())
@@ -387,7 +387,7 @@ class QuoteBlockValidatorTest {
             
             QuoteBlock block = QuoteBlock.builder()
                     .severity(Severity.WARN)  // Block level
-                    .source(QuoteBlock.SourceConfig.builder()
+                    .citation(QuoteBlock.CitationConfig.builder()
                             .minLength(3)
                             // No severity specified
                             .build())
@@ -414,14 +414,14 @@ class QuoteBlockValidatorTest {
             
             QuoteBlock block = QuoteBlock.builder()
                     .severity(Severity.INFO)
-                    .author(QuoteBlock.AuthorConfig.builder()
+                    .attribution(QuoteBlock.AttributionConfig.builder()
                             .required(true)
                             .minLength(3)
                             .maxLength(100)
                             .pattern("^[A-Z][a-zA-Z\\s\\.\\-,]+$")
                             .severity(Severity.ERROR)
                             .build())
-                    .source(QuoteBlock.SourceConfig.builder()
+                    .citation(QuoteBlock.CitationConfig.builder()
                             .required(false)
                             .minLength(5)
                             .maxLength(200)
@@ -451,10 +451,10 @@ class QuoteBlockValidatorTest {
             
             QuoteBlock block = QuoteBlock.builder()
                     .severity(Severity.WARN)
-                    .author(QuoteBlock.AuthorConfig.builder()
+                    .attribution(QuoteBlock.AttributionConfig.builder()
                             .minLength(3)
                             .build())
-                    .source(QuoteBlock.SourceConfig.builder()
+                    .citation(QuoteBlock.CitationConfig.builder()
                             .minLength(5)
                             .build())
                     .content(QuoteBlock.ContentConfig.builder()

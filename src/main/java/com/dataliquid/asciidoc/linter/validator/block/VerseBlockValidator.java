@@ -7,6 +7,9 @@ import org.asciidoctor.ast.StructuralNode;
 
 import com.dataliquid.asciidoc.linter.config.BlockType;
 import com.dataliquid.asciidoc.linter.config.blocks.VerseBlock;
+import com.dataliquid.asciidoc.linter.validator.ErrorType;
+import com.dataliquid.asciidoc.linter.validator.PlaceholderContext;
+import com.dataliquid.asciidoc.linter.validator.SourceLocation;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
 
 /**
@@ -107,13 +110,29 @@ public final class VerseBlockValidator extends AbstractBlockValidator<VerseBlock
         
         // Check if author is required
         if (config.isRequired() && (author == null || author.trim().isEmpty())) {
+            // Create location pointing to where author should be in [verse] line
+            SourceLocation verseLocation = context.createLocation(block);
+            // The [verse] line is typically one line before the block delimiter
+            SourceLocation authorLocation = SourceLocation.builder()
+                .filename(verseLocation.getFilename())
+                .startLine(verseLocation.getStartLine() - 1)  // [verse] line is before ____
+                .endLine(verseLocation.getStartLine() - 1)
+                .startColumn(7)  // After "[verse,"
+                .endColumn(7)
+                .build();
+                
             messages.add(ValidationMessage.builder()
                 .severity(verseConfig.getSeverity())
                 .ruleId("verse.author.required")
-                .location(context.createLocation(block))
-                .message("Verse block must have an author")
+                .location(authorLocation)
+                .message("Verse author is required but not provided")
                 .actualValue("No author")
                 .expectedValue("Author required")
+                .errorType(ErrorType.MISSING_VALUE)
+                .missingValueHint("author")
+                .placeholderContext(PlaceholderContext.builder()
+                    .type(PlaceholderContext.PlaceholderType.SIMPLE_VALUE)
+                    .build())
                 .build());
             return;
         }
@@ -124,7 +143,7 @@ public final class VerseBlockValidator extends AbstractBlockValidator<VerseBlock
                 messages.add(ValidationMessage.builder()
                     .severity(verseConfig.getSeverity())
                     .ruleId("verse.author.minLength")
-                    .location(context.createLocation(block))
+                    .location(context.createLocation(block, 1, 1))
                     .message("Verse author is too short")
                     .actualValue(author.length() + " characters")
                     .expectedValue("At least " + config.getMinLength() + " characters")
@@ -135,7 +154,7 @@ public final class VerseBlockValidator extends AbstractBlockValidator<VerseBlock
                 messages.add(ValidationMessage.builder()
                     .severity(verseConfig.getSeverity())
                     .ruleId("verse.author.maxLength")
-                    .location(context.createLocation(block))
+                    .location(context.createLocation(block, 1, 1))
                     .message("Verse author is too long")
                     .actualValue(author.length() + " characters")
                     .expectedValue("At most " + config.getMaxLength() + " characters")
@@ -148,7 +167,7 @@ public final class VerseBlockValidator extends AbstractBlockValidator<VerseBlock
                     messages.add(ValidationMessage.builder()
                         .severity(verseConfig.getSeverity())
                         .ruleId("verse.author.pattern")
-                        .location(context.createLocation(block))
+                        .location(context.createLocation(block, 1, 1))
                         .message("Verse author does not match required pattern")
                         .actualValue(author)
                         .expectedValue("Pattern: " + config.getPattern().pattern())
@@ -166,13 +185,29 @@ public final class VerseBlockValidator extends AbstractBlockValidator<VerseBlock
         
         // Check if attribution is required
         if (config.isRequired() && (attribution == null || attribution.trim().isEmpty())) {
+            // Create location pointing to where attribution should be in [verse] line
+            SourceLocation verseLocation = context.createLocation(block);
+            // The [verse] line is typically one line before the block delimiter
+            SourceLocation attributionLocation = SourceLocation.builder()
+                .filename(verseLocation.getFilename())
+                .startLine(verseLocation.getStartLine() - 1)  // [verse] line is before ____
+                .endLine(verseLocation.getStartLine() - 1)
+                .startColumn(7)  // After "[verse,"
+                .endColumn(7)
+                .build();
+                
             messages.add(ValidationMessage.builder()
                 .severity(verseConfig.getSeverity())
                 .ruleId("verse.attribution.required")
-                .location(context.createLocation(block))
-                .message("Verse block must have an attribution")
+                .location(attributionLocation)
+                .message("Verse attribution is required but not provided")
                 .actualValue("No attribution")
                 .expectedValue("Attribution required")
+                .errorType(ErrorType.MISSING_VALUE)
+                .missingValueHint("attribution")
+                .placeholderContext(PlaceholderContext.builder()
+                    .type(PlaceholderContext.PlaceholderType.SIMPLE_VALUE)
+                    .build())
                 .build());
             return;
         }
@@ -183,7 +218,7 @@ public final class VerseBlockValidator extends AbstractBlockValidator<VerseBlock
                 messages.add(ValidationMessage.builder()
                     .severity(verseConfig.getSeverity())
                     .ruleId("verse.attribution.minLength")
-                    .location(context.createLocation(block))
+                    .location(context.createLocation(block, 1, 1))
                     .message("Verse attribution is too short")
                     .actualValue(attribution.length() + " characters")
                     .expectedValue("At least " + config.getMinLength() + " characters")
@@ -194,7 +229,7 @@ public final class VerseBlockValidator extends AbstractBlockValidator<VerseBlock
                 messages.add(ValidationMessage.builder()
                     .severity(verseConfig.getSeverity())
                     .ruleId("verse.attribution.maxLength")
-                    .location(context.createLocation(block))
+                    .location(context.createLocation(block, 1, 1))
                     .message("Verse attribution is too long")
                     .actualValue(attribution.length() + " characters")
                     .expectedValue("At most " + config.getMaxLength() + " characters")
@@ -207,7 +242,7 @@ public final class VerseBlockValidator extends AbstractBlockValidator<VerseBlock
                     messages.add(ValidationMessage.builder()
                         .severity(verseConfig.getSeverity())
                         .ruleId("verse.attribution.pattern")
-                        .location(context.createLocation(block))
+                        .location(context.createLocation(block, 1, 1))
                         .message("Verse attribution does not match required pattern")
                         .actualValue(attribution)
                         .expectedValue("Pattern: " + config.getPattern().pattern())
@@ -225,13 +260,28 @@ public final class VerseBlockValidator extends AbstractBlockValidator<VerseBlock
         
         // Check if content is required
         if (config.isRequired() && (content == null || content.trim().isEmpty())) {
+            // Report error on the [verse] line, not the block delimiter
+            SourceLocation verseLocation = context.createLocation(block, 1, 1);
+            SourceLocation contentLocation = SourceLocation.builder()
+                .filename(verseLocation.getFilename())
+                .startLine(verseLocation.getStartLine() - 1)  // [verse] line is before ____
+                .endLine(verseLocation.getStartLine() - 1)
+                .startColumn(1)
+                .endColumn(1)
+                .build();
+                
             messages.add(ValidationMessage.builder()
                 .severity(verseConfig.getSeverity())
                 .ruleId("verse.content.required")
-                .location(context.createLocation(block))
-                .message("Verse block must have content")
+                .location(contentLocation)
+                .message("Verse block requires content")
                 .actualValue("No content")
                 .expectedValue("Content required")
+                .errorType(ErrorType.MISSING_VALUE)
+                .missingValueHint("Content")
+                .placeholderContext(PlaceholderContext.builder()
+                    .type(PlaceholderContext.PlaceholderType.INSERT_BEFORE)
+                    .build())
                 .build());
             return;
         }
@@ -242,7 +292,7 @@ public final class VerseBlockValidator extends AbstractBlockValidator<VerseBlock
             messages.add(ValidationMessage.builder()
                 .severity(verseConfig.getSeverity())
                 .ruleId("verse.content.minLength")
-                .location(context.createLocation(block))
+                .location(context.createLocation(block, 1, 1))
                 .message("Verse content is too short")
                 .actualValue(contentLength + " characters")
                 .expectedValue("At least " + config.getMinLength() + " characters")
@@ -254,7 +304,7 @@ public final class VerseBlockValidator extends AbstractBlockValidator<VerseBlock
                 messages.add(ValidationMessage.builder()
                     .severity(verseConfig.getSeverity())
                     .ruleId("verse.content.maxLength")
-                    .location(context.createLocation(block))
+                    .location(context.createLocation(block, 1, 1))
                     .message("Verse content is too long")
                     .actualValue(content.length() + " characters")
                     .expectedValue("At most " + config.getMaxLength() + " characters")
@@ -267,7 +317,7 @@ public final class VerseBlockValidator extends AbstractBlockValidator<VerseBlock
                     messages.add(ValidationMessage.builder()
                         .severity(verseConfig.getSeverity())
                         .ruleId("verse.content.pattern")
-                        .location(context.createLocation(block))
+                        .location(context.createLocation(block, 1, 1))
                         .message("Verse content does not match required pattern")
                         .actualValue(content.substring(0, Math.min(content.length(), 50)) + "...")
                         .expectedValue("Pattern: " + config.getPattern().pattern())

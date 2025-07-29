@@ -56,6 +56,10 @@ properties:
       required:
         type: boolean
         description: Whether author is required
+      severity:
+        type: string
+        enum: [error, warn, info]
+        description: Severity for author violations
     additionalProperties: false
   attribution:
     type: object
@@ -79,6 +83,10 @@ properties:
       required:
         type: boolean
         description: Whether attribution is required
+      severity:
+        type: string
+        enum: [error, warn, info]
+        description: Severity for attribution violations
     additionalProperties: false
   content:
     type: object
@@ -99,6 +107,10 @@ properties:
       required:
         type: boolean
         description: Whether content is required
+      severity:
+        type: string
+        enum: [error, warn, info]
+        description: Severity for content violations
     additionalProperties: false
 required: [severity]
 additionalProperties: false

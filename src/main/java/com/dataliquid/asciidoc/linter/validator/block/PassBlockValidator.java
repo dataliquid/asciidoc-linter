@@ -8,6 +8,8 @@ import org.asciidoctor.ast.StructuralNode;
 import com.dataliquid.asciidoc.linter.config.BlockType;
 import com.dataliquid.asciidoc.linter.config.Severity;
 import com.dataliquid.asciidoc.linter.config.blocks.PassBlock;
+import com.dataliquid.asciidoc.linter.validator.ErrorType;
+import com.dataliquid.asciidoc.linter.validator.PlaceholderContext;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
 
 /**
@@ -110,10 +112,15 @@ public final class PassBlockValidator extends AbstractBlockValidator<PassBlock> 
             messages.add(ValidationMessage.builder()
                 .severity(severity)
                 .ruleId("pass.type.required")
-                .location(context.createLocation(block))
-                .message("Pass block must specify a type via pass-type attribute")
+                .location(context.createLocation(block, 1, 1))
+                .message("Pass block requires a type")
                 .actualValue("No type specified")
                 .expectedValue("Type required (pass-type attribute)")
+                .errorType(ErrorType.MISSING_VALUE)
+                .missingValueHint("pass::[html]")
+                .placeholderContext(PlaceholderContext.builder()
+                    .type(PlaceholderContext.PlaceholderType.INSERT_BEFORE)
+                    .build())
                 .build());
         }
         
@@ -123,7 +130,7 @@ public final class PassBlockValidator extends AbstractBlockValidator<PassBlock> 
                 messages.add(ValidationMessage.builder()
                     .severity(severity)
                     .ruleId("pass.type.allowed")
-                    .location(context.createLocation(block))
+                    .location(context.createLocation(block, 1, 1))
                     .message("Pass block has unsupported type")
                     .actualValue(passType)
                     .expectedValue("One of: " + String.join(", ", config.getAllowed()))
@@ -146,10 +153,15 @@ public final class PassBlockValidator extends AbstractBlockValidator<PassBlock> 
             messages.add(ValidationMessage.builder()
                 .severity(severity)
                 .ruleId("pass.content.required")
-                .location(context.createLocation(block))
-                .message("Pass block must have content")
+                .location(context.createLocation(block, 1, 1))
+                .message("Pass block requires content")
                 .actualValue("No content")
                 .expectedValue("Content required")
+                .errorType(ErrorType.MISSING_VALUE)
+                .missingValueHint("Content")
+                .placeholderContext(PlaceholderContext.builder()
+                    .type(PlaceholderContext.PlaceholderType.INSERT_BEFORE)
+                    .build())
                 .build());
             return;
         }
@@ -161,7 +173,7 @@ public final class PassBlockValidator extends AbstractBlockValidator<PassBlock> 
                 messages.add(ValidationMessage.builder()
                     .severity(severity)
                     .ruleId("pass.content.maxLength")
-                    .location(context.createLocation(block))
+                    .location(context.createLocation(block, 1, 1))
                     .message("Pass block content exceeds maximum length")
                     .actualValue(contentLength + " characters")
                     .expectedValue("Maximum " + config.getMaxLength() + " characters")
@@ -175,7 +187,7 @@ public final class PassBlockValidator extends AbstractBlockValidator<PassBlock> 
                 messages.add(ValidationMessage.builder()
                     .severity(severity)
                     .ruleId("pass.content.pattern")
-                    .location(context.createLocation(block))
+                    .location(context.createLocation(block, 1, 1))
                     .message("Pass block content does not match required pattern")
                     .actualValue("Content does not match pattern")
                     .expectedValue("Pattern: " + config.getPattern().pattern())
@@ -198,10 +210,15 @@ public final class PassBlockValidator extends AbstractBlockValidator<PassBlock> 
             messages.add(ValidationMessage.builder()
                 .severity(severity)
                 .ruleId("pass.reason.required")
-                .location(context.createLocation(block))
-                .message("Pass block must provide reason via pass-reason attribute")
+                .location(context.createLocation(block, 1, 1))
+                .message("Pass block requires a reason")
                 .actualValue("No reason provided")
                 .expectedValue("Reason required (pass-reason attribute)")
+                .errorType(ErrorType.MISSING_VALUE)
+                .missingValueHint("// reason: explanation")
+                .placeholderContext(PlaceholderContext.builder()
+                    .type(PlaceholderContext.PlaceholderType.INSERT_BEFORE)
+                    .build())
                 .build());
             return;
         }
@@ -214,7 +231,7 @@ public final class PassBlockValidator extends AbstractBlockValidator<PassBlock> 
                 messages.add(ValidationMessage.builder()
                     .severity(severity)
                     .ruleId("pass.reason.minLength")
-                    .location(context.createLocation(block))
+                    .location(context.createLocation(block, 1, 1))
                     .message("Pass block reason is too short")
                     .actualValue(reasonLength + " characters")
                     .expectedValue("At least " + config.getMinLength() + " characters")
@@ -226,7 +243,7 @@ public final class PassBlockValidator extends AbstractBlockValidator<PassBlock> 
                 messages.add(ValidationMessage.builder()
                     .severity(severity)
                     .ruleId("pass.reason.maxLength")
-                    .location(context.createLocation(block))
+                    .location(context.createLocation(block, 1, 1))
                     .message("Pass block reason is too long")
                     .actualValue(reasonLength + " characters")
                     .expectedValue("At most " + config.getMaxLength() + " characters")

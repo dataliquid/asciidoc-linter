@@ -48,6 +48,14 @@ public class ContextRenderer {
         int startLine = Math.max(1, loc.getStartLine() - config.getContextLines());
         int endLine = Math.min(fileLines.size(), loc.getEndLine() + config.getContextLines());
         
+        // For verse blocks, ensure we include the closing delimiter
+        if (("verse.author.required".equals(message.getRuleId()) || 
+             "verse.attribution.required".equals(message.getRuleId())) &&
+            endLine < fileLines.size()) {
+            // Extend by one more line to include closing ____
+            endLine = Math.min(fileLines.size(), endLine + 1);
+        }
+        
         // Ensure valid bounds for subList
         int fromIndex = Math.max(0, Math.min(startLine - 1, fileLines.size()));
         int toIndex = Math.max(fromIndex, Math.min(endLine, fileLines.size()));
@@ -103,6 +111,163 @@ public class ContextRenderer {
             return createContextWithCaptionLine(contextLines, startLine, loc);
         }
         
+        // For example.caption.required errors, add an extra line before the example block
+        if ("example.caption.required".equals(message.getRuleId()) && 
+            message.getErrorType() == ErrorType.MISSING_VALUE) {
+            // Insert empty line at the position where caption should be
+            int exampleLineIndex = loc.getStartLine() - startLine;
+            if (exampleLineIndex >= 0 && exampleLineIndex <= contextLines.size()) {
+                contextLines.add(exampleLineIndex, "");
+            }
+            // Create a special SourceContext that marks the inserted line as error line
+            return createContextWithCaptionLine(contextLines, startLine, loc);
+        }
+        
+        // For example.collapsible.required errors, add an extra line before the example block
+        if ("example.collapsible.required".equals(message.getRuleId()) && 
+            message.getErrorType() == ErrorType.MISSING_VALUE) {
+            // Insert empty line at the position where collapsible attribute should be
+            int exampleLineIndex = loc.getStartLine() - startLine;
+            if (exampleLineIndex >= 0 && exampleLineIndex <= contextLines.size()) {
+                contextLines.add(exampleLineIndex, "");
+            }
+            // Create a special SourceContext that marks the inserted line as error line
+            return createContextWithCaptionLine(contextLines, startLine, loc);
+        }
+        
+        // For admonition.title.required errors, add an extra line before the admonition block
+        if ("admonition.title.required".equals(message.getRuleId()) && 
+            message.getErrorType() == ErrorType.MISSING_VALUE) {
+            // Insert empty line at the position where title should be (before [NOTE])
+            int admonitionLineIndex = loc.getStartLine() - startLine - 1;
+            if (admonitionLineIndex >= 0 && admonitionLineIndex <= contextLines.size()) {
+                contextLines.add(admonitionLineIndex, "");
+            }
+            
+            // Create context with the inserted line marked as error
+            List<SourceContext.ContextLine> lines = new ArrayList<>();
+            int lineNum = startLine;
+            for (int i = 0; i < contextLines.size(); i++) {
+                String content = contextLines.get(i);
+                boolean isErrorLine = (i == admonitionLineIndex); // Mark the inserted empty line as error
+                lines.add(new SourceContext.ContextLine(lineNum, content, isErrorLine));
+                lineNum++;
+            }
+            return new SourceContext(lines, loc);
+        }
+        
+        // For admonition.content.required errors, add an extra line inside the admonition block
+        if ("admonition.content.required".equals(message.getRuleId()) && 
+            message.getErrorType() == ErrorType.MISSING_VALUE) {
+            // Find the line after the opening delimiter (====)
+            int admonitionLineIndex = loc.getStartLine() - startLine;
+            int insertedLineIndex = -1;
+            // Look for the opening delimiter and insert after it
+            for (int i = admonitionLineIndex; i < contextLines.size(); i++) {
+                if (contextLines.get(i).trim().equals("====")) {
+                    contextLines.add(i + 1, "");
+                    insertedLineIndex = i + 1;
+                    break;
+                }
+            }
+            
+            // Create context with the inserted line marked as error
+            List<SourceContext.ContextLine> lines = new ArrayList<>();
+            int lineNum = startLine;
+            for (int i = 0; i < contextLines.size(); i++) {
+                String content = contextLines.get(i);
+                boolean isErrorLine = (i == insertedLineIndex); // Mark the inserted empty line as error
+                lines.add(new SourceContext.ContextLine(lineNum, content, isErrorLine));
+                lineNum++;
+            }
+            return new SourceContext(lines, loc);
+        }
+        
+        // For admonition.icon.required errors, add an extra line before the document content
+        if ("admonition.icon.required".equals(message.getRuleId()) && 
+            message.getErrorType() == ErrorType.MISSING_VALUE) {
+            // Icon directive should go in the document header, after the title
+            // Find the line after the document title (line starting with =)
+            for (int i = 0; i < contextLines.size(); i++) {
+                if (contextLines.get(i).trim().startsWith("=") && !contextLines.get(i).trim().startsWith("==")) {
+                    // Insert after the title line
+                    contextLines.add(i + 1, "");
+                    break;
+                }
+            }
+            // Create a special SourceContext that marks the inserted line as error line
+            return createContextWithCaptionLine(contextLines, startLine, loc);
+        }
+        
+        // For sidebar.title.required errors, add an extra line before the sidebar block
+        if ("sidebar.title.required".equals(message.getRuleId()) && 
+            message.getErrorType() == ErrorType.MISSING_VALUE) {
+            // Insert empty line at the position where title should be (before ****)
+            int sidebarLineIndex = loc.getStartLine() - startLine - 1;
+            if (sidebarLineIndex >= 0 && sidebarLineIndex <= contextLines.size()) {
+                contextLines.add(sidebarLineIndex, "");
+            }
+            
+            // Create context with the inserted line marked as error
+            List<SourceContext.ContextLine> lines = new ArrayList<>();
+            int lineNum = startLine;
+            for (int i = 0; i < contextLines.size(); i++) {
+                String content = contextLines.get(i);
+                boolean isErrorLine = (i == sidebarLineIndex); // Mark the inserted empty line as error
+                lines.add(new SourceContext.ContextLine(lineNum, content, isErrorLine));
+                lineNum++;
+            }
+            return new SourceContext(lines, loc);
+        }
+        
+        // For sidebar.content.required errors, add an extra line inside the sidebar block
+        if ("sidebar.content.required".equals(message.getRuleId()) && 
+            message.getErrorType() == ErrorType.MISSING_VALUE) {
+            // Find the line after the opening delimiter (****)
+            int sidebarLineIndex = loc.getStartLine() - startLine;
+            int insertedLineIndex = -1;
+            // Look for the opening delimiter and insert after it
+            for (int i = sidebarLineIndex; i < contextLines.size(); i++) {
+                if (contextLines.get(i).trim().equals("****")) {
+                    contextLines.add(i + 1, "");
+                    insertedLineIndex = i + 1;
+                    break;
+                }
+            }
+            
+            // Create context with the inserted line marked as error
+            List<SourceContext.ContextLine> lines = new ArrayList<>();
+            int lineNum = startLine;
+            for (int i = 0; i < contextLines.size(); i++) {
+                String content = contextLines.get(i);
+                boolean isErrorLine = (i == insertedLineIndex); // Mark the inserted empty line as error
+                lines.add(new SourceContext.ContextLine(lineNum, content, isErrorLine));
+                lineNum++;
+            }
+            return new SourceContext(lines, loc);
+        }
+        
+        // For sidebar.position.required errors, add an extra line before the sidebar block
+        if ("sidebar.position.required".equals(message.getRuleId()) && 
+            message.getErrorType() == ErrorType.MISSING_VALUE) {
+            // Insert empty line at the position where position attribute should be (before ****)
+            int sidebarLineIndex = loc.getStartLine() - startLine;
+            if (sidebarLineIndex >= 0 && sidebarLineIndex <= contextLines.size()) {
+                contextLines.add(sidebarLineIndex, "");
+            }
+            
+            // Create context with the inserted line marked as error
+            List<SourceContext.ContextLine> lines = new ArrayList<>();
+            int lineNum = startLine;
+            for (int i = 0; i < contextLines.size(); i++) {
+                String content = contextLines.get(i);
+                boolean isErrorLine = (i == sidebarLineIndex); // Mark the inserted empty line as error
+                lines.add(new SourceContext.ContextLine(lineNum, content, isErrorLine));
+                lineNum++;
+            }
+            return new SourceContext(lines, loc);
+        }
+        
         // For table.header.required errors, add an extra line after |===
         if ("table.header.required".equals(message.getRuleId()) && 
             message.getErrorType() == ErrorType.MISSING_VALUE) {
@@ -113,6 +278,147 @@ public class ContextRenderer {
             }
             // Create a special SourceContext that marks the inserted line as error line
             return createContextWithCaptionLine(contextLines, startLine, loc);
+        }
+        
+        // For verse.author.required and verse.attribution.required errors, 
+        // don't add extra lines - the placeholders will be inserted inline in the [verse] line
+        
+        // For verse.content.required errors, add an extra line inside the verse block
+        if ("verse.content.required".equals(message.getRuleId()) && 
+            message.getErrorType() == ErrorType.MISSING_VALUE) {
+            // Find the line after the opening delimiter (____)
+            int verseLineIndex = loc.getStartLine() - startLine;
+            int insertedLineIndex = -1;
+            // Look for the opening delimiter and insert after it
+            for (int i = verseLineIndex; i < contextLines.size(); i++) {
+                if (contextLines.get(i).trim().equals("____")) {
+                    contextLines.add(i + 1, "");
+                    insertedLineIndex = i + 1;
+                    break;
+                }
+            }
+            
+            // Create context with the inserted line marked as error
+            List<SourceContext.ContextLine> lines = new ArrayList<>();
+            int lineNum = startLine;
+            for (int i = 0; i < contextLines.size(); i++) {
+                String content = contextLines.get(i);
+                boolean isErrorLine = (i == insertedLineIndex); // Mark the inserted empty line as error
+                lines.add(new SourceContext.ContextLine(lineNum, content, isErrorLine));
+                lineNum++;
+            }
+            return new SourceContext(lines, loc);
+        }
+        
+        // For dlist.descriptions.required errors, don't add extra lines
+        // The placeholder will be inserted inline in the term line
+        
+        // For pass.content.required errors, add an extra line inside the pass block
+        if ("pass.content.required".equals(message.getRuleId()) && 
+            message.getErrorType() == ErrorType.MISSING_VALUE) {
+            // Find the line after the opening delimiter (++++)
+            int passLineIndex = loc.getStartLine() - startLine;
+            int insertedLineIndex = -1;
+            // Look for the opening delimiter and insert after it
+            for (int i = passLineIndex; i < contextLines.size(); i++) {
+                if (contextLines.get(i).trim().equals("++++")) {
+                    contextLines.add(i + 1, "");
+                    insertedLineIndex = i + 1;
+                    break;
+                }
+            }
+            
+            // Create context with the inserted line marked as error
+            List<SourceContext.ContextLine> lines = new ArrayList<>();
+            int lineNum = startLine;
+            for (int i = 0; i < contextLines.size(); i++) {
+                String content = contextLines.get(i);
+                boolean isErrorLine = (i == insertedLineIndex); // Mark the inserted empty line as error
+                lines.add(new SourceContext.ContextLine(lineNum, content, isErrorLine));
+                lineNum++;
+            }
+            return new SourceContext(lines, loc);
+        }
+        
+        // For pass.reason.required errors, add an extra line before the pass block
+        if ("pass.reason.required".equals(message.getRuleId()) && 
+            message.getErrorType() == ErrorType.MISSING_VALUE) {
+            // Insert empty line at the position where reason should be
+            int passLineIndex = loc.getStartLine() - startLine;
+            if (passLineIndex >= 0 && passLineIndex <= contextLines.size()) {
+                contextLines.add(passLineIndex, "");
+            }
+            // Create a special SourceContext that marks the inserted line as error line
+            return createContextWithCaptionLine(contextLines, startLine, loc);
+        }
+        
+        // For pass.type.required errors, add an extra line before the pass block
+        if ("pass.type.required".equals(message.getRuleId()) && 
+            message.getErrorType() == ErrorType.MISSING_VALUE) {
+            // Insert empty line at the position where type should be
+            int passLineIndex = loc.getStartLine() - startLine;
+            if (passLineIndex >= 0 && passLineIndex <= contextLines.size()) {
+                contextLines.add(passLineIndex, "");
+            }
+            // Create a special SourceContext that marks the inserted line as error line
+            return createContextWithCaptionLine(contextLines, startLine, loc);
+        }
+        
+        // For literal.title.required errors, add an extra line before the literal block
+        if ("literal.title.required".equals(message.getRuleId()) && 
+            message.getErrorType() == ErrorType.MISSING_VALUE) {
+            // Insert empty line at the position where title should be (before ....)
+            int literalLineIndex = loc.getStartLine() - startLine;
+            if (literalLineIndex >= 0 && literalLineIndex <= contextLines.size()) {
+                contextLines.add(literalLineIndex, "");
+            }
+            
+            // Create context with the inserted line marked as error
+            List<SourceContext.ContextLine> lines = new ArrayList<>();
+            int lineNum = startLine;
+            for (int i = 0; i < contextLines.size(); i++) {
+                String content = contextLines.get(i);
+                boolean isErrorLine = (i == literalLineIndex); // Mark the inserted empty line as error
+                lines.add(new SourceContext.ContextLine(lineNum, content, isErrorLine));
+                lineNum++;
+            }
+            return new SourceContext(lines, loc);
+        }
+        
+        // For ulist.items.min errors, add an extra line after the last item
+        if ("ulist.items.min".equals(message.getRuleId()) && 
+            message.getErrorType() == ErrorType.MISSING_VALUE) {
+            // Find the position after the last item in the list
+            int ulistLineIndex = loc.getStartLine() - startLine;
+            if (ulistLineIndex >= 0 && ulistLineIndex < contextLines.size()) {
+                // Insert after the current line (which should be the last item)
+                contextLines.add(ulistLineIndex + 1, "");
+            }
+            
+            // Create context with the inserted line marked as error
+            List<SourceContext.ContextLine> lines = new ArrayList<>();
+            int lineNum = startLine;
+            for (int i = 0; i < contextLines.size(); i++) {
+                String content = contextLines.get(i);
+                boolean isErrorLine = (i == ulistLineIndex + 1); // Mark the inserted empty line as error
+                lines.add(new SourceContext.ContextLine(lineNum, content, isErrorLine));
+                lineNum++;
+            }
+            return new SourceContext(lines, loc);
+        }
+        
+        // For ulist.markerStyle errors, show corrected markers in context lines
+        if ("ulist.markerStyle".equals(message.getRuleId()) && 
+            message.getExpectedValue().isPresent()) {
+            String expectedMarker = message.getExpectedValue().get();
+            // Replace all list item markers with the expected marker
+            for (int i = 0; i < contextLines.size(); i++) {
+                String line = contextLines.get(i);
+                if (line.trim().startsWith("*") || line.trim().startsWith("-")) {
+                    // Replace the first occurrence of * or - with the expected marker
+                    contextLines.set(i, line.replaceFirst("[*-]", expectedMarker));
+                }
+            }
         }
         
         // For quote.attribution.required or quote.citation.required, don't add extra lines

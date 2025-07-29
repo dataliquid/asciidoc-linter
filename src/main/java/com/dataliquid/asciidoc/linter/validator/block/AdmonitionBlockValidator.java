@@ -8,6 +8,8 @@ import org.asciidoctor.ast.StructuralNode;
 import com.dataliquid.asciidoc.linter.config.BlockType;
 import com.dataliquid.asciidoc.linter.config.Severity;
 import com.dataliquid.asciidoc.linter.config.blocks.AdmonitionBlock;
+import com.dataliquid.asciidoc.linter.validator.ErrorType;
+import com.dataliquid.asciidoc.linter.validator.PlaceholderContext;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
 
 /**
@@ -162,9 +164,14 @@ public final class AdmonitionBlockValidator extends AbstractBlockValidator<Admon
                 .severity(severity)
                 .ruleId("admonition.title.required")
                 .location(context.createLocation(block))
-                .message("Admonition block must have a title")
+                .message("Admonition block requires a title")
                 .actualValue("No title")
                 .expectedValue("Title required")
+                .errorType(ErrorType.MISSING_VALUE)
+                .missingValueHint(".Title")
+                .placeholderContext(PlaceholderContext.builder()
+                    .type(PlaceholderContext.PlaceholderType.INSERT_BEFORE)
+                    .build())
                 .build());
             return;
         }
@@ -223,9 +230,14 @@ public final class AdmonitionBlockValidator extends AbstractBlockValidator<Admon
                 .severity(severity)
                 .ruleId("admonition.content.required")
                 .location(context.createLocation(block))
-                .message("Admonition block must have content")
+                .message("Admonition block requires content")
                 .actualValue("No content")
                 .expectedValue("Content required")
+                .errorType(ErrorType.MISSING_VALUE)
+                .missingValueHint("Content")
+                .placeholderContext(PlaceholderContext.builder()
+                    .type(PlaceholderContext.PlaceholderType.INSERT_BEFORE)
+                    .build())
                 .build());
             return;
         }
@@ -316,9 +328,14 @@ public final class AdmonitionBlockValidator extends AbstractBlockValidator<Admon
                 .severity(severity)
                 .ruleId("admonition.icon.required")
                 .location(context.createLocation(block))
-                .message("Admonition block must have an icon")
+                .message("Admonition block requires an icon")
                 .actualValue("No icon")
                 .expectedValue("Icon required")
+                .errorType(ErrorType.MISSING_VALUE)
+                .missingValueHint(":icons: font")
+                .placeholderContext(PlaceholderContext.builder()
+                    .type(PlaceholderContext.PlaceholderType.INSERT_BEFORE)
+                    .build())
                 .build());
         }
         

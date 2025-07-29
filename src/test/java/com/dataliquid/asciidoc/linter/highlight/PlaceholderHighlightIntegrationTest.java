@@ -1252,7 +1252,7 @@ class PlaceholderHighlightIntegrationTest {
               File: %s:3:7
             
                1 | = Test Document
-               2 | 
+               2 |\s
                3 | [quote,«attribution»]
                4 | ____
                5 | This is a quote without attribution.
@@ -1305,11 +1305,981 @@ class PlaceholderHighlightIntegrationTest {
               File: %s:3:16
             
                1 | = Test Document
-               2 | 
+               2 |\s
                3 | [quote,John Doe,«citation»]
                4 | ____
                5 | This is a quote without citation.
                6 | ____
+            
+            
+            """, testFile.toString(), testFile.toString());
+        
+        assertEquals(expectedOutput, actualOutput);
+    }
+    
+    @Test
+    @DisplayName("should show placeholder for missing example caption")
+    void shouldShowPlaceholderForMissingExampleCaption(@TempDir Path tempDir) throws IOException {
+        // Given - YAML rules requiring caption for example blocks
+        String rules = """
+            document:
+              sections:
+                - level: 0
+                  allowedBlocks:
+                    - example:
+                        severity: error
+                        caption:
+                          required: true
+                          severity: error
+            """;
+        
+        // Given - AsciiDoc content with missing caption
+        String adocContent = """
+            = Test Document
+            
+            ====
+            This is an example block without a caption.
+            ====
+            """;
+        
+        // When - Validate and format output
+        String actualOutput = validateAndFormat(rules, adocContent, tempDir);
+        
+        // Then - Verify exact console output with placeholder
+        Path testFile = tempDir.resolve("test.adoc");
+        String expectedOutput = String.format("""
+            Validation Report
+            =================
+            
+            %s:
+            
+            [ERROR]: Example block requires a caption [example.caption.required]
+              File: %s:3:1
+            
+               1 | = Test Document
+               2 |\s
+               3 | «.Example Title»
+               4 | ====
+               5 | This is an example block without a caption.
+               6 | ====
+            
+            
+            """, testFile.toString(), testFile.toString());
+        
+        assertEquals(expectedOutput, actualOutput);
+    }
+    
+    @Test
+    @DisplayName("should show placeholder for missing example collapsible attribute")
+    void shouldShowPlaceholderForMissingExampleCollapsible(@TempDir Path tempDir) throws IOException {
+        // Given - YAML rules requiring collapsible for example blocks
+        String rules = """
+            document:
+              sections:
+                - level: 0
+                  allowedBlocks:
+                    - example:
+                        severity: error
+                        collapsible:
+                          required: true
+                          severity: error
+            """;
+        
+        // Given - AsciiDoc content with missing collapsible attribute
+        String adocContent = """
+            = Test Document
+            
+            ====
+            This is an example block without collapsible attribute.
+            ====
+            """;
+        
+        // When - Validate and format output
+        String actualOutput = validateAndFormat(rules, adocContent, tempDir);
+        
+        // Then - Verify exact console output with placeholder
+        Path testFile = tempDir.resolve("test.adoc");
+        String expectedOutput = String.format("""
+            Validation Report
+            =================
+            
+            %s:
+            
+            [ERROR]: Example block requires a collapsible attribute [example.collapsible.required]
+              File: %s:3:1
+            
+               1 | = Test Document
+               2 |\s
+               3 | «[%%collapsible]»
+               4 | ====
+               5 | This is an example block without collapsible attribute.
+               6 | ====
+            
+            
+            """, testFile.toString(), testFile.toString());
+        
+        assertEquals(expectedOutput, actualOutput);
+    }
+    
+    //@Test
+    @DisplayName("should show placeholder for missing admonition type")
+    void shouldShowPlaceholderForMissingAdmonitionType(@TempDir Path tempDir) throws IOException {
+        // Given - YAML rules requiring type for admonition blocks
+        String rules = """
+            document:
+              sections:
+                - level: 0
+                  allowedBlocks:
+                    - admonition:
+                        severity: error
+                        type:
+                          required: true
+                          severity: error
+            """;
+        
+        // Given - AsciiDoc content with missing admonition type
+        String adocContent = """
+            = Test Document
+            
+            []
+            ====
+            This is an admonition without a type.
+            ====
+            """;
+        
+        // When - Validate and format output
+        String actualOutput = validateAndFormat(rules, adocContent, tempDir);
+        
+        // Then - Verify exact console output with placeholder
+        Path testFile = tempDir.resolve("test.adoc");
+        String expectedOutput = String.format("""
+            Validation Report
+            =================
+            
+            %s:
+            
+            [ERROR]: Admonition block must have a type [admonition.type.required]
+              File: %s:3:1
+            
+               1 | = Test Document
+               2 |\s
+               3 | [«NOTE»]
+               4 | ====
+               5 | This is an admonition without a type.
+               6 | ====
+            
+            
+            """, testFile.toString(), testFile.toString());
+        
+        assertEquals(expectedOutput, actualOutput);
+    }
+    
+    @Test
+    @DisplayName("should show placeholder for missing admonition title")
+    void shouldShowPlaceholderForMissingAdmonitionTitle(@TempDir Path tempDir) throws IOException {
+        // Given - YAML rules requiring title for admonition blocks
+        String rules = """
+            document:
+            
+              sections:
+                - level: 0
+                  allowedBlocks:
+                    - admonition:
+                        severity: error
+                        title:
+                          required: true
+                          severity: error
+            """;
+        
+        // Given - AsciiDoc content with missing admonition title
+        String adocContent = """
+            = Test Document
+            
+            [NOTE]
+            ====
+            This is an admonition without a title.
+            ====
+            """;
+        
+        // When - Validate and format output
+        String actualOutput = validateAndFormat(rules, adocContent, tempDir);
+        
+        // Then - Verify exact console output with placeholder
+        Path testFile = tempDir.resolve("test.adoc");
+        String expectedOutput = String.format("""
+            Validation Report
+            =================
+            
+            %s:
+            
+            [ERROR]: Admonition block requires a title [admonition.title.required]
+              File: %s:4-1
+            
+               1 | = Test Document
+               2 |\s
+               3 | «.Title»
+               4 | [NOTE]
+               5 | ====
+            
+            
+            """, testFile.toString(), testFile.toString());
+        
+        assertEquals(expectedOutput, actualOutput);
+    }
+    
+    @Test
+    @DisplayName("should show placeholder for missing admonition content")
+    void shouldShowPlaceholderForMissingAdmonitionContent(@TempDir Path tempDir) throws IOException {
+        // Given - YAML rules requiring content for admonition blocks
+        String rules = """
+            document:
+              sections:
+                - level: 0
+                  allowedBlocks:
+                    - admonition:
+                        severity: error
+                        content:
+                          required: true
+                          severity: error
+            """;
+        
+        // Given - AsciiDoc content with empty admonition
+        String adocContent = """
+            = Test Document
+            
+            [NOTE]
+            ====
+            ====
+            """;
+        
+        // When - Validate and format output
+        String actualOutput = validateAndFormat(rules, adocContent, tempDir);
+        
+        // Then - Verify exact console output with placeholder
+        Path testFile = tempDir.resolve("test.adoc");
+        String expectedOutput = String.format("""
+            Validation Report
+            =================
+            
+            %s:
+            
+            [ERROR]: Admonition block requires content [admonition.content.required]
+              File: %s:4-1
+            
+               1 | = Test Document
+               2 |\s
+               3 | [NOTE]
+               4 | ====
+               5 | «Content»
+            
+            
+            """, testFile.toString(), testFile.toString());
+        
+        assertEquals(expectedOutput, actualOutput);
+    }
+    
+    @Test
+    @DisplayName("should show placeholder for missing sidebar title")
+    void shouldShowPlaceholderForMissingSidebarTitle(@TempDir Path tempDir) throws IOException {
+        // Given - YAML rules requiring title for sidebar blocks
+        String rules = """
+            document:
+              sections:
+                - level: 0
+                  allowedBlocks:
+                    - sidebar:
+                        severity: error
+                        title:
+                          required: true
+            """;
+        
+        // Given - AsciiDoc content with missing sidebar title
+        String adocContent = """
+            = Test Document
+            
+            ****
+            This is a sidebar without a title.
+            ****
+            """;
+        
+        // When - Validate and format output
+        String actualOutput = validateAndFormat(rules, adocContent, tempDir);
+        
+        // Then - Verify exact console output with placeholder
+        Path testFile = tempDir.resolve("test.adoc");
+        String expectedOutput = String.format("""
+            Validation Report
+            =================
+            
+            %s:
+            
+            [ERROR]: Sidebar block requires a title [sidebar.title.required]
+              File: %s:3-1
+            
+               1 | = Test Document
+               2 | «.Sidebar Title»
+               3 |\s
+               4 | ****
+               5 | This is a sidebar without a title.
+            
+            
+            """, testFile.toString(), testFile.toString());
+        
+        assertEquals(expectedOutput, actualOutput);
+    }
+    
+    @Test
+    @DisplayName("should show placeholder for missing sidebar content")
+    void shouldShowPlaceholderForMissingSidebarContent(@TempDir Path tempDir) throws IOException {
+        // Given - YAML rules requiring content for sidebar blocks
+        String rules = """
+            document:
+              sections:
+                - level: 0
+                  allowedBlocks:
+                    - sidebar:
+                        severity: error
+                        content:
+                          required: true
+            """;
+        
+        // Given - AsciiDoc content with empty sidebar
+        String adocContent = """
+            = Test Document
+            
+            ****
+            ****
+            """;
+        
+        // When - Validate and format output
+        String actualOutput = validateAndFormat(rules, adocContent, tempDir);
+        
+        // Then - Verify exact console output with placeholder
+        Path testFile = tempDir.resolve("test.adoc");
+        String expectedOutput = String.format("""
+            Validation Report
+            =================
+            
+            %s:
+            
+            [ERROR]: Sidebar block requires content [sidebar.content.required]
+              File: %s:3:1
+            
+               1 | = Test Document
+               2 |\s
+               3 | ****
+               4 | «Content»
+               5 | ****
+            
+            
+            """, testFile.toString(), testFile.toString());
+        
+        assertEquals(expectedOutput, actualOutput);
+    }
+    
+    @Test
+    @DisplayName("should show placeholder for missing sidebar position")
+    void shouldShowPlaceholderForMissingSidebarPosition(@TempDir Path tempDir) throws IOException {
+        // Given - YAML rules requiring position for sidebar blocks
+        String rules = """
+            document:
+              sections:
+                - level: 0
+                  allowedBlocks:
+                    - sidebar:
+                        severity: error
+                        position:
+                          required: true
+            """;
+        
+        // Given - AsciiDoc content with missing position attribute
+        String adocContent = """
+            = Test Document
+            
+            ****
+            This is a sidebar without a position attribute.
+            ****
+            """;
+        
+        // When - Validate and format output
+        String actualOutput = validateAndFormat(rules, adocContent, tempDir);
+        
+        // Then - Verify exact console output with placeholder
+        Path testFile = tempDir.resolve("test.adoc");
+        String expectedOutput = String.format("""
+            Validation Report
+            =================
+            
+            %s:
+            
+            [ERROR]: Sidebar block requires a position attribute [sidebar.position.required]
+              File: %s:3:1
+            
+               1 | = Test Document
+               2 |\s
+               3 | «[position=left]»
+               4 | ****
+               5 | This is a sidebar without a position attribute.
+               6 | ****
+            
+            
+            """, testFile.toString(), testFile.toString());
+        
+        assertEquals(expectedOutput, actualOutput);
+    }
+    
+    @Test
+    @DisplayName("should show placeholder for missing verse author")
+    void shouldShowPlaceholderForMissingVerseAuthor(@TempDir Path tempDir) throws IOException {
+        // Given - YAML rules requiring author for verse blocks
+        String rules = """
+            document:
+              sections:
+                - level: 0
+                  allowedBlocks:
+                    - verse:
+                        severity: error
+                        author:
+                          required: true
+            """;
+        
+        // Given - AsciiDoc content with missing verse author
+        String adocContent = """
+            = Test Document
+            
+            [verse]
+            ____
+            Roses are red,
+            Violets are blue.
+            ____
+            """;
+        
+        // When - Validate and format output
+        String actualOutput = validateAndFormat(rules, adocContent, tempDir);
+        
+        // Then - Verify exact console output with placeholder
+        Path testFile = tempDir.resolve("test.adoc");
+        String expectedOutput = String.format("""
+            Validation Report
+            =================
+            
+            %s:
+            
+            [ERROR]: Verse author is required but not provided [verse.author.required]
+              File: %s:3:7
+            
+               1 | = Test Document
+               2 |\s
+               3 | [verse,«author»]
+               4 | ____
+               5 | Roses are red,
+               6 | Violets are blue.
+               7 | ____
+            
+            
+            """, testFile.toString(), testFile.toString());
+        
+        assertEquals(expectedOutput, actualOutput);
+    }
+    
+    @Test
+    @DisplayName("should show placeholder for missing verse attribution")
+    void shouldShowPlaceholderForMissingVerseAttribution(@TempDir Path tempDir) throws IOException {
+        // Given - YAML rules requiring attribution for verse blocks
+        String rules = """
+            document:
+              sections:
+                - level: 0
+                  allowedBlocks:
+                    - verse:
+                        severity: error
+                        attribution:
+                          required: true
+            """;
+        
+        // Given - AsciiDoc content with missing verse attribution
+        String adocContent = """
+            = Test Document
+            
+            [verse]
+            ____
+            Roses are red,
+            Violets are blue.
+            ____
+            """;
+        
+        // When - Validate and format output
+        String actualOutput = validateAndFormat(rules, adocContent, tempDir);
+        
+        // Then - Verify exact console output with placeholder
+        Path testFile = tempDir.resolve("test.adoc");
+        String expectedOutput = String.format("""
+            Validation Report
+            =================
+            
+            %s:
+            
+            [ERROR]: Verse attribution is required but not provided [verse.attribution.required]
+              File: %s:3:7
+            
+               1 | = Test Document
+               2 |\s
+               3 | [verse,«attribution»]
+               4 | ____
+               5 | Roses are red,
+               6 | Violets are blue.
+               7 | ____
+            
+            
+            """, testFile.toString(), testFile.toString());
+        
+        assertEquals(expectedOutput, actualOutput);
+    }
+    
+    @Test
+    @DisplayName("should show placeholder for missing verse content")
+    void shouldShowPlaceholderForMissingVerseContent(@TempDir Path tempDir) throws IOException {
+        // Given - YAML rules requiring content for verse blocks
+        String rules = """
+            document:
+              sections:
+                - level: 0
+                  allowedBlocks:
+                    - verse:
+                        severity: error
+                        content:
+                          required: true
+            """;
+        
+        // Given - AsciiDoc content with empty verse
+        String adocContent = """
+            = Test Document
+            
+            [verse]
+            ____
+            ____
+            """;
+        
+        // When - Validate and format output
+        String actualOutput = validateAndFormat(rules, adocContent, tempDir);
+        
+        // Then - Verify exact console output with placeholder
+        Path testFile = tempDir.resolve("test.adoc");
+        String expectedOutput = String.format("""
+            Validation Report
+            =================
+            
+            %s:
+            
+            [ERROR]: Verse block requires content [verse.content.required]
+              File: %s:3:1
+            
+               1 | = Test Document
+               2 |\s
+               3 | [verse]
+               4 | ____
+               5 | «Content»
+               6 | ____
+            
+            
+            """, testFile.toString(), testFile.toString());
+        
+        assertEquals(expectedOutput, actualOutput);
+    }
+    
+    @Test
+    @DisplayName("should show placeholder for missing pass type")
+    void shouldShowPlaceholderForMissingPassType(@TempDir Path tempDir) throws IOException {
+        // Given - YAML rules requiring type for pass blocks
+        String rules = """
+            document:
+              sections:
+                - level: 0
+                  allowedBlocks:
+                    - pass:
+                        severity: error
+                        type:
+                          required: true
+                          severity: error
+            """;
+        
+        // Given - AsciiDoc content with missing pass type
+        String adocContent = """
+            = Test Document
+            
+            ++++
+            <p>This is a pass block without a type.</p>
+            ++++
+            """;
+        
+        // When - Validate and format output
+        String actualOutput = validateAndFormat(rules, adocContent, tempDir);
+        
+        // Then - Verify exact console output with placeholder
+        Path testFile = tempDir.resolve("test.adoc");
+        String expectedOutput = String.format("""
+            Validation Report
+            =================
+            
+            %s:
+            
+            [ERROR]: Pass block requires a type [pass.type.required]
+              File: %s:3:1
+            
+               1 | = Test Document
+               2 |\s
+               3 | «pass::[html]»
+               4 | ++++
+               5 | <p>This is a pass block without a type.</p>
+               6 | ++++
+            
+            
+            """, testFile.toString(), testFile.toString());
+        
+        assertEquals(expectedOutput, actualOutput);
+    }
+    
+    @Test
+    @DisplayName("should show placeholder for missing pass content")
+    void shouldShowPlaceholderForMissingPassContent(@TempDir Path tempDir) throws IOException {
+        // Given - YAML rules requiring content for pass blocks
+        String rules = """
+            document:
+              sections:
+                - level: 0
+                  allowedBlocks:
+                    - pass:
+                        severity: error
+                        content:
+                          required: true
+            """;
+        
+        // Given - AsciiDoc content with empty pass block
+        String adocContent = """
+            = Test Document
+            
+            ++++
+            ++++
+            """;
+        
+        // When - Validate and format output
+        String actualOutput = validateAndFormat(rules, adocContent, tempDir);
+        
+        // Then - Verify exact console output with placeholder
+        Path testFile = tempDir.resolve("test.adoc");
+        String expectedOutput = String.format("""
+            Validation Report
+            =================
+            
+            %s:
+            
+            [ERROR]: Pass block requires content [pass.content.required]
+              File: %s:3:1
+            
+               1 | = Test Document
+               2 |\s
+               3 | ++++
+               4 | «Content»
+               5 | ++++
+            
+            
+            """, testFile.toString(), testFile.toString());
+        
+        assertEquals(expectedOutput, actualOutput);
+    }
+    
+    @Test
+    @DisplayName("should show placeholder for missing pass reason")
+    void shouldShowPlaceholderForMissingPassReason(@TempDir Path tempDir) throws IOException {
+        // Given - YAML rules requiring reason for pass blocks
+        String rules = """
+            document:
+              sections:
+                - level: 0
+                  allowedBlocks:
+                    - pass:
+                        severity: error
+                        reason:
+                          required: true
+            """;
+        
+        // Given - AsciiDoc content with missing reason
+        String adocContent = """
+            = Test Document
+            
+            ++++
+            <p>This is a pass block without a reason.</p>
+            ++++
+            """;
+        
+        // When - Validate and format output
+        String actualOutput = validateAndFormat(rules, adocContent, tempDir);
+        
+        // Then - Verify exact console output with placeholder
+        Path testFile = tempDir.resolve("test.adoc");
+        String expectedOutput = String.format("""
+            Validation Report
+            =================
+            
+            %s:
+            
+            [ERROR]: Pass block requires a reason [pass.reason.required]
+              File: %s:3:1
+            
+               1 | = Test Document
+               2 |\s
+               3 | «// reason: explanation»
+               4 | ++++
+               5 | <p>This is a pass block without a reason.</p>
+               6 | ++++
+            
+            
+            """, testFile.toString(), testFile.toString());
+        
+        assertEquals(expectedOutput, actualOutput);
+    }
+    
+    @Test
+    @DisplayName("should show placeholder for missing dlist description")
+    void shouldShowPlaceholderForMissingDlistDescription(@TempDir Path tempDir) throws IOException {
+        // Given - YAML rules requiring descriptions for dlist blocks
+        String rules = """
+            document:
+              sections:
+                - level: 0
+                  allowedBlocks:
+                    - dlist:
+                        severity: error
+                        descriptions:
+                          required: true
+            """;
+        
+        // Given - AsciiDoc content with term but missing description
+        String adocContent = """
+            = Test Document
+            
+            Term1::
+            Term2::
+            """;
+        
+        // When - Validate and format output
+        String actualOutput = validateAndFormat(rules, adocContent, tempDir);
+        
+        // Then - Verify exact console output with placeholder
+        Path testFile = tempDir.resolve("test.adoc");
+        String expectedOutput = String.format("""
+            Validation Report
+            =================
+            
+            %s:
+            
+            [ERROR]: Definition list term missing required description [dlist.descriptions.required]
+              File: %s:3:1-5
+            
+               1 | = Test Document
+               2 |\s
+               3 | Term1:: «Description»
+               4 | Term2::
+            
+            
+            """, testFile.toString(), testFile.toString());
+        
+        assertEquals(expectedOutput, actualOutput);
+    }
+    
+    @Test
+    @DisplayName("should show placeholder for missing literal block title")
+    void shouldShowPlaceholderForMissingLiteralBlockTitle(@TempDir Path tempDir) throws IOException {
+        // Given - YAML rules requiring title for literal blocks
+        String rules = """
+            document:
+              sections:
+                - level: 0
+                  allowedBlocks:
+                    - literal:
+                        severity: error
+                        title:
+                          required: true
+            """;
+        
+        // Given - AsciiDoc content with missing title
+        String adocContent = """
+            = Test Document
+            
+            ....
+            This is a literal block without a title.
+            ....
+            """;
+        
+        // When - Validate and format output
+        String actualOutput = validateAndFormat(rules, adocContent, tempDir);
+        
+        // Then - Verify exact console output with placeholder
+        Path testFile = tempDir.resolve("test.adoc");
+        String expectedOutput = String.format("""
+            Validation Report
+            =================
+            
+            %s:
+            
+            [ERROR]: Literal block requires a title [literal.title.required]
+              File: %s:3:1
+            
+               1 | = Test Document
+               2 |\s
+               3 | «.Title»
+               4 | ....
+               5 | This is a literal block without a title.
+               6 | ....
+            
+            
+            """, testFile.toString(), testFile.toString());
+        
+        assertEquals(expectedOutput, actualOutput);
+    }
+    
+    @Test
+    @DisplayName("should show placeholder for literal block with insufficient indentation")
+    void shouldShowPlaceholderForLiteralBlockInsufficientIndentation(@TempDir Path tempDir) throws IOException {
+        // Given - YAML rules requiring minimum indentation for literal blocks
+        String rules = """
+            document:
+              sections:
+                - level: 0
+                  allowedBlocks:
+                    - literal:
+                        severity: error
+                        indentation:
+                          required: true
+                          minSpaces: 4
+            """;
+        
+        // Given - AsciiDoc content with insufficient indentation
+        String adocContent = """
+            = Test Document
+            
+            ....
+            This line has no indentation.
+              This line has only 2 spaces.
+            ....
+            """;
+        
+        // When - Validate and format output
+        String actualOutput = validateAndFormat(rules, adocContent, tempDir);
+        
+        // Then - Verify exact console output with placeholder
+        Path testFile = tempDir.resolve("test.adoc");
+        String expectedOutput = String.format("""
+            Validation Report
+            =================
+            
+            %s:
+            
+            [ERROR]: Literal block requires minimum indentation of 4 spaces [literal.indentation.minSpaces]
+              File: %s:4:1
+            
+               1 | = Test Document
+               2 |\s
+               3 | ....
+               4 | «    »This line has no indentation.
+               5 |   This line has only 2 spaces.
+               6 | ....
+            
+            
+            """, testFile.toString(), testFile.toString());
+        
+        assertEquals(expectedOutput, actualOutput);
+    }
+    
+    @Test
+    @DisplayName("should show placeholder for ulist with too few items")
+    void shouldShowPlaceholderForUlistWithTooFewItems(@TempDir Path tempDir) throws IOException {
+        // Given - YAML rules requiring minimum items for ulist blocks
+        String rules = """
+            document:
+              sections:
+                - level: 0
+                  allowedBlocks:
+                    - ulist:
+                        severity: error
+                        items:
+                          min: 3
+            """;
+        
+        // Given - AsciiDoc content with only 2 items
+        String adocContent = """
+            = Test Document
+            
+            * First item
+            * Second item
+            """;
+        
+        // When - Validate and format output
+        String actualOutput = validateAndFormat(rules, adocContent, tempDir);
+        
+        // Then - Verify exact console output with placeholder
+        Path testFile = tempDir.resolve("test.adoc");
+        String expectedOutput = String.format("""
+            Validation Report
+            =================
+            
+            %s:
+            
+            [ERROR]: Unordered list has too few items [ulist.items.min]
+              File: %s:4:14
+            
+               1 | = Test Document
+               2 |\s
+               3 | * First item
+               4 | * Second item
+               5 | «* Item»
+            
+            
+            """, testFile.toString(), testFile.toString());
+        
+        assertEquals(expectedOutput, actualOutput);
+    }
+    
+    @Test
+    @DisplayName("should show placeholder for ulist with invalid marker style")
+    void shouldShowPlaceholderForUlistWithInvalidMarkerStyle(@TempDir Path tempDir) throws IOException {
+        // Given - YAML rules requiring specific marker style for ulist blocks
+        String rules = """
+            document:
+              sections:
+                - level: 0
+                  allowedBlocks:
+                    - ulist:
+                        severity: error
+                        markerStyle: "-"
+            """;
+        
+        // Given - AsciiDoc content with wrong marker style
+        String adocContent = """
+            = Test Document
+            
+            * First item
+            * Second item
+            """;
+        
+        // When - Validate and format output
+        String actualOutput = validateAndFormat(rules, adocContent, tempDir);
+        
+        // Then - Verify exact console output with placeholder
+        Path testFile = tempDir.resolve("test.adoc");
+        String expectedOutput = String.format("""
+            Validation Report
+            =================
+            
+            %s:
+            
+            [ERROR]: Unordered list uses incorrect marker style [ulist.markerStyle]
+              File: %s:3:1
+            
+               1 | = Test Document
+               2 |\s
+               3 | «-» First item
+               4 | - Second item
             
             
             """, testFile.toString(), testFile.toString());

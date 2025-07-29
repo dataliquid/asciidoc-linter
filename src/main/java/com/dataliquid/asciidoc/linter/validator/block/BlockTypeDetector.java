@@ -64,6 +64,8 @@ public final class BlockTypeDetector {
                 return BlockType.VIDEO;
                 
             case "example":
+                return BlockType.EXAMPLE;
+                
             case "open":
                 // These could contain other blocks, check content
                 return detectFromContent(node);

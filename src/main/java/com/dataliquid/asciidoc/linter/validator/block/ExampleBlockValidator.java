@@ -10,6 +10,8 @@ import com.dataliquid.asciidoc.linter.config.Severity;
 import com.dataliquid.asciidoc.linter.config.blocks.ExampleBlock;
 import com.dataliquid.asciidoc.linter.validator.SourceLocation;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
+import com.dataliquid.asciidoc.linter.validator.PlaceholderContext;
+import com.dataliquid.asciidoc.linter.validator.ErrorType;
 
 /**
  * Validator for EXAMPLE blocks.
@@ -56,11 +58,25 @@ public final class ExampleBlockValidator extends AbstractBlockValidator<ExampleB
         
         // Check if caption is required
         if (config.isRequired() && (caption == null || caption.trim().isEmpty())) {
-            messages.add(createMessage(
-                "Example block requires a caption",
-                determineSeverity(config.getSeverity(), block.getSeverity()),
-                context.createLocation(node)
-            ));
+            // Find position for caption placeholder
+            int lineNumber = node.getSourceLocation() != null ? node.getSourceLocation().getLineNumber() : 1;
+            messages.add(ValidationMessage.builder()
+                .message("Example block requires a caption")
+                .severity(determineSeverity(config.getSeverity(), block.getSeverity()))
+                .location(SourceLocation.builder()
+                    .filename(context.getFilename())
+                    .startLine(lineNumber)
+                    .endLine(lineNumber)
+                    .startColumn(1)
+                    .endColumn(1)
+                    .build())
+                .ruleId("example.caption.required")
+                .errorType(ErrorType.MISSING_VALUE)
+                .missingValueHint(".Example Title")
+                .placeholderContext(PlaceholderContext.builder()
+                    .type(PlaceholderContext.PlaceholderType.INSERT_BEFORE)
+                    .build())
+                .build());
             return messages;
         }
         
@@ -71,31 +87,34 @@ public final class ExampleBlockValidator extends AbstractBlockValidator<ExampleB
         
         // Validate caption length
         if (config.getMinLength() != null && caption.length() < config.getMinLength()) {
-            messages.add(createMessage(
-                String.format("Example caption length %d is less than required minimum %d",
-                    caption.length(), config.getMinLength()),
-                determineSeverity(config.getSeverity(), block.getSeverity()),
-                context.createLocation(node)
-            ));
+            messages.add(ValidationMessage.builder()
+                .message(String.format("Example caption length %d is less than required minimum %d",
+                    caption.length(), config.getMinLength()))
+                .severity(determineSeverity(config.getSeverity(), block.getSeverity()))
+                .location(context.createLocation(node))
+                .ruleId("example.caption.minLength")
+                .build());
         }
         
         if (config.getMaxLength() != null && caption.length() > config.getMaxLength()) {
-            messages.add(createMessage(
-                String.format("Example caption length %d exceeds maximum %d",
-                    caption.length(), config.getMaxLength()),
-                determineSeverity(config.getSeverity(), block.getSeverity()),
-                context.createLocation(node)
-            ));
+            messages.add(ValidationMessage.builder()
+                .message(String.format("Example caption length %d exceeds maximum %d",
+                    caption.length(), config.getMaxLength()))
+                .severity(determineSeverity(config.getSeverity(), block.getSeverity()))
+                .location(context.createLocation(node))
+                .ruleId("example.caption.maxLength")
+                .build());
         }
         
         // Validate caption pattern
         if (config.getPattern() != null && !config.getPattern().matcher(caption).matches()) {
-            messages.add(createMessage(
-                String.format("Example caption '%s' does not match required pattern '%s'",
-                    caption, config.getPattern().pattern()),
-                determineSeverity(config.getSeverity(), block.getSeverity()),
-                context.createLocation(node)
-            ));
+            messages.add(ValidationMessage.builder()
+                .message(String.format("Example caption '%s' does not match required pattern '%s'",
+                    caption, config.getPattern().pattern()))
+                .severity(determineSeverity(config.getSeverity(), block.getSeverity()))
+                .location(context.createLocation(node))
+                .ruleId("example.caption.pattern")
+                .build());
         }
         
         return messages;
@@ -113,11 +132,25 @@ public final class ExampleBlockValidator extends AbstractBlockValidator<ExampleB
         
         // Check if collapsible is required
         if (config.isRequired() && collapsibleAttr == null) {
-            messages.add(createMessage(
-                "Example block requires a collapsible attribute",
-                determineSeverity(config.getSeverity(), block.getSeverity()),
-                context.createLocation(node)
-            ));
+            // Find position for collapsible placeholder
+            int lineNumber = node.getSourceLocation() != null ? node.getSourceLocation().getLineNumber() : 1;
+            messages.add(ValidationMessage.builder()
+                .message("Example block requires a collapsible attribute")
+                .severity(determineSeverity(config.getSeverity(), block.getSeverity()))
+                .location(SourceLocation.builder()
+                    .filename(context.getFilename())
+                    .startLine(lineNumber)
+                    .endLine(lineNumber)
+                    .startColumn(1)
+                    .endColumn(1)
+                    .build())
+                .ruleId("example.collapsible.required")
+                .errorType(ErrorType.MISSING_VALUE)
+                .missingValueHint("[%collapsible]")
+                .placeholderContext(PlaceholderContext.builder()
+                    .type(PlaceholderContext.PlaceholderType.INSERT_BEFORE)
+                    .build())
+                .build());
             return messages;
         }
         
@@ -142,25 +175,17 @@ public final class ExampleBlockValidator extends AbstractBlockValidator<ExampleB
         // Validate allowed values
         if (config.getAllowed() != null && !config.getAllowed().isEmpty()) {
             if (collapsibleValue == null || !config.getAllowed().contains(collapsibleValue)) {
-                messages.add(createMessage(
-                    String.format("Example collapsible value '%s' is not in allowed values %s",
-                        collapsibleAttr, config.getAllowed()),
-                    determineSeverity(config.getSeverity(), block.getSeverity()),
-                    context.createLocation(node)
-                ));
+                messages.add(ValidationMessage.builder()
+                    .message(String.format("Example collapsible value '%s' is not in allowed values %s",
+                        collapsibleAttr, config.getAllowed()))
+                    .severity(determineSeverity(config.getSeverity(), block.getSeverity()))
+                    .location(context.createLocation(node))
+                    .ruleId("example.collapsible.allowed")
+                    .build());
             }
         }
         
         return messages;
-    }
-    
-    private ValidationMessage createMessage(String message, Severity severity, SourceLocation location) {
-        return ValidationMessage.builder()
-                .message(message)
-                .severity(severity)
-                .location(location)
-                .ruleId("example-block")
-                .build();
     }
     
     private Severity determineSeverity(Severity specificSeverity, Severity blockSeverity) {

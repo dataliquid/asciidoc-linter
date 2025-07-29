@@ -13,6 +13,8 @@ import com.dataliquid.asciidoc.linter.config.BlockType;
 import com.dataliquid.asciidoc.linter.config.Severity;
 import com.dataliquid.asciidoc.linter.config.blocks.DlistBlock;
 import com.dataliquid.asciidoc.linter.report.console.FileContentCache;
+import com.dataliquid.asciidoc.linter.validator.ErrorType;
+import com.dataliquid.asciidoc.linter.validator.PlaceholderContext;
 import com.dataliquid.asciidoc.linter.validator.SourceLocation;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
 
@@ -219,14 +221,33 @@ public final class DlistBlockValidator extends AbstractBlockValidator<DlistBlock
             // Check if description is required
             if (config.getRequired() != null && config.getRequired() && 
                 (description == null || description.getText() == null || description.getText().trim().isEmpty())) {
-                messages.add(ValidationMessage.builder()
-                    .severity(severity)
-                    .ruleId("dlist.descriptions.required")
-                    .location(context.createLocation(block))
-                    .message("Definition list term missing required description")
-                    .actualValue("No description")
-                    .expectedValue("Description required")
-                    .build());
+                // Get the first term for error location
+                List<ListItem> terms = entry.getTerms();
+                if (!terms.isEmpty()) {
+                    ListItem firstTerm = terms.get(0);
+                    String termText = firstTerm.getText();
+                    TermPosition pos = findTermPosition(block, firstTerm, context, termText);
+                    
+                    messages.add(ValidationMessage.builder()
+                        .severity(severity)
+                        .ruleId("dlist.descriptions.required")
+                        .location(SourceLocation.builder()
+                            .filename(context.getFilename())
+                            .startLine(pos.lineNumber)
+                            .endLine(pos.lineNumber)
+                            .startColumn(pos.startColumn)
+                            .endColumn(pos.endColumn)
+                            .build())
+                        .message("Definition list term missing required description")
+                        .actualValue("No description")
+                        .expectedValue("Description required")
+                        .errorType(ErrorType.MISSING_VALUE)
+                        .missingValueHint("Description")
+                        .placeholderContext(PlaceholderContext.builder()
+                            .type(PlaceholderContext.PlaceholderType.INSERT_BEFORE)
+                            .build())
+                        .build());
+                }
             }
             
             // Validate description content if present
