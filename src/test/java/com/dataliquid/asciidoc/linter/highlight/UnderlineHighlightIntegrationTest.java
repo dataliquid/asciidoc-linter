@@ -296,4 +296,203 @@ class UnderlineHighlightIntegrationTest {
         assertEquals(expectedOutput, actualOutput);
         }
     }
+    
+    @Nested
+    @DisplayName("Image Block Validation Tests")
+    class ImageValidationTests {
+        
+        @Test
+        @DisplayName("should show underline for image URL not matching pattern")
+        void shouldShowUnderlineForImageUrlPatternMismatch(@TempDir Path tempDir) throws IOException {
+            // Given - YAML rules with URL pattern for image blocks
+            String rules = """
+                document:
+                  sections:
+                    - level: 0
+                      allowedBlocks:
+                        - image:
+                            severity: error
+                            url:
+                              required: true
+                              pattern: "^https?://.*\\.(jpg|jpeg|png|gif|svg)$"
+                """;
+            
+            // Given - AsciiDoc content with image URLs not matching the pattern
+            String adocContent = """
+                = Test Document
+                
+                image::file:///local/path/image.png[Local file]
+                
+                image::https://example.com/image.bmp[Wrong format]
+                
+                image::https://example.com/valid.png[Valid image]
+                """;
+            
+            // When - Validate and format output
+            String actualOutput = validateAndFormat(rules, adocContent, tempDir);
+            
+            // Then - Verify exact console output with underline
+            Path testFile = tempDir.resolve("test.adoc");
+            String expectedOutput = String.format("""
+                Validation Report
+                =================
+                
+                %s:
+                
+                [ERROR]: Image URL does not match required pattern [image.url.pattern]
+                  File: %s:3:1-48
+                
+                   1 | = Test Document
+                   2 |\s
+                   3 | image::file:///local/path/image.png[Local file]
+                     | ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                   4 |\s
+                   5 | image::https://example.com/image.bmp[Wrong format]
+                   6 |\s
+                
+                [ERROR]: Image URL does not match required pattern [image.url.pattern]
+                  File: %s:5:1-51
+                
+                   2 |\s
+                   3 | image::file:///local/path/image.png[Local file]
+                   4 |\s
+                   5 | image::https://example.com/image.bmp[Wrong format]
+                     | ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                   6 |\s
+                   7 | image::https://example.com/valid.png[Valid image]
+                
+                
+                """, testFile.toString(), testFile.toString(), testFile.toString());
+            
+            assertEquals(expectedOutput, actualOutput);
+        }
+        
+        @Test
+        @DisplayName("should show underline for image alt text exceeding max length")
+        void shouldShowUnderlineForImageAltExceedingMaxLength(@TempDir Path tempDir) throws IOException {
+            // Given - YAML rules with max length for image alt text
+            String rules = """
+                document:
+                  sections:
+                    - level: 0
+                      allowedBlocks:
+                        - image:
+                            severity: error
+                            alt:
+                              required: true
+                              maxLength: 30
+                """;
+            
+            // Given - AsciiDoc content with alt text exceeding max length
+            String adocContent = """
+                = Test Document
+                
+                image::diagram.png[This is a very long alternative text that exceeds the maximum allowed length]
+                
+                image::logo.png[Short alt text]
+                
+                image::chart.png[Another extremely long alternative text description that should be shorter]
+                """;
+            
+            // When - Validate and format output
+            String actualOutput = validateAndFormat(rules, adocContent, tempDir);
+            
+            // Then - Verify exact console output with underline
+            Path testFile = tempDir.resolve("test.adoc");
+            String expectedOutput = String.format("""
+                Validation Report
+                =================
+                
+                %s:
+                
+                [ERROR]: Image alt text is too long [image.alt.maxLength]
+                  File: %s:3:1-97
+                
+                   1 | = Test Document
+                   2 |\s
+                   3 | image::diagram.png[This is a very long alternative text that exceeds the maximum allowed length]
+                     | ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                   4 |\s
+                   5 | image::logo.png[Short alt text]
+                   6 |\s
+                
+                [ERROR]: Image alt text is too long [image.alt.maxLength]
+                  File: %s:7:1-90
+                
+                   4 |\s
+                   5 | image::logo.png[Short alt text]
+                   6 |\s
+                   7 | image::chart.png[Another extremely long alternative text description that should be shorter]
+                     | ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                
+                
+                """, testFile.toString(), testFile.toString(), testFile.toString());
+            
+            assertEquals(expectedOutput, actualOutput);
+        }
+        
+        @Test
+        @DisplayName("should show underline for image alt text below min length")
+        void shouldShowUnderlineForImageAltBelowMinLength(@TempDir Path tempDir) throws IOException {
+            // Given - YAML rules with min length for image alt text
+            String rules = """
+                document:
+                  sections:
+                    - level: 0
+                      allowedBlocks:
+                        - image:
+                            severity: warn
+                            alt:
+                              required: true
+                              minLength: 10
+                """;
+            
+            // Given - AsciiDoc content with alt text below min length
+            String adocContent = """
+                = Test Document
+                
+                image::icon.png[Logo]
+                
+                image::screenshot.png[Application screenshot showing main window]
+                
+                image::btn.png[OK]
+                """;
+            
+            // When - Validate and format output
+            String actualOutput = validateAndFormat(rules, adocContent, tempDir);
+            
+            // Then - Verify exact console output with underline
+            Path testFile = tempDir.resolve("test.adoc");
+            String expectedOutput = String.format("""
+                Validation Report
+                =================
+                
+                %s:
+                
+                [WARN]: Image alt text is too short [image.alt.minLength]
+                  File: %s:3:1-21
+                
+                   1 | = Test Document
+                   2 |\s
+                   3 | image::icon.png[Logo]
+                     | ~~~~~~~~~~~~~~~~~~~~~
+                   4 |\s
+                   5 | image::screenshot.png[Application screenshot showing main window]
+                   6 |\s
+                
+                [WARN]: Image alt text is too short [image.alt.minLength]
+                  File: %s:7:1-18
+                
+                   4 |\s
+                   5 | image::screenshot.png[Application screenshot showing main window]
+                   6 |\s
+                   7 | image::btn.png[OK]
+                     | ~~~~~~~~~~~~~~~~~~
+                
+                
+                """, testFile.toString(), testFile.toString(), testFile.toString());
+            
+            assertEquals(expectedOutput, actualOutput);
+        }
+    }
 }
