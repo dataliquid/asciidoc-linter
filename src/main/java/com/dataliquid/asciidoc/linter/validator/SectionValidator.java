@@ -17,23 +17,29 @@ import com.dataliquid.asciidoc.linter.config.DocumentConfiguration;
 import com.dataliquid.asciidoc.linter.config.Severity;
 import com.dataliquid.asciidoc.linter.config.rule.SectionConfig;
 import com.dataliquid.asciidoc.linter.config.rule.TitleConfig;
+import com.dataliquid.asciidoc.linter.report.console.FileContentCache;
 
 public final class SectionValidator {
     private final DocumentConfiguration configuration;
     private final Map<String, Integer> sectionOccurrences;
     private final List<SectionConfig> rootSections;
+    private final FileContentCache fileCache;
 
     private SectionValidator(Builder builder) {
         this.configuration = Objects.requireNonNull(builder.configuration, "[" + getClass().getName() + "] configuration must not be null");
         this.sectionOccurrences = new HashMap<>();
         this.rootSections = configuration.sections() != null ? configuration.sections() : Collections.emptyList();
+        this.fileCache = new FileContentCache();
     }
 
     public ValidationResult validate(Document document) {
+        // FIXME: refactor to more clear architecture design
+        return validate(document, extractFilename(document));
+    }
+    
+    public ValidationResult validate(Document document, String filename) {
         long startTime = System.currentTimeMillis();
         ValidationResult.Builder resultBuilder = ValidationResult.builder().startTime(startTime);
-        
-        String filename = extractFilename(document);
         
         // Validate document title as level 0 section
         validateDocumentTitle(document, filename, resultBuilder);
@@ -107,10 +113,11 @@ public final class SectionValidator {
                 }
                 
                 ValidationMessage message = ValidationMessage.builder()
-                    .severity(Severity.ERROR)
+                    .severity(configWithPattern.title() != null && configWithPattern.title().severity() != null ? 
+                            configWithPattern.title().severity() : Severity.ERROR)
                     .ruleId("section.title.pattern")
                     .location(location)
-                    .message("Section title doesn't match required pattern at level " + level + ": '" + title + "'")
+                    .message("Section title does not match required pattern")
                     .actualValue(title)
                     .expectedValue(expectedPattern != null ? expectedPattern : "One of configured patterns")
                     .build();
@@ -127,7 +134,7 @@ public final class SectionValidator {
                     .build();
                 resultBuilder.addMessage(message);
             }
-            return;
+            // Don't return - still need to validate subsections
         }
         
         if (matchingConfig != null) {
@@ -136,15 +143,28 @@ public final class SectionValidator {
             validateTitle(section, matchingConfig.title(), filename, resultBuilder);
             
             validateLevel(section, matchingConfig, filename, resultBuilder);
+        }
+        
+        // Always validate subsections
+        List<StructuralNode> subsections = section.getBlocks().stream()
+            .filter(block -> block instanceof Section)
+            .collect(Collectors.toList());
+        
+        for (StructuralNode subsection : subsections) {
+            // Determine which configs to use for subsections
+            List<SectionConfig> subsectionConfigs;
             
-            List<StructuralNode> subsections = section.getBlocks().stream()
-                .filter(block -> block instanceof Section)
-                .collect(Collectors.toList());
-            
-            for (StructuralNode subsection : subsections) {
-                validateSection((Section) subsection, matchingConfig.subsections(), 
-                               filename, resultBuilder, matchingConfig);
+            if (matchingConfig != null && matchingConfig.subsections() != null) {
+                // Use the subsections from the matching config
+                subsectionConfigs = matchingConfig.subsections();
+            } else {
+                // Important: When parent doesn't match, we need to determine the right configs for subsections
+                // Look for configs that have subsections defined and could be parent configs
+                subsectionConfigs = determineSubsectionConfigsFromParent(allowedConfigs, level);
             }
+            
+            validateSection((Section) subsection, subsectionConfigs, 
+                           filename, resultBuilder, matchingConfig);
         }
     }
 
@@ -285,10 +305,7 @@ public final class SectionValidator {
         }
         
         String documentTitle = document.getTitle();
-        SourceLocation location = SourceLocation.builder()
-            .filename(filename)
-            .line(1)
-            .build();
+        SourceLocation location = createDocumentTitleLocation(filename, documentTitle);
         
         // Check if title is required
         if (titleConfig.min() > 0 && (documentTitle == null || documentTitle.trim().isEmpty())) {
@@ -389,6 +406,27 @@ public final class SectionValidator {
             .filter(config -> config.level() == level)
             .collect(Collectors.toList());
     }
+    
+    private List<SectionConfig> determineSubsectionConfigsFromParent(List<SectionConfig> parentConfigs, int parentLevel) {
+        // When a parent section doesn't match its pattern, we still need to find the right configs for its subsections
+        // First, check if any of the parent-level configs have subsections defined
+        for (SectionConfig config : parentConfigs) {
+            if (config.level() == parentLevel && config.subsections() != null && !config.subsections().isEmpty()) {
+                return config.subsections();
+            }
+        }
+        
+        // If no subsections found in parent-level configs, return configs for the next level
+        int subsectionLevel = parentLevel + 1;
+        List<SectionConfig> subsectionConfigs = findConfigsForLevel(subsectionLevel, parentConfigs);
+        
+        if (!subsectionConfigs.isEmpty()) {
+            return subsectionConfigs;
+        }
+        
+        // Last resort: return original configs
+        return parentConfigs;
+    }
 
     private void trackOccurrence(SectionConfig config) {
         String key = createOccurrenceKey(config);
@@ -406,11 +444,78 @@ public final class SectionValidator {
         }
         return "unknown";
     }
-
-    private SourceLocation createLocation(String filename, Section section) {
+    
+    private SourceLocation createDocumentTitleLocation(String filename, String title) {
+        List<String> fileLines = fileCache.getFileLines(filename);
+        
+        if (fileLines.isEmpty()) {
+            return SourceLocation.builder()
+                .filename(filename)
+                .line(1)
+                .build();
+        }
+        
+        // Document title is typically on line 1
+        String firstLine = fileLines.get(0);
+        
+        // Document title has format: = Title
+        if (firstLine.startsWith("= ") && title != null) {
+            int titleStart = 2; // After "= "
+            int titleEnd = titleStart + title.length() - 1;
+            
+            return SourceLocation.builder()
+                .filename(filename)
+                .startLine(1)
+                .endLine(1)
+                .startColumn(titleStart + 1) // Convert to 1-based
+                .endColumn(titleEnd + 1)     // Convert to 1-based
+                .build();
+        }
+        
+        // Fallback
         return SourceLocation.builder()
             .filename(filename)
-            .line(section.getSourceLocation() != null ? section.getSourceLocation().getLineNumber() : 1)
+            .line(1)
+            .build();
+    }
+
+    private SourceLocation createLocation(String filename, Section section) {
+        int lineNumber = section.getSourceLocation() != null ? section.getSourceLocation().getLineNumber() : 1;
+        List<String> fileLines = fileCache.getFileLines(filename);
+        
+        if (fileLines.isEmpty() || lineNumber <= 0 || lineNumber > fileLines.size()) {
+            return SourceLocation.builder()
+                .filename(filename)
+                .line(lineNumber)
+                .build();
+        }
+        
+        String line = fileLines.get(lineNumber - 1);
+        String title = section.getTitle();
+        int level = section.getLevel();
+        
+        // Find the title position in the line
+        // Section titles have format: == Title or === Title etc.
+        String prefix = "=".repeat(level + 1) + " ";
+        int prefixIndex = line.indexOf(prefix);
+        
+        if (prefixIndex >= 0 && title != null) {
+            int titleStart = prefixIndex + prefix.length();
+            int titleEnd = titleStart + title.length() - 1;
+            
+            return SourceLocation.builder()
+                .filename(filename)
+                .startLine(lineNumber)
+                .endLine(lineNumber)
+                .startColumn(titleStart + 1) // Convert to 1-based
+                .endColumn(titleEnd + 1)     // Convert to 1-based
+                .build();
+        }
+        
+        // Fallback if we can't find the exact position
+        return SourceLocation.builder()
+            .filename(filename)
+            .line(lineNumber)
             .build();
     }
 

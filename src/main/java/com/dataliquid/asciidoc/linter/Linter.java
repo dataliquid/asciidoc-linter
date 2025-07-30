@@ -208,7 +208,7 @@ public class Linter {
                 SectionValidator sectionValidator = SectionValidator.builder()
                     .configuration(config.document())
                     .build();
-                ValidationResult sectionResult = sectionValidator.validate(document);
+                ValidationResult sectionResult = sectionValidator.validate(document, filename);
                 messages.addAll(sectionResult.getMessages());
                 
                 // Block validation within sections

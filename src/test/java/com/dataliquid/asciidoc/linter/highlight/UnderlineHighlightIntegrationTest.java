@@ -2043,6 +2043,248 @@ class UnderlineHighlightIntegrationTest {
     }
     
     @Nested
+    @DisplayName("Section Validation Tests")
+    class SectionValidationTests {
+        
+        @Test
+        @DisplayName("should show underline for section title not matching pattern")
+        void shouldShowUnderlineForSectionTitleNotMatchingPattern(@TempDir Path tempDir) throws IOException {
+            // Given - YAML rules with title pattern for sections
+            String rules = """
+                document:
+                  sections:
+                    - level: 1
+                      title:
+                        pattern: "^(Introduction|Overview|Summary)$"
+                        severity: error
+                      subsections:
+                        - level: 2
+                          title:
+                            pattern: "^[A-Z][a-z]+ [A-Z][a-z]+$"
+                            severity: error
+                """;
+            
+            // Given - AsciiDoc content with section titles not matching patterns
+            String adocContent = """
+                = Test Document
+                
+                == Getting Started
+                
+                This section title doesn't match the required pattern.
+                
+                === technical details
+                
+                This subsection title doesn't start with uppercase.
+                
+                == Introduction
+                
+                This title matches the pattern.
+                
+                === Another Topic
+                
+                This subsection also matches the pattern.
+                """;
+            
+            // When - Validate and format output
+            String actualOutput = validateAndFormat(rules, adocContent, tempDir);
+            
+            // Then - Verify exact console output with underline
+            Path testFile = tempDir.resolve("test.adoc");
+            String expectedOutput = String.format("""
+                Validation Report
+                =================
+                
+                %s:
+                
+                [ERROR]: Section title does not match required pattern [section.title.pattern]
+                  File: %s:3:4-18
+                
+                   1 | = Test Document
+                   2 |\s
+                   3 | == Getting Started
+                     |    ~~~~~~~~~~~~~~~
+                   4 |\s
+                   5 | This section title doesn't match the required pattern.
+                   6 |\s
+                
+                [ERROR]: Section title does not match required pattern [section.title.pattern]
+                  File: %s:7:5-21
+                
+                   4 |\s
+                   5 | This section title doesn't match the required pattern.
+                   6 |\s
+                   7 | === technical details
+                     |     ~~~~~~~~~~~~~~~~~
+                   8 |\s
+                   9 | This subsection title doesn't start with uppercase.
+                  10 |\s
+                
+                
+                """, testFile.toString(), testFile.toString(), testFile.toString());
+            
+            assertEquals(expectedOutput, actualOutput);
+        }
+        
+        @Test
+        @DisplayName("should show underline for document title not matching pattern")
+        void shouldShowUnderlineForDocumentTitleNotMatchingPattern(@TempDir Path tempDir) throws IOException {
+            // Given - YAML rules with pattern for document title (level 0)
+            String rules = """
+                document:
+                  sections:
+                    - level: 0
+                      min: 1
+                      max: 1
+                      title:
+                        pattern: "^[A-Z][A-Z0-9\\\\s]+$"
+                        severity: error
+                """;
+            
+            // Given - AsciiDoc content with document title not matching pattern
+            String adocContent = """
+                = My Test Document!
+                
+                == Section One
+                
+                Content here.
+                """;
+            
+            // When - Validate and format output
+            String actualOutput = validateAndFormat(rules, adocContent, tempDir);
+            
+            // Then - Verify exact console output with underline
+            Path testFile = tempDir.resolve("test.adoc");
+            String expectedOutput = String.format("""
+                Validation Report
+                =================
+                
+                %s:
+                
+                [ERROR]: Document title does not match required pattern [section.title.pattern]
+                  File: %s:1:3-19
+                
+                   1 | = My Test Document!
+                     |   ~~~~~~~~~~~~~~~~~
+                   2 |\s
+                   3 | == Section One
+                   4 |\s
+                
+                
+                """, testFile.toString(), testFile.toString());
+            
+            assertEquals(expectedOutput, actualOutput);
+        }
+        
+        @Test
+        @DisplayName("should show underline for multiple section pattern mismatches")
+        void shouldShowUnderlineForMultipleSectionPatternMismatches(@TempDir Path tempDir) throws IOException {
+            // Given - YAML rules with different patterns for different section levels
+            String rules = """
+                document:
+                  sections:
+                    - level: 0
+                      title:
+                        pattern: "^[A-Z][a-zA-Z\\\\s]+Guide$"
+                        severity: error
+                      subsections:
+                        - level: 1
+                          title:
+                            pattern: "^Chapter \\\\d+: .+$"
+                            severity: error
+                          subsections:
+                            - level: 2
+                              title:
+                                pattern: "^\\\\d+\\\\.\\\\d+ .+$"
+                                severity: warn
+                """;
+            
+            // Given - AsciiDoc content with multiple pattern violations
+            String adocContent = """
+                = Technical Documentation
+                
+                == Introduction
+                
+                This doesn't match the Chapter pattern.
+                
+                === Overview
+                
+                This doesn't match the numbered pattern.
+                
+                == Chapter 1: Getting Started
+                
+                This section matches the pattern.
+                
+                === 1.1 Installation
+                
+                This subsection matches the pattern.
+                
+                === Setup Instructions
+                
+                This doesn't match the numbered pattern.
+                """;
+            
+            // When - Validate and format output
+            String actualOutput = validateAndFormat(rules, adocContent, tempDir);
+            
+            // Then - Verify exact console output with underline
+            Path testFile = tempDir.resolve("test.adoc");
+            String expectedOutput = String.format("""
+                Validation Report
+                =================
+                
+                %s:
+                
+                [ERROR]: Document title does not match required pattern [section.title.pattern]
+                  File: %s:1:3-25
+                
+                   1 | = Technical Documentation
+                     |   ~~~~~~~~~~~~~~~~~~~~~~~
+                   2 |\s
+                   3 | == Introduction
+                   4 |\s
+                
+                [ERROR]: Section title does not match required pattern [section.title.pattern]
+                  File: %s:3:4-15
+                
+                   1 | = Technical Documentation
+                   2 |\s
+                   3 | == Introduction
+                     |    ~~~~~~~~~~~~
+                   4 |\s
+                   5 | This doesn't match the Chapter pattern.
+                   6 |\s
+                
+                [WARN]: Section title does not match required pattern [section.title.pattern]
+                  File: %s:7:5-12
+                
+                   4 |\s
+                   5 | This doesn't match the Chapter pattern.
+                   6 |\s
+                   7 | === Overview
+                     |     ~~~~~~~~
+                   8 |\s
+                   9 | This doesn't match the numbered pattern.
+                  10 |\s
+                
+                [WARN]: Section title does not match required pattern [section.title.pattern]
+                  File: %s:19:5-22
+                
+                  16 |\s
+                  17 | This subsection matches the pattern.
+                  18 |\s
+                  19 | === Setup Instructions
+                     |     ~~~~~~~~~~~~~~~~~~
+                  20 |\s
+                  21 | This doesn't match the numbered pattern.
+                
+                
+                """, testFile.toString(), testFile.toString(), testFile.toString(), testFile.toString(), testFile.toString());
+            
+            assertEquals(expectedOutput, actualOutput);
+        }
+    }
+    
+    @Nested
     @DisplayName("Admonition Block Validation Tests")
     class AdmonitionValidationTests {
         
