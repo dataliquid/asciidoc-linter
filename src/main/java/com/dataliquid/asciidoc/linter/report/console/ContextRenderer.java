@@ -63,6 +63,97 @@ public class ContextRenderer {
         // Extract context lines
         List<String> contextLines = new ArrayList<>(fileLines.subList(fromIndex, toIndex));
         
+        // For section.min-occurrences errors, add an empty line for the missing section
+        if ("section.min-occurrences".equals(message.getRuleId()) && 
+            message.getErrorType() == ErrorType.MISSING_VALUE) {
+            // Extract the section level from the placeholder hint (e.g., "== section" -> level 1)
+            String hint = message.getMissingValueHint();
+            int sectionLevel = 0;
+            if (hint != null) {
+                // Count the = signs to determine level
+                for (int i = 0; i < hint.length() && hint.charAt(i) == '='; i++) {
+                    sectionLevel++;
+                }
+                sectionLevel--; // Convert to 0-based level
+            }
+            
+            // Find the appropriate position to insert the section placeholder
+            int insertIndex = -1;
+            
+            if (sectionLevel == 1) {
+                // For level 1 sections, insert after the document title
+                for (int i = 0; i < contextLines.size(); i++) {
+                    String line = contextLines.get(i).trim();
+                    if (line.startsWith("= ") && !line.startsWith("== ")) {
+                        insertIndex = i + 1;
+                        // If there's an empty line after the title, insert after it
+                        if (insertIndex < contextLines.size() && contextLines.get(insertIndex).trim().isEmpty()) {
+                            insertIndex++;
+                        }
+                        break;
+                    }
+                }
+            } else {
+                // For other levels, find the last section that would be a parent/sibling
+                // and insert after any content following it
+                for (int i = contextLines.size() - 1; i >= 0; i--) {
+                    String line = contextLines.get(i).trim();
+                    
+                    // Check if this is a section header at the parent level or same level
+                    boolean isSection = false;
+                    int lineLevel = -1;
+                    
+                    // Count = signs at the beginning of the line
+                    if (line.startsWith("=")) {
+                        int count = 0;
+                        for (int j = 0; j < line.length() && line.charAt(j) == '='; j++) {
+                            count++;
+                        }
+                        // Make sure it's followed by a space (valid section header)
+                        if (count > 0 && count < line.length() && line.charAt(count) == ' ') {
+                            isSection = true;
+                            lineLevel = count - 1; // Convert to 0-based
+                        }
+                    }
+                    
+                    // If we found a section at parent level, insert after its content
+                    if (isSection && lineLevel == sectionLevel - 1) {
+                        // Find the end of this section's content
+                        insertIndex = i + 1;
+                        // Skip any empty lines after the section header
+                        while (insertIndex < contextLines.size() && contextLines.get(insertIndex).trim().isEmpty()) {
+                            insertIndex++;
+                        }
+                        // Skip content lines until we find the next section or end
+                        while (insertIndex < contextLines.size()) {
+                            String nextLine = contextLines.get(insertIndex).trim();
+                            // Stop if we hit another section
+                            if (nextLine.startsWith("=") && nextLine.contains(" ")) {
+                                break;
+                            }
+                            insertIndex++;
+                        }
+                        break;
+                    }
+                }
+            }
+            
+            // If we found where to insert, add an empty line
+            if (insertIndex >= 0 && insertIndex <= contextLines.size()) {
+                contextLines.add(insertIndex, "");
+                // Create a special SourceContext that marks the inserted line as error line
+                List<SourceContext.ContextLine> lines = new ArrayList<>();
+                int lineNum = startLine;
+                for (int i = 0; i < contextLines.size(); i++) {
+                    String content = contextLines.get(i);
+                    boolean isErrorLine = (i == insertIndex); // Mark the inserted empty line as error
+                    lines.add(new SourceContext.ContextLine(lineNum, content, isErrorLine));
+                    lineNum++;
+                }
+                return new SourceContext(lines, loc);
+            }
+        }
+        
         // For paragraph.lines.min errors, add extra empty lines for the placeholders
         if ("paragraph.lines.min".equals(message.getRuleId()) && 
             message.getErrorType() == ErrorType.MISSING_VALUE) {

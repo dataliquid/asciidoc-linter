@@ -233,8 +233,14 @@ public final class SectionValidator {
         if (occurrences < config.min()) {
             SourceLocation location = SourceLocation.builder()
                 .filename(filename)
-                .line(1)
+                .startLine(1)
+                .endLine(1)
+                .startColumn(0)  // No column for section errors
+                .endColumn(0)
                 .build();
+            
+            // Generate section placeholder based on level
+            String sectionPlaceholder = "=".repeat(config.level() + 1) + " " + config.name();
             
             ValidationMessage message = ValidationMessage.builder()
                 .severity(Severity.ERROR)
@@ -243,6 +249,11 @@ public final class SectionValidator {
                 .message("Too few occurrences of section: " + config.name())
                 .actualValue(String.valueOf(occurrences))
                 .expectedValue("At least " + config.min())
+                .errorType(ErrorType.MISSING_VALUE)
+                .missingValueHint(sectionPlaceholder)
+                .placeholderContext(PlaceholderContext.builder()
+                    .type(PlaceholderContext.PlaceholderType.INSERT_BEFORE)
+                    .build())
                 .build();
             resultBuilder.addMessage(message);
         }

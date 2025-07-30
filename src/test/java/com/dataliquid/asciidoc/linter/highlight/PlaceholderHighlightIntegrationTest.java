@@ -55,10 +55,17 @@ class PlaceholderHighlightIntegrationTest {
      * Creates the default output configuration for enhanced placeholder display.
      */
     private OutputConfiguration createDefaultOutputConfig() {
+        return createDefaultOutputConfig(3);
+    }
+    
+    /**
+     * Creates output configuration with specified context lines.
+     */
+    private OutputConfiguration createDefaultOutputConfig(int contextLines) {
         return OutputConfiguration.builder()
             .format(OutputFormat.ENHANCED)
             .display(DisplayConfig.builder()
-                .contextLines(3)
+                .contextLines(contextLines)
                 .useColors(false)  // No colors for easier testing
                 .showLineNumbers(true)
                 .showHeader(true)  // Enable header to match expected output
@@ -78,6 +85,13 @@ class PlaceholderHighlightIntegrationTest {
      * Validates content and returns the formatted console output.
      */
     private String validateAndFormat(String rules, String adocContent, Path tempDir) throws IOException {
+        return validateAndFormat(rules, adocContent, tempDir, createDefaultOutputConfig());
+    }
+    
+    /**
+     * Validates content and returns the formatted console output with custom config.
+     */
+    private String validateAndFormat(String rules, String adocContent, Path tempDir, OutputConfiguration outputConfig) throws IOException {
         // Clear any previous output
         stringWriter.getBuffer().setLength(0);
         
@@ -90,7 +104,7 @@ class PlaceholderHighlightIntegrationTest {
         ValidationResult result = linter.validateFile(testFile, config);
         
         // Format output
-        ConsoleFormatter formatter = new ConsoleFormatter(createDefaultOutputConfig());
+        ConsoleFormatter formatter = new ConsoleFormatter(outputConfig);
         formatter.format(result, printWriter);
         printWriter.flush();
         
@@ -1204,6 +1218,123 @@ class PlaceholderHighlightIntegrationTest {
                5 | | Data 1 | Data 2
                6 | «| Data 3 | Data 4»
                7 | |===
+            
+            
+            """, testFile.toString(), testFile.toString());
+        
+        assertEquals(expectedOutput, actualOutput);
+    }
+    
+    @Test
+    @DisplayName("should show placeholder for missing section when min-occurrences not met")
+    void shouldShowPlaceholderForMissingSectionMinOccurrences(@TempDir Path tempDir) throws IOException {
+        // Given - YAML rules requiring a section with min occurrences
+        String rules = """
+            document:
+              sections:
+                - level: 0
+                  subsections:
+                    - name: headerTypeRule
+                      order: 1
+                      level: 1
+                      min: 1
+                      max: 1
+            """;
+        
+        // Given - AsciiDoc content missing the required section
+        // Note: The string has line 1: title, line 2: empty, line 3: content
+        String adocContent = """
+            = Test Document
+            
+            Some content without the required section.
+            """;
+        
+        // When - Validate and format output
+        String actualOutput = validateAndFormat(rules, adocContent, tempDir);
+        
+        // Then - Verify exact console output with placeholder
+        Path testFile = tempDir.resolve("test.adoc");
+        String expectedOutput = String.format("""
+            Validation Report
+            =================
+            
+            %s:
+            
+            [ERROR]: Too few occurrences of section: headerTypeRule [section.min-occurrences]
+              File: %s:1
+            
+               1 | = Test Document
+               2 |\s
+               3 | «== headerTypeRule»
+               4 | Some content without the required section.
+            
+            
+            """, testFile.toString(), testFile.toString());
+        
+        assertEquals(expectedOutput, actualOutput);
+    }
+    
+    @Test
+    @DisplayName("should show placeholder for missing level 4 section when min-occurrences not met")
+    void shouldShowPlaceholderForMissingLevel4SectionMinOccurrences(@TempDir Path tempDir) throws IOException {
+        // Given - YAML rules requiring a level 4 section with min occurrences
+        String rules = """
+            document:
+              sections:
+                - level: 0
+                  subsections:
+                    - name: introduction
+                      level: 1
+                      subsections:
+                        - name: overview
+                          level: 2
+                          subsections:
+                            - name: details
+                              level: 3
+                              subsections:
+                                - name: implementation
+                                  level: 4
+                                  min: 1
+                                  max: 1
+            """;
+        
+        // Given - AsciiDoc content with nested sections but missing the required level 4 section
+        String adocContent = """
+            = Test Document
+            
+            == Introduction
+            
+            === Overview
+            
+            ==== Details
+            
+            Some content here but missing the required implementation section.
+            """;
+        
+        // When - Validate and format output (with more context lines to show the full structure)
+        String actualOutput = validateAndFormat(rules, adocContent, tempDir, createDefaultOutputConfig(10));
+        
+        // Then - Verify exact console output with placeholder
+        Path testFile = tempDir.resolve("test.adoc");
+        String expectedOutput = String.format("""
+            Validation Report
+            =================
+            
+            %s:
+            
+            [ERROR]: Too few occurrences of section: implementation [section.min-occurrences]
+              File: %s:1
+            
+               1 | = Test Document
+               2 |\s
+               3 | == Introduction
+               4 |\s
+               5 | === Overview
+               6 |\s
+               7 | ==== Details
+               8 |\s
+               9 | Some content here but missing the required implementation section.
+              10 | «===== implementation»
             
             
             """, testFile.toString(), testFile.toString());
