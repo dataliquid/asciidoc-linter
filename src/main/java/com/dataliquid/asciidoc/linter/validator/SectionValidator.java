@@ -143,6 +143,12 @@ public final class SectionValidator {
             validateTitle(section, matchingConfig.title(), filename, resultBuilder);
             
             validateLevel(section, matchingConfig, filename, resultBuilder);
+        } else {
+            // Even without a pattern match, we need to track occurrences for min/max validation
+            SectionConfig configForTracking = findConfigForOccurrenceTracking(section, allowedConfigs);
+            if (configForTracking != null) {
+                trackOccurrence(configForTracking);
+            }
         }
         
         // Always validate subsections
@@ -213,18 +219,9 @@ public final class SectionValidator {
     }
 
     private void validateMinMaxOccurrences(String filename, ValidationResult.Builder resultBuilder) {
-        // Validate root level configs
+        // Validate root level configs (this will recursively validate subsections)
         for (SectionConfig config : rootSections) {
             validateOccurrenceForConfig(config, filename, resultBuilder);
-        }
-        
-        // For level 0 configs with subsections, validate those subsections too
-        for (SectionConfig config : rootSections) {
-            if (config.level() == 0 && config.subsections() != null) {
-                for (SectionConfig subsection : config.subsections()) {
-                    validateOccurrenceForConfig(subsection, filename, resultBuilder);
-                }
-            }
         }
     }
 
@@ -405,6 +402,16 @@ public final class SectionValidator {
         return configs.stream()
             .filter(config -> config.level() == level)
             .collect(Collectors.toList());
+    }
+    
+    private SectionConfig findConfigForOccurrenceTracking(Section section, List<SectionConfig> configs) {
+        int level = section.getLevel();
+        
+        // Find the first config that matches the level and has a name (for occurrence tracking)
+        return configs.stream()
+            .filter(config -> config.level() == level && config.name() != null)
+            .findFirst()
+            .orElse(null);
     }
     
     private List<SectionConfig> determineSubsectionConfigsFromParent(List<SectionConfig> parentConfigs, int parentLevel) {

@@ -2176,6 +2176,61 @@ class UnderlineHighlightIntegrationTest {
         }
         
         @Test
+        @DisplayName("should show underline for section with subsection pattern mismatch")
+        void shouldShowUnderlineForSectionWithSubsectionPatternMismatch(@TempDir Path tempDir) throws IOException {
+            // Given - YAML rules with pattern for subsection title
+            String rules = """
+                document:
+                  sections:
+                    - level: 0
+                      subsections:
+                        - name: headerTypeRule
+                          order: 1
+                          level: 1
+                          min: 1
+                          max: 1
+                          title:
+                            pattern: "^Typ$"
+                            severity: error
+                """;
+            
+            // Given - AsciiDoc content with subsection title not matching pattern
+            String adocContent = """
+                = Test Document
+                
+                == Wrong Title
+                
+                This section title doesn't match the required pattern "Typ".
+                """;
+            
+            // When - Validate and format output
+            String actualOutput = validateAndFormat(rules, adocContent, tempDir);
+            
+            // Then - Verify exact console output with underline
+            Path testFile = tempDir.resolve("test.adoc");
+            String expectedOutput = String.format("""
+                Validation Report
+                =================
+                
+                %s:
+                
+                [ERROR]: Section title does not match required pattern [section.title.pattern]
+                  File: %s:3:4-14
+                
+                   1 | = Test Document
+                   2 |\s
+                   3 | == Wrong Title
+                     |    ~~~~~~~~~~~
+                   4 |\s
+                   5 | This section title doesn't match the required pattern "Typ".
+                
+                
+                """, testFile.toString(), testFile.toString());
+            
+            assertEquals(expectedOutput, actualOutput);
+        }
+        
+        @Test
         @DisplayName("should show underline for multiple section pattern mismatches")
         void shouldShowUnderlineForMultipleSectionPatternMismatches(@TempDir Path tempDir) throws IOException {
             // Given - YAML rules with different patterns for different section levels
