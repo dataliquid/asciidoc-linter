@@ -435,7 +435,6 @@ public final class VerseBlockValidator extends AbstractBlockValidator<VerseBlock
                     if (authorStart >= 0) {
                         int authorEnd = line.indexOf("\"", authorStart + 1);
                         if (authorEnd > authorStart) {
-                            String author = line.substring(authorStart + 1, authorEnd);
                             return new AuthorPosition(authorStart + 2, authorEnd, checkLine);
                         }
                     }

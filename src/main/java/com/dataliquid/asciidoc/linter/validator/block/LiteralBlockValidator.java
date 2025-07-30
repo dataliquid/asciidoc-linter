@@ -12,7 +12,6 @@ import com.dataliquid.asciidoc.linter.validator.ErrorType;
 import com.dataliquid.asciidoc.linter.validator.PlaceholderContext;
 import com.dataliquid.asciidoc.linter.validator.SourceLocation;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
-import com.dataliquid.asciidoc.linter.report.console.FileContentCache;
 
 /**
  * Validator for literal blocks in AsciiDoc documents.
@@ -50,7 +49,6 @@ import com.dataliquid.asciidoc.linter.report.console.FileContentCache;
  * @see BlockTypeValidator
  */
 public final class LiteralBlockValidator extends AbstractBlockValidator<LiteralBlock> {
-    private final FileContentCache fileCache = new FileContentCache();
     
     @Override
     public BlockType getSupportedType() {
