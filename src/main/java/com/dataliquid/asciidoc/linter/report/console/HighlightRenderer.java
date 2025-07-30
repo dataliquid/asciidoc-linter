@@ -1,6 +1,7 @@
 package com.dataliquid.asciidoc.linter.report.console;
 
 import java.io.PrintWriter;
+import java.util.List;
 import java.util.Objects;
 
 import com.dataliquid.asciidoc.linter.config.output.DisplayConfig;
@@ -31,9 +32,67 @@ public class HighlightRenderer {
                                   ValidationMessage message, 
                                   PrintWriter writer) {
         
-        for (SourceContext.ContextLine line : context.getLines()) {
+        List<SourceContext.ContextLine> lines = context.getLines();
+        for (int i = 0; i < lines.size(); i++) {
+            SourceContext.ContextLine line = lines.get(i);
+            
+            // Check if this is a placeholder line for block.occurrence.min
+            if (line.isErrorLine() && line.getContent().isEmpty() && 
+                "block.occurrence.min".equals(message.getRuleId()) &&
+                message.getMissingValueHint() != null &&
+                message.getMissingValueHint().contains("\n")) {
+                
+                // Split multi-line placeholder into separate lines
+                String[] placeholderLines = message.getMissingValueHint().split("\n");
+                
+                // Render each line of the multi-line placeholder
+                for (int j = 0; j < placeholderLines.length; j++) {
+                    String placeholderContent = placeholderLines[j];
+                    
+                    // Create context line for each placeholder line
+                    SourceContext.ContextLine placeholderLine = 
+                        new SourceContext.ContextLine(
+                            line.getNumber() + j, 
+                            placeholderContent,
+                            true // Mark as error line
+                        );
+                    
+                    // Render with line number and placeholder markers
+                    renderPlaceholderLine(placeholderLine, writer, j == 0, j == placeholderLines.length - 1);
+                }
+                continue; // Skip the original empty line
+            }
+            
             renderLine(line, message, writer);
         }
+    }
+    
+    private void renderPlaceholderLine(SourceContext.ContextLine line, 
+                                      PrintWriter writer,
+                                      boolean isFirstLine,
+                                      boolean isLastLine) {
+        // Line number prefix
+        String linePrefix = "";
+        if (config.isShowLineNumbers()) {
+            linePrefix = String.format("%4d | ", line.getNumber());
+            if (config.isUseColors()) {
+                linePrefix = colorScheme.contextLineNumber(linePrefix);
+            }
+        }
+        
+        // Add placeholder markers only on first and last lines
+        String content = line.getContent();
+        if (isFirstLine) {
+            content = PLACEHOLDER_START + content;
+        }
+        if (isLastLine) {
+            content = content + PLACEHOLDER_END;
+        }
+        
+        // Color the entire placeholder content
+        String highlighted = colorScheme.error(content);
+        
+        writer.println(linePrefix + highlighted);
     }
     
     private void renderLine(SourceContext.ContextLine line, 
@@ -172,8 +231,14 @@ public class HighlightRenderer {
         
         // For block.occurrence.min errors with empty lines, show placeholder at start
         if ("block.occurrence.min".equals(message.getRuleId()) && line.isEmpty()) {
-            String placeholderText = PLACEHOLDER_START + message.getMissingValueHint() + PLACEHOLDER_END;
-            return colorScheme.error(placeholderText);
+            // Only handle single-line placeholders here
+            // Multi-line placeholders are handled in renderWithHighlight
+            if (!message.getMissingValueHint().contains("\n")) {
+                String placeholderText = PLACEHOLDER_START + message.getMissingValueHint() + PLACEHOLDER_END;
+                return colorScheme.error(placeholderText);
+            }
+            // For multi-line placeholders, return empty line (will be handled later)
+            return line;
         }
         
         // For paragraph.lines.min errors with empty lines, show placeholder at start

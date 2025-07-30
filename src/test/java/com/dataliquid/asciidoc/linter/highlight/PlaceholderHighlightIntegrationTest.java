@@ -1,6 +1,7 @@
 package com.dataliquid.asciidoc.linter.highlight;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -2455,10 +2456,137 @@ class PlaceholderHighlightIntegrationTest {
             %s:
             
             [ERROR]: Too few occurrences of block: paragraph [block.occurrence.min]
-              File: %s:1
+              File: %s:2
             
                1 | = Accept
                2 | «Paragraph content»
+            
+            
+            """, testFile.toString(), testFile.toString());
+        
+        assertEquals(expectedOutput, actualOutput);
+    }
+    
+    @Test
+    @DisplayName("should show multi-line placeholders for complex block types")
+    void shouldShowMultiLinePlaceholdersForComplexBlockTypes(@TempDir Path tempDir) throws IOException {
+        // Given - YAML rules requiring a table block
+        String rules = """
+            document:
+              sections:
+                - name: documentTitle
+                  level: 0
+                  min: 1
+                  max: 1
+                  allowedBlocks:
+                    - table:
+                        severity: error
+                        occurrence:
+                          min: 1
+                          max: 1
+            """;
+        
+        // Given - AsciiDoc content missing the table
+        String adocContent = """
+            = My Document
+            """;
+        
+        // When - Validate and format output
+        String actualOutput = validateAndFormat(rules, adocContent, tempDir);
+        
+        // Then - Verify multi-line table placeholder
+        assertTrue(actualOutput.contains("«|==="));
+        assertTrue(actualOutput.contains("| Header 1 | Header 2"));
+        assertTrue(actualOutput.contains("| Data 1 | Data 2"));
+        assertTrue(actualOutput.contains("|===»"));
+    }
+    
+    @Test
+    @DisplayName("should show placeholder at correct position for missing block in nested sections")
+    void shouldShowPlaceholderAtCorrectPositionForMissingBlockInNestedSections(@TempDir Path tempDir) throws IOException {
+        // Given - YAML rules with nested sections where listing block is required in level 2
+        String rules = """
+            document:
+              sections:
+                - name: documentTitle
+                  level: 0
+                  min: 1
+                  max: 1
+                  title:
+                    pattern: "^[A-Z].*"
+                    severity: error
+                  allowedBlocks:
+                    - paragraph:
+                        severity: error
+                        occurrence:
+                          min: 1
+                          severity: error
+                - name: mainSection
+                  level: 1
+                  title:
+                    pattern: "^[A-Z].*"
+                    severity: error
+                  allowedBlocks:
+                    - paragraph:
+                        severity: error
+                        occurrence:
+                          min: 1
+                          severity: error
+                  subsections:
+                    - name: subSection
+                      level: 2
+                      title:
+                        pattern: "^[A-Z].*"
+                        severity: error
+                      allowedBlocks:
+                        - paragraph:
+                            severity: error
+                            occurrence:
+                              min: 1
+                              severity: error
+                        - listing:
+                            severity: error
+                            occurrence:
+                              min: 1
+                              severity: error
+            """;
+        
+        // Given - AsciiDoc content missing the listing block in subsection
+        String adocContent = """
+            = My Document
+            
+            This is a paragraph at document level.
+            
+            == Main Section
+            
+            This is a paragraph in the main section.
+            
+            === Sub Section
+            
+            This is a paragraph in the sub section.
+            """;
+        
+        // When - Validate and format output
+        String actualOutput = validateAndFormat(rules, adocContent, tempDir);
+        
+        // Then - Verify the placeholder appears after the subsection paragraph
+        Path testFile = tempDir.resolve("test.adoc");
+        String expectedOutput = String.format("""
+            Validation Report
+            =================
+            
+            %s:
+            
+            [ERROR]: Too few occurrences of block: listing [block.occurrence.min]
+              File: %s:12
+            
+               9 | === Sub Section
+              10 |\s
+              11 | This is a paragraph in the sub section.
+              12 | «[source]
+              13 | ----
+              14 | Code here
+              15 | ----»
             
             
             """, testFile.toString(), testFile.toString());

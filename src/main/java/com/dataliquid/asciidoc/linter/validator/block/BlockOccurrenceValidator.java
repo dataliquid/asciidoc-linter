@@ -133,10 +133,84 @@ public final class BlockOccurrenceValidator {
     private com.dataliquid.asciidoc.linter.validator.SourceLocation createSectionLocation(
             BlockValidationContext context) {
         
+        // Get the container (section or document)
+        org.asciidoctor.ast.StructuralNode container = context.getContainer();
+        
+        // Try to find the last line of the section/document content
+        int insertLine = 1;
+        
+        if (container != null && container.getSourceLocation() != null) {
+            // Start with section/document start line
+            insertLine = container.getSourceLocation().getLineNumber();
+        }
+        
+        // Get all blocks in the container
+        java.util.List<org.asciidoctor.ast.StructuralNode> blocks = container.getBlocks();
+        
+        // Check if this is a document container with no content blocks
+        if (container instanceof org.asciidoctor.ast.Document) {
+            org.asciidoctor.ast.Document doc = (org.asciidoctor.ast.Document) container;
+            // If document has a title but no content blocks, position after title
+            if (doc.getTitle() != null && (blocks == null || blocks.isEmpty() || 
+                blocks.stream().allMatch(b -> b instanceof org.asciidoctor.ast.Section))) {
+                // Position after the document title (typically line 2)
+                insertLine = 2;
+                return com.dataliquid.asciidoc.linter.validator.SourceLocation.builder()
+                    .filename(context.getFilename())
+                    .startLine(insertLine)
+                    .endLine(insertLine)
+                    .startColumn(0)
+                    .endColumn(0)
+                    .build();
+            }
+        }
+        
+        if (blocks != null && !blocks.isEmpty()) {
+            // Find the last non-section block
+            org.asciidoctor.ast.StructuralNode lastBlock = null;
+            for (int i = blocks.size() - 1; i >= 0; i--) {
+                org.asciidoctor.ast.StructuralNode block = blocks.get(i);
+                if (!(block instanceof org.asciidoctor.ast.Section)) {
+                    lastBlock = block;
+                    break;
+                }
+            }
+            
+            if (lastBlock != null && lastBlock.getSourceLocation() != null) {
+                // Position after the last block
+                insertLine = lastBlock.getSourceLocation().getLineNumber();
+                
+                // Try to account for multi-line blocks
+                if (lastBlock.getContext() != null) {
+                    // For delimited blocks, we need to account for closing delimiter
+                    switch (lastBlock.getContext()) {
+                        case "listing":
+                        case "literal":
+                        case "example":
+                        case "sidebar":
+                        case "quote":
+                        case "verse":
+                        case "pass":
+                            // These blocks have closing delimiters, add some lines
+                            insertLine += 3; // Rough estimate
+                            break;
+                        case "table":
+                            // Tables end with |===
+                            insertLine += 2;
+                            break;
+                        default:
+                            // For simple blocks like paragraphs, just add 1
+                            insertLine += 1;
+                            break;
+                    }
+                }
+            }
+        }
+        
         return com.dataliquid.asciidoc.linter.validator.SourceLocation.builder()
             .filename(context.getFilename())
-            .startLine(1) // Section start
-            .endLine(1)
+            .startLine(insertLine)
+            .endLine(insertLine)
             .startColumn(0)  // No column for section errors
             .endColumn(0)
             .build();

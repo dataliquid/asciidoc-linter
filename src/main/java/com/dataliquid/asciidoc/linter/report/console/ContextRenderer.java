@@ -160,15 +160,44 @@ public class ContextRenderer {
         // For block.occurrence.min errors, add an empty line for the missing block
         if ("block.occurrence.min".equals(message.getRuleId()) && 
             message.getErrorType() == ErrorType.MISSING_VALUE) {
-            // Add an empty line after the last line of content
-            contextLines.add("");
+            
+            // The location indicates where the placeholder should be inserted
+            int insertLineNumber = loc.getStartLine();
+            
+            // Find the position in our context lines where we should insert the placeholder
+            int insertIndex = -1;
+            
+            // If the insert line is within our context, find its position
+            for (int i = 0; i < contextLines.size(); i++) {
+                int currentLineNumber = startLine + i;
+                if (currentLineNumber >= insertLineNumber) {
+                    insertIndex = i;
+                    break;
+                }
+            }
+            
+            // If we didn't find the position, it might be after our context
+            if (insertIndex == -1) {
+                // Add empty lines until we reach the insert position
+                int currentLineNumber = startLine + contextLines.size();
+                while (currentLineNumber < insertLineNumber) {
+                    contextLines.add("");
+                    currentLineNumber++;
+                }
+                insertIndex = contextLines.size();
+            }
+            
+            // Insert the empty line at the correct position
+            if (insertIndex >= 0 && insertIndex <= contextLines.size()) {
+                contextLines.add(insertIndex, "");
+            }
             
             // Create context with the inserted line marked as error line
             List<SourceContext.ContextLine> lines = new ArrayList<>();
             int lineNum = startLine;
             for (int i = 0; i < contextLines.size(); i++) {
                 String content = contextLines.get(i);
-                boolean isErrorLine = (i == contextLines.size() - 1); // Mark the last line (the added empty line) as error
+                boolean isErrorLine = (i == insertIndex); // Mark the inserted empty line as error
                 lines.add(new SourceContext.ContextLine(lineNum, content, isErrorLine));
                 lineNum++;
             }

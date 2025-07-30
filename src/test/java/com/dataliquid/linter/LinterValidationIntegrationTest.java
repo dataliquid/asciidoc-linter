@@ -1652,6 +1652,92 @@ class LinterValidationIntegrationTest {
         }
         
         @Test
+        @DisplayName("should show placeholder at correct position in nested sections")
+        void shouldShowPlaceholderAtCorrectPositionInNestedSections() {
+            // Given - Document with level 0, 1, and 2 sections where listing is missing in level 2
+            String rules = """
+                document:
+                  sections:
+                    - name: documentTitle
+                      level: 0
+                      min: 1
+                      max: 1
+                      title:
+                        pattern: "^[A-Z].*"
+                        severity: error
+                      allowedBlocks:
+                        - paragraph:
+                            severity: error
+                            occurrence:
+                              min: 1
+                              severity: error
+                    - name: mainSection
+                      level: 1
+                      title:
+                        pattern: "^[A-Z].*"
+                        severity: error
+                      allowedBlocks:
+                        - paragraph:
+                            severity: error
+                            occurrence:
+                              min: 1
+                              severity: error
+                      subsections:
+                        - name: subSection
+                          level: 2
+                          title:
+                            pattern: "^[A-Z].*"
+                            severity: error
+                          allowedBlocks:
+                            - paragraph:
+                                severity: error
+                                occurrence:
+                                  min: 1
+                                  severity: error
+                            - listing:
+                                severity: error
+                                occurrence:
+                                  min: 1
+                                  severity: error
+                """;
+            
+            String adocContent = """
+                = My Document
+                
+                This is a paragraph at document level.
+                
+                == Main Section
+                
+                This is a paragraph in the main section.
+                
+                === Sub Section
+                
+                This is a paragraph in the sub section.
+                """;
+            
+            LinterConfiguration config = configLoader.loadConfiguration(rules);
+            
+            // When
+            ValidationResult result = linter.validateContent(adocContent, config);
+            
+            // Then
+            assertTrue(result.hasErrors());
+            assertEquals(1, result.getErrorCount());
+            
+            // Check that the error is for the missing listing in level 2
+            ValidationMessage msg = result.getMessages().get(0);
+            assertEquals("Too few occurrences of block: listing", msg.getMessage());
+            
+            // The location should point to where the missing block should be inserted
+            // The placeholder should appear after the paragraph in the subsection
+            // Not at a fixed line 3
+            assertEquals(12, msg.getLocation().getStartLine()); // Points to where block should be added
+            
+            // Let's also run a console report to see where the placeholder appears
+            // This would help debug the actual positioning
+        }
+        
+        @Test
         @DisplayName("should handle blocks without occurrence configuration")
         void shouldHandleBlocksWithoutOccurrenceConfiguration() {
             // Given
