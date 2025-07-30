@@ -70,6 +70,9 @@ public final class UlistBlockValidator extends AbstractBlockValidator<UlistBlock
         // Validate marker style
         if (ulistConfig.getMarkerStyle() != null) {
             validateMarkerStyle(block, ulistConfig.getMarkerStyle(), ulistConfig, context, messages);
+            
+            // Also validate nested lists within list items
+            validateNestedListMarkers(items, ulistConfig.getMarkerStyle(), ulistConfig, context, messages);
         }
         
         return messages;
@@ -175,14 +178,9 @@ public final class UlistBlockValidator extends AbstractBlockValidator<UlistBlock
                     .startColumn(pos.startColumn)
                     .endColumn(pos.endColumn)
                     .build())
-                .message("Unordered list uses incorrect marker style")
-                .errorType(ErrorType.MISSING_VALUE)
+                .message("Unordered list marker style '" + actualMarkerStyle + "' does not match expected style '" + expectedMarkerStyle + "'")
                 .actualValue(actualMarkerStyle)
                 .expectedValue(expectedMarkerStyle)
-                .missingValueHint(expectedMarkerStyle)
-                .placeholderContext(PlaceholderContext.builder()
-                    .type(PlaceholderContext.PlaceholderType.SIMPLE_VALUE)
-                    .build())
                 .build());
         }
     }
@@ -213,20 +211,32 @@ public final class UlistBlockValidator extends AbstractBlockValidator<UlistBlock
     }
     
     private String getMarkerStyle(StructuralNode block) {
-        // Try to get marker from attributes
-        Object marker = block.getAttribute("marker");
-        if (marker != null) {
-            return marker.toString();
+        // AsciidoctorJ doesn't provide marker style in attributes
+        // We need to detect it from the source
+        if (block.getSourceLocation() == null) {
+            return null;
         }
         
-        // Try to get style
-        String style = block.getStyle();
-        if (style != null) {
-            return style;
+        // Get the file lines from cache
+        List<String> fileLines = fileCache.getFileLines(block.getSourceLocation().getPath());
+        int lineNum = block.getSourceLocation().getLineNumber();
+        
+        if (lineNum > 0 && lineNum <= fileLines.size()) {
+            String line = fileLines.get(lineNum - 1);
+            // Find the first non-whitespace character
+            for (int i = 0; i < line.length(); i++) {
+                char c = line.charAt(i);
+                if (!Character.isWhitespace(c)) {
+                    // Check if it's a list marker
+                    if (c == '*' || c == '-' || c == '.') {
+                        return String.valueOf(c);
+                    }
+                    break;
+                }
+            }
         }
         
-        // Default for unordered lists is usually "*"
-        return "*";
+        return null;
     }
     
     /**
@@ -275,17 +285,52 @@ public final class UlistBlockValidator extends AbstractBlockValidator<UlistBlock
         
         if (lineNum > 0 && lineNum <= fileLines.size()) {
             String line = fileLines.get(lineNum - 1);
-            // Find the position of the marker (* or -)
-            for (int i = 0; i < line.length(); i++) {
-                char c = line.charAt(i);
-                if (c == '*' || c == '-') {
-                    // Found the marker - endColumn should be after the marker to replace it
-                    return new MarkerPosition(i + 1, i + 1, lineNum);
-                }
-            }
+            // Highlight the entire line
+            return new MarkerPosition(1, line.length(), lineNum);
         }
         
         return new MarkerPosition(1, 1, lineNum);
+    }
+    
+    /**
+     * Validates marker styles in nested lists within list items.
+     */
+    private void validateNestedListMarkers(List<StructuralNode> items, String expectedMarkerStyle,
+                                         UlistBlock blockConfig, BlockValidationContext context,
+                                         List<ValidationMessage> messages) {
+        for (StructuralNode item : items) {
+            if (item.getBlocks() != null) {
+                for (StructuralNode nestedBlock : item.getBlocks()) {
+                    // Check if it's a nested ulist
+                    if ("ulist".equals(nestedBlock.getContext())) {
+                        String nestedMarkerStyle = getMarkerStyle(nestedBlock);
+                        if (nestedMarkerStyle != null && !nestedMarkerStyle.equals(expectedMarkerStyle)) {
+                            MarkerPosition pos = findMarkerPosition(nestedBlock, context);
+                            messages.add(ValidationMessage.builder()
+                                .severity(blockConfig.getSeverity())
+                                .ruleId("ulist.markerStyle")
+                                .location(SourceLocation.builder()
+                                    .filename(context.getFilename())
+                                    .startLine(pos.lineNumber)
+                                    .endLine(pos.lineNumber)
+                                    .startColumn(pos.startColumn)
+                                    .endColumn(pos.endColumn)
+                                    .build())
+                                .message("Unordered list marker style '" + nestedMarkerStyle + "' does not match expected style '" + expectedMarkerStyle + "'")
+                                .actualValue(nestedMarkerStyle)
+                                .expectedValue(expectedMarkerStyle)
+                                .build());
+                            
+                            // Recursively check nested items
+                            List<StructuralNode> nestedItems = nestedBlock.getBlocks();
+                            if (nestedItems != null) {
+                                validateNestedListMarkers(nestedItems, expectedMarkerStyle, blockConfig, context, messages);
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
     
     private static class ItemPosition {

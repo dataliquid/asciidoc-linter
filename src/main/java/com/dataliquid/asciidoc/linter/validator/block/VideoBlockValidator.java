@@ -117,11 +117,18 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
         if (url != null && urlConfig.getPattern() != null) {
             Pattern pattern = urlConfig.getPattern();
             if (!pattern.matcher(url).matches()) {
+                UrlPosition pos = findUrlPosition(node, context, url);
                 messages.add(ValidationMessage.builder()
                         .severity(severity)
                         .ruleId("video.url.pattern")
                         .message("Video URL does not match required pattern")
-                        .location(context.createLocation(node))
+                        .location(SourceLocation.builder()
+                            .filename(context.getFilename())
+                            .startLine(pos.lineNumber)
+                            .endLine(pos.lineNumber)
+                            .startColumn(pos.startColumn)
+                            .endColumn(pos.endColumn)
+                            .build())
                         .errorType(ErrorType.INVALID_PATTERN)
                         .actualValue(url)
                         .expectedValue(pattern.pattern())
@@ -292,11 +299,18 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
         if (poster != null && posterConfig.getPattern() != null) {
             Pattern pattern = posterConfig.getPattern();
             if (!pattern.matcher(poster).matches()) {
+                PosterPosition pos = findPosterPosition(node, context, poster);
                 messages.add(ValidationMessage.builder()
                         .severity(severity)
                         .ruleId("video.poster.pattern")
                         .message("Video poster does not match required pattern")
-                        .location(context.createLocation(node))
+                        .location(SourceLocation.builder()
+                            .filename(context.getFilename())
+                            .startLine(pos.lineNumber)
+                            .endLine(pos.lineNumber)
+                            .startColumn(pos.startColumn)
+                            .endColumn(pos.endColumn)
+                            .build())
                         .errorType(ErrorType.INVALID_PATTERN)
                         .actualValue(poster)
                         .expectedValue(pattern.pattern())
@@ -407,11 +421,18 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
             int length = caption.length();
             
             if (captionConfig.getMinLength() != null && length < captionConfig.getMinLength()) {
+                CaptionPosition pos = findCaptionPosition(node, context);
                 messages.add(ValidationMessage.builder()
                         .severity(severity)
                         .ruleId("video.caption.minLength")
                         .message("Video caption is too short")
-                        .location(context.createLocation(node))
+                        .location(SourceLocation.builder()
+                            .filename(context.getFilename())
+                            .startLine(pos.lineNumber)
+                            .endLine(pos.lineNumber)
+                            .startColumn(pos.startColumn)
+                            .endColumn(pos.endColumn)
+                            .build())
                         .errorType(ErrorType.OUT_OF_RANGE)
                         .actualValue(String.format("%d characters", length))
                         .expectedValue(String.format(">= %d characters", captionConfig.getMinLength()))
@@ -423,11 +444,18 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
             }
             
             if (captionConfig.getMaxLength() != null && length > captionConfig.getMaxLength()) {
+                CaptionPosition pos = findCaptionPosition(node, context);
                 messages.add(ValidationMessage.builder()
                         .severity(severity)
                         .ruleId("video.caption.maxLength")
                         .message("Video caption is too long")
-                        .location(context.createLocation(node))
+                        .location(SourceLocation.builder()
+                            .filename(context.getFilename())
+                            .startLine(pos.lineNumber)
+                            .endLine(pos.lineNumber)
+                            .startColumn(pos.startColumn)
+                            .endColumn(pos.endColumn)
+                            .build())
                         .errorType(ErrorType.OUT_OF_RANGE)
                         .actualValue(String.format("%d characters", length))
                         .expectedValue(String.format("<= %d characters", captionConfig.getMaxLength()))
@@ -542,7 +570,21 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
         if (bracketStart >= 0) {
             int bracketEnd = sourceLine.indexOf("]", bracketStart);
             if (bracketEnd > bracketStart) {
-                return new PosterPosition(bracketEnd + 1, bracketEnd + 1, lineNum);
+                String attributes = sourceLine.substring(bracketStart + 1, bracketEnd);
+                
+                if (poster != null && !poster.isEmpty()) {
+                    // Find poster= pattern
+                    String posterPattern = "poster=" + poster;
+                    int posterStart = attributes.indexOf(posterPattern);
+                    if (posterStart >= 0) {
+                        // Position of the poster value (after "poster=")
+                        int valueStart = bracketStart + 1 + posterStart + 7; // 7 = length of "poster="
+                        return new PosterPosition(valueStart + 1, valueStart + poster.length(), lineNum);
+                    }
+                } else {
+                    // No poster - position at end of attributes
+                    return new PosterPosition(bracketEnd + 1, bracketEnd + 1, lineNum);
+                }
             }
         }
         
@@ -581,15 +623,31 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
      * Finds the column position for caption in video macro.
      */
     private CaptionPosition findCaptionPosition(StructuralNode block, BlockValidationContext context) {
-        if (block.getSourceLocation() == null) {
-            return new CaptionPosition(1, 1, 1);
+        List<String> fileLines = fileCache.getFileLines(context.getFilename());
+        if (fileLines.isEmpty() || block.getSourceLocation() == null) {
+            return new CaptionPosition(1, 1, block.getSourceLocation() != null ? block.getSourceLocation().getLineNumber() : 1);
         }
         
-        int lineNum = block.getSourceLocation().getLineNumber();
+        int videoLineNum = block.getSourceLocation().getLineNumber();
+        String caption = block.getTitle();
         
-        // Caption is typically on the line before the video macro
-        // Return position for the line before the video
-        return new CaptionPosition(1, 1, lineNum);
+        // Caption (title) is typically on the line before the video macro
+        if (caption != null && !caption.isEmpty() && videoLineNum > 1) {
+            // Check line before video
+            int captionLineNum = videoLineNum - 1;
+            if (captionLineNum <= fileLines.size()) {
+                String captionLine = fileLines.get(captionLineNum - 1);
+                
+                // Check if line starts with "." followed by caption
+                if (captionLine.startsWith(".")) {
+                    // Caption starts at column 1 (the dot) and ends at the line length
+                    return new CaptionPosition(1, captionLine.length(), captionLineNum);
+                }
+            }
+        }
+        
+        // Default to video line if caption not found
+        return new CaptionPosition(1, 1, videoLineNum);
     }
     
     private static class UrlPosition {

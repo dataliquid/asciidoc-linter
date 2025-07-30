@@ -108,12 +108,20 @@ public final class QuoteBlockValidator extends AbstractBlockValidator<QuoteBlock
             
             // Validate pattern
             if (config.getPattern() != null && !config.getPattern().matcher(attribution).matches()) {
+                AttributionPosition pos = findAttributionPositionWithValue(node, context, attribution);
                 results.add(ValidationMessage.builder()
                     .severity(severity)
                     .ruleId("quote.attribution.pattern")
-                    .message(String.format("Quote attribution does not match required pattern: %s (actual: %s)",
-                                  config.getPattern().pattern(), attribution))
-                    .location(context.createLocation(node))
+                    .message("Quote attribution does not match required pattern")
+                    .actualValue(attribution)
+                    .expectedValue("Pattern: " + config.getPattern().pattern())
+                    .location(SourceLocation.builder()
+                        .filename(context.getFilename())
+                        .startLine(pos.lineNumber)
+                        .endLine(pos.lineNumber)
+                        .startColumn(pos.startColumn)
+                        .endColumn(pos.endColumn)
+                        .build())
                     .build());
             }
         }
@@ -172,12 +180,20 @@ public final class QuoteBlockValidator extends AbstractBlockValidator<QuoteBlock
             
             // Validate pattern
             if (config.getPattern() != null && !config.getPattern().matcher(citation).matches()) {
+                CitationPosition pos = findCitationPositionWithValue(node, context, citation);
                 results.add(ValidationMessage.builder()
                     .severity(severity)
                     .ruleId("quote.citation.pattern")
-                    .message(String.format("Quote citation does not match required pattern: %s (actual: %s)",
-                                  config.getPattern().pattern(), citation))
-                    .location(context.createLocation(node))
+                    .message("Quote citation does not match required pattern")
+                    .actualValue(citation)
+                    .expectedValue("Pattern: " + config.getPattern().pattern())
+                    .location(SourceLocation.builder()
+                        .filename(context.getFilename())
+                        .startLine(pos.lineNumber)
+                        .endLine(pos.lineNumber)
+                        .startColumn(pos.startColumn)
+                        .endColumn(pos.endColumn)
+                        .build())
                     .build());
             }
         }
@@ -306,6 +322,36 @@ public final class QuoteBlockValidator extends AbstractBlockValidator<QuoteBlock
     }
     
     /**
+     * Finds the position for quote attribution with value.
+     */
+    private AttributionPosition findAttributionPositionWithValue(StructuralNode node, BlockValidationContext context, String attribution) {
+        List<String> fileLines = fileCache.getFileLines(context.getFilename());
+        if (fileLines.isEmpty() || node.getSourceLocation() == null) {
+            return new AttributionPosition(1, 1, node.getSourceLocation() != null ? node.getSourceLocation().getLineNumber() : 1);
+        }
+        
+        int lineNum = node.getSourceLocation().getLineNumber();
+        
+        // Quote blocks typically start one line before the reported line
+        // Search backward for [quote]
+        for (int i = lineNum - 1; i >= 0 && i >= lineNum - 5; i--) {
+            if (i < fileLines.size()) {
+                String line = fileLines.get(i);
+                if (line.trim().startsWith("[quote")) {
+                    // Found the quote line - highlight the whole line
+                    int startCol = line.indexOf("[");
+                    int endCol = line.indexOf("]");
+                    if (endCol > startCol) {
+                        return new AttributionPosition(startCol + 1, endCol + 1, i + 1);
+                    }
+                }
+            }
+        }
+        
+        return new AttributionPosition(1, 1, lineNum);
+    }
+    
+    /**
      * Finds the position for quote attribution.
      */
     private AttributionPosition findAttributionPosition(StructuralNode node, BlockValidationContext context) {
@@ -333,6 +379,36 @@ public final class QuoteBlockValidator extends AbstractBlockValidator<QuoteBlock
         }
         
         return new AttributionPosition(7, 7, lineNum);
+    }
+    
+    /**
+     * Finds the position for quote citation with value.
+     */
+    private CitationPosition findCitationPositionWithValue(StructuralNode node, BlockValidationContext context, String citation) {
+        List<String> fileLines = fileCache.getFileLines(context.getFilename());
+        if (fileLines.isEmpty() || node.getSourceLocation() == null) {
+            return new CitationPosition(1, 1, node.getSourceLocation() != null ? node.getSourceLocation().getLineNumber() : 1);
+        }
+        
+        int lineNum = node.getSourceLocation().getLineNumber();
+        
+        // Quote blocks typically start one line before the reported line
+        // Search backward for [quote]
+        for (int i = lineNum - 1; i >= 0 && i >= lineNum - 5; i--) {
+            if (i < fileLines.size()) {
+                String line = fileLines.get(i);
+                if (line.trim().startsWith("[quote")) {
+                    // Found the quote line - highlight the whole line
+                    int startCol = line.indexOf("[");
+                    int endCol = line.indexOf("]");
+                    if (endCol > startCol) {
+                        return new CitationPosition(startCol + 1, endCol + 1, i + 1);
+                    }
+                }
+            }
+        }
+        
+        return new CitationPosition(1, 1, lineNum);
     }
     
     /**

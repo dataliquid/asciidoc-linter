@@ -130,7 +130,7 @@ public final class ListingBlockValidator extends AbstractBlockValidator<ListingB
                     .startColumn(pos.startColumn)
                     .endColumn(pos.endColumn)
                     .build())
-                .message("Listing block must specify a language")
+                .message("Listing language is required")
                 .actualValue("No language")
                 .expectedValue("Language required")
                 .errorType(ErrorType.MISSING_VALUE)
@@ -156,7 +156,7 @@ public final class ListingBlockValidator extends AbstractBlockValidator<ListingB
                         .startColumn(pos.startColumn)
                         .endColumn(pos.endColumn)
                         .build())
-                    .message("Listing block has unsupported language")
+                    .message("Listing language '" + language + "' is not allowed")
                     .actualValue(language)
                     .expectedValue("One of: " + String.join(", ", config.getAllowed()))
                     .build());
@@ -187,11 +187,18 @@ public final class ListingBlockValidator extends AbstractBlockValidator<ListingB
         
         if (title != null && config.getPattern() != null) {
             if (!config.getPattern().matcher(title).matches()) {
+                TitlePosition pos = findTitlePosition(block, context, title);
                 messages.add(ValidationMessage.builder()
                     .severity(severity)
                     .ruleId("listing.title.pattern")
-                    .location(context.createLocation(block))
-                    .message("Code listing title does not match required pattern")
+                    .location(SourceLocation.builder()
+                        .filename(context.getFilename())
+                        .startLine(pos.lineNumber)
+                        .endLine(pos.lineNumber)
+                        .startColumn(pos.startColumn)
+                        .endColumn(pos.endColumn)
+                        .build())
+                    .message("Listing title does not match required pattern")
                     .actualValue(title)
                     .expectedValue("Pattern: " + config.getPattern().pattern())
                     .build());
@@ -354,12 +361,56 @@ public final class ListingBlockValidator extends AbstractBlockValidator<ListingB
         return new LanguagePosition(1, 1, blockLineNum);
     }
     
+    /**
+     * Finds the position of listing title.
+     */
+    private TitlePosition findTitlePosition(StructuralNode block, BlockValidationContext context, String title) {
+        List<String> fileLines = fileCache.getFileLines(context.getFilename());
+        if (fileLines.isEmpty() || block.getSourceLocation() == null) {
+            return new TitlePosition(1, 1, block.getSourceLocation() != null ? block.getSourceLocation().getLineNumber() : 1);
+        }
+        
+        int blockLineNum = block.getSourceLocation().getLineNumber();
+        
+        // Listing titles are typically on the line before the [source] attribute
+        // Example:
+        // .My Title
+        // [source,java]
+        // ----
+        for (int offset = -2; offset <= 0; offset++) {
+            int checkLine = blockLineNum + offset;
+            if (checkLine > 0 && checkLine <= fileLines.size()) {
+                String line = fileLines.get(checkLine - 1);
+                if (line.trim().startsWith(".") && line.trim().substring(1).equals(title)) {
+                    // Found the title line
+                    int titleStart = line.indexOf(".");
+                    int titleEnd = titleStart + 1 + title.length();
+                    return new TitlePosition(titleStart + 1, titleEnd, checkLine);
+                }
+            }
+        }
+        
+        return new TitlePosition(1, 1, blockLineNum);
+    }
+    
     private static class LanguagePosition {
         final int startColumn;
         final int endColumn;
         final int lineNumber;
         
         LanguagePosition(int startColumn, int endColumn, int lineNumber) {
+            this.startColumn = startColumn;
+            this.endColumn = endColumn;
+            this.lineNumber = lineNumber;
+        }
+    }
+    
+    private static class TitlePosition {
+        final int startColumn;
+        final int endColumn;
+        final int lineNumber;
+        
+        TitlePosition(int startColumn, int endColumn, int lineNumber) {
             this.startColumn = startColumn;
             this.endColumn = endColumn;
             this.lineNumber = lineNumber;
