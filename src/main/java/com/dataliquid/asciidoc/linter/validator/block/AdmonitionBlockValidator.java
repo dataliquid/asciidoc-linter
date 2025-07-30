@@ -495,9 +495,14 @@ public final class AdmonitionBlockValidator extends AbstractBlockValidator<Admon
         if (blockLineNum > 0 && blockLineNum <= fileLines.size()) {
             String line = fileLines.get(blockLineNum - 1);
             // Look for the admonition keyword at the start of the line
-            if (line.trim().startsWith(admonitionType + ":")) {
-                // Highlight the entire line
-                return new TypePosition(1, line.trim().length(), blockLineNum);
+            int typeStart = line.indexOf(admonitionType);
+            if (typeStart >= 0) {
+                // Check if it's followed by a colon
+                int colonPos = typeStart + admonitionType.length();
+                if (colonPos < line.length() && line.charAt(colonPos) == ':') {
+                    // Highlight only the admonition type keyword (not the colon or content)
+                    return new TypePosition(typeStart + 1, typeStart + admonitionType.length(), blockLineNum);
+                }
             }
         }
         
@@ -550,6 +555,7 @@ public final class AdmonitionBlockValidator extends AbstractBlockValidator<Admon
         }
         
         int blockLineNum = block.getSourceLocation().getLineNumber();
+        String iconValue = getIconValue(block);
         
         // Look for the [NOTE,icon=...] or [NOTE,icon:...] line before the block delimiter
         for (int offset = -2; offset <= 0; offset++) {
@@ -558,7 +564,28 @@ public final class AdmonitionBlockValidator extends AbstractBlockValidator<Admon
                 String line = fileLines.get(checkLine - 1);
                 // Check if this line contains the admonition declaration with icon
                 if (line.matches("^\\s*\\[(NOTE|TIP|WARNING|IMPORTANT|CAUTION).*icon.*\\]\\s*$")) {
-                    // Found the line, highlight the entire bracket content
+                    // Found the line, now find the icon value position
+                    int iconPos = line.indexOf("icon=");
+                    if (iconPos < 0) {
+                        iconPos = line.indexOf("icon:");
+                    }
+                    
+                    if (iconPos >= 0 && iconValue != null) {
+                        // Find where the icon value starts (after "icon=" or "icon:")
+                        int valueStart = iconPos + (line.charAt(iconPos + 4) == '=' ? 5 : 5); // "icon=" or "icon:"
+                        // Find the end of the value (comma or closing bracket)
+                        int valueEnd = valueStart;
+                        for (int i = valueStart; i < line.length(); i++) {
+                            char ch = line.charAt(i);
+                            if (ch == ',' || ch == ']') {
+                                break;
+                            }
+                            valueEnd = i;
+                        }
+                        return new IconPosition(valueStart + 1, valueEnd + 1, checkLine);
+                    }
+                    
+                    // If no icon= found, default to entire bracket content
                     int startBracket = line.indexOf('[');
                     int endBracket = line.indexOf(']');
                     if (startBracket >= 0 && endBracket > startBracket) {

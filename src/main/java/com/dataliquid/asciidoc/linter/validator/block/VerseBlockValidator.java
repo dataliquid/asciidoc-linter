@@ -200,7 +200,7 @@ public final class VerseBlockValidator extends AbstractBlockValidator<VerseBlock
             // Validate pattern if specified
             if (config.getPattern() != null) {
                 if (!config.getPattern().matcher(author).matches()) {
-                    AuthorPosition pos = findAuthorPositionWithValue(block, context, author);
+                    AuthorPosition pos = findAuthorPosition(block, context);
                     messages.add(ValidationMessage.builder()
                         .severity(verseConfig.getSeverity())
                         .ruleId("verse.author.pattern")
@@ -296,7 +296,7 @@ public final class VerseBlockValidator extends AbstractBlockValidator<VerseBlock
             // Validate pattern if specified
             if (config.getPattern() != null) {
                 if (!config.getPattern().matcher(attribution).matches()) {
-                    AttributionPosition pos = findAttributionPositionWithValue(block, context, attribution);
+                    AttributionPosition pos = findAttributionPosition(block, context);
                     messages.add(ValidationMessage.builder()
                         .severity(verseConfig.getSeverity())
                         .ruleId("verse.attribution.pattern")
@@ -415,36 +415,6 @@ public final class VerseBlockValidator extends AbstractBlockValidator<VerseBlock
     /**
      * Finds the position of author in [verse] attribute line.
      */
-    /**
-     * Finds the position of the entire [verse] line when author has a value.
-     */
-    private AuthorPosition findAuthorPositionWithValue(StructuralNode block, BlockValidationContext context, String author) {
-        List<String> fileLines = fileCache.getFileLines(context.getFilename());
-        if (fileLines.isEmpty() || block.getSourceLocation() == null) {
-            return new AuthorPosition(1, 1, block.getSourceLocation() != null ? block.getSourceLocation().getLineNumber() : 1);
-        }
-        
-        int blockLineNum = block.getSourceLocation().getLineNumber();
-        
-        // [verse] line is typically one or two lines before the block delimiter ____
-        for (int offset = -2; offset <= 0; offset++) {
-            int checkLine = blockLineNum + offset;
-            if (checkLine > 0 && checkLine <= fileLines.size()) {
-                String line = fileLines.get(checkLine - 1);
-                if (line.trim().startsWith("[verse")) {
-                    // Found the [verse] line - highlight the entire line
-                    int startCol = line.indexOf("[");
-                    int endCol = line.indexOf("]");
-                    if (endCol > startCol) {
-                        return new AuthorPosition(startCol + 1, endCol + 1, checkLine);
-                    }
-                }
-            }
-        }
-        
-        return new AuthorPosition(1, 1, blockLineNum);
-    }
-
     private AuthorPosition findAuthorPosition(StructuralNode block, BlockValidationContext context) {
         List<String> fileLines = fileCache.getFileLines(context.getFilename());
         if (fileLines.isEmpty() || block.getSourceLocation() == null) {
@@ -466,7 +436,7 @@ public final class VerseBlockValidator extends AbstractBlockValidator<VerseBlock
                         int authorEnd = line.indexOf("\"", authorStart + 1);
                         if (authorEnd > authorStart) {
                             String author = line.substring(authorStart + 1, authorEnd);
-                            return new AuthorPosition(authorStart + 2, authorEnd + 1, checkLine);
+                            return new AuthorPosition(authorStart + 2, authorEnd, checkLine);
                         }
                     }
                     // No quotes found, position after comma
@@ -480,36 +450,6 @@ public final class VerseBlockValidator extends AbstractBlockValidator<VerseBlock
         }
         
         return new AuthorPosition(1, 1, blockLineNum);
-    }
-    
-    /**
-     * Finds the position of the entire [verse] line when attribution has a value.
-     */
-    private AttributionPosition findAttributionPositionWithValue(StructuralNode block, BlockValidationContext context, String attribution) {
-        List<String> fileLines = fileCache.getFileLines(context.getFilename());
-        if (fileLines.isEmpty() || block.getSourceLocation() == null) {
-            return new AttributionPosition(1, 1, block.getSourceLocation() != null ? block.getSourceLocation().getLineNumber() : 1);
-        }
-        
-        int blockLineNum = block.getSourceLocation().getLineNumber();
-        
-        // [verse] line is typically one or two lines before the block delimiter ____
-        for (int offset = -2; offset <= 0; offset++) {
-            int checkLine = blockLineNum + offset;
-            if (checkLine > 0 && checkLine <= fileLines.size()) {
-                String line = fileLines.get(checkLine - 1);
-                if (line.trim().startsWith("[verse")) {
-                    // Found the [verse] line - highlight the entire line
-                    int startCol = line.indexOf("[");
-                    int endCol = line.indexOf("]");
-                    if (endCol > startCol) {
-                        return new AttributionPosition(startCol + 1, endCol + 1, checkLine);
-                    }
-                }
-            }
-        }
-        
-        return new AttributionPosition(1, 1, blockLineNum);
     }
     
     /**
@@ -540,7 +480,7 @@ public final class VerseBlockValidator extends AbstractBlockValidator<VerseBlock
                             if (secondQuoteStart >= 0) {
                                 int secondQuoteEnd = line.indexOf("\"", secondQuoteStart + 1);
                                 if (secondQuoteEnd > secondQuoteStart) {
-                                    return new AttributionPosition(secondQuoteStart + 2, secondQuoteEnd + 1, checkLine);
+                                    return new AttributionPosition(secondQuoteStart + 2, secondQuoteEnd, checkLine);
                                 }
                             }
                         }

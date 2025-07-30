@@ -335,12 +335,29 @@ public final class PassBlockValidator extends AbstractBlockValidator<PassBlock> 
             if (checkLine > 0 && checkLine <= fileLines.size()) {
                 String line = fileLines.get(checkLine - 1);
                 if (line.trim().startsWith("[pass")) {
-                    // Found the [pass] line - highlight the entire line
-                    int startCol = line.indexOf("[pass");
-                    int endCol = line.indexOf("]");
-                    if (endCol > startCol) {
-                        return new TypePosition(startCol + 1, endCol + 1, checkLine);
+                    // Found the [pass] line
+                    int typePos = line.indexOf("type=");
+                    if (typePos >= 0 && passType != null) {
+                        // Find the position of the type value
+                        int valueStart = typePos + 5; // after "type="
+                        // Find the end of the value (comma or closing bracket)
+                        int valueEnd = valueStart;
+                        for (int i = valueStart; i < line.length(); i++) {
+                            char ch = line.charAt(i);
+                            if (ch == ',' || ch == ']') {
+                                break;
+                            }
+                            valueEnd = i;
+                        }
+                        return new TypePosition(valueStart + 1, valueEnd + 1, checkLine);
                     }
+                    // If no type= found, position after the comma if there is one
+                    int commaPos = line.indexOf(",");
+                    if (commaPos >= 0) {
+                        return new TypePosition(commaPos + 2, commaPos + 2, checkLine);
+                    }
+                    // Default to after [pass
+                    return new TypePosition(6, 6, checkLine);
                 }
             }
         }
@@ -369,12 +386,27 @@ public final class PassBlockValidator extends AbstractBlockValidator<PassBlock> 
                     if (reason != null) {
                         int reasonStart = line.indexOf("reason=");
                         if (reasonStart >= 0) {
-                            // Position the entire attribute line when reason exists
-                            return new ReasonPosition(1, line.length(), checkLine);
+                            // Find the position of the reason value
+                            int valueStart = reasonStart + 7; // after "reason="
+                            // Find the end of the value (comma or closing bracket)
+                            int valueEnd = valueStart;
+                            for (int i = valueStart; i < line.length(); i++) {
+                                char ch = line.charAt(i);
+                                if (ch == ',' || ch == ']') {
+                                    break;
+                                }
+                                valueEnd = i;
+                            }
+                            return new ReasonPosition(valueStart + 1, valueEnd + 1, checkLine);
                         }
                     }
-                    // No reason attribute, highlight the entire [pass] line
-                    return new ReasonPosition(1, line.length(), checkLine);
+                    // If no reason= found, position after the comma if there is one
+                    int commaPos = line.indexOf(",");
+                    if (commaPos >= 0) {
+                        return new ReasonPosition(commaPos + 2, commaPos + 2, checkLine);
+                    }
+                    // Default to after [pass
+                    return new ReasonPosition(6, 6, checkLine);
                 }
             }
         }

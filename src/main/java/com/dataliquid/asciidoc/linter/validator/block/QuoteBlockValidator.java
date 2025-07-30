@@ -108,7 +108,7 @@ public final class QuoteBlockValidator extends AbstractBlockValidator<QuoteBlock
             
             // Validate pattern
             if (config.getPattern() != null && !config.getPattern().matcher(attribution).matches()) {
-                AttributionPosition pos = findAttributionPositionWithValue(node, context, attribution);
+                AttributionPosition pos = findAttributionPosition(node, context);
                 results.add(ValidationMessage.builder()
                     .severity(severity)
                     .ruleId("quote.attribution.pattern")
@@ -180,7 +180,7 @@ public final class QuoteBlockValidator extends AbstractBlockValidator<QuoteBlock
             
             // Validate pattern
             if (config.getPattern() != null && !config.getPattern().matcher(citation).matches()) {
-                CitationPosition pos = findCitationPositionWithValue(node, context, citation);
+                CitationPosition pos = findCitationPosition(node, context);
                 results.add(ValidationMessage.builder()
                     .severity(severity)
                     .ruleId("quote.citation.pattern")
@@ -322,36 +322,6 @@ public final class QuoteBlockValidator extends AbstractBlockValidator<QuoteBlock
     }
     
     /**
-     * Finds the position for quote attribution with value.
-     */
-    private AttributionPosition findAttributionPositionWithValue(StructuralNode node, BlockValidationContext context, String attribution) {
-        List<String> fileLines = fileCache.getFileLines(context.getFilename());
-        if (fileLines.isEmpty() || node.getSourceLocation() == null) {
-            return new AttributionPosition(1, 1, node.getSourceLocation() != null ? node.getSourceLocation().getLineNumber() : 1);
-        }
-        
-        int lineNum = node.getSourceLocation().getLineNumber();
-        
-        // Quote blocks typically start one line before the reported line
-        // Search backward for [quote]
-        for (int i = lineNum - 1; i >= 0 && i >= lineNum - 5; i--) {
-            if (i < fileLines.size()) {
-                String line = fileLines.get(i);
-                if (line.trim().startsWith("[quote")) {
-                    // Found the quote line - highlight the whole line
-                    int startCol = line.indexOf("[");
-                    int endCol = line.indexOf("]");
-                    if (endCol > startCol) {
-                        return new AttributionPosition(startCol + 1, endCol + 1, i + 1);
-                    }
-                }
-            }
-        }
-        
-        return new AttributionPosition(1, 1, lineNum);
-    }
-    
-    /**
      * Finds the position for quote attribution.
      */
     private AttributionPosition findAttributionPosition(StructuralNode node, BlockValidationContext context) {
@@ -368,47 +338,27 @@ public final class QuoteBlockValidator extends AbstractBlockValidator<QuoteBlock
             if (i < fileLines.size()) {
                 String line = fileLines.get(i);
                 if (line.trim().startsWith("[quote")) {
-                    // If it's just [quote], position after 'quote'
-                    if (line.trim().equals("[quote]")) {
-                        return new AttributionPosition(7, 7, i + 1);
+                    // Find the first quoted parameter after [quote,
+                    int firstQuoteStart = line.indexOf("\"");
+                    if (firstQuoteStart >= 0) {
+                        int firstQuoteEnd = line.indexOf("\"", firstQuoteStart + 1);
+                        if (firstQuoteEnd > firstQuoteStart) {
+                            // Found the attribution in quotes
+                            return new AttributionPosition(firstQuoteStart + 2, firstQuoteEnd, i + 1);
+                        }
                     }
-                    // If it already has attributes, we shouldn't be here
+                    // If no quotes found but has comma, position after comma
+                    int commaPos = line.indexOf(",");
+                    if (commaPos >= 0) {
+                        return new AttributionPosition(commaPos + 2, commaPos + 2, i + 1);
+                    }
+                    // Default position after [quote
                     return new AttributionPosition(7, 7, i + 1);
                 }
             }
         }
         
         return new AttributionPosition(7, 7, lineNum);
-    }
-    
-    /**
-     * Finds the position for quote citation with value.
-     */
-    private CitationPosition findCitationPositionWithValue(StructuralNode node, BlockValidationContext context, String citation) {
-        List<String> fileLines = fileCache.getFileLines(context.getFilename());
-        if (fileLines.isEmpty() || node.getSourceLocation() == null) {
-            return new CitationPosition(1, 1, node.getSourceLocation() != null ? node.getSourceLocation().getLineNumber() : 1);
-        }
-        
-        int lineNum = node.getSourceLocation().getLineNumber();
-        
-        // Quote blocks typically start one line before the reported line
-        // Search backward for [quote]
-        for (int i = lineNum - 1; i >= 0 && i >= lineNum - 5; i--) {
-            if (i < fileLines.size()) {
-                String line = fileLines.get(i);
-                if (line.trim().startsWith("[quote")) {
-                    // Found the quote line - highlight the whole line
-                    int startCol = line.indexOf("[");
-                    int endCol = line.indexOf("]");
-                    if (endCol > startCol) {
-                        return new CitationPosition(startCol + 1, endCol + 1, i + 1);
-                    }
-                }
-            }
-        }
-        
-        return new CitationPosition(1, 1, lineNum);
     }
     
     /**
@@ -428,24 +378,23 @@ public final class QuoteBlockValidator extends AbstractBlockValidator<QuoteBlock
             if (i < fileLines.size()) {
                 String line = fileLines.get(i);
                 if (line.trim().startsWith("[quote")) {
-                    // Parse to find position after author
-                    if (line.contains(",")) {
-                        int firstBracketIndex = line.indexOf("[");
-                        int commaIndex = line.indexOf(",", firstBracketIndex);
-                        int secondCommaIndex = line.indexOf(",", commaIndex + 1);
-                        if (secondCommaIndex == -1) {
-                            // Only one comma, position after author name
-                            // Find the end of the author name (before ']')
-                            int closeBracketIndex = line.indexOf("]");
-                            if (closeBracketIndex != -1) {
-                                // Column is 1-based, and we want position at the closing bracket
-                                return new CitationPosition(closeBracketIndex + 1, closeBracketIndex + 1, i + 1);
+                    // Find the second quoted parameter (citation is after attribution)
+                    int firstQuoteStart = line.indexOf("\"");
+                    if (firstQuoteStart >= 0) {
+                        int firstQuoteEnd = line.indexOf("\"", firstQuoteStart + 1);
+                        if (firstQuoteEnd > firstQuoteStart) {
+                            // Look for second quoted parameter
+                            int secondQuoteStart = line.indexOf("\"", firstQuoteEnd + 1);
+                            if (secondQuoteStart >= 0) {
+                                int secondQuoteEnd = line.indexOf("\"", secondQuoteStart + 1);
+                                if (secondQuoteEnd > secondQuoteStart) {
+                                    // Found the citation in quotes
+                                    return new CitationPosition(secondQuoteStart + 2, secondQuoteEnd, i + 1);
+                                }
                             }
                         }
-                    } else if (line.trim().equals("[quote]")) {
-                        // No attributes yet
-                        return new CitationPosition(7, 7, i + 1);
                     }
+                    // Default position
                     return new CitationPosition(16, 16, i + 1);
                 }
             }

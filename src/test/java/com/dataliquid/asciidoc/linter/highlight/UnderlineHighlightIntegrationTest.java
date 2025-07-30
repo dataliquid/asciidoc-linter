@@ -1178,12 +1178,12 @@ class UnderlineHighlightIntegrationTest {
                 %s:
                 
                 [ERROR]: Verse author is too long [verse.author.maxLength]
-                  File: %s:3:10-55
+                  File: %s:3:10-54
                 
                    1 | = Test Document
                    2 |\s
                    3 | [verse, "William Shakespeare and all his collaborators", "Hamlet"]
-                     |          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                     |          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                    4 | ____
                    5 | To be, or not to be, that is the question
                    6 | ____
@@ -1237,12 +1237,12 @@ class UnderlineHighlightIntegrationTest {
                 %s:
                 
                 [WARN]: Verse author is too short [verse.author.minLength]
-                  File: %s:3:10-14
+                  File: %s:3:10-13
                 
                    1 | = Test Document
                    2 |\s
                    3 | [verse, "Anon", "Unknown"]
-                     |          ~~~~~
+                     |          ~~~~
                    4 | ____
                    5 | Roses are red, violets are blue
                    6 | ____
@@ -1301,24 +1301,24 @@ class UnderlineHighlightIntegrationTest {
                 %s:
                 
                 [ERROR]: Verse author does not match required pattern [verse.author.pattern]
-                  File: %s:3:1-32
+                  File: %s:3:10-20
                 
                    1 | = Test Document
                    2 |\s
                    3 | [verse, "shakespeare", "Hamlet"]
-                     | ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                     |          ~~~~~~~~~~~
                    4 | ____
                    5 | To be or not to be
                    6 | ____
                 
                 [ERROR]: Verse author does not match required pattern [verse.author.pattern]
-                  File: %s:13:1-42
+                  File: %s:13:10-22
                 
                   10 | I'm nobody! Who are you?
                   11 | ____
                   12 |\s
                   13 | [verse, "E.E. Cummings", "Complete Poems"]
-                     | ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                     |          ~~~~~~~~~~~~~
                   14 | ____
                   15 | i carry your heart with me
                   16 | ____
@@ -1372,12 +1372,12 @@ class UnderlineHighlightIntegrationTest {
                 %s:
                 
                 [ERROR]: Verse attribution is too long [verse.attribution.maxLength]
-                  File: %s:3:33-61
+                  File: %s:3:33-60
                 
                    1 | = Test Document
                    2 |\s
                    3 | [verse, "William Shakespeare", "Hamlet Act 3 Scene 1 Line 56"]
-                     |                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                     |                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                    4 | ____
                    5 | To be, or not to be
                    6 | ____
@@ -1431,12 +1431,12 @@ class UnderlineHighlightIntegrationTest {
                 %s:
                 
                 [ERROR]: Verse attribution does not match required pattern [verse.attribution.pattern]
-                  File: %s:3:1-39
+                  File: %s:3:26-37
                 
                    1 | = Test Document
                    2 |\s
                    3 | [verse, "Robert Frost", "Unknown date"]
-                     | ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                     |                          ~~~~~~~~~~~~
                    4 | ____
                    5 | Two roads diverged in a wood
                    6 | ____
@@ -1560,24 +1560,24 @@ class UnderlineHighlightIntegrationTest {
                 %s:
                 
                 [ERROR]: Pass block type 'javascript' is not allowed [pass.type.allowed]
-                  File: %s:3:1-22
+                  File: %s:3:12-21
                 
                    1 | = Test Document
                    2 |\s
                    3 | [pass,type=javascript]
-                     | ~~~~~~~~~~~~~~~~~~~~~~
+                     |            ~~~~~~~~~~
                    4 | ++++
                    5 | console.log("Hello");
                    6 | ++++
                 
                 [ERROR]: Pass block type 'css' is not allowed [pass.type.allowed]
-                  File: %s:13:1-15
+                  File: %s:13:12-14
                 
                   10 | <p>Valid HTML</p>
                   11 | ++++
                   12 |\s
                   13 | [pass,type=css]
-                     | ~~~~~~~~~~~~~~~
+                     |            ~~~
                   14 | ++++
                   15 | body { color: red; }
                   16 | ++++
@@ -1771,24 +1771,24 @@ class UnderlineHighlightIntegrationTest {
                 %s:
                 
                 [WARN]: Pass block reason is too short [pass.reason.minLength]
-                  File: %s:3:1-20
+                  File: %s:3:14-19
                 
                    1 | = Test Document
                    2 |\s
                    3 | [pass,reason=Legacy]
-                     | ~~~~~~~~~~~~~~~~~~~~
+                     |              ~~~~~~
                    4 | ++++
                    5 | <custom>Content</custom>
                    6 | ++++
                 
                 [WARN]: Pass block reason is too short [pass.reason.minLength]
-                  File: %s:13:1-20
+                  File: %s:13:14-19
                 
                   10 | <legacy>Data</legacy>
                   11 | ++++
                   12 |\s
                   13 | [pass,reason=Custom]
-                     | ~~~~~~~~~~~~~~~~~~~~
+                     |              ~~~~~~
                   14 | ++++
                   15 | <special>Tag</special>
                   16 | ++++
@@ -1847,24 +1847,24 @@ class UnderlineHighlightIntegrationTest {
                 %s:
                 
                 [ERROR]: Pass block reason is too long [pass.reason.maxLength]
-                  File: %s:3:1-86
+                  File: %s:3:14-85
                 
                    1 | = Test Document
                    2 |\s
                    3 | [pass,reason=This is an extremely long reason that exceeds the maximum allowed length]
-                     | ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                     |              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                    4 | ++++
                    5 | <content>Data</content>
                    6 | ++++
                 
                 [ERROR]: Pass block reason is too long [pass.reason.maxLength]
-                  File: %s:13:1-95
+                  File: %s:13:14-94
                 
                   10 | <valid>Content</valid>
                   11 | ++++
                   12 |\s
                   13 | [pass,reason=Another excessively long explanation for using passthrough that should be shorter]
-                     | ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                     |              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                   14 | ++++
                   15 | <data>Value</data>
                   16 | ++++
@@ -1928,24 +1928,24 @@ class UnderlineHighlightIntegrationTest {
                 %s:
                 
                 [ERROR]: Quote attribution does not match required pattern [quote.attribution.pattern]
-                  File: %s:3:1-35
+                  File: %s:3:10-23
                 
                    1 | = Test Document
                    2 |\s
                    3 | [quote, "shakespeare123", "Hamlet"]
-                     | ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                     |          ~~~~~~~~~~~~~~
                    4 | ____
                    5 | To be, or not to be, that is the question.
                    6 | ____
                 
                 [ERROR]: Quote attribution does not match required pattern [quote.attribution.pattern]
-                  File: %s:13:1-31
+                  File: %s:13:10-18
                 
                   10 | All the world's a stage.
                   11 | ____
                   12 |\s
                   13 | [quote, "@john_doe", "Twitter"]
-                     | ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                     |          ~~~~~~~~~
                   14 | ____
                   15 | Hello world!
                   16 | ____
@@ -2004,24 +2004,24 @@ class UnderlineHighlightIntegrationTest {
                 %s:
                 
                 [ERROR]: Quote citation does not match required pattern [quote.citation.pattern]
-                  File: %s:3:1-42
+                  File: %s:3:29-40
                 
                    1 | = Test Document
                    2 |\s
                    3 | [quote, "Albert Einstein", "unknown date"]
-                     | ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                     |                             ~~~~~~~~~~~~
                    4 | ____
                    5 | Imagination is more important than knowledge.
                    6 | ____
                 
                 [ERROR]: Quote citation does not match required pattern [quote.citation.pattern]
-                  File: %s:13:1-52
+                  File: %s:13:25-50
                 
                   10 | There is no greater agony than bearing an untold story inside you.
                   11 | ____
                   12 |\s
                   13 | [quote, "Oscar Wilde", "The Picture of Dorian Gray"]
-                     | ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                     |                         ~~~~~~~~~~~~~~~~~~~~~~~~~~
                   14 | ____
                   15 | We are all in the gutter, but some of us are looking at the stars.
                   16 | ____
@@ -2089,25 +2089,25 @@ class UnderlineHighlightIntegrationTest {
                 %s:
                 
                 [ERROR]: Admonition type 'IMPORTANT' is not allowed [admonition.type.allowed]
-                  File: %s:7:1-36
+                  File: %s:7:1-9
                 
                    4 |\s
                    5 | TIP: This is a valid tip.
                    6 |\s
                    7 | IMPORTANT: This type is not allowed.
-                     | ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                     | ~~~~~~~~~
                    8 |\s
                    9 | WARNING: This is allowed.
                   10 |\s
                 
                 [ERROR]: Admonition type 'CAUTION' is not allowed [admonition.type.allowed]
-                  File: %s:11:1-39
+                  File: %s:11:1-7
                 
                    8 |\s
                    9 | WARNING: This is allowed.
                   10 |\s
                   11 | CAUTION: This type is also not allowed.
-                     | ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                     | ~~~~~~~
                 
                 
                 """, testFile.toString(), testFile.toString(), testFile.toString());
@@ -2495,24 +2495,24 @@ class UnderlineHighlightIntegrationTest {
                 %s:
                 
                 [ERROR]: Admonition icon does not match required pattern [admonition.icon.pattern]
-                  File: %s:3:1-19
+                  File: %s:3:12-18
                 
                    1 | = Test Document
                    2 |\s
                    3 | [NOTE,icon=warning]
-                     | ~~~~~~~~~~~~~~~~~~~
+                     |            ~~~~~~~
                    4 | ====
                    5 | Invalid icon format.
                    6 | ====
                 
                 [ERROR]: Admonition icon does not match required pattern [admonition.icon.pattern]
-                  File: %s:13:1-27
+                  File: %s:13:15-26
                 
                   10 | Valid icon format.
                   11 | ====
                   12 |\s
                   13 | [WARNING,icon="icon:ALERT[]"]
-                     | ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                     |               ~~~~~~~~~~~~
                   14 | ====
                   15 | Invalid uppercase icon.
                   16 | ====
@@ -2702,81 +2702,6 @@ class UnderlineHighlightIntegrationTest {
             
             assertEquals(expectedOutput, actualOutput);
         }
+      }
         
-        //@Test
-        @DisplayName("should show underline for listing block without language when required")
-        void shouldShowUnderlineForListingMissingLanguage(@TempDir Path tempDir) throws IOException {
-            // Given - YAML rules requiring language for listing blocks
-            String rules = """
-                document:
-                  sections:
-                    - level: 0
-                      allowedBlocks:
-                        - listing:
-                            severity: error
-                            language:
-                              required: true
-                              severity: error
-                """;
-            
-            // Given - AsciiDoc content with listing blocks without language
-            String adocContent = """
-                = Test Document
-                
-                [source,java]
-                ----
-                // Valid listing with language
-                ----
-                
-                ----
-                Plain listing without language
-                ----
-                
-                [listing]
-                ----
-                Another listing without source language
-                ----
-                """;
-            
-            // When - Validate and format output
-            String actualOutput = validateAndFormat(rules, adocContent, tempDir);
-            
-            // Then - Verify exact console output with underline
-            Path testFile = tempDir.resolve("test.adoc");
-            String expectedOutput = String.format("""
-                Validation Report
-                =================
-                
-                %s:
-                
-                [ERROR]: Listing language is required [listing.language.required]
-                  File: %s:8:1-4
-                
-                   5 | // Valid listing with language
-                   6 | ----
-                   7 |\s
-                   8 | ----
-                     | ~~~~
-                   9 | Plain listing without language
-                  10 | ----
-                  11 |\s
-                
-                [ERROR]: Listing language is required [listing.language.required]
-                  File: %s:12:1-9
-                
-                   9 | Plain listing without language
-                  10 | ----
-                  11 |\s
-                  12 | [listing]
-                     | ~~~~~~~~~
-                  13 | ----
-                  14 | Another listing without source language
-                  15 | ----
-                
-                
-                """, testFile.toString(), testFile.toString(), testFile.toString());
-            
-            assertEquals(expectedOutput, actualOutput);
-        }
-    }
 }
