@@ -317,6 +317,15 @@ public final class SectionValidator {
         
         // Check if title is required
         if (titleConfig.min() > 0 && (documentTitle == null || documentTitle.trim().isEmpty())) {
+            // If the config has a name, skip this validation - the min-occurrences check will handle it
+            // and provide a better error message with placeholder
+            if (titleConfig.name() != null) {
+                String configKey = createOccurrenceKey(titleConfig);
+                sectionOccurrences.put(configKey, 0);
+                return;
+            }
+            
+            // Otherwise, use the original validation for backward compatibility
             ValidationMessage message = ValidationMessage.builder()
                 .severity(Severity.ERROR)
                 .ruleId("section.level0.missing")

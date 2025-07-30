@@ -80,7 +80,10 @@ public class ContextRenderer {
             // Find the appropriate position to insert the section placeholder
             int insertIndex = -1;
             
-            if (sectionLevel == 1) {
+            if (sectionLevel == 0) {
+                // For level 0 sections (document title), insert at the beginning
+                insertIndex = 0;
+            } else if (sectionLevel == 1) {
                 // For level 1 sections, insert after the document title
                 for (int i = 0; i < contextLines.size(); i++) {
                     String line = contextLines.get(i).trim();

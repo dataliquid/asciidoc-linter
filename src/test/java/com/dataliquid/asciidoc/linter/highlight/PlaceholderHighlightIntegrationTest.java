@@ -1275,6 +1275,51 @@ class PlaceholderHighlightIntegrationTest {
     }
     
     @Test
+    @DisplayName("should show placeholder for missing level 0 section when min-occurrences not met")
+    void shouldShowPlaceholderForMissingLevel0SectionMinOccurrences(@TempDir Path tempDir) throws IOException {
+        // Given - YAML rules requiring a level 0 section with min occurrences
+        String rules = """
+            document:
+              sections:
+                # Document title (Level 0) - HTTP Header Name
+                - name: headerTitleRule
+                  level: 0
+                  min: 1
+                  max: 1
+                  title:
+                    pattern: "^[A-Za-z][A-Za-z0-9-]*$"
+                    severity: error
+            """;
+        
+        // Given - AsciiDoc content missing the required level 0 section
+        String adocContent = """
+            Some content without any document title.
+            """;
+        
+        // When - Validate and format output
+        String actualOutput = validateAndFormat(rules, adocContent, tempDir);
+        
+        // Then - Verify exact console output with placeholder
+        Path testFile = tempDir.resolve("test.adoc");
+        String expectedOutput = String.format("""
+            Validation Report
+            =================
+            
+            %s:
+            
+            [ERROR]: Too few occurrences of section: headerTitleRule [section.min-occurrences]
+              File: %s:1
+            
+               1 | «= headerTitleRule»
+               2 | Some content without any document title.
+            
+            
+            """, testFile.toString(), testFile.toString());
+        
+        assertEquals(expectedOutput, actualOutput);
+    }
+    
+    @Test
     @DisplayName("should show placeholder for missing level 4 section when min-occurrences not met")
     void shouldShowPlaceholderForMissingLevel4SectionMinOccurrences(@TempDir Path tempDir) throws IOException {
         // Given - YAML rules requiring a level 4 section with min occurrences
