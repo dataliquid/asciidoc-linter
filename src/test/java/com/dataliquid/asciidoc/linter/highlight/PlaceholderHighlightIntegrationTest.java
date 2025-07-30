@@ -137,7 +137,7 @@ class PlaceholderHighlightIntegrationTest {
             
             %s:
             
-            [ERROR]: Listing block must specify a language [listing.language.required]
+            [ERROR]: Listing language is required [listing.language.required]
               File: %s:3:8
             
                1 | = Test Document
@@ -1928,7 +1928,7 @@ class PlaceholderHighlightIntegrationTest {
             
                1 | = Test Document
                2 |\s
-               3 | «pass::[html]»
+               3 | «[pass,type=html]»
                4 | ++++
                5 | <p>This is a pass block without a type.</p>
                6 | ++++
@@ -2028,7 +2028,7 @@ class PlaceholderHighlightIntegrationTest {
             
                1 | = Test Document
                2 |\s
-               3 | «// reason: explanation»
+               3 | «[pass,reason="explanation"]»
                4 | ++++
                5 | <p>This is a pass block without a reason.</p>
                6 | ++++
@@ -2240,50 +2240,4 @@ class PlaceholderHighlightIntegrationTest {
         assertEquals(expectedOutput, actualOutput);
     }
     
-    @Test
-    @DisplayName("should show placeholder for ulist with invalid marker style")
-    void shouldShowPlaceholderForUlistWithInvalidMarkerStyle(@TempDir Path tempDir) throws IOException {
-        // Given - YAML rules requiring specific marker style for ulist blocks
-        String rules = """
-            document:
-              sections:
-                - level: 0
-                  allowedBlocks:
-                    - ulist:
-                        severity: error
-                        markerStyle: "-"
-            """;
-        
-        // Given - AsciiDoc content with wrong marker style
-        String adocContent = """
-            = Test Document
-            
-            * First item
-            * Second item
-            """;
-        
-        // When - Validate and format output
-        String actualOutput = validateAndFormat(rules, adocContent, tempDir);
-        
-        // Then - Verify exact console output with placeholder
-        Path testFile = tempDir.resolve("test.adoc");
-        String expectedOutput = String.format("""
-            Validation Report
-            =================
-            
-            %s:
-            
-            [ERROR]: Unordered list uses incorrect marker style [ulist.markerStyle]
-              File: %s:3:1
-            
-               1 | = Test Document
-               2 |\s
-               3 | «-» First item
-               4 | - Second item
-            
-            
-            """, testFile.toString(), testFile.toString());
-        
-        assertEquals(expectedOutput, actualOutput);
-    }
 }

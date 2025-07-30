@@ -178,9 +178,14 @@ public final class UlistBlockValidator extends AbstractBlockValidator<UlistBlock
                     .startColumn(pos.startColumn)
                     .endColumn(pos.endColumn)
                     .build())
-                .message("Unordered list marker style '" + actualMarkerStyle + "' does not match expected style '" + expectedMarkerStyle + "'")
+                .message("Unordered list uses incorrect marker style")
                 .actualValue(actualMarkerStyle)
                 .expectedValue(expectedMarkerStyle)
+                .errorType(ErrorType.INVALID_ENUM)
+                .missingValueHint(expectedMarkerStyle)
+                .placeholderContext(PlaceholderContext.builder()
+                    .type(PlaceholderContext.PlaceholderType.SIMPLE_VALUE)
+                    .build())
                 .build());
         }
     }
@@ -218,7 +223,8 @@ public final class UlistBlockValidator extends AbstractBlockValidator<UlistBlock
         }
         
         // Get the file lines from cache
-        List<String> fileLines = fileCache.getFileLines(block.getSourceLocation().getPath());
+        String filePath = block.getSourceLocation().getPath();
+        List<String> fileLines = fileCache.getFileLines(filePath);
         int lineNum = block.getSourceLocation().getLineNumber();
         
         if (lineNum > 0 && lineNum <= fileLines.size()) {
@@ -285,8 +291,19 @@ public final class UlistBlockValidator extends AbstractBlockValidator<UlistBlock
         
         if (lineNum > 0 && lineNum <= fileLines.size()) {
             String line = fileLines.get(lineNum - 1);
-            // Highlight the entire line
-            return new MarkerPosition(1, line.length(), lineNum);
+            // Find the marker character position
+            for (int i = 0; i < line.length(); i++) {
+                char c = line.charAt(i);
+                if (!Character.isWhitespace(c)) {
+                    // Found the marker
+                    if (c == '*' || c == '-' || c == '.') {
+                        return new MarkerPosition(i + 1, i + 1, lineNum);
+                    }
+                    break;
+                }
+            }
+            // Default to start of line if no marker found
+            return new MarkerPosition(1, 1, lineNum);
         }
         
         return new MarkerPosition(1, 1, lineNum);
