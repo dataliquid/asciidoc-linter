@@ -37,6 +37,7 @@ class QuoteBlockValidatorTest {
         // Mock the location creation
         SourceLocation mockLocation = mock(SourceLocation.class);
         when(mockContext.createLocation(any(StructuralNode.class))).thenReturn(mockLocation);
+        when(mockContext.getFilename()).thenReturn("test.adoc");
         when(mockNode.getSourceLocation()).thenReturn(null);
     }
     
@@ -77,7 +78,7 @@ class QuoteBlockValidatorTest {
             
             assertEquals(1, results.size());
             assertEquals(Severity.ERROR, results.get(0).getSeverity());
-            assertTrue(results.get(0).getMessage().contains("requires an author"));
+            assertTrue(results.get(0).getMessage().contains("Quote attribution is required but not provided"));
         }
         
         @Test
@@ -139,8 +140,8 @@ class QuoteBlockValidatorTest {
             List<ValidationMessage> results = validator.validate(mockNode, block, mockContext);
             
             assertEquals(1, results.size());
-            assertTrue(results.get(0).getMessage().contains("does not match required pattern"));
-            assertTrue(results.get(0).getMessage().contains("123 Invalid"));
+            assertTrue(results.get(0).getMessage().contains("Quote attribution does not match required pattern"));
+            assertEquals("123 Invalid", results.get(0).getActualValue().orElse(null));
         }
         
         @Test
@@ -205,7 +206,7 @@ class QuoteBlockValidatorTest {
             
             assertEquals(1, results.size());
             assertEquals(Severity.ERROR, results.get(0).getSeverity());
-            assertTrue(results.get(0).getMessage().contains("requires a source"));
+            assertTrue(results.get(0).getMessage().contains("Quote citation is required but not provided"));
         }
         
         @Test
@@ -223,7 +224,7 @@ class QuoteBlockValidatorTest {
             List<ValidationMessage> results = validator.validate(mockNode, block, mockContext);
             
             assertEquals(1, results.size());
-            assertTrue(results.get(0).getMessage().contains("does not match required pattern"));
+            assertTrue(results.get(0).getMessage().contains("Quote citation does not match required pattern"));
         }
         
         @Test

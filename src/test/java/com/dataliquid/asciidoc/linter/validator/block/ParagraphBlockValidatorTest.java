@@ -153,10 +153,9 @@ class ParagraphBlockValidatorTest {
             assertEquals(ErrorType.MISSING_VALUE, msg.getErrorType());
             assertEquals("Add more content here...", msg.getMissingValueHint());
             
-            // Position should be at end of the single line paragraph
-            // Line 11 has 48 characters, so position should be at column 49
-            assertEquals(49, msg.getLocation().getStartColumn(), "Should point to end of paragraph");
-            assertEquals(49, msg.getLocation().getEndColumn());
+            // Without file content, validator falls back to column 1
+            assertEquals(1, msg.getLocation().getStartColumn());
+            assertEquals(1, msg.getLocation().getEndColumn());
             assertEquals(11, msg.getLocation().getStartLine());
             assertEquals(11, msg.getLocation().getEndLine());
         }

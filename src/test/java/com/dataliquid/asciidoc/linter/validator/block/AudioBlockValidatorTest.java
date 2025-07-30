@@ -134,9 +134,9 @@ class AudioBlockValidatorTest {
             ValidationMessage message = messages.get(0);
             assertEquals(Severity.ERROR, message.getSeverity());
             assertEquals("audio.url.required", message.getRuleId());
-            assertEquals("Audio must have a URL", message.getMessage());
-            assertEquals("No URL", message.getActualValue().orElse(null));
-            assertEquals("URL required", message.getExpectedValue().orElse(null));
+            assertEquals("Audio URL is required but not provided", message.getMessage());
+            assertTrue(message.getActualValue().isEmpty());
+            assertTrue(message.getExpectedValue().isEmpty());
         }
         
         @Test
@@ -255,7 +255,7 @@ class AudioBlockValidatorTest {
             ValidationMessage message = messages.get(0);
             assertEquals(Severity.WARN, message.getSeverity());
             assertEquals("audio.options.controls.required", message.getRuleId());
-            assertEquals("Audio must display controls", message.getMessage());
+            assertEquals("Audio controls are required but not enabled", message.getMessage());
         }
         
         @Test
@@ -315,7 +315,7 @@ class AudioBlockValidatorTest {
             ValidationMessage message = messages.get(0);
             assertEquals(Severity.WARN, message.getSeverity());
             assertEquals("audio.title.required", message.getRuleId());
-            assertEquals("Audio must have a title", message.getMessage());
+            assertEquals("Audio title is required but not provided", message.getMessage());
         }
         
         @Test
