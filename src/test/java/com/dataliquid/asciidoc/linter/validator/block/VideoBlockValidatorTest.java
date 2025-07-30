@@ -45,6 +45,9 @@ class VideoBlockValidatorTest {
         when(sourceLocation.getLineNumber()).thenReturn(10);
         when(sourceLocation.getFile()).thenReturn("test.adoc");
         
+        // Mock context methods
+        when(context.getFilename()).thenReturn("test.adoc");
+        
         // Mock context.createLocation()
         SourceLocation location = SourceLocation.builder()
                 .filename("test.adoc")
@@ -280,7 +283,7 @@ class VideoBlockValidatorTest {
             assertEquals(Severity.ERROR, msg.getSeverity());
             assertEquals("Video controls are required but not enabled", msg.getMessage());
             assertEquals(ErrorType.MISSING_VALUE, msg.getErrorType());
-            assertEquals("options=controls", msg.getMissingValueHint());
+            assertEquals("controls", msg.getMissingValueHint());
             assertEquals("autoplay", msg.getActualValue().orElse(null));
             assertEquals("controls", msg.getExpectedValue().orElse(null));
             assertTrue(msg.hasSuggestions());

@@ -3,6 +3,7 @@ package com.dataliquid.asciidoc.linter.validator.block;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
@@ -35,7 +36,6 @@ class PassBlockValidatorTest {
     @Mock
     private BlockValidationContext mockContext;
     
-    @Mock
     private SourceLocation mockLocation;
     
     @BeforeEach
@@ -43,9 +43,20 @@ class PassBlockValidatorTest {
         MockitoAnnotations.openMocks(this);
         validator = new PassBlockValidator();
         
+        // Mock context filename
+        when(mockContext.getFilename()).thenReturn("test.adoc");
+        
+        // Create a proper location object instead of mocking it
+        mockLocation = SourceLocation.builder()
+                .filename("test.adoc")
+                .startLine(10)
+                .build();
+        
         // Default setup
         when(mockContext.createLocation(any())).thenReturn(mockLocation);
+        when(mockContext.createLocation(any(), anyInt(), anyInt())).thenReturn(mockLocation);
         when(mockBlock.getContent()).thenReturn("<div>Test content</div>");
+        when(mockBlock.getSourceLocation()).thenReturn(null);
     }
     
     @Test
@@ -62,7 +73,7 @@ class PassBlockValidatorTest {
         @DisplayName("should validate required type when missing")
         void shouldValidateRequiredTypeWhenMissing() {
             // Given
-            when(mockBlock.getAttribute("pass-type")).thenReturn(null);
+            when(mockBlock.getAttribute("type")).thenReturn(null);
             
             PassBlock config = PassBlock.builder()
                 .severity(Severity.ERROR)
@@ -80,14 +91,14 @@ class PassBlockValidatorTest {
             ValidationMessage message = messages.get(0);
             assertEquals(Severity.ERROR, message.getSeverity());
             assertEquals("pass.type.required", message.getRuleId());
-            assertTrue(message.getMessage().contains("must specify a type"));
+            assertEquals("Pass block requires a type", message.getMessage());
         }
         
         @Test
         @DisplayName("should validate allowed types")
         void shouldValidateAllowedTypes() {
             // Given
-            when(mockBlock.getAttribute("pass-type")).thenReturn("javascript");
+            when(mockBlock.getAttribute("type")).thenReturn("javascript");
             
             PassBlock config = PassBlock.builder()
                 .severity(Severity.ERROR)
@@ -114,7 +125,7 @@ class PassBlockValidatorTest {
         @DisplayName("should pass when type is valid")
         void shouldPassWhenTypeIsValid() {
             // Given
-            when(mockBlock.getAttribute("pass-type")).thenReturn("html");
+            when(mockBlock.getAttribute("type")).thenReturn("html");
             
             PassBlock config = PassBlock.builder()
                 .severity(Severity.ERROR)
@@ -136,7 +147,7 @@ class PassBlockValidatorTest {
         @DisplayName("should use block severity when type severity is null")
         void shouldUseBlockSeverityWhenTypeSeverityIsNull() {
             // Given
-            when(mockBlock.getAttribute("pass-type")).thenReturn(null);
+            when(mockBlock.getAttribute("type")).thenReturn(null);
             
             PassBlock config = PassBlock.builder()
                 .severity(Severity.WARN)
@@ -262,7 +273,7 @@ class PassBlockValidatorTest {
         @DisplayName("should validate required reason when missing")
         void shouldValidateRequiredReasonWhenMissing() {
             // Given
-            when(mockBlock.getAttribute("pass-reason")).thenReturn(null);
+            when(mockBlock.getAttribute("reason")).thenReturn(null);
             
             PassBlock config = PassBlock.builder()
                 .severity(Severity.ERROR)
@@ -280,14 +291,14 @@ class PassBlockValidatorTest {
             ValidationMessage message = messages.get(0);
             assertEquals(Severity.ERROR, message.getSeverity());
             assertEquals("pass.reason.required", message.getRuleId());
-            assertTrue(message.getMessage().contains("must provide reason"));
+            assertEquals("Pass block requires a reason", message.getMessage());
         }
         
         @Test
         @DisplayName("should validate min length of reason")
         void shouldValidateMinLengthOfReason() {
             // Given
-            when(mockBlock.getAttribute("pass-reason")).thenReturn("Too short");
+            when(mockBlock.getAttribute("reason")).thenReturn("Too short");
             
             PassBlock config = PassBlock.builder()
                 .severity(Severity.ERROR)
@@ -315,7 +326,7 @@ class PassBlockValidatorTest {
         void shouldValidateMaxLengthOfReason() {
             // Given
             String longReason = "This is a very long reason that exceeds the maximum allowed length";
-            when(mockBlock.getAttribute("pass-reason")).thenReturn(longReason);
+            when(mockBlock.getAttribute("reason")).thenReturn(longReason);
             
             PassBlock config = PassBlock.builder()
                 .severity(Severity.ERROR)
@@ -340,7 +351,7 @@ class PassBlockValidatorTest {
         @DisplayName("should pass when reason is valid")
         void shouldPassWhenReasonIsValid() {
             // Given
-            when(mockBlock.getAttribute("pass-reason")).thenReturn("Custom widget for product gallery display");
+            when(mockBlock.getAttribute("reason")).thenReturn("Custom widget for product gallery display");
             
             PassBlock config = PassBlock.builder()
                 .severity(Severity.ERROR)
@@ -368,8 +379,8 @@ class PassBlockValidatorTest {
         @DisplayName("should validate all rules together")
         void shouldValidateAllRulesTogether() {
             // Given
-            when(mockBlock.getAttribute("pass-type")).thenReturn("html");
-            when(mockBlock.getAttribute("pass-reason")).thenReturn("Custom widget for product gallery display");
+            when(mockBlock.getAttribute("type")).thenReturn("html");
+            when(mockBlock.getAttribute("reason")).thenReturn("Custom widget for product gallery display");
             when(mockBlock.getContent()).thenReturn("<div class=\"product-slider\">Content</div>");
             
             PassBlock config = PassBlock.builder()
@@ -405,8 +416,8 @@ class PassBlockValidatorTest {
         @DisplayName("should collect multiple validation errors")
         void shouldCollectMultipleValidationErrors() {
             // Given
-            when(mockBlock.getAttribute("pass-type")).thenReturn(null);
-            when(mockBlock.getAttribute("pass-reason")).thenReturn("Short");
+            when(mockBlock.getAttribute("type")).thenReturn(null);
+            when(mockBlock.getAttribute("reason")).thenReturn("Short");
             when(mockBlock.getContent()).thenReturn("");
             
             PassBlock config = PassBlock.builder()
@@ -447,8 +458,8 @@ class PassBlockValidatorTest {
         @DisplayName("should use nested severity when specified for all configs")
         void shouldUseNestedSeverityWhenSpecified() {
             // Given
-            when(mockBlock.getAttribute("pass-type")).thenReturn("javascript");
-            when(mockBlock.getAttribute("pass-reason")).thenReturn("Short");
+            when(mockBlock.getAttribute("type")).thenReturn("javascript");
+            when(mockBlock.getAttribute("reason")).thenReturn("Short");
             when(mockBlock.getContent()).thenReturn("x".repeat(100));
             
             PassBlock config = PassBlock.builder()
@@ -497,8 +508,8 @@ class PassBlockValidatorTest {
         @DisplayName("should fallback to block severity when nested severity is null")
         void shouldFallbackToBlockSeverityWhenNull() {
             // Given
-            when(mockBlock.getAttribute("pass-type")).thenReturn(null);
-            when(mockBlock.getAttribute("pass-reason")).thenReturn(null);
+            when(mockBlock.getAttribute("type")).thenReturn(null);
+            when(mockBlock.getAttribute("reason")).thenReturn(null);
             when(mockBlock.getContent()).thenReturn("");
             
             PassBlock config = PassBlock.builder()
@@ -531,8 +542,8 @@ class PassBlockValidatorTest {
         @DisplayName("should handle mixed severity configurations")
         void shouldHandleMixedSeverityConfigurations() {
             // Given
-            when(mockBlock.getAttribute("pass-type")).thenReturn("invalid");
-            when(mockBlock.getAttribute("pass-reason")).thenReturn("Valid reason for using pass block");
+            when(mockBlock.getAttribute("type")).thenReturn("invalid");
+            when(mockBlock.getAttribute("reason")).thenReturn("Valid reason for using pass block");
             when(mockBlock.getContent()).thenReturn("<div>Valid content</div>");
             
             PassBlock config = PassBlock.builder()
