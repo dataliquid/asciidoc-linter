@@ -1,7 +1,6 @@
 package com.dataliquid.asciidoc.linter.highlight;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -2492,13 +2491,29 @@ class PlaceholderHighlightIntegrationTest {
             """;
         
         // When - Validate and format output
+        Path testFile = tempDir.resolve("test.adoc");
         String actualOutput = validateAndFormat(rules, adocContent, tempDir);
         
-        // Then - Verify multi-line table placeholder
-        assertTrue(actualOutput.contains("«|==="));
-        assertTrue(actualOutput.contains("| Header 1 | Header 2"));
-        assertTrue(actualOutput.contains("| Data 1 | Data 2"));
-        assertTrue(actualOutput.contains("|===»"));
+        // Then - Verify multi-line table placeholder with full output comparison
+        String expectedOutput = String.format("""
+            Validation Report
+            =================
+            
+            %s:
+            
+            [ERROR]: Too few occurrences of block: table [block.occurrence.min]
+              File: %s:2
+            
+               1 | = My Document
+               2 | «|===
+               3 | | Header 1 | Header 2
+               4 | | Data 1 | Data 2
+               5 | |===»
+            
+            
+            """, testFile.toString(), testFile.toString());
+        
+        assertEquals(expectedOutput, actualOutput);
     }
     
     @Test
@@ -2551,15 +2566,13 @@ class PlaceholderHighlightIntegrationTest {
                               severity: error
             """;
         
-        // Given - AsciiDoc content missing the listing block in subsection
+        // Given - AsciiDoc content missing the listing block in subsection and paragraph in main section
         String adocContent = """
             = My Document
             
             This is a paragraph at document level.
             
             == Main Section
-            
-            This is a paragraph in the main section.
             
             === Sub Section
             
@@ -2577,19 +2590,30 @@ class PlaceholderHighlightIntegrationTest {
             
             %s:
             
+            [ERROR]: Too few occurrences of block: paragraph [block.occurrence.min]
+              File: %s:7
+            
+               4 |\s
+               5 | == Main Section
+               6 |\s
+               7 | «Paragraph content»
+               8 | === Sub Section
+               9 |\s
+              10 | This is a paragraph in the sub section.
+            
             [ERROR]: Too few occurrences of block: listing [block.occurrence.min]
-              File: %s:12
+              File: %s:10
             
-               9 | === Sub Section
-              10 |\s
-              11 | This is a paragraph in the sub section.
-              12 | «[source]
-              13 | ----
-              14 | Code here
-              15 | ----»
+               7 | === Sub Section
+               8 |\s
+               9 | This is a paragraph in the sub section.
+              10 | «[source]
+              11 | ----
+              12 | Code here
+              13 | ----»
             
             
-            """, testFile.toString(), testFile.toString());
+            """, testFile.toString(), testFile.toString(), testFile.toString());
         
         assertEquals(expectedOutput, actualOutput);
     }

@@ -147,6 +147,27 @@ public final class BlockOccurrenceValidator {
         // Get all blocks in the container
         java.util.List<org.asciidoctor.ast.StructuralNode> blocks = container.getBlocks();
         
+        // For sections, if there are no content blocks (only subsections), position after the section header
+        if (container instanceof org.asciidoctor.ast.Section) {
+            org.asciidoctor.ast.Section section = (org.asciidoctor.ast.Section) container;
+            if (blocks == null || blocks.isEmpty() || 
+                blocks.stream().allMatch(b -> b instanceof org.asciidoctor.ast.Section)) {
+                // Position after the section header (accounting for blank line)
+                if (section.getSourceLocation() != null) {
+                    insertLine = section.getSourceLocation().getLineNumber() + 2;
+                } else {
+                    insertLine = 1; // Fallback for tests
+                }
+                return com.dataliquid.asciidoc.linter.validator.SourceLocation.builder()
+                    .filename(context.getFilename())
+                    .startLine(insertLine)
+                    .endLine(insertLine)
+                    .startColumn(0)
+                    .endColumn(0)
+                    .build();
+            }
+        }
+        
         // Check if this is a document container with no content blocks
         if (container instanceof org.asciidoctor.ast.Document) {
             org.asciidoctor.ast.Document doc = (org.asciidoctor.ast.Document) container;
