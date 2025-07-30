@@ -157,6 +157,24 @@ public class ContextRenderer {
             }
         }
         
+        // For block.occurrence.min errors, add an empty line for the missing block
+        if ("block.occurrence.min".equals(message.getRuleId()) && 
+            message.getErrorType() == ErrorType.MISSING_VALUE) {
+            // Add an empty line after the last line of content
+            contextLines.add("");
+            
+            // Create context with the inserted line marked as error line
+            List<SourceContext.ContextLine> lines = new ArrayList<>();
+            int lineNum = startLine;
+            for (int i = 0; i < contextLines.size(); i++) {
+                String content = contextLines.get(i);
+                boolean isErrorLine = (i == contextLines.size() - 1); // Mark the last line (the added empty line) as error
+                lines.add(new SourceContext.ContextLine(lineNum, content, isErrorLine));
+                lineNum++;
+            }
+            return new SourceContext(lines, loc);
+        }
+        
         // For paragraph.lines.min errors, add extra empty lines for the placeholders
         if ("paragraph.lines.min".equals(message.getRuleId()) && 
             message.getErrorType() == ErrorType.MISSING_VALUE) {

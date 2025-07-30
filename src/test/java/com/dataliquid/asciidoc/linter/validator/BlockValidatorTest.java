@@ -146,7 +146,7 @@ class BlockValidatorTest {
             // Then
             assertTrue(result.hasErrors());
             assertTrue(result.getMessages().stream()
-                .anyMatch(m -> "block.occurrences.min".equals(m.getRuleId())));
+                .anyMatch(m -> "block.occurrence.min".equals(m.getRuleId())));
         }
         
         @Test
@@ -183,7 +183,7 @@ class BlockValidatorTest {
             // Then
             assertTrue(result.hasWarnings());
             assertTrue(result.getMessages().stream()
-                .anyMatch(m -> "block.occurrences.max".equals(m.getRuleId())));
+                .anyMatch(m -> "block.occurrence.max".equals(m.getRuleId())));
         }
     }
     

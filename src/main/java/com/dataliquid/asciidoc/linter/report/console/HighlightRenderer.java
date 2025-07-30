@@ -83,6 +83,15 @@ public class HighlightRenderer {
                     return line;
                 }
             }
+            // For block.occurrence.min, insert placeholder on empty lines
+            else if ("block.occurrence.min".equals(message.getRuleId())) {
+                if (line.isEmpty()) {
+                    return insertPlaceholder(line, message);
+                } else {
+                    // Don't add placeholder to existing content lines
+                    return line;
+                }
+            }
             // For paragraph.lines.min, only insert placeholder on empty lines
             else if ("paragraph.lines.min".equals(message.getRuleId())) {
                 if (line.isEmpty()) {
@@ -157,6 +166,12 @@ public class HighlightRenderer {
     private String insertPlaceholder(String line, ValidationMessage message) {
         // For section.min-occurrences errors with empty lines, show placeholder at start
         if ("section.min-occurrences".equals(message.getRuleId()) && line.isEmpty()) {
+            String placeholderText = PLACEHOLDER_START + message.getMissingValueHint() + PLACEHOLDER_END;
+            return colorScheme.error(placeholderText);
+        }
+        
+        // For block.occurrence.min errors with empty lines, show placeholder at start
+        if ("block.occurrence.min".equals(message.getRuleId()) && line.isEmpty()) {
             String placeholderText = PLACEHOLDER_START + message.getMissingValueHint() + PLACEHOLDER_END;
             return colorScheme.error(placeholderText);
         }

@@ -122,8 +122,8 @@ class BlockOccurrenceValidatorTest {
             assertEquals(1, messages.size());
             ValidationMessage msg = messages.get(0);
             assertEquals(Severity.ERROR, msg.getSeverity());
-            assertEquals("block.occurrences.min", msg.getRuleId());
-            assertEquals("Too few occurrences of block 'introduction'", msg.getMessage());
+            assertEquals("block.occurrence.min", msg.getRuleId());
+            assertEquals("Too few occurrences of block: paragraph", msg.getMessage());
             assertEquals("1", msg.getActualValue().orElse(null));
             assertEquals("At least 2 occurrences", msg.getExpectedValue().orElse(null));
         }
@@ -222,8 +222,8 @@ class BlockOccurrenceValidatorTest {
             assertEquals(1, messages.size());
             ValidationMessage msg = messages.get(0);
             assertEquals(Severity.ERROR, msg.getSeverity());
-            assertEquals("block.occurrences.max", msg.getRuleId());
-            assertEquals("Too many occurrences of block 'note'", msg.getMessage());
+            assertEquals("block.occurrence.max", msg.getRuleId());
+            assertEquals("Too many occurrences of block: paragraph", msg.getMessage());
             assertEquals("3", msg.getActualValue().orElse(null));
             assertEquals("At most 2 occurrences", msg.getExpectedValue().orElse(null));
         }
@@ -304,7 +304,7 @@ class BlockOccurrenceValidatorTest {
             
             // Check paragraph violation
             ValidationMessage paragraphMsg = messages.stream()
-                .filter(m -> m.getMessage().contains("intro"))
+                .filter(m -> m.getMessage().contains("paragraph"))
                 .findFirst()
                 .orElse(null);
             assertNotNull(paragraphMsg);
@@ -313,7 +313,7 @@ class BlockOccurrenceValidatorTest {
             
             // Check table violation
             ValidationMessage tableMsg = messages.stream()
-                .filter(m -> m.getMessage().contains("data"))
+                .filter(m -> m.getMessage().contains("table"))
                 .findFirst()
                 .orElse(null);
             assertNotNull(tableMsg);
@@ -414,8 +414,8 @@ class BlockOccurrenceValidatorTest {
             
             // Then
             assertEquals(2, messages.size()); // Both min and max violations
-            assertTrue(messages.stream().anyMatch(m -> m.getRuleId().equals("block.occurrences.min")));
-            assertTrue(messages.stream().anyMatch(m -> m.getRuleId().equals("block.occurrences.max")));
+            assertTrue(messages.stream().anyMatch(m -> m.getRuleId().equals("block.occurrence.min")));
+            assertTrue(messages.stream().anyMatch(m -> m.getRuleId().equals("block.occurrence.max")));
         }
     }
 }

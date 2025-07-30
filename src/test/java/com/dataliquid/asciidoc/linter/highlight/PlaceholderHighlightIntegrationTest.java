@@ -2416,4 +2416,54 @@ class PlaceholderHighlightIntegrationTest {
         assertEquals(expectedOutput, actualOutput);
     }
     
+    @Test
+    @DisplayName("should show placeholder for missing paragraph block when occurrence.min not met")
+    void shouldShowPlaceholderForMissingParagraphBlockWithOccurrenceMin(@TempDir Path tempDir) throws IOException {
+        // Given - YAML rules requiring minimum occurrence of paragraph block
+        String rules = """
+            document:
+              sections:
+                - name: headerTitleRule
+                  level: 0
+                  min: 1
+                  max: 1
+                  title:
+                    pattern: "^[A-Za-z][A-Za-z0-9-]*$"
+                    severity: error
+                  allowedBlocks:
+                   - paragraph:
+                       severity: error
+                       occurrence:
+                         min: 1
+                         max: 1
+            """;
+        
+        // Given - AsciiDoc content with only title, no paragraph
+        String adocContent = """
+            = Accept
+            """;
+        
+        // When - Validate and format output
+        String actualOutput = validateAndFormat(rules, adocContent, tempDir);
+        
+        // Then - Verify exact console output with placeholder
+        Path testFile = tempDir.resolve("test.adoc");
+        String expectedOutput = String.format("""
+            Validation Report
+            =================
+            
+            %s:
+            
+            [ERROR]: Too few occurrences of block: paragraph [block.occurrence.min]
+              File: %s:1
+            
+               1 | = Accept
+               2 | «Paragraph content»
+            
+            
+            """, testFile.toString(), testFile.toString());
+        
+        assertEquals(expectedOutput, actualOutput);
+    }
+    
 }

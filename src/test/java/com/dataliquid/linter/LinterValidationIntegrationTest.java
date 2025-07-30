@@ -1029,7 +1029,7 @@ class LinterValidationIntegrationTest {
                 // Then
                 assertTrue(result.hasErrors());
                 assertTrue(result.getMessages().stream()
-                    .anyMatch(msg -> msg.getMessage().contains("Too many occurrences of paragraph block")));
+                    .anyMatch(msg -> msg.getMessage().contains("Too many occurrences of block: paragraph")));
             }
             
             @Test
@@ -1200,7 +1200,7 @@ class LinterValidationIntegrationTest {
                 // Then
                 assertTrue(result.hasErrors());
                 assertTrue(result.getMessages().stream()
-                    .anyMatch(msg -> msg.getMessage().contains("Too many occurrences of paragraph block")));
+                    .anyMatch(msg -> msg.getMessage().contains("Too many occurrences of block: paragraph")));
             }
             
             @Test
@@ -1411,9 +1411,9 @@ class LinterValidationIntegrationTest {
             assertTrue(result.hasErrors());
             assertEquals(2, result.getErrorCount()); // Missing 1 paragraph and 1 listing
             assertTrue(result.getMessages().stream()
-                .anyMatch(msg -> msg.getMessage().contains("Too few occurrences of paragraph block")));
+                .anyMatch(msg -> msg.getMessage().contains("Too few occurrences of block: paragraph")));
             assertTrue(result.getMessages().stream()
-                .anyMatch(msg -> msg.getMessage().contains("Too few occurrences of listing block")));
+                .anyMatch(msg -> msg.getMessage().contains("Too few occurrences of block: listing")));
         }
         
         @Test
@@ -1463,9 +1463,9 @@ class LinterValidationIntegrationTest {
             assertTrue(result.hasErrors());
             assertEquals(2, result.getErrorCount()); // Too many paragraphs and images
             assertTrue(result.getMessages().stream()
-                .anyMatch(msg -> msg.getMessage().contains("Too many occurrences of paragraph block")));
+                .anyMatch(msg -> msg.getMessage().contains("Too many occurrences of block: paragraph")));
             assertTrue(result.getMessages().stream()
-                .anyMatch(msg -> msg.getMessage().contains("Too many occurrences of image block")));
+                .anyMatch(msg -> msg.getMessage().contains("Too many occurrences of block: image")));
         }
         
         @Test
@@ -1577,10 +1577,10 @@ class LinterValidationIntegrationTest {
             assertEquals(1, result.getWarningCount());
             assertTrue(result.getMessages().stream()
                 .anyMatch(msg -> msg.getSeverity().toString().equals("ERROR") && 
-                               msg.getMessage().contains("Too few occurrences of paragraph block")));
+                               msg.getMessage().contains("Too few occurrences of block: paragraph")));
             assertTrue(result.getMessages().stream()
                 .anyMatch(msg -> msg.getSeverity().toString().equals("WARN") && 
-                               msg.getMessage().contains("Too many occurrences of listing block")));
+                               msg.getMessage().contains("Too many occurrences of block: listing")));
         }
         
         @Test
@@ -1875,6 +1875,255 @@ class LinterValidationIntegrationTest {
                 result.getMessages().stream()
                     .map(msg -> msg.getMessage())
                     .collect(Collectors.joining(", ")));
+        }
+    }
+    
+    @Nested
+    @DisplayName("Front Matter Support")
+    class FrontMatterSupport {
+        
+        @Test
+        @DisplayName("should skip front matter when validating document")
+        void shouldSkipFrontMatterWhenValidatingDocument() {
+            // Given - Document with YAML front matter
+            String rules = """
+                document:
+                  sections:
+                    - name: documentTitle
+                      level: 0
+                      min: 1
+                      max: 1
+                      title:
+                        pattern: "^[A-Z].*"
+                        severity: error
+                      allowedBlocks:
+                        - paragraph:
+                            severity: error
+                            occurrence:
+                              min: 1
+                              max: 2
+                              severity: error
+                """;
+            
+            String adocContent = """
+                ---
+                title: My Document
+                author: John Doe
+                tags: [asciidoc, testing]
+                date: 2024-01-15
+                ---
+                = My Document
+                
+                This is the first paragraph after front matter.
+                
+                This is the second paragraph.
+                """;
+            
+            LinterConfiguration config = configLoader.loadConfiguration(rules);
+            
+            // When
+            ValidationResult result = linter.validateContent(adocContent, config);
+            
+            // Then - Should validate successfully, ignoring the front matter
+            assertFalse(result.hasErrors());
+        }
+        
+        @Test
+        @DisplayName("should validate document with front matter and sections")
+        void shouldValidateDocumentWithFrontMatterAndSections() {
+            // Given - Complex document with front matter
+            String rules = """
+                document:
+                  sections:
+                    - name: documentTitle
+                      level: 0
+                      min: 1
+                      max: 1
+                      title:
+                        pattern: "^[A-Z].*"
+                        severity: error
+                      allowedBlocks:
+                        - paragraph:
+                            severity: error
+                            occurrence:
+                              min: 1
+                              severity: error
+                    - name: intro
+                      level: 1
+                      min: 1
+                      max: 1
+                      title:
+                        pattern: "^Introduction$"
+                        severity: error
+                      allowedBlocks:
+                        - paragraph:
+                            severity: error
+                            occurrence:
+                              min: 1
+                              max: 3
+                              severity: error
+                """;
+            
+            String adocContent = """
+                ---
+                layout: post
+                title: Technical Documentation
+                author: Jane Smith
+                categories:
+                  - documentation
+                  - technical
+                metadata:
+                  version: 1.0.0
+                  status: draft
+                ---
+                = Technical Documentation
+                
+                This is the document introduction paragraph.
+                
+                == Introduction
+                
+                First paragraph of the introduction section.
+                
+                Second paragraph with more details.
+                
+                Third paragraph concluding the introduction.
+                """;
+            
+            LinterConfiguration config = configLoader.loadConfiguration(rules);
+            
+            // When
+            ValidationResult result = linter.validateContent(adocContent, config);
+            
+            // Then
+            assertFalse(result.hasErrors());
+        }
+        
+        @Test
+        @DisplayName("should handle empty front matter")
+        void shouldHandleEmptyFrontMatter() {
+            // Given - Document with empty front matter
+            String rules = """
+                document:
+                  sections:
+                    - name: documentTitle
+                      level: 0
+                      min: 1
+                      max: 1
+                      allowedBlocks:
+                        - paragraph:
+                            severity: error
+                """;
+            
+            String adocContent = """
+                ---
+                ---
+                = Document with Empty Front Matter
+                
+                This paragraph should be validated normally.
+                """;
+            
+            LinterConfiguration config = configLoader.loadConfiguration(rules);
+            
+            // When
+            ValidationResult result = linter.validateContent(adocContent, config);
+            
+            // Then
+            assertFalse(result.hasErrors());
+        }
+        
+        @Test
+        @DisplayName("should validate document without front matter normally")
+        void shouldValidateDocumentWithoutFrontMatterNormally() {
+            // Given - Document without front matter (ensure backward compatibility)
+            String rules = """
+                document:
+                  sections:
+                    - name: documentTitle
+                      level: 0
+                      min: 1
+                      max: 1
+                      title:
+                        pattern: "^[A-Z].*"
+                        severity: error
+                      allowedBlocks:
+                        - paragraph:
+                            severity: error
+                            occurrence:
+                              min: 2
+                              max: 2
+                              severity: error
+                """;
+            
+            String adocContent = """
+                = Regular Document
+                
+                First paragraph.
+                
+                Second paragraph.
+                """;
+            
+            LinterConfiguration config = configLoader.loadConfiguration(rules);
+            
+            // When
+            ValidationResult result = linter.validateContent(adocContent, config);
+            
+            // Then
+            assertFalse(result.hasErrors());
+        }
+        
+        @Test
+        @DisplayName("should detect errors after front matter")
+        void shouldDetectErrorsAfterFrontMatter() {
+            // Given - Document with front matter but violating rules
+            String rules = """
+                document:
+                  sections:
+                    - name: documentTitle
+                      level: 0
+                      min: 1
+                      max: 1
+                      title:
+                        pattern: "^[A-Z].*"
+                        severity: error
+                      allowedBlocks:
+                        - paragraph:
+                            severity: error
+                            occurrence:
+                              min: 1
+                              max: 2
+                              severity: error
+                """;
+            
+            String adocContent = """
+                ---
+                title: Document
+                author: Test Author
+                ---
+                = lowercase title
+                
+                First paragraph.
+                
+                Second paragraph.
+                
+                Third paragraph - this exceeds the max.
+                """;
+            
+            LinterConfiguration config = configLoader.loadConfiguration(rules);
+            
+            // When
+            ValidationResult result = linter.validateContent(adocContent, config);
+            
+            // Then
+            assertTrue(result.hasErrors());
+            assertEquals(2, result.getErrorCount()); // Title pattern error + too many paragraphs
+            
+            // Check for title pattern error
+            assertTrue(result.getMessages().stream()
+                .anyMatch(msg -> msg.getMessage().contains("Document title does not match required pattern")));
+            
+            // Check for paragraph occurrence error
+            assertTrue(result.getMessages().stream()
+                .anyMatch(msg -> msg.getMessage().contains("Too many occurrences of block: paragraph")));
         }
     }
     

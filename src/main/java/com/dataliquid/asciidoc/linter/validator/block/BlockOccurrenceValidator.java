@@ -47,7 +47,7 @@ public final class BlockOccurrenceValidator {
         
         com.dataliquid.asciidoc.linter.config.rule.OccurrenceConfig occurrences = block.getOccurrence();
         int actualCount = context.getOccurrenceCount(block);
-        String blockName = context.getBlockName(block);
+        String blockType = block.getType().toString().toLowerCase();
         
         // Validate occurrence count
         
@@ -58,13 +58,21 @@ public final class BlockOccurrenceValidator {
         
         // Validate minimum occurrences
         if (actualCount < occurrences.min()) {
+            // Generate placeholder for missing block
+            String blockPlaceholder = generateBlockPlaceholder(blockType);
+            
             messages.add(ValidationMessage.builder()
                 .severity(severity)
-                .ruleId("block.occurrences.min")
+                .ruleId("block.occurrence.min")
                 .location(createSectionLocation(context))
-                .message("Too few occurrences of " + blockName)
+                .message("Too few occurrences of block: " + blockType)
                 .actualValue(String.valueOf(actualCount))
                 .expectedValue("At least " + occurrences.min() + " occurrences")
+                .errorType(com.dataliquid.asciidoc.linter.validator.ErrorType.MISSING_VALUE)
+                .missingValueHint(blockPlaceholder)
+                .placeholderContext(com.dataliquid.asciidoc.linter.validator.PlaceholderContext.builder()
+                    .type(com.dataliquid.asciidoc.linter.validator.PlaceholderContext.PlaceholderType.INSERT_BEFORE)
+                    .build())
                 .build());
         }
         
@@ -72,14 +80,51 @@ public final class BlockOccurrenceValidator {
         if (actualCount > occurrences.max()) {
             messages.add(ValidationMessage.builder()
                 .severity(severity)
-                .ruleId("block.occurrences.max")
+                .ruleId("block.occurrence.max")
                 .location(createSectionLocation(context))
-                .message("Too many occurrences of " + blockName)
+                .message("Too many occurrences of block: " + blockType)
                 .actualValue(String.valueOf(actualCount))
                 .expectedValue("At most " + occurrences.max() + " occurrences")
                 .build());
         }
         
+    }
+    
+    /**
+     * Generates a placeholder hint for a missing block.
+     */
+    private String generateBlockPlaceholder(String blockName) {
+        // Basic placeholders for common block types
+        switch (blockName.toLowerCase()) {
+            case "paragraph":
+                return "Paragraph content";
+            case "listing":
+                return "[source]\n----\nCode here\n----";
+            case "image":
+                return "image::filename.png[]";
+            case "table":
+                return "|===\n| Header 1 | Header 2\n| Data 1 | Data 2\n|===";
+            case "quote":
+                return "[quote]\n____\nQuote content\n____";
+            case "example":
+                return "====\nExample content\n====";
+            case "sidebar":
+                return "****\nSidebar content\n****";
+            case "verse":
+                return "[verse]\n____\nVerse content\n____";
+            case "literal":
+                return "....\nLiteral content\n....";
+            case "admonition":
+                return "[NOTE]\n====\nNote content\n====";
+            case "ulist":
+                return "* Item";
+            case "olist":
+                return ". Item";
+            case "dlist":
+                return "Term:: Description";
+            default:
+                return blockName + " content";
+        }
     }
     
     /**
@@ -91,6 +136,9 @@ public final class BlockOccurrenceValidator {
         return com.dataliquid.asciidoc.linter.validator.SourceLocation.builder()
             .filename(context.getFilename())
             .startLine(1) // Section start
+            .endLine(1)
+            .startColumn(0)  // No column for section errors
+            .endColumn(0)
             .build();
     }
 }

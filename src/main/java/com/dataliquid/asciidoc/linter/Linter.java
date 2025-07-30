@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.asciidoctor.Asciidoctor;
+import org.asciidoctor.Attributes;
 import org.asciidoctor.Options;
 import org.asciidoctor.ast.Document;
 import org.asciidoctor.ast.StructuralNode;
@@ -135,9 +136,15 @@ public class Linter {
         
         try {
             // Parse the document from string
+            // Enable AsciidoctorJ's built-in front matter handling
+            Attributes documentAttributes = Attributes.builder()
+                .skipFrontMatter(true)
+                .build();
+            
             Options options = Options.builder()
                 .sourcemap(true)  // Enable source location tracking
                 .toFile(false)    // Don't write output file
+                .attributes(documentAttributes)
                 .build();
             Document document = asciidoctor.load(content, options);
             
@@ -169,9 +176,15 @@ public class Linter {
     private ValidationResult performValidation(Path file, LinterConfiguration config) {
         try {
             // Parse the document
+            // Enable AsciidoctorJ's built-in front matter handling
+            Attributes documentAttributes = Attributes.builder()
+                .skipFrontMatter(true)
+                .build();
+            
             Options options = Options.builder()
                 .sourcemap(true)  // Enable source location tracking
                 .toFile(false)    // Don't write output file
+                .attributes(documentAttributes)
                 .build();
             Document document = asciidoctor.loadFile(file.toFile(), options);
             
