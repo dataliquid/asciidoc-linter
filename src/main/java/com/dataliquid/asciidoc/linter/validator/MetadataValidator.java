@@ -18,23 +18,24 @@ import com.dataliquid.asciidoc.linter.validator.rules.LengthRule;
 import com.dataliquid.asciidoc.linter.validator.rules.OrderRule;
 import com.dataliquid.asciidoc.linter.validator.rules.PatternRule;
 import com.dataliquid.asciidoc.linter.validator.rules.RequiredRule;
+import com.dataliquid.asciidoc.linter.report.console.FileContentCache;
 
 public final class MetadataValidator {
     private final List<AttributeRule> rules;
+    private final FileContentCache fileCache;
 
     private MetadataValidator(Builder builder) {
         this.rules = Collections.unmodifiableList(new ArrayList<>(builder.rules));
+        this.fileCache = new FileContentCache();
     }
 
     public ValidationResult validate(Document document) {
+        return validate(document, extractFilename(document));
+    }
+    
+    public ValidationResult validate(Document document, String filename) {
         long startTime = System.currentTimeMillis();
         ValidationResult.Builder resultBuilder = ValidationResult.builder().startTime(startTime);
-        
-        String filename = "unknown";
-        Map<String, Object> attrs = document.getAttributes();
-        if (attrs.containsKey("docfile")) {
-            filename = attrs.get("docfile").toString();
-        }
         
         Map<String, AttributeWithLocation> attributes = extractAttributesWithLocation(document, filename);
         
@@ -61,6 +62,14 @@ public final class MetadataValidator {
         
         return resultBuilder.complete().build();
     }
+    
+    private String extractFilename(Document document) {
+        Map<String, Object> attrs = document.getAttributes();
+        if (attrs.containsKey("docfile")) {
+            return attrs.get("docfile").toString();
+        }
+        return "unknown";
+    }
 
 
     private void validateAttributes(Map<String, AttributeWithLocation> attributes, ValidationResult.Builder resultBuilder) {
@@ -82,24 +91,72 @@ public final class MetadataValidator {
         Map<String, AttributeWithLocation> result = new LinkedHashMap<>();
         
         Map<String, Object> attributes = document.getAttributes();
-        int lineNumber = 2;
+        List<String> fileLines = fileCache.getFileLines(filename);
         
         for (Map.Entry<String, Object> entry : attributes.entrySet()) {
             String key = entry.getKey();
             Object value = entry.getValue();
             
             if (isUserAttribute(key)) {
-                SourceLocation location = SourceLocation.builder()
-                    .filename(filename)
-                    .line(lineNumber++)
-                    .build();
-                
                 String stringValue = value != null ? value.toString() : "";
+                
+                // Find the attribute in the file
+                SourceLocation location = findAttributeLocation(key, stringValue, filename, fileLines);
+                
                 result.put(key, new AttributeWithLocation(stringValue, location));
             }
         }
         
         return result;
+    }
+
+    private SourceLocation findAttributeLocation(String key, String value, String filename, List<String> fileLines) {
+        // Search for the attribute in the file
+        // Attributes have format: :key: value
+        String attributePattern = ":" + key + ":";
+        
+        for (int i = 0; i < fileLines.size(); i++) {
+            String line = fileLines.get(i);
+            int attrIndex = line.indexOf(attributePattern);
+            
+            if (attrIndex >= 0) {
+                // Found the attribute, now find where the value starts
+                int valueStartIndex = attrIndex + attributePattern.length();
+                
+                // Skip whitespace after the colon
+                while (valueStartIndex < line.length() && Character.isWhitespace(line.charAt(valueStartIndex))) {
+                    valueStartIndex++;
+                }
+                
+                // Calculate end position based on value length
+                int valueEndIndex = valueStartIndex;
+                if (!value.isEmpty() && valueStartIndex < line.length()) {
+                    // Find the actual value in the line
+                    int valueIndex = line.indexOf(value, valueStartIndex);
+                    if (valueIndex >= 0) {
+                        valueStartIndex = valueIndex;
+                        valueEndIndex = valueStartIndex + value.length() - 1;
+                    } else {
+                        // If we can't find the exact value, use the rest of the line
+                        valueEndIndex = line.length() - 1;
+                    }
+                }
+                
+                return SourceLocation.builder()
+                    .filename(filename)
+                    .line(i + 1)  // Line numbers are 1-based
+                    .startColumn(valueStartIndex + 1)  // Columns are 1-based
+                    .endColumn(valueEndIndex + 1)
+                    .sourceLine(line)
+                    .build();
+            }
+        }
+        
+        // Fallback if we can't find the attribute
+        return SourceLocation.builder()
+            .filename(filename)
+            .line(1)
+            .build();
     }
 
     private boolean isUserAttribute(String key) {

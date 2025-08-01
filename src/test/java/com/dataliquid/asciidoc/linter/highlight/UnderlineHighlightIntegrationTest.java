@@ -2999,6 +2999,282 @@ class UnderlineHighlightIntegrationTest {
             
             assertEquals(expectedOutput, actualOutput);
         }
-      }
+    }
+    
+    @Nested
+    @DisplayName("Metadata Attribute Validation Tests")
+    class MetadataValidationTests {
         
+        @Test
+        @DisplayName("should show underline for attribute value violating pattern rule")
+        void shouldShowUnderlineForAttributePatternViolation(@TempDir Path tempDir) throws IOException {
+            // Given - YAML rules with pattern rule for metadata attributes
+            String rules = """
+                document:
+                  metadata:
+                    attributes:
+                      - name: author
+                        pattern: "^[A-Z][a-z]+ [A-Z][a-z]+$"
+                        severity: error
+                """;
+            
+            // Given - AsciiDoc content with invalid author format
+            String adocContent = """
+                = Test Document
+                :author: john doe
+                :email: john@example.com
+                
+                Content here.
+                """;
+            
+            // When - Validate and format output
+            String actualOutput = validateAndFormat(rules, adocContent, tempDir);
+            
+            // Then - Verify exact console output with underline
+            Path testFile = tempDir.resolve("test.adoc");
+            String expectedOutput = String.format("""
+                Validation Report
+                =================
+                
+                %s:
+                
+                [ERROR]: Attribute 'author' does not match required pattern: actual 'john doe', expected pattern '^[A-Z][a-z]+ [A-Z][a-z]+$' [metadata.pattern]
+                  File: %s:2:10-17
+                
+                   1 | = Test Document
+                   2 | :author: john doe
+                     |          ~~~~~~~~
+                   3 | :email: john@example.com
+                   4 |\s
+                   5 | Content here.
+                
+                
+                """, testFile.toString(), testFile.toString());
+            
+            assertEquals(expectedOutput, actualOutput);
+        }
+        
+        @Test
+        @DisplayName("should show underline for attribute value violating minLength rule")
+        void shouldShowUnderlineForAttributeMinLengthViolation(@TempDir Path tempDir) throws IOException {
+            // Given - YAML rules with minLength rule for metadata attributes
+            String rules = """
+                document:
+                  metadata:
+                    attributes:
+                      - name: description
+                        minLength: 20
+                        severity: error
+                """;
+            
+            // Given - AsciiDoc content with too short description
+            String adocContent = """
+                = Test Document
+                :author: John Doe
+                :description: Short
+                
+                Content here.
+                """;
+            
+            // When - Validate and format output
+            String actualOutput = validateAndFormat(rules, adocContent, tempDir);
+            
+            // Then - Verify exact console output with underline
+            Path testFile = tempDir.resolve("test.adoc");
+            String expectedOutput = String.format("""
+                Validation Report
+                =================
+                
+                %s:
+                
+                [ERROR]: Attribute 'description' is too short: actual 'Short' (5 characters), expected minimum 20 characters [metadata.length.min]
+                  File: %s:3:15-19
+                
+                   1 | = Test Document
+                   2 | :author: John Doe
+                   3 | :description: Short
+                     |               ~~~~~
+                   4 |\s
+                   5 | Content here.
+                
+                
+                """, testFile.toString(), testFile.toString());
+            
+            assertEquals(expectedOutput, actualOutput);
+        }
+        
+        @Test
+        @DisplayName("should show underline for attribute value violating maxLength rule")
+        void shouldShowUnderlineForAttributeMaxLengthViolation(@TempDir Path tempDir) throws IOException {
+            // Given - YAML rules with maxLength rule for metadata attributes
+            String rules = """
+                document:
+                  metadata:
+                    attributes:
+                      - name: title
+                        maxLength: 10
+                        severity: error
+                """;
+            
+            // Given - AsciiDoc content with too long title
+            String adocContent = """
+                = Test Document
+                :title: This is a very long title that exceeds the limit
+                :author: John Doe
+                
+                Content here.
+                """;
+            
+            // When - Validate and format output
+            String actualOutput = validateAndFormat(rules, adocContent, tempDir);
+            
+            // Then - Verify exact console output with underline
+            Path testFile = tempDir.resolve("test.adoc");
+            String expectedOutput = String.format("""
+                Validation Report
+                =================
+                
+                %s:
+                
+                [ERROR]: Attribute 'title' is too long: actual 'This is a very long title that exceeds the limit' (48 characters), expected maximum 10 characters [metadata.length.max]
+                  File: %s:2:9-56
+                
+                   1 | = Test Document
+                   2 | :title: This is a very long title that exceeds the limit
+                     |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                   3 | :author: John Doe
+                   4 |\s
+                   5 | Content here.
+                
+                
+                """, testFile.toString(), testFile.toString());
+            
+            assertEquals(expectedOutput, actualOutput);
+        }
+        
+        @Test
+        @DisplayName("should correctly position underline for attribute value with spaces")
+        void shouldCorrectlyPositionUnderlineWithSpaces(@TempDir Path tempDir) throws IOException {
+            // Given - YAML rules with pattern rule for metadata attributes
+            String rules = """
+                document:
+                  metadata:
+                    attributes:
+                      - name: version
+                        pattern: "^\\\\d+\\\\.\\\\d+\\\\.\\\\d+$"
+                        severity: error
+                """;
+            
+            // Given - AsciiDoc content with invalid version (has spaces before value)
+            String adocContent = """
+                = Test Document
+                :version:   1.0
+                :author: John Doe
+                
+                Content here.
+                """;
+            
+            // When - Validate and format output
+            String actualOutput = validateAndFormat(rules, adocContent, tempDir);
+            
+            // Then - Verify exact console output with underline at correct position
+            Path testFile = tempDir.resolve("test.adoc");
+            String expectedOutput = String.format("""
+                Validation Report
+                =================
+                
+                %s:
+                
+                [ERROR]: Attribute 'version' does not match required pattern: actual '1.0', expected pattern '^\\d+\\.\\d+\\.\\d+$' [metadata.pattern]
+                  File: %s:2:13-15
+                
+                   1 | = Test Document
+                   2 | :version:   1.0
+                     |             ~~~
+                   3 | :author: John Doe
+                   4 |\s
+                   5 | Content here.
+                
+                
+                """, testFile.toString(), testFile.toString());
+            
+            assertEquals(expectedOutput, actualOutput);
+        }
+        
+        @Test
+        @DisplayName("should show underline for multiple attribute violations")
+        void shouldShowUnderlineForMultipleAttributeViolations(@TempDir Path tempDir) throws IOException {
+            // Given - YAML rules with multiple constraints for metadata attributes
+            String rules = """
+                document:
+                  metadata:
+                    attributes:
+                      - name: author
+                        pattern: "^[A-Z][a-z]+ [A-Z][a-z]+$"
+                        minLength: 10
+                        severity: error
+                      - name: version
+                        pattern: "^\\\\d+\\\\.\\\\d+\\\\.\\\\d+$"
+                        severity: warn
+                """;
+            
+            // Given - AsciiDoc content with multiple violations
+            String adocContent = """
+                = Test Document
+                :author: joe
+                :version: 1.0-SNAPSHOT
+                :description: Valid description
+                
+                Content here.
+                """;
+            
+            // When - Validate and format output
+            String actualOutput = validateAndFormat(rules, adocContent, tempDir);
+            
+            // Then - Verify exact console output with underlines for both violations
+            Path testFile = tempDir.resolve("test.adoc");
+            String expectedOutput = String.format("""
+                Validation Report
+                =================
+                
+                %s:
+                
+                [ERROR]: Attribute 'author' does not match required pattern: actual 'joe', expected pattern '^[A-Z][a-z]+ [A-Z][a-z]+$' [metadata.pattern]
+                  File: %s:2:10-12
+                
+                   1 | = Test Document
+                   2 | :author: joe
+                     |          ~~~
+                   3 | :version: 1.0-SNAPSHOT
+                   4 | :description: Valid description
+                   5 |\s
+                
+                [ERROR]: Attribute 'author' is too short: actual 'joe' (3 characters), expected minimum 10 characters [metadata.length.min]
+                  File: %s:2:10-12
+                
+                   1 | = Test Document
+                   2 | :author: joe
+                     |          ~~~
+                   3 | :version: 1.0-SNAPSHOT
+                   4 | :description: Valid description
+                   5 |\s
+                
+                [WARN]: Attribute 'version' does not match required pattern: actual '1.0-SNAPSHOT', expected pattern '^\\d+\\.\\d+\\.\\d+$' [metadata.pattern]
+                  File: %s:3:11-22
+                
+                   1 | = Test Document
+                   2 | :author: joe
+                   3 | :version: 1.0-SNAPSHOT
+                     |           ~~~~~~~~~~~~
+                   4 | :description: Valid description
+                   5 |\s
+                   6 | Content here.
+                
+                
+                """, testFile.toString(), testFile.toString(), testFile.toString(), testFile.toString());
+            
+            assertEquals(expectedOutput, actualOutput);
+        }
+    }
+    
 }

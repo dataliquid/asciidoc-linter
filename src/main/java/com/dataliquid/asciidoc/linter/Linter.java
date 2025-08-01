@@ -212,7 +212,7 @@ public class Linter {
                 MetadataValidator metadataValidator = MetadataValidator
                     .fromConfiguration(config.document().metadata())
                     .build();
-                ValidationResult metadataResult = metadataValidator.validate(document);
+                ValidationResult metadataResult = metadataValidator.validate(document, filename);
                 messages.addAll(metadataResult.getMessages());
             }
             

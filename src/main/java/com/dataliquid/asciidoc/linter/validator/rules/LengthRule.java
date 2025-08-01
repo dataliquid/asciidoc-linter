@@ -10,6 +10,7 @@ import java.util.Objects;
 import com.dataliquid.asciidoc.linter.config.Severity;
 import com.dataliquid.asciidoc.linter.validator.SourceLocation;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
+import com.dataliquid.asciidoc.linter.validator.ErrorType;
 
 public final class LengthRule implements AttributeRule {
     private final Map<String, LengthConfig> lengthConfigs;
@@ -40,6 +41,7 @@ public final class LengthRule implements AttributeRule {
                     .attributeName(attributeName)
                     .actualValue(value + " (" + length + " characters)")
                     .expectedValue("Minimum " + config.getMinLength() + " characters")
+                    .errorType(ErrorType.OUT_OF_RANGE)
                     .build());
             }
             
@@ -52,6 +54,7 @@ public final class LengthRule implements AttributeRule {
                     .attributeName(attributeName)
                     .actualValue(value + " (" + length + " characters)")
                     .expectedValue("Maximum " + config.getMaxLength() + " characters")
+                    .errorType(ErrorType.OUT_OF_RANGE)
                     .build());
             }
         }
