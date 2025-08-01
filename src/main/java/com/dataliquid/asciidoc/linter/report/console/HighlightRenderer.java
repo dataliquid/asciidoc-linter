@@ -247,6 +247,12 @@ public class HighlightRenderer {
             return colorScheme.error(placeholderText);
         }
         
+        // For metadata.required errors with empty lines, show placeholder at start
+        if ("metadata.required".equals(message.getRuleId()) && line.isEmpty()) {
+            String placeholderText = PLACEHOLDER_START + message.getMissingValueHint() + PLACEHOLDER_END;
+            return colorScheme.error(placeholderText);
+        }
+        
         // For video.caption.required errors with empty lines, show placeholder at start
         if ("video.caption.required".equals(message.getRuleId()) && line.isEmpty()) {
             String placeholderText = PLACEHOLDER_START + message.getMissingValueHint() + PLACEHOLDER_END;

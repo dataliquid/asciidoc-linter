@@ -2618,4 +2618,254 @@ class PlaceholderHighlightIntegrationTest {
         assertEquals(expectedOutput, actualOutput);
     }
     
+    @Test
+    @DisplayName("should show placeholder for missing metadata attribute with document title")
+    void shouldShowPlaceholderForMissingMetadataAttributeWithTitle(@TempDir Path tempDir) throws IOException {
+        // Given - YAML rules requiring author metadata attribute
+        String rules = """
+            document:
+              metadata:
+                attributes:
+                  - name: author
+                    required: true
+                    severity: error
+            """;
+        
+        // Given - AsciiDoc content with title but missing author
+        String adocContent = """
+            = Test Document
+            :email: test@example.com
+            
+            Some content here.
+            """;
+        
+        // When - Validate and format output
+        String actualOutput = validateAndFormat(rules, adocContent, tempDir);
+        
+        // Then - Verify exact console output with placeholder
+        Path testFile = tempDir.resolve("test.adoc");
+        String expectedOutput = String.format("""
+            Validation Report
+            =================
+            
+            %s:
+            
+            [ERROR]: Missing required attribute 'author' [metadata.required]
+              File: %s:3:1
+            
+               1 | = Test Document
+               2 | :email: test@example.com
+               3 | «:author: value»
+               4 |\s
+               5 | Some content here.
+            
+            
+            """, testFile.toString(), testFile.toString());
+        
+        assertEquals(expectedOutput, actualOutput);
+    }
+    
+    @Test
+    @DisplayName("should show placeholder for missing metadata attribute without document title")
+    void shouldShowPlaceholderForMissingMetadataAttributeWithoutTitle(@TempDir Path tempDir) throws IOException {
+        // Given - YAML rules requiring author metadata attribute
+        String rules = """
+            document:
+              metadata:
+                attributes:
+                  - name: author
+                    required: true
+                    severity: error
+            """;
+        
+        // Given - AsciiDoc content without title and missing author
+        String adocContent = """
+            :email: test@example.com
+            
+            Some content here.
+            """;
+        
+        // When - Validate and format output
+        String actualOutput = validateAndFormat(rules, adocContent, tempDir);
+        
+        // Then - Verify exact console output with placeholder
+        Path testFile = tempDir.resolve("test.adoc");
+        String expectedOutput = String.format("""
+            Validation Report
+            =================
+            
+            %s:
+            
+            [ERROR]: Missing required attribute 'author' [metadata.required]
+              File: %s:2:1
+            
+               1 | :email: test@example.com
+               2 | «:author: value»
+               3 |\s
+               4 | Some content here.
+            
+            
+            """, testFile.toString(), testFile.toString());
+        
+        assertEquals(expectedOutput, actualOutput);
+    }
+    
+    @Test
+    @DisplayName("should show placeholder for missing metadata attribute with front matter")
+    void shouldShowPlaceholderForMissingMetadataAttributeWithFrontMatter(@TempDir Path tempDir) throws IOException {
+        // Given - YAML rules requiring author metadata attribute
+        String rules = """
+            document:
+              metadata:
+                attributes:
+                  - name: author
+                    required: true
+                    severity: error
+            """;
+        
+        // Given - AsciiDoc content with front matter and missing author
+        String adocContent = """
+            ---
+            title: Test Document
+            date: 2024-01-01
+            ---
+            = Test Document
+            :email: test@example.com
+            
+            Some content here.
+            """;
+        
+        // When - Validate and format output with more context lines
+        String actualOutput = validateAndFormat(rules, adocContent, tempDir, createDefaultOutputConfig(4));
+        
+        // Then - Verify exact console output with placeholder
+        Path testFile = tempDir.resolve("test.adoc");
+        String expectedOutput = String.format("""
+            Validation Report
+            =================
+            
+            %s:
+            
+            [ERROR]: Missing required attribute 'author' [metadata.required]
+              File: %s:7:1
+            
+               3 | date: 2024-01-01
+               4 | ---
+               5 | = Test Document
+               6 | :email: test@example.com
+               7 | «:author: value»
+               8 |\s
+               9 | Some content here.
+            
+            
+            """, testFile.toString(), testFile.toString());
+        
+        assertEquals(expectedOutput, actualOutput);
+    }
+    
+    @Test
+    @DisplayName("should show placeholder for missing metadata attribute in empty document")
+    void shouldShowPlaceholderForMissingMetadataAttributeInEmptyDocument(@TempDir Path tempDir) throws IOException {
+        // Given - YAML rules requiring author metadata attribute
+        String rules = """
+            document:
+              metadata:
+                attributes:
+                  - name: author
+                    required: true
+                    severity: error
+            """;
+        
+        // Given - Empty AsciiDoc content
+        String adocContent = "";
+        
+        // When - Validate and format output
+        String actualOutput = validateAndFormat(rules, adocContent, tempDir);
+        
+        // Then - Verify exact console output with placeholder
+        Path testFile = tempDir.resolve("test.adoc");
+        String expectedOutput = String.format("""
+            Validation Report
+            =================
+            
+            %s:
+            
+            [ERROR]: Missing required attribute 'author' [metadata.required]
+              File: %s:1:1
+            
+               1 | «:author: value»
+            
+            
+            """, testFile.toString(), testFile.toString());
+        
+        assertEquals(expectedOutput, actualOutput);
+    }
+    
+    @Test
+    @DisplayName("should show placeholder for multiple missing metadata attributes")
+    void shouldShowPlaceholderForMultipleMissingMetadataAttributes(@TempDir Path tempDir) throws IOException {
+        // Given - YAML rules requiring multiple metadata attributes
+        String rules = """
+            document:
+              metadata:
+                attributes:
+                  - name: author
+                    required: true
+                    severity: error
+                  - name: version
+                    required: true
+                    severity: error
+                  - name: revdate
+                    required: true
+                    severity: error
+            """;
+        
+        // Given - AsciiDoc content with title but missing all required attributes
+        String adocContent = """
+            = Test Document
+            
+            Some content here.
+            """;
+        
+        // When - Validate and format output with more context lines
+        String actualOutput = validateAndFormat(rules, adocContent, tempDir, createDefaultOutputConfig(6));
+        
+        // Then - Verify exact console output with placeholders
+        Path testFile = tempDir.resolve("test.adoc");
+        String expectedOutput = String.format("""
+            Validation Report
+            =================
+            
+            %s:
+            
+            [ERROR]: Missing required attribute 'author' [metadata.required]
+              File: %s:2:1
+            
+               1 | = Test Document
+               2 | «:author: value»
+               3 |\s
+               4 | Some content here.
+            
+            [ERROR]: Missing required attribute 'version' [metadata.required]
+              File: %s:2:1
+            
+               1 | = Test Document
+               2 | «:version: value»
+               3 |\s
+               4 | Some content here.
+            
+            [ERROR]: Missing required attribute 'revdate' [metadata.required]
+              File: %s:2:1
+            
+               1 | = Test Document
+               2 | «:revdate: value»
+               3 |\s
+               4 | Some content here.
+            
+            
+            """, testFile.toString(), testFile.toString(), testFile.toString(), testFile.toString());
+        
+        assertEquals(expectedOutput, actualOutput);
+    }
+    
 }

@@ -45,10 +45,7 @@ public final class MetadataValidator {
         if (requiredRule != null) {
             Set<String> presentAttributes = new HashSet<>(attributes.keySet());
             
-            SourceLocation docLocation = SourceLocation.builder()
-                .filename(filename)
-                .line(1)
-                .build();
+            SourceLocation docLocation = findLocationForMissingAttributes(filename);
             
             List<ValidationMessage> missingMessages = requiredRule.validateMissingAttributes(presentAttributes, docLocation);
             missingMessages.forEach(resultBuilder::addMessage);
@@ -156,6 +153,84 @@ public final class MetadataValidator {
         return SourceLocation.builder()
             .filename(filename)
             .line(1)
+            .build();
+    }
+    
+    private SourceLocation findLocationForMissingAttributes(String filename) {
+        List<String> fileLines = fileCache.getFileLines(filename);
+        if (fileLines.isEmpty()) {
+            return SourceLocation.builder()
+                .filename(filename)
+                .line(1)
+                .build();
+        }
+        
+        int lineNumber = 1;
+        boolean inFrontMatter = false;
+        boolean foundTitle = false;
+        int titleLine = -1;
+        int lastAttributeLine = -1;
+        
+        for (int i = 0; i < fileLines.size(); i++) {
+            String line = fileLines.get(i);
+            String trimmed = line.trim();
+            
+            // Check for front matter
+            if (i == 0 && trimmed.equals("---")) {
+                inFrontMatter = true;
+                continue;
+            }
+            
+            if (inFrontMatter && trimmed.equals("---")) {
+                inFrontMatter = false;
+                continue;
+            }
+            
+            if (inFrontMatter) {
+                continue;
+            }
+            
+            // Check for document title (level 0)
+            if (!foundTitle && trimmed.startsWith("= ")) {
+                foundTitle = true;
+                titleLine = i + 1;
+                continue;
+            }
+            
+            // Check for metadata attributes
+            if (trimmed.matches("^:[^:]+:.*")) {
+                lastAttributeLine = i + 1;
+            }
+        }
+        
+        // Determine where to suggest placing missing attributes
+        if (foundTitle) {
+            // If there's a title and existing attributes, place after last attribute
+            if (lastAttributeLine > titleLine) {
+                lineNumber = lastAttributeLine + 1;
+            } else {
+                // If there's a title but no attributes, place after title
+                lineNumber = titleLine + 1;
+            }
+        } else {
+            // No title found
+            if (lastAttributeLine > 0) {
+                // Place after last attribute
+                lineNumber = lastAttributeLine + 1;
+            } else {
+                // Place at beginning of document
+                lineNumber = 1;
+            }
+        }
+        
+        // Ensure we don't go beyond file bounds
+        if (lineNumber > fileLines.size()) {
+            lineNumber = fileLines.size() + 1;
+        }
+        
+        return SourceLocation.builder()
+            .filename(filename)
+            .line(lineNumber)
             .build();
     }
 

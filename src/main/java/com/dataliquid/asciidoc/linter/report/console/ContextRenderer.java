@@ -40,6 +40,13 @@ public class ContextRenderer {
         List<String> fileLines = fileCache.getFileLines(loc.getFilename());
         
         if (fileLines.isEmpty()) {
+            // For metadata.required errors in empty files, create a placeholder line
+            if ("metadata.required".equals(message.getRuleId()) && 
+                message.getErrorType() == ErrorType.MISSING_VALUE) {
+                List<SourceContext.ContextLine> lines = new ArrayList<>();
+                lines.add(new SourceContext.ContextLine(1, "", true));
+                return new SourceContext(lines, loc);
+            }
             // No file content available
             return new SourceContext(List.of(), loc.getStartLine(), loc);
         }
@@ -564,6 +571,43 @@ public class ContextRenderer {
         
         // For quote.attribution.required or quote.citation.required, don't add extra lines
         // The placeholders will be inserted inline in the existing [quote] line
+        
+        // For metadata.required errors, add an empty line for the missing attribute
+        if ("metadata.required".equals(message.getRuleId()) && 
+            message.getErrorType() == ErrorType.MISSING_VALUE) {
+            // The location line indicates where to insert the placeholder
+            int insertLineNumber = loc.getStartLine();
+            
+            // Find the position in our context lines where we should insert the placeholder
+            int insertIndex = insertLineNumber - startLine;
+            
+            // Ensure the insert index is within bounds
+            if (insertIndex < 0) {
+                insertIndex = 0;
+            } else if (insertIndex > contextLines.size()) {
+                // Add empty lines to reach the insert position
+                while (contextLines.size() < insertIndex) {
+                    contextLines.add("");
+                }
+                insertIndex = contextLines.size();
+            }
+            
+            // Insert the empty line at the correct position
+            if (insertIndex <= contextLines.size()) {
+                contextLines.add(insertIndex, "");
+            }
+            
+            // Create context with the inserted line marked as error line
+            List<SourceContext.ContextLine> lines = new ArrayList<>();
+            int lineNum = startLine;
+            for (int i = 0; i < contextLines.size(); i++) {
+                String content = contextLines.get(i);
+                boolean isErrorLine = (i == insertIndex); // Mark the inserted empty line as error
+                lines.add(new SourceContext.ContextLine(lineNum, content, isErrorLine));
+                lineNum++;
+            }
+            return new SourceContext(lines, loc);
+        }
         
         return new SourceContext(contextLines, startLine, loc);
     }

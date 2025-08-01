@@ -9,6 +9,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import com.dataliquid.asciidoc.linter.config.Severity;
+import com.dataliquid.asciidoc.linter.validator.ErrorType;
 import com.dataliquid.asciidoc.linter.validator.SourceLocation;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
 
@@ -65,11 +66,17 @@ public final class RequiredRule implements AttributeRule {
                     .attributeName(attrName)
                     .actualValue(null)
                     .expectedValue("Attribute must be present")
+                    .errorType(ErrorType.MISSING_VALUE)
+                    .missingValueHint(getPlaceholderHint(attrName))
                     .build());
             }
         }
         
         return messages;
+    }
+    
+    private String getPlaceholderHint(String attributeName) {
+        return ":" + attributeName + ": value";
     }
 
     public static Builder builder() {
