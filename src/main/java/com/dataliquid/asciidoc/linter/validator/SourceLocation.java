@@ -50,9 +50,9 @@ public final class SourceLocation {
     public String formatLocation() {
         if (isMultiLine()) {
             return String.format("%s:%d-%d", filename, startLine, endLine);
-        } else if (startColumn > 1 && endColumn > 1 && startColumn != endColumn) {
+        } else if (startColumn > 0 && endColumn > 0 && startColumn != endColumn) {
             return String.format("%s:%d:%d-%d", filename, startLine, startColumn, endColumn);
-        } else if (startColumn > 1) {
+        } else if (startColumn > 0) {
             return String.format("%s:%d:%d", filename, startLine, startColumn);
         } else {
             return String.format("%s:%d", filename, startLine);

@@ -22,6 +22,9 @@ import com.dataliquid.asciidoc.linter.config.BlockType;
 import com.dataliquid.asciidoc.linter.config.Severity;
 import com.dataliquid.asciidoc.linter.config.blocks.DlistBlock;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
+import com.dataliquid.asciidoc.linter.validator.ErrorType;
+import org.asciidoctor.ast.Cursor;
+import java.util.regex.Pattern;
 
 /**
  * Unit tests for {@link DlistBlockValidator}.
@@ -205,6 +208,46 @@ class DlistBlockValidatorTest {
             assertEquals("Definition list term does not match required pattern", message.getMessage());
             assertEquals("term", message.getActualValue().orElse(null));
             assertEquals("Pattern: ^[A-Z].*", message.getExpectedValue().orElse(null));
+        }
+        
+        @Test
+        @DisplayName("should highlight exact position for term pattern violation")
+        void shouldHighlightExactPositionForTermPatternViolation() {
+            // Given
+            BlockValidationContext testContext = new BlockValidationContext(mockSection, "test.adoc");
+            
+            List<DescriptionListEntry> entries = Arrays.asList(
+                createMockEntryWithLocation("term without capital", "description", 53)
+            );
+            when(mockDlist.getItems()).thenReturn(entries);
+            
+            // Mock source location
+            Cursor mockCursor = mock(Cursor.class);
+            when(mockCursor.getLineNumber()).thenReturn(53);
+            when(mockDlist.getSourceLocation()).thenReturn(mockCursor);
+            
+            DlistBlock config = DlistBlock.builder()
+                .severity(Severity.ERROR)
+                .terms(DlistBlock.TermsConfig.builder()
+                    .pattern("^[A-Z].*")
+                    .severity(Severity.WARN)
+                    .build())
+                .build();
+            
+            // When
+            List<ValidationMessage> messages = validator.validate(mockDlist, config, testContext);
+            
+            // Then
+            assertEquals(1, messages.size());
+            ValidationMessage message = messages.get(0);
+            assertEquals("dlist.terms.pattern", message.getRuleId());
+            assertEquals(Severity.WARN, message.getSeverity());
+            
+            // Since we don't have actual file content in tests, the validator falls back to columns 1,1
+            assertEquals(1, message.getLocation().getStartColumn(), "Should point to start of term");
+            assertEquals(1, message.getLocation().getEndColumn(), "Falls back to column 1 without file content");
+            assertEquals(53, message.getLocation().getStartLine());
+            assertEquals(53, message.getLocation().getEndLine());
         }
         
         @Test
@@ -468,6 +511,31 @@ class DlistBlockValidatorTest {
         
         ListItem termItem = mock(ListItem.class);
         when(termItem.getText()).thenReturn(term);
+        when(entry.getTerms()).thenReturn(Arrays.asList(termItem));
+        
+        if (description != null) {
+            ListItem descItem = mock(ListItem.class);
+            when(descItem.getText()).thenReturn(description);
+            when(entry.getDescription()).thenReturn(descItem);
+        } else {
+            when(entry.getDescription()).thenReturn(null);
+        }
+        
+        return entry;
+    }
+    
+    // Helper method to create mock DescriptionListEntry with source location
+    private DescriptionListEntry createMockEntryWithLocation(String term, String description, int lineNumber) {
+        DescriptionListEntry entry = mock(DescriptionListEntry.class);
+        
+        ListItem termItem = mock(ListItem.class);
+        when(termItem.getText()).thenReturn(term);
+        
+        // Add source location to termItem
+        Cursor termCursor = mock(Cursor.class);
+        when(termCursor.getLineNumber()).thenReturn(lineNumber);
+        when(termItem.getSourceLocation()).thenReturn(termCursor);
+        
         when(entry.getTerms()).thenReturn(Arrays.asList(termItem));
         
         if (description != null) {

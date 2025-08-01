@@ -8,6 +8,10 @@ import org.asciidoctor.ast.StructuralNode;
 import com.dataliquid.asciidoc.linter.config.BlockType;
 import com.dataliquid.asciidoc.linter.config.Severity;
 import com.dataliquid.asciidoc.linter.config.blocks.AudioBlock;
+import com.dataliquid.asciidoc.linter.report.console.FileContentCache;
+import com.dataliquid.asciidoc.linter.validator.ErrorType;
+import com.dataliquid.asciidoc.linter.validator.PlaceholderContext;
+import com.dataliquid.asciidoc.linter.validator.SourceLocation;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
 
 /**
@@ -34,6 +38,7 @@ import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
  * @see BlockTypeValidator
  */
 public final class AudioBlockValidator extends AbstractBlockValidator<AudioBlock> {
+    private final FileContentCache fileCache = new FileContentCache();
     
     @Override
     public BlockType getSupportedType() {
@@ -116,13 +121,23 @@ public final class AudioBlockValidator extends AbstractBlockValidator<AudioBlock
         
         // Check if URL is required
         if (urlConfig.isRequired() && (url == null || url.trim().isEmpty())) {
+            UrlPosition pos = findUrlPosition(block, context, url);
             messages.add(ValidationMessage.builder()
                 .severity(severity)
                 .ruleId("audio.url.required")
-                .location(context.createLocation(block))
-                .message("Audio must have a URL")
-                .actualValue("No URL")
-                .expectedValue("URL required")
+                .location(SourceLocation.builder()
+                    .filename(context.getFilename())
+                    .startLine(pos.lineNumber)
+                    .endLine(pos.lineNumber)
+                    .startColumn(pos.startColumn)
+                    .endColumn(pos.endColumn)
+                    .build())
+                .message("Audio URL is required but not provided")
+                .errorType(ErrorType.MISSING_VALUE)
+                .missingValueHint("target")
+                .placeholderContext(PlaceholderContext.builder()
+                    .type(PlaceholderContext.PlaceholderType.SIMPLE_VALUE)
+                    .build())
                 .build());
             return;
         }
@@ -196,13 +211,24 @@ public final class AudioBlockValidator extends AbstractBlockValidator<AudioBlock
         boolean hasControls = !hasOption(block, "nocontrols");
         
         if (controlsConfig.isRequired() && !hasControls) {
+            ControlsPosition pos = findControlsPosition(block, context);
             messages.add(ValidationMessage.builder()
                 .severity(severity)
                 .ruleId("audio.options.controls.required")
-                .location(context.createLocation(block))
-                .message("Audio must display controls")
-                .actualValue("controls hidden")
-                .expectedValue("controls must be visible")
+                .location(SourceLocation.builder()
+                    .filename(context.getFilename())
+                    .startLine(pos.lineNumber)
+                    .endLine(pos.lineNumber)
+                    .startColumn(pos.startColumn)
+                    .endColumn(pos.endColumn)
+                    .build())
+                .message("Audio controls are required but not enabled")
+                .errorType(ErrorType.MISSING_VALUE)
+                .missingValueHint("controls")
+                .placeholderContext(PlaceholderContext.builder()
+                    .type(PlaceholderContext.PlaceholderType.ATTRIBUTE_VALUE)
+                    .attributeName("options")
+                    .build())
                 .build());
         }
     }
@@ -251,13 +277,23 @@ public final class AudioBlockValidator extends AbstractBlockValidator<AudioBlock
             titleConfig.getSeverity() : audioConfig.getSeverity();
         
         if (titleConfig.isRequired() && (title == null || title.trim().isEmpty())) {
+            TitlePosition pos = findTitlePosition(block, context);
             messages.add(ValidationMessage.builder()
                 .severity(severity)
                 .ruleId("audio.title.required")
-                .location(context.createLocation(block))
-                .message("Audio must have a title")
-                .actualValue("No title")
-                .expectedValue("Title required")
+                .location(SourceLocation.builder()
+                    .filename(context.getFilename())
+                    .startLine(pos.lineNumber)
+                    .endLine(pos.lineNumber)
+                    .startColumn(pos.startColumn)
+                    .endColumn(pos.endColumn)
+                    .build())
+                .message("Audio title is required but not provided")
+                .errorType(ErrorType.MISSING_VALUE)
+                .missingValueHint(".Audio Title")
+                .placeholderContext(PlaceholderContext.builder()
+                    .type(PlaceholderContext.PlaceholderType.INSERT_BEFORE)
+                    .build())
                 .build());
             return;
         }
@@ -286,6 +322,124 @@ public final class AudioBlockValidator extends AbstractBlockValidator<AudioBlock
                     .expectedValue("At most " + titleConfig.getMaxLength() + " characters")
                     .build());
             }
+        }
+    }
+    
+    /**
+     * Finds the column position of URL in audio macro.
+     */
+    private UrlPosition findUrlPosition(StructuralNode block, BlockValidationContext context, String url) {
+        List<String> fileLines = fileCache.getFileLines(context.getFilename());
+        if (fileLines.isEmpty() || block.getSourceLocation() == null) {
+            return new UrlPosition(1, 1, block.getSourceLocation() != null ? block.getSourceLocation().getLineNumber() : 1);
+        }
+        
+        int lineNum = block.getSourceLocation().getLineNumber();
+        if (lineNum <= 0 || lineNum > fileLines.size()) {
+            return new UrlPosition(1, 1, lineNum);
+        }
+        
+        String sourceLine = fileLines.get(lineNum - 1);
+        
+        // Look for audio:: macro pattern
+        int audioStart = sourceLine.indexOf("audio::");
+        if (audioStart >= 0) {
+            int urlEnd = sourceLine.indexOf("[", audioStart);
+            if (urlEnd == -1) {
+                urlEnd = sourceLine.length();
+            }
+            
+            if (url != null && !url.isEmpty()) {
+                // Find the specific URL position
+                int urlStart = sourceLine.indexOf(url, audioStart + 7);
+                if (urlStart > audioStart && urlStart < urlEnd) {
+                    return new UrlPosition(urlStart + 1, urlStart + url.length(), lineNum);
+                }
+            } else {
+                // No URL - position after "audio::"
+                return new UrlPosition(audioStart + 8, audioStart + 8, lineNum);
+            }
+        }
+        
+        return new UrlPosition(1, 1, lineNum);
+    }
+    
+    /**
+     * Finds the column position for controls attribute in audio macro.
+     */
+    private ControlsPosition findControlsPosition(StructuralNode block, BlockValidationContext context) {
+        List<String> fileLines = fileCache.getFileLines(context.getFilename());
+        if (fileLines.isEmpty() || block.getSourceLocation() == null) {
+            return new ControlsPosition(1, 1, block.getSourceLocation() != null ? block.getSourceLocation().getLineNumber() : 1);
+        }
+        
+        int lineNum = block.getSourceLocation().getLineNumber();
+        if (lineNum <= 0 || lineNum > fileLines.size()) {
+            return new ControlsPosition(1, 1, lineNum);
+        }
+        
+        String sourceLine = fileLines.get(lineNum - 1);
+        
+        // Look for attributes bracket
+        int bracketStart = sourceLine.indexOf("[");
+        if (bracketStart >= 0) {
+            int bracketEnd = sourceLine.indexOf("]", bracketStart);
+            if (bracketEnd > bracketStart) {
+                return new ControlsPosition(bracketEnd + 1, bracketEnd + 1, lineNum);
+            }
+        }
+        
+        return new ControlsPosition(1, 1, lineNum);
+    }
+    
+    /**
+     * Finds the column position for title in audio macro.
+     */
+    private TitlePosition findTitlePosition(StructuralNode block, BlockValidationContext context) {
+        if (block.getSourceLocation() == null) {
+            return new TitlePosition(1, 1, 1);
+        }
+        
+        int lineNum = block.getSourceLocation().getLineNumber();
+        
+        // Title is typically on the line before the audio macro
+        // Return position for the line before the audio
+        return new TitlePosition(1, 1, lineNum);
+    }
+    
+    private static class UrlPosition {
+        final int startColumn;
+        final int endColumn;
+        final int lineNumber;
+        
+        UrlPosition(int startColumn, int endColumn, int lineNumber) {
+            this.startColumn = startColumn;
+            this.endColumn = endColumn;
+            this.lineNumber = lineNumber;
+        }
+    }
+    
+    private static class ControlsPosition {
+        final int startColumn;
+        final int endColumn;
+        final int lineNumber;
+        
+        ControlsPosition(int startColumn, int endColumn, int lineNumber) {
+            this.startColumn = startColumn;
+            this.endColumn = endColumn;
+            this.lineNumber = lineNumber;
+        }
+    }
+    
+    private static class TitlePosition {
+        final int startColumn;
+        final int endColumn;
+        final int lineNumber;
+        
+        TitlePosition(int startColumn, int endColumn, int lineNumber) {
+            this.startColumn = startColumn;
+            this.endColumn = endColumn;
+            this.lineNumber = lineNumber;
         }
     }
 }

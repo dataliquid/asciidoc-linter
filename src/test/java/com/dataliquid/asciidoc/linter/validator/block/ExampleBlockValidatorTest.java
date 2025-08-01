@@ -36,6 +36,7 @@ class ExampleBlockValidatorTest {
         mockContext = mock(BlockValidationContext.class);
         mockLocation = mock(SourceLocation.class);
         when(mockContext.createLocation(any())).thenReturn(mockLocation);
+        when(mockContext.getFilename()).thenReturn("test.adoc");
     }
     
     @Test

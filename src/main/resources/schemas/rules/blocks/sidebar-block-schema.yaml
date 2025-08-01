@@ -45,79 +45,73 @@ properties:
         type: string
         description: Regular expression pattern for title validation
         format: regex
+      minLength:
+        type: integer
+        description: Minimum length for title
+        minimum: 1
+      maxLength:
+        type: integer
+        description: Maximum length for title
+        minimum: 1
       severity:
         type: string
         enum: [error, warn, info]
         description: Severity for title violations
-    required: [severity]
     additionalProperties: false
-  lines:
+  content:
     type: object
-    description: Line count validation rules
+    description: Content validation rules
     properties:
-      min:
+      required:
+        type: boolean
+        description: Whether content is required
+      minLength:
         type: integer
-        description: Minimum number of lines
+        description: Minimum length for content
         minimum: 1
-      max:
+      maxLength:
         type: integer
-        description: Maximum number of lines
+        description: Maximum length for content
         minimum: 1
-    additionalProperties: false
-  sentences:
-    type: object
-    description: Sentence count validation rules
-    properties:
-      min:
-        type: integer
-        description: Minimum number of sentences
-        minimum: 1
-      max:
-        type: integer
-        description: Maximum number of sentences
-        minimum: 1
+      lines:
+        type: object
+        description: Line count validation rules
+        properties:
+          min:
+            type: integer
+            description: Minimum number of lines
+            minimum: 1
+          max:
+            type: integer
+            description: Maximum number of lines
+            minimum: 1
+          severity:
+            type: string
+            enum: [error, warn, info]
+            description: Severity for line count violations
+        additionalProperties: false
       severity:
         type: string
         enum: [error, warn, info]
-        description: Severity for sentence count violations
-    required: [severity]
+        description: Severity for content violations
     additionalProperties: false
-  style:
+  position:
     type: object
-    description: Style validation rules
+    description: Position validation rules
     properties:
+      required:
+        type: boolean
+        description: Whether position is required
       allowed:
         type: array
-        description: List of allowed styles
+        description: List of allowed positions
         items:
           type: string
-          enum: [NOTE, TIP, WARNING, IMPORTANT, CAUTION]
         uniqueItems: true
-      required:
-        type: boolean
-        description: Whether style is required
       severity:
         type: string
         enum: [error, warn, info]
-        description: Severity for style violations
-    required: [severity]
-    additionalProperties: false
-  icon:
-    type: object
-    description: Icon validation rules
-    properties:
-      required:
-        type: boolean
-        description: Whether icon is required
-      pattern:
-        type: string
-        description: Regular expression pattern for icon validation
-        format: regex
-      severity:
-        type: string
-        enum: [error, warn, info]
-        description: Severity for icon violations
-    required: [severity]
+        description: Severity for position violations
     additionalProperties: false
 required: [severity]
 additionalProperties: false

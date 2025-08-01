@@ -149,6 +149,8 @@ class SourceLocationTest {
             SourceLocation location = SourceLocation.builder()
                 .filename("test.adoc")
                 .line(10)
+                .startColumn(0)
+                .endColumn(0)
                 .build();
             
             // When

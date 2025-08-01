@@ -20,6 +20,8 @@ import com.dataliquid.asciidoc.linter.config.BlockType;
 import com.dataliquid.asciidoc.linter.config.Severity;
 import com.dataliquid.asciidoc.linter.config.blocks.ImageBlock;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
+import com.dataliquid.asciidoc.linter.validator.ErrorType;
+import org.asciidoctor.ast.Cursor;
 
 /**
  * Unit tests for {@link ImageBlockValidator}.
@@ -167,6 +169,77 @@ class ImageBlockValidatorTest {
             assertEquals("Pattern: ^images/.*\\.png$", msg.getExpectedValue().orElse(null));
         }
         
+        @Test
+        @DisplayName("should include placeholder for missing URL")
+        void shouldIncludePlaceholderForMissingUrl() {
+            // Given
+            BlockValidationContext testContext = new BlockValidationContext(mockSection, "test.adoc");
+            
+            ImageBlock.UrlConfig urlConfig = ImageBlock.UrlConfig.builder()
+                .required(true)
+                .build();
+            ImageBlock config = ImageBlock.builder()
+                .url(urlConfig)
+                .severity(Severity.ERROR)
+                .build();
+            
+            // Mock source location
+            Cursor mockCursor = mock(Cursor.class);
+            when(mockCursor.getLineNumber()).thenReturn(36);
+            when(mockBlock.getSourceLocation()).thenReturn(mockCursor);
+            when(mockBlock.hasAttribute("target")).thenReturn(false);
+            
+            // When
+            List<ValidationMessage> messages = validator.validate(mockBlock, config, testContext);
+            
+            // Then
+            assertEquals(1, messages.size());
+            ValidationMessage msg = messages.get(0);
+            assertEquals("image.url.required", msg.getRuleId());
+            assertEquals(ErrorType.MISSING_VALUE, msg.getErrorType());
+            assertEquals("filename.png", msg.getMissingValueHint());
+            
+            // Without file content, validator falls back to column 1
+            assertEquals(1, msg.getLocation().getStartColumn());
+            assertEquals(1, msg.getLocation().getEndColumn());
+            assertEquals(36, msg.getLocation().getStartLine());
+        }
+        
+        @Test
+        @DisplayName("should highlight invalid URL pattern")
+        void shouldHighlightInvalidUrlPattern() {
+            // Given
+            BlockValidationContext testContext = new BlockValidationContext(mockSection, "test.adoc");
+            
+            ImageBlock.UrlConfig urlConfig = ImageBlock.UrlConfig.builder()
+                .pattern(Pattern.compile("^[a-zA-Z0-9/_-]+\\.(png|jpg|jpeg|gif|svg)$"))
+                .build();
+            ImageBlock config = ImageBlock.builder()
+                .url(urlConfig)
+                .severity(Severity.ERROR)
+                .build();
+            
+            // Mock source location
+            Cursor mockCursor = mock(Cursor.class);
+            when(mockCursor.getLineNumber()).thenReturn(38);
+            when(mockBlock.getSourceLocation()).thenReturn(mockCursor);
+            when(mockBlock.hasAttribute("target")).thenReturn(true);
+            when(mockBlock.getAttribute("target")).thenReturn("invalid file name.png");
+            
+            // When
+            List<ValidationMessage> messages = validator.validate(mockBlock, config, testContext);
+            
+            // Then
+            assertEquals(1, messages.size());
+            ValidationMessage msg = messages.get(0);
+            assertEquals("image.url.pattern", msg.getRuleId());
+            
+            // Without file content, validator falls back to column 1
+            assertEquals(1, msg.getLocation().getStartColumn());
+            assertEquals(1, msg.getLocation().getEndColumn());
+            assertEquals(38, msg.getLocation().getStartLine());
+        }
+        
     }
     
     @Nested
@@ -174,9 +247,11 @@ class ImageBlockValidatorTest {
     class DimensionsValidation {
         
         @Test
-        @DisplayName("should validate minimum width")
-        void shouldValidateMinimumWidth() {
+        @DisplayName("should highlight width too small")
+        void shouldHighlightWidthTooSmall() {
             // Given
+            BlockValidationContext testContext = new BlockValidationContext(mockSection, "test.adoc");
+            
             ImageBlock.DimensionConfig widthConfig = ImageBlock.DimensionConfig.builder()
                 .minValue(100)
                 .build();
@@ -185,19 +260,100 @@ class ImageBlockValidatorTest {
                 .severity(Severity.ERROR)
                 .build();
             
+            // Mock source location
+            Cursor mockCursor = mock(Cursor.class);
+            when(mockCursor.getLineNumber()).thenReturn(40);
+            when(mockBlock.getSourceLocation()).thenReturn(mockCursor);
             when(mockBlock.hasAttribute("width")).thenReturn(true);
             when(mockBlock.getAttribute("width")).thenReturn("50");
             
             // When
-            List<ValidationMessage> messages = validator.validate(mockBlock, config, context);
+            List<ValidationMessage> messages = validator.validate(mockBlock, config, testContext);
             
             // Then
             assertEquals(1, messages.size());
             ValidationMessage msg = messages.get(0);
             assertEquals("image.width.min", msg.getRuleId());
+            
+            // Without file content, validator falls back to column 1
+            assertEquals(1, msg.getLocation().getStartColumn());
+            assertEquals(1, msg.getLocation().getEndColumn());
+            assertEquals(40, msg.getLocation().getStartLine());
             assertEquals("Image width is too small", msg.getMessage());
             assertEquals("50px", msg.getActualValue().orElse(null));
             assertEquals("At least 100px", msg.getExpectedValue().orElse(null));
+        }
+        
+        @Test
+        @DisplayName("should include placeholder for missing width")
+        void shouldIncludePlaceholderForMissingWidth() {
+            // Given
+            BlockValidationContext testContext = new BlockValidationContext(mockSection, "test.adoc");
+            
+            ImageBlock.DimensionConfig widthConfig = ImageBlock.DimensionConfig.builder()
+                .required(true)
+                .build();
+            ImageBlock config = ImageBlock.builder()
+                .width(widthConfig)
+                .severity(Severity.ERROR)
+                .build();
+            
+            // Mock source location
+            Cursor mockCursor = mock(Cursor.class);
+            when(mockCursor.getLineNumber()).thenReturn(42);
+            when(mockBlock.getSourceLocation()).thenReturn(mockCursor);
+            when(mockBlock.hasAttribute("width")).thenReturn(true);
+            when(mockBlock.getAttribute("width")).thenReturn("");
+            
+            // When
+            List<ValidationMessage> messages = validator.validate(mockBlock, config, testContext);
+            
+            // Then
+            assertEquals(1, messages.size());
+            ValidationMessage msg = messages.get(0);
+            assertEquals("image.width.required", msg.getRuleId());
+            assertEquals(ErrorType.MISSING_VALUE, msg.getErrorType());
+            assertEquals("100", msg.getMissingValueHint());
+            
+            // Without file content, validator falls back to column 1
+            assertEquals(1, msg.getLocation().getStartColumn());
+            assertEquals(1, msg.getLocation().getEndColumn());
+            assertEquals(42, msg.getLocation().getStartLine());
+        }
+        
+        @Test
+        @DisplayName("should highlight width too large")
+        void shouldHighlightWidthTooLarge() {
+            // Given
+            BlockValidationContext testContext = new BlockValidationContext(mockSection, "test.adoc");
+            
+            ImageBlock.DimensionConfig widthConfig = ImageBlock.DimensionConfig.builder()
+                .maxValue(1200)
+                .build();
+            ImageBlock config = ImageBlock.builder()
+                .width(widthConfig)
+                .severity(Severity.ERROR)
+                .build();
+            
+            // Mock source location
+            Cursor mockCursor = mock(Cursor.class);
+            when(mockCursor.getLineNumber()).thenReturn(44);
+            when(mockBlock.getSourceLocation()).thenReturn(mockCursor);
+            when(mockBlock.hasAttribute("width")).thenReturn(true);
+            when(mockBlock.getAttribute("width")).thenReturn("2000");
+            
+            // When
+            List<ValidationMessage> messages = validator.validate(mockBlock, config, testContext);
+            
+            // Then
+            assertEquals(1, messages.size());
+            ValidationMessage msg = messages.get(0);
+            assertEquals("image.width.max", msg.getRuleId());
+            
+            // Without file content, validator falls back to column 1
+            assertEquals(1, msg.getLocation().getStartColumn());
+            assertEquals(1, msg.getLocation().getEndColumn());
+            assertEquals(44, msg.getLocation().getStartLine());
         }
         
         @Test
@@ -306,6 +462,44 @@ class ImageBlockValidatorTest {
             assertEquals("Image must have alt text", msg.getMessage());
             assertEquals("No alt text", msg.getActualValue().orElse(null));
             assertEquals("Alt text required", msg.getExpectedValue().orElse(null));
+        }
+        
+        @Test
+        @DisplayName("should include placeholder and exact position for missing alt text")
+        void shouldIncludePlaceholderAndExactPositionForMissingAltText() {
+            // Given
+            BlockValidationContext testContext = new BlockValidationContext(mockSection, "test.adoc");
+            
+            ImageBlock.AltTextConfig altConfig = ImageBlock.AltTextConfig.builder()
+                .required(true)
+                .build();
+            ImageBlock config = ImageBlock.builder()
+                .alt(altConfig)
+                .severity(Severity.ERROR)
+                .build();
+            
+            // Mock source location for line 32
+            Cursor mockCursor = mock(Cursor.class);
+            when(mockCursor.getLineNumber()).thenReturn(32);
+            when(mockBlock.getSourceLocation()).thenReturn(mockCursor);
+            when(mockBlock.hasAttribute("alt")).thenReturn(false);
+            when(mockBlock.getAttribute("target")).thenReturn("missing-image.png");
+            
+            // When
+            List<ValidationMessage> messages = validator.validate(mockBlock, config, testContext);
+            
+            // Then
+            assertEquals(1, messages.size());
+            ValidationMessage msg = messages.get(0);
+            assertEquals("image.alt.required", msg.getRuleId());
+            assertEquals(ErrorType.MISSING_VALUE, msg.getErrorType());
+            assertEquals("Alt text", msg.getMissingValueHint());
+            
+            // Without file content, validator falls back to column 1
+            assertEquals(1, msg.getLocation().getStartColumn());
+            assertEquals(1, msg.getLocation().getEndColumn());
+            assertEquals(32, msg.getLocation().getStartLine());
+            assertEquals(32, msg.getLocation().getEndLine());
         }
         
         @Test

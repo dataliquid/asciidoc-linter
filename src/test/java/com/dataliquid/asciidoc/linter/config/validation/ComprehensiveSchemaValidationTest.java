@@ -123,7 +123,7 @@ class ComprehensiveSchemaValidationTest {
                             occurrence:
                               min: 0
                               max: 3
-                            author:
+                            attribution:
                               required: false
                         - sidebar:
                             severity: error

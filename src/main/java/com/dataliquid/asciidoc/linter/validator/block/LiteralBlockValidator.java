@@ -8,6 +8,9 @@ import org.asciidoctor.ast.StructuralNode;
 import com.dataliquid.asciidoc.linter.config.BlockType;
 import com.dataliquid.asciidoc.linter.config.Severity;
 import com.dataliquid.asciidoc.linter.config.blocks.LiteralBlock;
+import com.dataliquid.asciidoc.linter.validator.ErrorType;
+import com.dataliquid.asciidoc.linter.validator.PlaceholderContext;
+import com.dataliquid.asciidoc.linter.validator.SourceLocation;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
 
 /**
@@ -114,11 +117,25 @@ public final class LiteralBlockValidator extends AbstractBlockValidator<LiteralB
         Severity severity = resolveSeverity(config.getSeverity(), blockConfig.getSeverity());
         
         // Check if title is required
-        ValidationMessage requiredMessage = validateRequired(title, "title", 
-                                                           config.isRequired(), 
-                                                           severity, context, block);
-        if (requiredMessage != null) {
-            messages.add(requiredMessage);
+        if (config.isRequired() && (title == null || title.trim().isEmpty())) {
+            TitlePosition pos = findTitlePosition(block, context);
+            messages.add(ValidationMessage.builder()
+                .severity(severity)
+                .ruleId("literal.title.required")
+                .location(SourceLocation.builder()
+                    .filename(context.getFilename())
+                    .startLine(pos.lineNumber)
+                    .endLine(pos.lineNumber)
+                    .startColumn(pos.startColumn)
+                    .endColumn(pos.endColumn)
+                    .build())
+                .message("Literal block requires a title")
+                .errorType(ErrorType.MISSING_VALUE)
+                .missingValueHint(".Title")
+                .placeholderContext(PlaceholderContext.builder()
+                    .type(PlaceholderContext.PlaceholderType.INSERT_BEFORE)
+                    .build())
+                .build());
             return;
         }
         
@@ -182,14 +199,29 @@ public final class LiteralBlockValidator extends AbstractBlockValidator<LiteralB
             
             // Check minimum spaces
             if (config.getMinSpaces() != null && indentSpaces < config.getMinSpaces()) {
+                String indentPlaceholder = " ".repeat(config.getMinSpaces());
+                int currentLineNum = block.getSourceLocation() != null ? 
+                    block.getSourceLocation().getLineNumber() + lineNumber : lineNumber;
                 messages.add(ValidationMessage.builder()
                     .severity(severity)
                     .ruleId("literal.indentation.minSpaces")
-                    .location(context.createLocation(block))
-                    .message("Line " + lineNumber + " has insufficient indentation")
+                    .location(SourceLocation.builder()
+                        .filename(context.getFilename())
+                        .startLine(currentLineNum)
+                        .endLine(currentLineNum)
+                        .startColumn(1)
+                        .endColumn(1)
+                        .build())
+                    .message("Literal block requires minimum indentation of " + config.getMinSpaces() + " spaces")
+                    .errorType(ErrorType.MISSING_VALUE)
                     .actualValue(indentSpaces + " spaces")
                     .expectedValue("At least " + config.getMinSpaces() + " spaces")
+                    .missingValueHint(indentPlaceholder)
+                    .placeholderContext(PlaceholderContext.builder()
+                        .type(PlaceholderContext.PlaceholderType.SIMPLE_VALUE)
+                        .build())
                     .build());
+                break; // Only report the first line with insufficient indentation
             }
             
             // Check maximum spaces
@@ -235,5 +267,29 @@ public final class LiteralBlockValidator extends AbstractBlockValidator<LiteralB
             }
         }
         return count;
+    }
+    
+    /**
+     * Finds the position where title should be inserted.
+     */
+    private TitlePosition findTitlePosition(StructuralNode block, BlockValidationContext context) {
+        if (block.getSourceLocation() == null) {
+            return new TitlePosition(1, 1, 1);
+        }
+        
+        int lineNum = block.getSourceLocation().getLineNumber();
+        return new TitlePosition(1, 1, lineNum);
+    }
+    
+    private static class TitlePosition {
+        final int startColumn;
+        final int endColumn;
+        final int lineNumber;
+        
+        TitlePosition(int startColumn, int endColumn, int lineNumber) {
+            this.startColumn = startColumn;
+            this.endColumn = endColumn;
+            this.lineNumber = lineNumber;
+        }
     }
 }

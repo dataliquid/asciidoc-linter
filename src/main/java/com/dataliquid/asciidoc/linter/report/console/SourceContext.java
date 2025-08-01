@@ -26,6 +26,14 @@ public final class SourceContext {
         }
     }
     
+    /**
+     * Constructor for pre-built context lines.
+     */
+    public SourceContext(List<ContextLine> contextLines, SourceLocation originalLocation) {
+        this.lines = new ArrayList<>(contextLines);
+        this.errorLocation = Objects.requireNonNull(originalLocation, "[" + getClass().getName() + "] originalLocation must not be null");
+    }
+    
     public List<ContextLine> getLines() {
         return new ArrayList<>(lines);
     }
