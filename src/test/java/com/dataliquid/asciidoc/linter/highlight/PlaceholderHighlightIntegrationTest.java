@@ -18,6 +18,7 @@ import com.dataliquid.asciidoc.linter.Linter;
 import com.dataliquid.asciidoc.linter.config.LinterConfiguration;
 import com.dataliquid.asciidoc.linter.config.loader.ConfigurationLoader;
 import com.dataliquid.asciidoc.linter.config.output.DisplayConfig;
+import com.dataliquid.asciidoc.linter.config.output.ErrorGroupingConfig;
 import com.dataliquid.asciidoc.linter.config.output.HighlightStyle;
 import com.dataliquid.asciidoc.linter.config.output.OutputConfiguration;
 import com.dataliquid.asciidoc.linter.config.output.OutputFormat;
@@ -71,6 +72,9 @@ class PlaceholderHighlightIntegrationTest {
                 .showHeader(true)  // Enable header to match expected output
                 .highlightStyle(HighlightStyle.UNDERLINE)
                 .maxLineWidth(120)
+                .build())
+            .errorGrouping(ErrorGroupingConfig.builder()
+                .enabled(false)  // Disable grouping for tests to show each error individually
                 .build())
             .suggestions(SuggestionsConfig.builder()
                 .enabled(false)
@@ -2838,11 +2842,11 @@ class PlaceholderHighlightIntegrationTest {
             
             %s:
             
-            [ERROR]: Missing required attribute 'author' [metadata.required]
+            [ERROR]: Missing required attribute 'revdate' [metadata.required]
               File: %s:2:1
             
                1 | = Test Document
-               2 | «:author: value»
+               2 | «:revdate: value»
                3 |\s
                4 | Some content here.
             
@@ -2854,11 +2858,11 @@ class PlaceholderHighlightIntegrationTest {
                3 |\s
                4 | Some content here.
             
-            [ERROR]: Missing required attribute 'revdate' [metadata.required]
+            [ERROR]: Missing required attribute 'author' [metadata.required]
               File: %s:2:1
             
                1 | = Test Document
-               2 | «:revdate: value»
+               2 | «:author: value»
                3 |\s
                4 | Some content here.
             
