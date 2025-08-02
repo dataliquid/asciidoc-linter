@@ -71,6 +71,24 @@ public final class BlockValidationContext {
     }
     
     /**
+     * Creates a source location for the given block with column information.
+     */
+    public SourceLocation createLocation(StructuralNode block, int startColumn, int endColumn) {
+        int line = 1;
+        if (block.getSourceLocation() != null) {
+            line = block.getSourceLocation().getLineNumber();
+        }
+        
+        return SourceLocation.builder()
+            .filename(filename)
+            .startLine(line)
+            .endLine(line)
+            .startColumn(startColumn)
+            .endColumn(endColumn)
+            .build();
+    }
+    
+    /**
      * Tracks a block occurrence for validation.
      */
     public void trackBlock(Block config, StructuralNode block) {

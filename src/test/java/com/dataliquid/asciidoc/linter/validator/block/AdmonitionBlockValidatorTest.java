@@ -39,6 +39,7 @@ class AdmonitionBlockValidatorTest {
         
         when(mockBlock.getDocument()).thenReturn(mockDocument);
         when(context.createLocation(any())).thenReturn(mock(com.dataliquid.asciidoc.linter.validator.SourceLocation.class));
+        when(context.getFilename()).thenReturn("test.adoc");
     }
     
     @Test

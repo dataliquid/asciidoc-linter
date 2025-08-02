@@ -15,6 +15,7 @@ public class CLIConfig {
     private final List<String> inputPatterns;
     private final Path baseDirectory;
     private final Path configFile;
+    private final String outputConfigName;
     private final Path outputConfigFile;
     private final String reportFormat;
     private final Path reportOutput;
@@ -27,6 +28,7 @@ public class CLIConfig {
         }
         this.baseDirectory = Objects.requireNonNull(builder.baseDirectory, "[" + getClass().getName() + "] baseDirectory must not be null");
         this.configFile = builder.configFile;
+        this.outputConfigName = builder.outputConfigName;
         this.outputConfigFile = builder.outputConfigFile;
         this.reportFormat = Objects.requireNonNull(builder.reportFormat, "[" + getClass().getName() + "] reportFormat must not be null");
         this.reportOutput = builder.reportOutput;
@@ -43,6 +45,10 @@ public class CLIConfig {
     
     public Path getConfigFile() {
         return configFile;
+    }
+    
+    public String getOutputConfigName() {
+        return outputConfigName;
     }
     
     public Path getOutputConfigFile() {
@@ -73,6 +79,7 @@ public class CLIConfig {
         private List<String> inputPatterns;
         private Path baseDirectory = Paths.get(System.getProperty("user.dir"));
         private Path configFile;
+        private String outputConfigName;
         private Path outputConfigFile;
         private String reportFormat = "console";
         private Path reportOutput;
@@ -90,6 +97,11 @@ public class CLIConfig {
         
         public Builder configFile(Path configFile) {
             this.configFile = configFile;
+            return this;
+        }
+        
+        public Builder outputConfigName(String outputConfigName) {
+            this.outputConfigName = outputConfigName;
             return this;
         }
         

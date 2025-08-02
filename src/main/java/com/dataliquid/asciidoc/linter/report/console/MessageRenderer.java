@@ -43,6 +43,14 @@ public class MessageRenderer {
         // File location
         writer.println("  File: " + message.getLocation().formatLocation());
         
+        // Actual and expected values
+        if (message.getActualValue().isPresent() || message.getExpectedValue().isPresent()) {
+            message.getActualValue().ifPresent(value -> 
+                writer.println("  Actual: " + value));
+            message.getExpectedValue().ifPresent(value -> 
+                writer.println("  Expected: " + value));
+        }
+        
         // Stack trace if available
         if (message.getCause().isPresent()) {
             writer.println();
@@ -102,6 +110,21 @@ public class MessageRenderer {
                .append(" [")
                .append(message.getRuleId())
                .append("]");
+        
+        // Add actual/expected values inline if present
+        if (message.getActualValue().isPresent() || message.getExpectedValue().isPresent()) {
+            compact.append(" (");
+            if (message.getActualValue().isPresent()) {
+                compact.append("actual: ").append(message.getActualValue().get());
+                if (message.getExpectedValue().isPresent()) {
+                    compact.append(", ");
+                }
+            }
+            if (message.getExpectedValue().isPresent()) {
+                compact.append("expected: ").append(message.getExpectedValue().get());
+            }
+            compact.append(")");
+        }
         
         // Add inline fix suggestion if available
         if (message.hasSuggestions() && !message.getSuggestions().isEmpty()) {

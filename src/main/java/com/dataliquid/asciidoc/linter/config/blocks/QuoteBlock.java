@@ -21,14 +21,14 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 @JsonDeserialize(builder = QuoteBlock.Builder.class)
 public class QuoteBlock extends AbstractBlock {
     
-    private final AuthorConfig author;
-    private final SourceConfig source;
+    private final AttributionConfig attribution;
+    private final CitationConfig citation;
     private final ContentConfig content;
     
     private QuoteBlock(Builder builder) {
         super(builder);
-        this.author = builder.author;
-        this.source = builder.source;
+        this.attribution = builder.attribution;
+        this.citation = builder.citation;
         this.content = builder.content;
     }
     
@@ -37,14 +37,14 @@ public class QuoteBlock extends AbstractBlock {
         return BlockType.QUOTE;
     }
     
-    @JsonProperty("author")
-    public AuthorConfig getAuthor() {
-        return author;
+    @JsonProperty("attribution")
+    public AttributionConfig getAttribution() {
+        return attribution;
     }
     
-    @JsonProperty("source")
-    public SourceConfig getSource() {
-        return source;
+    @JsonProperty("citation")
+    public CitationConfig getCitation() {
+        return citation;
     }
     
     @JsonProperty("content")
@@ -53,17 +53,17 @@ public class QuoteBlock extends AbstractBlock {
     }
     
     /**
-     * Configuration for quote author validation.
+     * Configuration for quote attribution validation.
      */
-    @JsonDeserialize(builder = AuthorConfig.Builder.class)
-    public static class AuthorConfig {
+    @JsonDeserialize(builder = AttributionConfig.Builder.class)
+    public static class AttributionConfig {
         private final boolean required;
         private final Integer minLength;
         private final Integer maxLength;
         private final Pattern pattern;
         private final Severity severity;
         
-        private AuthorConfig(Builder builder) {
+        private AttributionConfig(Builder builder) {
             this.required = builder.required;
             this.minLength = builder.minLength;
             this.maxLength = builder.maxLength;
@@ -100,7 +100,7 @@ public class QuoteBlock extends AbstractBlock {
         public boolean equals(Object o) {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
-            AuthorConfig that = (AuthorConfig) o;
+            AttributionConfig that = (AttributionConfig) o;
             return required == that.required &&
                    Objects.equals(minLength, that.minLength) &&
                    Objects.equals(maxLength, that.maxLength) &&
@@ -162,24 +162,24 @@ public class QuoteBlock extends AbstractBlock {
                 return this;
             }
             
-            public AuthorConfig build() {
-                return new AuthorConfig(this);
+            public AttributionConfig build() {
+                return new AttributionConfig(this);
             }
         }
     }
     
     /**
-     * Configuration for quote source validation.
+     * Configuration for quote citation validation.
      */
-    @JsonDeserialize(builder = SourceConfig.Builder.class)
-    public static class SourceConfig {
+    @JsonDeserialize(builder = CitationConfig.Builder.class)
+    public static class CitationConfig {
         private final boolean required;
         private final Integer minLength;
         private final Integer maxLength;
         private final Pattern pattern;
         private final Severity severity;
         
-        private SourceConfig(Builder builder) {
+        private CitationConfig(Builder builder) {
             this.required = builder.required;
             this.minLength = builder.minLength;
             this.maxLength = builder.maxLength;
@@ -216,7 +216,7 @@ public class QuoteBlock extends AbstractBlock {
         public boolean equals(Object o) {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
-            SourceConfig that = (SourceConfig) o;
+            CitationConfig that = (CitationConfig) o;
             return required == that.required &&
                    Objects.equals(minLength, that.minLength) &&
                    Objects.equals(maxLength, that.maxLength) &&
@@ -278,8 +278,8 @@ public class QuoteBlock extends AbstractBlock {
                 return this;
             }
             
-            public SourceConfig build() {
-                return new SourceConfig(this);
+            public CitationConfig build() {
+                return new CitationConfig(this);
             }
         }
     }
@@ -462,14 +462,14 @@ public class QuoteBlock extends AbstractBlock {
         if (this == o) return true;
         if (!super.equals(o)) return false;
         QuoteBlock that = (QuoteBlock) o;
-        return Objects.equals(author, that.author) &&
-               Objects.equals(source, that.source) &&
+        return Objects.equals(attribution, that.attribution) &&
+               Objects.equals(citation, that.citation) &&
                Objects.equals(content, that.content);
     }
     
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), author, source, content);
+        return Objects.hash(super.hashCode(), attribution, citation, content);
     }
     
     public static Builder builder() {
@@ -478,19 +478,19 @@ public class QuoteBlock extends AbstractBlock {
     
     @JsonPOJOBuilder(withPrefix = "")
     public static class Builder extends AbstractBlock.AbstractBuilder<Builder> {
-        private AuthorConfig author;
-        private SourceConfig source;
+        private AttributionConfig attribution;
+        private CitationConfig citation;
         private ContentConfig content;
         
-        @JsonProperty("author")
-        public Builder author(AuthorConfig author) {
-            this.author = author;
+        @JsonProperty("attribution")
+        public Builder attribution(AttributionConfig attribution) {
+            this.attribution = attribution;
             return this;
         }
         
-        @JsonProperty("source")
-        public Builder source(SourceConfig source) {
-            this.source = source;
+        @JsonProperty("citation")
+        public Builder citation(CitationConfig citation) {
+            this.citation = citation;
             return this;
         }
         

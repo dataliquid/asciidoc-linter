@@ -1,6 +1,7 @@
 package com.dataliquid.asciidoc.linter.cli;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -14,6 +15,8 @@ import com.dataliquid.asciidoc.linter.Linter;
 import com.dataliquid.asciidoc.linter.config.LinterConfiguration;
 import com.dataliquid.asciidoc.linter.config.Severity;
 import com.dataliquid.asciidoc.linter.config.loader.ConfigurationLoader;
+import com.dataliquid.asciidoc.linter.config.output.OutputConfiguration;
+import com.dataliquid.asciidoc.linter.config.output.OutputConfigurationLoader;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
 import com.dataliquid.asciidoc.linter.validator.ValidationResult;
 
@@ -28,12 +31,14 @@ public class CLIRunner {
     private final FileDiscoveryService fileDiscoveryService;
     private final CLIOutputHandler outputHandler;
     private final ConfigurationLoader configurationLoader;
+    private final OutputConfigurationLoader outputConfigurationLoader;
     private final Linter linter;
     
     public CLIRunner() {
         this.fileDiscoveryService = new FileDiscoveryService();
         this.outputHandler = new CLIOutputHandler();
         this.configurationLoader = new ConfigurationLoader();
+        this.outputConfigurationLoader = new OutputConfigurationLoader();
         this.linter = new Linter();
     }
     
@@ -47,6 +52,9 @@ public class CLIRunner {
         try {
             // Load linter configuration
             LinterConfiguration linterConfig = loadLinterConfiguration(config);
+            
+            // Load output configuration
+            OutputConfiguration outputConfig = loadOutputConfiguration(config);
             
             // Discover files
             List<Path> filesToValidate = fileDiscoveryService.discoverFiles(config);
@@ -65,13 +73,13 @@ public class CLIRunner {
             if (filesToValidate.size() == 1) {
                 // Single file validation
                 ValidationResult result = linter.validateFile(filesToValidate.get(0), linterConfig);
-                outputHandler.writeReport(result, config);
+                outputHandler.writeReport(result, config, outputConfig);
                 return determineExitCode(result, config.getFailLevel());
             } else {
                 // Multiple file validation
                 Map<Path, ValidationResult> results = linter.validateFiles(filesToValidate, linterConfig);
                 ValidationResult aggregated = aggregateResults(results);
-                outputHandler.writeMultipleReports(results, config, aggregated);
+                outputHandler.writeMultipleReports(results, config, aggregated, outputConfig);
                 return determineExitCode(aggregated, config.getFailLevel());
             }
             
@@ -105,6 +113,47 @@ public class CLIRunner {
         }
         
         return configurationLoader.loadConfiguration(configFile);
+    }
+    
+    private OutputConfiguration loadOutputConfiguration(CLIConfig config) throws IOException {
+        String outputConfigName = config.getOutputConfigName();
+        Path outputConfigFile = config.getOutputConfigFile();
+        
+        // If neither is specified, use default (enhanced)
+        if (outputConfigName == null && outputConfigFile == null) {
+            // Load default enhanced configuration from resources
+            String resourcePath = "/output-configs/enhanced.yaml";
+            try (InputStream input = getClass().getResourceAsStream(resourcePath)) {
+                if (input != null) {
+                    return outputConfigurationLoader.loadConfiguration(input);
+                }
+            }
+            // Fallback to default configuration
+            return outputConfigurationLoader.getDefaultConfiguration();
+        }
+        
+        // If predefined name is specified
+        if (outputConfigName != null) {
+            // Load from resources
+            String resourcePath = "/output-configs/" + outputConfigName + ".yaml";
+            try (InputStream input = getClass().getResourceAsStream(resourcePath)) {
+                if (input == null) {
+                    throw new IOException("Predefined output configuration not found: " + outputConfigName);
+                }
+                return outputConfigurationLoader.loadConfiguration(input);
+            }
+        }
+        
+        // If custom file is specified
+        if (outputConfigFile != null) {
+            if (!Files.exists(outputConfigFile)) {
+                throw new IOException("Output configuration file not found: " + outputConfigFile);
+            }
+            return outputConfigurationLoader.loadConfiguration(outputConfigFile.toString());
+        }
+        
+        // Should never reach here due to the first check
+        return outputConfigurationLoader.getDefaultConfiguration();
     }
     
     private int determineExitCode(ValidationResult result, Severity failLevel) {

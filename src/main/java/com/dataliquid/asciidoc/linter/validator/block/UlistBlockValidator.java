@@ -8,7 +8,11 @@ import org.asciidoctor.ast.StructuralNode;
 import com.dataliquid.asciidoc.linter.config.BlockType;
 import com.dataliquid.asciidoc.linter.config.Severity;
 import com.dataliquid.asciidoc.linter.config.blocks.UlistBlock;
+import com.dataliquid.asciidoc.linter.validator.ErrorType;
+import com.dataliquid.asciidoc.linter.validator.PlaceholderContext;
+import com.dataliquid.asciidoc.linter.validator.SourceLocation;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
+import com.dataliquid.asciidoc.linter.report.console.FileContentCache;
 
 /**
  * Validator for unordered list (ulist) blocks in AsciiDoc documents.
@@ -32,6 +36,7 @@ import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
  * @see BlockTypeValidator
  */
 public final class UlistBlockValidator extends AbstractBlockValidator<UlistBlock> {
+    private final FileContentCache fileCache = new FileContentCache();
     
     @Override
     public BlockType getSupportedType() {
@@ -65,6 +70,9 @@ public final class UlistBlockValidator extends AbstractBlockValidator<UlistBlock
         // Validate marker style
         if (ulistConfig.getMarkerStyle() != null) {
             validateMarkerStyle(block, ulistConfig.getMarkerStyle(), ulistConfig, context, messages);
+            
+            // Also validate nested lists within list items
+            validateNestedListMarkers(items, ulistConfig.getMarkerStyle(), ulistConfig, context, messages);
         }
         
         return messages;
@@ -90,13 +98,25 @@ public final class UlistBlockValidator extends AbstractBlockValidator<UlistBlock
         
         // Validate min items
         if (config.getMin() != null && itemCount < config.getMin()) {
+            ItemPosition pos = findItemInsertPosition(block, context, items);
             messages.add(ValidationMessage.builder()
                 .severity(severity)
                 .ruleId("ulist.items.min")
-                .location(context.createLocation(block))
+                .location(SourceLocation.builder()
+                    .filename(context.getFilename())
+                    .startLine(pos.lineNumber)
+                    .endLine(pos.lineNumber)
+                    .startColumn(pos.startColumn)
+                    .endColumn(pos.endColumn)
+                    .build())
                 .message("Unordered list has too few items")
+                .errorType(ErrorType.MISSING_VALUE)
                 .actualValue(String.valueOf(itemCount))
                 .expectedValue("At least " + config.getMin() + " items")
+                .missingValueHint("* Item")
+                .placeholderContext(PlaceholderContext.builder()
+                    .type(PlaceholderContext.PlaceholderType.INSERT_BEFORE)
+                    .build())
                 .build());
         }
         
@@ -147,13 +167,25 @@ public final class UlistBlockValidator extends AbstractBlockValidator<UlistBlock
         String actualMarkerStyle = getMarkerStyle(block);
         
         if (actualMarkerStyle != null && !actualMarkerStyle.equals(expectedMarkerStyle)) {
+            MarkerPosition pos = findMarkerPosition(block, context);
             messages.add(ValidationMessage.builder()
                 .severity(blockConfig.getSeverity())
                 .ruleId("ulist.markerStyle")
-                .location(context.createLocation(block))
+                .location(SourceLocation.builder()
+                    .filename(context.getFilename())
+                    .startLine(pos.lineNumber)
+                    .endLine(pos.lineNumber)
+                    .startColumn(pos.startColumn)
+                    .endColumn(pos.endColumn)
+                    .build())
                 .message("Unordered list uses incorrect marker style")
                 .actualValue(actualMarkerStyle)
                 .expectedValue(expectedMarkerStyle)
+                .errorType(ErrorType.INVALID_ENUM)
+                .missingValueHint(expectedMarkerStyle)
+                .placeholderContext(PlaceholderContext.builder()
+                    .type(PlaceholderContext.PlaceholderType.SIMPLE_VALUE)
+                    .build())
                 .build());
         }
     }
@@ -184,19 +216,161 @@ public final class UlistBlockValidator extends AbstractBlockValidator<UlistBlock
     }
     
     private String getMarkerStyle(StructuralNode block) {
-        // Try to get marker from attributes
-        Object marker = block.getAttribute("marker");
-        if (marker != null) {
-            return marker.toString();
+        // AsciidoctorJ doesn't provide marker style in attributes
+        // We need to detect it from the source
+        if (block.getSourceLocation() == null) {
+            return null;
         }
         
-        // Try to get style
-        String style = block.getStyle();
-        if (style != null) {
-            return style;
+        // Get the file lines from cache
+        String filePath = block.getSourceLocation().getPath();
+        List<String> fileLines = fileCache.getFileLines(filePath);
+        int lineNum = block.getSourceLocation().getLineNumber();
+        
+        if (lineNum > 0 && lineNum <= fileLines.size()) {
+            String line = fileLines.get(lineNum - 1);
+            // Find the first non-whitespace character
+            for (int i = 0; i < line.length(); i++) {
+                char c = line.charAt(i);
+                if (!Character.isWhitespace(c)) {
+                    // Check if it's a list marker
+                    if (c == '*' || c == '-' || c == '.') {
+                        return String.valueOf(c);
+                    }
+                    break;
+                }
+            }
         }
         
-        // Default for unordered lists is usually "*"
-        return "*";
+        return null;
+    }
+    
+    /**
+     * Finds the position where new item should be inserted.
+     */
+    private ItemPosition findItemInsertPosition(StructuralNode block, BlockValidationContext context, 
+                                               List<StructuralNode> items) {
+        if (block.getSourceLocation() == null) {
+            return new ItemPosition(1, 1, 1);
+        }
+        
+        List<String> fileLines = fileCache.getFileLines(context.getFilename());
+        
+        // If there are existing items, position after the last one
+        if (!items.isEmpty()) {
+            StructuralNode lastItem = items.get(items.size() - 1);
+            if (lastItem.getSourceLocation() != null) {
+                int lineNum = lastItem.getSourceLocation().getLineNumber();
+                if (lineNum > 0 && lineNum <= fileLines.size()) {
+                    String line = fileLines.get(lineNum - 1);
+                    // Return position at end of line to insert on next line
+                    return new ItemPosition(line.length() + 1, line.length() + 1, lineNum);
+                }
+            }
+        }
+        
+        // Otherwise position at the block start
+        int lineNum = block.getSourceLocation().getLineNumber();
+        if (lineNum > 0 && lineNum <= fileLines.size()) {
+            String line = fileLines.get(lineNum - 1);
+            return new ItemPosition(line.length() + 1, line.length() + 1, lineNum);
+        }
+        return new ItemPosition(1, 1, lineNum);
+    }
+    
+    /**
+     * Finds the position of the first marker in the list.
+     */
+    private MarkerPosition findMarkerPosition(StructuralNode block, BlockValidationContext context) {
+        if (block.getSourceLocation() == null) {
+            return new MarkerPosition(1, 1, 1);
+        }
+        
+        List<String> fileLines = fileCache.getFileLines(context.getFilename());
+        int lineNum = block.getSourceLocation().getLineNumber();
+        
+        if (lineNum > 0 && lineNum <= fileLines.size()) {
+            String line = fileLines.get(lineNum - 1);
+            // Find the marker character position
+            for (int i = 0; i < line.length(); i++) {
+                char c = line.charAt(i);
+                if (!Character.isWhitespace(c)) {
+                    // Found the marker
+                    if (c == '*' || c == '-' || c == '.') {
+                        return new MarkerPosition(i + 1, i + 1, lineNum);
+                    }
+                    break;
+                }
+            }
+            // Default to start of line if no marker found
+            return new MarkerPosition(1, 1, lineNum);
+        }
+        
+        return new MarkerPosition(1, 1, lineNum);
+    }
+    
+    /**
+     * Validates marker styles in nested lists within list items.
+     */
+    private void validateNestedListMarkers(List<StructuralNode> items, String expectedMarkerStyle,
+                                         UlistBlock blockConfig, BlockValidationContext context,
+                                         List<ValidationMessage> messages) {
+        for (StructuralNode item : items) {
+            if (item.getBlocks() != null) {
+                for (StructuralNode nestedBlock : item.getBlocks()) {
+                    // Check if it's a nested ulist
+                    if ("ulist".equals(nestedBlock.getContext())) {
+                        String nestedMarkerStyle = getMarkerStyle(nestedBlock);
+                        if (nestedMarkerStyle != null && !nestedMarkerStyle.equals(expectedMarkerStyle)) {
+                            MarkerPosition pos = findMarkerPosition(nestedBlock, context);
+                            messages.add(ValidationMessage.builder()
+                                .severity(blockConfig.getSeverity())
+                                .ruleId("ulist.markerStyle")
+                                .location(SourceLocation.builder()
+                                    .filename(context.getFilename())
+                                    .startLine(pos.lineNumber)
+                                    .endLine(pos.lineNumber)
+                                    .startColumn(pos.startColumn)
+                                    .endColumn(pos.endColumn)
+                                    .build())
+                                .message("Unordered list marker style '" + nestedMarkerStyle + "' does not match expected style '" + expectedMarkerStyle + "'")
+                                .actualValue(nestedMarkerStyle)
+                                .expectedValue(expectedMarkerStyle)
+                                .build());
+                            
+                            // Recursively check nested items
+                            List<StructuralNode> nestedItems = nestedBlock.getBlocks();
+                            if (nestedItems != null) {
+                                validateNestedListMarkers(nestedItems, expectedMarkerStyle, blockConfig, context, messages);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    private static class ItemPosition {
+        final int startColumn;
+        final int endColumn;
+        final int lineNumber;
+        
+        ItemPosition(int startColumn, int endColumn, int lineNumber) {
+            this.startColumn = startColumn;
+            this.endColumn = endColumn;
+            this.lineNumber = lineNumber;
+        }
+    }
+    
+    private static class MarkerPosition {
+        final int startColumn;
+        final int endColumn;
+        final int lineNumber;
+        
+        MarkerPosition(int startColumn, int endColumn, int lineNumber) {
+            this.startColumn = startColumn;
+            this.endColumn = endColumn;
+            this.lineNumber = lineNumber;
+        }
     }
 }

@@ -14,6 +14,7 @@ import org.apache.commons.cli.ParseException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.dataliquid.asciidoc.linter.cli.display.SplashScreen;
 import com.dataliquid.asciidoc.linter.config.Severity;
 
 /**
@@ -22,8 +23,6 @@ import com.dataliquid.asciidoc.linter.config.Severity;
 public class LinterCLI {
     
     private static final Logger logger = LogManager.getLogger(LinterCLI.class);
-    private static final String VERSION = "0.1.0";
-    private static final String PROGRAM_NAME = "asciidoc-linter";
     
     public static void main(String[] args) {
         LinterCLI cli = new LinterCLI();
@@ -51,6 +50,16 @@ public class LinterCLI {
                 return 0;
             }
             
+            // Show splash screen unless suppressed or special options
+            boolean showSplash = !cmd.hasOption("no-splash") 
+                && !cmd.hasOption("help") 
+                && !cmd.hasOption("version")
+                && !cmd.hasOption("generate-docs");
+            
+            if (showSplash) {
+                SplashScreen.display();
+            }
+            
             // Handle documentation generation
             if (cmd.hasOption("generate-docs")) {
                 // Input is not required for doc generation
@@ -72,6 +81,12 @@ public class LinterCLI {
             
             // Parse configuration
             CLIConfig config = parseConfiguration(cmd);
+            
+            // Display configuration
+            if (showSplash || !cmd.hasOption("no-splash")) {
+                ConfigurationDisplay configDisplay = new ConfigurationDisplay();
+                configDisplay.display(config);
+            }
             
             // Run linter
             CLIRunner runner = new CLIRunner();
@@ -111,9 +126,22 @@ public class LinterCLI {
             builder.configFile(Paths.get(cmd.getOptionValue("config")));
         }
         
-        // Output config file
+        // Output configuration
+        if (cmd.hasOption("output-config") && cmd.hasOption("output-config-file")) {
+            throw new IllegalArgumentException("Cannot use both --output-config and --output-config-file. Choose one.");
+        }
+        
         if (cmd.hasOption("output-config")) {
-            builder.outputConfigFile(Paths.get(cmd.getOptionValue("output-config")));
+            String configName = cmd.getOptionValue("output-config");
+            // Validate predefined names
+            if (!configName.equals("enhanced") && !configName.equals("simple") && !configName.equals("compact")) {
+                throw new IllegalArgumentException("Invalid output config name: " + configName + ". Valid options: enhanced, simple, compact");
+            }
+            builder.outputConfigName(configName);
+        }
+        
+        if (cmd.hasOption("output-config-file")) {
+            builder.outputConfigFile(Paths.get(cmd.getOptionValue("output-config-file")));
         }
         
         // Report format
@@ -149,12 +177,16 @@ public class LinterCLI {
         HelpFormatter formatter = new HelpFormatter();
         formatter.setWidth(100);
         
+        VersionInfo versionInfo = VersionInfo.getInstance();
+        String programName = versionInfo.getArtifactId();
+        
         String header = "\nValidates AsciiDoc files against configurable rules.\n\n";
         String footer = "\nExamples:\n" +
-            "  " + PROGRAM_NAME + " -i \"**/*.adoc\"\n" +
-            "  " + PROGRAM_NAME + " -i \"docs/**/*.adoc,examples/**/*.asciidoc\" -f json -o report.json\n" +
-            "  " + PROGRAM_NAME + " --input \"src/*/docs/**/*.adoc,README.adoc\" --config strict.yaml --fail-level warn\n" +
-            "  " + PROGRAM_NAME + " -i \"**/*.adoc\" --output-config enhanced-output.yaml\n" +
+            "  " + programName + " -i \"**/*.adoc\"\n" +
+            "  " + programName + " -i \"docs/**/*.adoc,examples/**/*.asciidoc\" -f json -o report.json\n" +
+            "  " + programName + " --input \"src/*/docs/**/*.adoc,README.adoc\" --config strict.yaml --fail-level warn\n" +
+            "  " + programName + " -i \"**/*.adoc\" --output-config simple\n" +
+            "  " + programName + " -i \"**/*.adoc\" --output-config-file my-output.yaml\n" +
             "\nAnt Pattern Syntax:\n" +
             "  **  - matches any number of directories\n" +
             "  *   - matches any number of characters (except /)\n" +
@@ -164,11 +196,12 @@ public class LinterCLI {
             "  1 - Violations at or above fail level found\n" +
             "  2 - Invalid arguments or runtime error\n";
         
-        formatter.printHelp(PROGRAM_NAME + " -i <patterns> [options]", 
+        formatter.printHelp(programName + " -i <patterns> [options]", 
             header, options, footer, false);
     }
     
     private void printVersion() {
-        System.out.println(PROGRAM_NAME + " version " + VERSION);
+        System.out.println(VersionInfo.getInstance().getFullVersion());
     }
+
 }

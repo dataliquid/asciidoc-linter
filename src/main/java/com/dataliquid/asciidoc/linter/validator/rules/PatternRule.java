@@ -12,6 +12,7 @@ import java.util.regex.PatternSyntaxException;
 import com.dataliquid.asciidoc.linter.config.Severity;
 import com.dataliquid.asciidoc.linter.validator.SourceLocation;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
+import com.dataliquid.asciidoc.linter.validator.ErrorType;
 
 public final class PatternRule implements AttributeRule {
     private final Map<String, PatternConfig> patternConfigs;
@@ -40,6 +41,7 @@ public final class PatternRule implements AttributeRule {
                     .attributeName(attributeName)
                     .actualValue(value)
                     .expectedValue("Pattern '" + config.getPatternString() + "'")
+                    .errorType(ErrorType.INVALID_PATTERN)
                     .build());
             }
         }

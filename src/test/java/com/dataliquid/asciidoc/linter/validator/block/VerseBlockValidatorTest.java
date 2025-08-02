@@ -141,7 +141,7 @@ class VerseBlockValidatorTest {
             ValidationMessage msg = messages.get(0);
             assertEquals(Severity.ERROR, msg.getSeverity());
             assertEquals("verse.author.required", msg.getRuleId());
-            assertEquals("Verse block must have an author", msg.getMessage());
+            assertEquals("Verse author is required but not provided", msg.getMessage());
             assertEquals("No author", msg.getActualValue().orElse(null));
             assertEquals("Author required", msg.getExpectedValue().orElse(null));
         }
@@ -223,7 +223,7 @@ class VerseBlockValidatorTest {
             assertEquals(1, messages.size());
             ValidationMessage msg = messages.get(0);
             assertEquals("verse.attribution.required", msg.getRuleId());
-            assertEquals("Verse block must have an attribution", msg.getMessage());
+            assertEquals("Verse attribution is required but not provided", msg.getMessage());
             assertEquals("No attribution", msg.getActualValue().orElse(null));
             assertEquals("Attribution required", msg.getExpectedValue().orElse(null));
         }
@@ -514,8 +514,12 @@ class VerseBlockValidatorTest {
             
             when(mockBlock.hasAttribute("author")).thenReturn(true);
             when(mockBlock.getAttribute("author")).thenReturn("William Shakespeare");
-            when(mockBlock.hasAttribute("attribution")).thenReturn(true);
-            when(mockBlock.getAttribute("attribution")).thenReturn("Hamlet (1603)");
+            when(mockBlock.getAttribute("author", null)).thenReturn("William Shakespeare");
+            when(mockBlock.getAttribute("author", "")).thenReturn("William Shakespeare");
+            when(mockBlock.hasAttribute("attribution")).thenReturn(false);
+            when(mockBlock.getAttribute("attribution")).thenReturn(null);
+            when(mockBlock.hasAttribute("citetitle")).thenReturn(true);
+            when(mockBlock.getAttribute("citetitle")).thenReturn("Hamlet (1603)");
             when(mockBlock.getContent()).thenReturn("To be, or not to be,\nthat is the question");
             
             // When

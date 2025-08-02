@@ -1,0 +1,27 @@
+# Compact output configuration - Single-line format for CI/CD environments
+output:
+  format: compact
+  
+  display:
+    contextLines: 0
+    highlightStyle: none
+    useColors: false
+    showLineNumbers: false
+    maxLineWidth: 200
+    showHeader: false
+  
+  suggestions:
+    enabled: false
+    maxPerError: 1
+    showExamples: false
+    showAutoFixHint: false
+  
+  errorGrouping:
+    enabled: false
+    threshold: 10
+  
+  summary:
+    enabled: false
+    showStatistics: false
+    showMostCommon: false
+    showFileList: false

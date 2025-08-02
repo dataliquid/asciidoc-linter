@@ -48,13 +48,13 @@ class QuoteBlockYamlTest {
                               min: 0
                               max: 3
                               severity: warn
-                            author:
+                            attribution:
                               required: true
                               minLength: 3
                               maxLength: 100
                               pattern: "^[A-Z][a-zA-Z\\\\s\\\\.\\\\-,]+$"
                               severity: error
-                            source:
+                            citation:
                               required: false
                               minLength: 5
                               maxLength: 200
@@ -96,21 +96,21 @@ class QuoteBlockYamlTest {
         assertEquals(3, quoteBlock.getOccurrence().max());
         assertEquals(Severity.WARN, quoteBlock.getOccurrence().severity());
         
-        // Verify author config
-        assertNotNull(quoteBlock.getAuthor());
-        assertTrue(quoteBlock.getAuthor().isRequired());
-        assertEquals(3, quoteBlock.getAuthor().getMinLength());
-        assertEquals(100, quoteBlock.getAuthor().getMaxLength());
-        assertEquals("^[A-Z][a-zA-Z\\s\\.\\-,]+$", quoteBlock.getAuthor().getPattern().pattern());
-        assertEquals(Severity.ERROR, quoteBlock.getAuthor().getSeverity());
+        // Verify attribution config
+        assertNotNull(quoteBlock.getAttribution());
+        assertTrue(quoteBlock.getAttribution().isRequired());
+        assertEquals(3, quoteBlock.getAttribution().getMinLength());
+        assertEquals(100, quoteBlock.getAttribution().getMaxLength());
+        assertEquals("^[A-Z][a-zA-Z\\s\\.\\-,]+$", quoteBlock.getAttribution().getPattern().pattern());
+        assertEquals(Severity.ERROR, quoteBlock.getAttribution().getSeverity());
         
-        // Verify source config
-        assertNotNull(quoteBlock.getSource());
-        assertFalse(quoteBlock.getSource().isRequired());
-        assertEquals(5, quoteBlock.getSource().getMinLength());
-        assertEquals(200, quoteBlock.getSource().getMaxLength());
-        assertEquals("^[A-Za-z0-9\\s,\\.\\-\\(\\)]+$", quoteBlock.getSource().getPattern().pattern());
-        assertEquals(Severity.WARN, quoteBlock.getSource().getSeverity());
+        // Verify citation config
+        assertNotNull(quoteBlock.getCitation());
+        assertFalse(quoteBlock.getCitation().isRequired());
+        assertEquals(5, quoteBlock.getCitation().getMinLength());
+        assertEquals(200, quoteBlock.getCitation().getMaxLength());
+        assertEquals("^[A-Za-z0-9\\s,\\.\\-\\(\\)]+$", quoteBlock.getCitation().getPattern().pattern());
+        assertEquals(Severity.WARN, quoteBlock.getCitation().getSeverity());
         
         // Verify content config
         assertNotNull(quoteBlock.getContent());
@@ -150,8 +150,8 @@ class QuoteBlockYamlTest {
         assertEquals(Severity.INFO, quoteBlock.getSeverity());
         assertNull(quoteBlock.getName());
         assertNull(quoteBlock.getOccurrence());
-        assertNull(quoteBlock.getAuthor());
-        assertNull(quoteBlock.getSource());
+        assertNull(quoteBlock.getAttribution());
+        assertNull(quoteBlock.getCitation());
         assertNull(quoteBlock.getContent());
     }
 }

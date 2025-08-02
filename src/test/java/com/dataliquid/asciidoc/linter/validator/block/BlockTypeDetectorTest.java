@@ -151,8 +151,8 @@ class BlockTypeDetectorTest {
         }
         
         @Test
-        @DisplayName("should detect listing block from example with source style")
-        void shouldDetectListingBlockFromExampleWithSourceStyle() {
+        @DisplayName("should detect example block even with source style")
+        void shouldDetectExampleBlockEvenWithSourceStyle() {
             // Given
             when(mockNode.getContext()).thenReturn("example");
             when(mockNode.getStyle()).thenReturn("source");
@@ -161,7 +161,7 @@ class BlockTypeDetectorTest {
             BlockType result = detector.detectType(mockNode);
             
             // Then
-            assertEquals(BlockType.LISTING, result);
+            assertEquals(BlockType.EXAMPLE, result);
         }
         
         @Test

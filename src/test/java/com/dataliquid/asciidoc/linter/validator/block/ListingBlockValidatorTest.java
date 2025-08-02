@@ -1,6 +1,7 @@
 package com.dataliquid.asciidoc.linter.validator.block;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -22,6 +23,9 @@ import com.dataliquid.asciidoc.linter.config.Severity;
 import com.dataliquid.asciidoc.linter.config.blocks.ListingBlock;
 import com.dataliquid.asciidoc.linter.config.rule.LineConfig;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
+import com.dataliquid.asciidoc.linter.validator.ErrorType;
+import com.dataliquid.asciidoc.linter.validator.PlaceholderContext;
+import org.asciidoctor.ast.Cursor;
 
 /**
  * Unit tests for {@link ListingBlockValidator}.
@@ -133,7 +137,7 @@ class ListingBlockValidatorTest {
             ValidationMessage msg = messages.get(0);
             assertEquals(Severity.ERROR, msg.getSeverity());
             assertEquals("listing.language.required", msg.getRuleId());
-            assertEquals("Listing block must specify a language", msg.getMessage());
+            assertEquals("Listing language is required", msg.getMessage());
             assertEquals("No language", msg.getActualValue().orElse(null));
             assertEquals("Language required", msg.getExpectedValue().orElse(null));
         }
@@ -162,7 +166,7 @@ class ListingBlockValidatorTest {
             ValidationMessage msg = messages.get(0);
             assertEquals(Severity.WARN, msg.getSeverity());
             assertEquals("listing.language.allowed", msg.getRuleId());
-            assertEquals("Listing block has unsupported language", msg.getMessage());
+            assertEquals("Listing language 'ruby' is not allowed", msg.getMessage());
             assertEquals("ruby", msg.getActualValue().orElse(null));
             assertEquals("One of: java, python, javascript", msg.getExpectedValue().orElse(null));
         }
@@ -216,6 +220,84 @@ class ListingBlockValidatorTest {
             assertEquals(Severity.INFO, msg.getSeverity(), 
                 "Should use block severity (INFO) when language severity is not defined");
             assertEquals("listing.language.required", msg.getRuleId());
+        }
+        
+        @Test
+        @DisplayName("should include placeholder and exact position for missing language - based on test-errors.adoc line 17")
+        void shouldIncludePlaceholderAndColumnForMissingLanguage() {
+            // Given - Based on test-errors.adoc line 17: [source]
+            BlockValidationContext testContext = new BlockValidationContext(mockSection, "test-errors.adoc");
+            
+            ListingBlock.LanguageConfig languageConfig = ListingBlock.LanguageConfig.builder()
+                .required(true)
+                .severity(Severity.ERROR)
+                .build();
+            ListingBlock config = ListingBlock.builder()
+                .language(languageConfig)
+                .severity(Severity.ERROR)
+                .build();
+            
+            // Mock source location for line 17 from test-errors.adoc
+            Cursor mockCursor = mock(Cursor.class);
+            when(mockCursor.getLineNumber()).thenReturn(17);
+            when(mockBlock.getSourceLocation()).thenReturn(mockCursor);
+            when(mockBlock.hasAttribute("language")).thenReturn(false);
+            
+            // When
+            List<ValidationMessage> messages = validator.validate(mockBlock, config, testContext);
+            
+            // Then
+            assertEquals(1, messages.size());
+            ValidationMessage msg = messages.get(0);
+            assertEquals("listing.language.required", msg.getRuleId());
+            assertEquals(ErrorType.MISSING_VALUE, msg.getErrorType());
+            assertEquals("language", msg.getMissingValueHint());
+            assertNotNull(msg.getPlaceholderContext());
+            assertEquals(PlaceholderContext.PlaceholderType.LIST_VALUE, 
+                         msg.getPlaceholderContext().getType());
+            
+            // Without file content, validator falls back to column 1
+            assertEquals(1, msg.getLocation().getStartColumn());
+            assertEquals(1, msg.getLocation().getEndColumn());
+            assertEquals(17, msg.getLocation().getStartLine());
+            assertEquals(17, msg.getLocation().getEndLine());
+        }
+        
+        @Test
+        @DisplayName("should include exact position for invalid language - based on test-errors.adoc line 25")
+        void shouldIncludeExactPositionForInvalidLanguage() {
+            // Given - Based on test-errors.adoc line 25: [source,invalidlang]
+            BlockValidationContext testContext = new BlockValidationContext(mockSection, "test-errors.adoc");
+            
+            ListingBlock.LanguageConfig languageConfig = ListingBlock.LanguageConfig.builder()
+                .allowed(Arrays.asList("java", "python", "yaml", "bash"))
+                .severity(Severity.ERROR)
+                .build();
+            ListingBlock config = ListingBlock.builder()
+                .language(languageConfig)
+                .severity(Severity.ERROR)
+                .build();
+            
+            // Mock source location for line 25
+            Cursor mockCursor = mock(Cursor.class);
+            when(mockCursor.getLineNumber()).thenReturn(25);
+            when(mockBlock.getSourceLocation()).thenReturn(mockCursor);
+            when(mockBlock.hasAttribute("language")).thenReturn(true);
+            when(mockBlock.getAttribute("language")).thenReturn("invalidlang");
+            
+            // When
+            List<ValidationMessage> messages = validator.validate(mockBlock, config, testContext);
+            
+            // Then
+            assertEquals(1, messages.size());
+            ValidationMessage msg = messages.get(0);
+            assertEquals("listing.language.allowed", msg.getRuleId());
+            
+            // Without file content, validator falls back to column 1
+            assertEquals(1, msg.getLocation().getStartColumn());
+            assertEquals(1, msg.getLocation().getEndColumn());
+            assertEquals(25, msg.getLocation().getStartLine());
+            assertEquals(25, msg.getLocation().getEndLine());
         }
         
         @Test
@@ -294,7 +376,7 @@ class ListingBlockValidatorTest {
             ValidationMessage msg = messages.get(0);
             assertEquals(Severity.INFO, msg.getSeverity());
             assertEquals("listing.title.pattern", msg.getRuleId());
-            assertEquals("Code listing title does not match required pattern", msg.getMessage());
+            assertEquals("Listing title does not match required pattern", msg.getMessage());
             assertEquals("Code Example", msg.getActualValue().orElse(null));
             assertEquals("Pattern: ^Listing \\d+:.*", msg.getExpectedValue().orElse(null));
         }

@@ -9,6 +9,8 @@ import org.asciidoctor.ast.StructuralNode;
 import com.dataliquid.asciidoc.linter.config.BlockType;
 import com.dataliquid.asciidoc.linter.config.Severity;
 import com.dataliquid.asciidoc.linter.config.blocks.SidebarBlock;
+import com.dataliquid.asciidoc.linter.validator.ErrorType;
+import com.dataliquid.asciidoc.linter.validator.PlaceholderContext;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
 
 /**
@@ -84,6 +86,11 @@ public final class SidebarBlockValidator extends AbstractBlockValidator<SidebarB
                 .message("Sidebar block requires a title")
                 .actualValue("No title")
                 .expectedValue("Title required")
+                .errorType(ErrorType.MISSING_VALUE)
+                .missingValueHint(".Sidebar Title")
+                .placeholderContext(PlaceholderContext.builder()
+                    .type(PlaceholderContext.PlaceholderType.INSERT_BEFORE)
+                    .build())
                 .build());
             return;
         }
@@ -97,7 +104,7 @@ public final class SidebarBlockValidator extends AbstractBlockValidator<SidebarB
             messages.add(ValidationMessage.builder()
                 .severity(severity)
                 .ruleId("sidebar.title.minLength")
-                .location(context.createLocation(block))
+                .location(context.createLocation(block, 1, 1))
                 .message("Sidebar title too short")
                 .actualValue(title.length() + " characters")
                 .expectedValue("At least " + titleConfig.getMinLength() + " characters")
@@ -108,7 +115,7 @@ public final class SidebarBlockValidator extends AbstractBlockValidator<SidebarB
             messages.add(ValidationMessage.builder()
                 .severity(severity)
                 .ruleId("sidebar.title.maxLength")
-                .location(context.createLocation(block))
+                .location(context.createLocation(block, 1, 1))
                 .message("Sidebar title too long")
                 .actualValue(title.length() + " characters")
                 .expectedValue("At most " + titleConfig.getMaxLength() + " characters")
@@ -122,7 +129,7 @@ public final class SidebarBlockValidator extends AbstractBlockValidator<SidebarB
                 messages.add(ValidationMessage.builder()
                     .severity(severity)
                     .ruleId("sidebar.title.pattern")
-                    .location(context.createLocation(block))
+                    .location(context.createLocation(block, 1, 1))
                     .message("Sidebar title does not match required pattern")
                     .actualValue(title)
                     .expectedValue("Pattern: " + pattern.pattern())
@@ -142,10 +149,15 @@ public final class SidebarBlockValidator extends AbstractBlockValidator<SidebarB
             messages.add(ValidationMessage.builder()
                 .severity(config.getSeverity())
                 .ruleId("sidebar.content.required")
-                .location(context.createLocation(block))
+                .location(context.createLocation(block, 1, 1))
                 .message("Sidebar block requires content")
                 .actualValue("No content")
                 .expectedValue("Content required")
+                .errorType(ErrorType.MISSING_VALUE)
+                .missingValueHint("Content")
+                .placeholderContext(PlaceholderContext.builder()
+                    .type(PlaceholderContext.PlaceholderType.INSERT_BEFORE)
+                    .build())
                 .build());
             return;
         }
@@ -159,7 +171,7 @@ public final class SidebarBlockValidator extends AbstractBlockValidator<SidebarB
             messages.add(ValidationMessage.builder()
                 .severity(config.getSeverity())
                 .ruleId("sidebar.content.minLength")
-                .location(context.createLocation(block))
+                .location(context.createLocation(block, 1, 1))
                 .message("Sidebar content too short")
                 .actualValue(content.length() + " characters")
                 .expectedValue("At least " + contentConfig.getMinLength() + " characters")
@@ -170,7 +182,7 @@ public final class SidebarBlockValidator extends AbstractBlockValidator<SidebarB
             messages.add(ValidationMessage.builder()
                 .severity(config.getSeverity())
                 .ruleId("sidebar.content.maxLength")
-                .location(context.createLocation(block))
+                .location(context.createLocation(block, 1, 1))
                 .message("Sidebar content too long")
                 .actualValue(content.length() + " characters")
                 .expectedValue("At most " + contentConfig.getMaxLength() + " characters")
@@ -199,7 +211,7 @@ public final class SidebarBlockValidator extends AbstractBlockValidator<SidebarB
             messages.add(ValidationMessage.builder()
                 .severity(severity)
                 .ruleId("sidebar.lines.min")
-                .location(context.createLocation(block))
+                .location(context.createLocation(block, 1, 1))
                 .message("Sidebar has too few lines")
                 .actualValue(lineCount + " lines")
                 .expectedValue("At least " + linesConfig.getMin() + " lines")
@@ -211,7 +223,7 @@ public final class SidebarBlockValidator extends AbstractBlockValidator<SidebarB
             messages.add(ValidationMessage.builder()
                 .severity(severity)
                 .ruleId("sidebar.lines.max")
-                .location(context.createLocation(block))
+                .location(context.createLocation(block, 1, 1))
                 .message("Sidebar has too many lines")
                 .actualValue(lineCount + " lines")
                 .expectedValue("At most " + linesConfig.getMax() + " lines")
@@ -235,10 +247,15 @@ public final class SidebarBlockValidator extends AbstractBlockValidator<SidebarB
             messages.add(ValidationMessage.builder()
                 .severity(severity)
                 .ruleId("sidebar.position.required")
-                .location(context.createLocation(block))
+                .location(context.createLocation(block, 1, 1))
                 .message("Sidebar block requires a position attribute")
                 .actualValue("No position attribute")
                 .expectedValue("Position attribute required")
+                .errorType(ErrorType.MISSING_VALUE)
+                .missingValueHint("[position=left]")
+                .placeholderContext(PlaceholderContext.builder()
+                    .type(PlaceholderContext.PlaceholderType.INSERT_BEFORE)
+                    .build())
                 .build());
             return;
         }
@@ -250,7 +267,7 @@ public final class SidebarBlockValidator extends AbstractBlockValidator<SidebarB
                 messages.add(ValidationMessage.builder()
                     .severity(severity)
                     .ruleId("sidebar.position.allowed")
-                    .location(context.createLocation(block))
+                    .location(context.createLocation(block, 1, 1))
                     .message("Invalid sidebar position")
                     .actualValue(position)
                     .expectedValue("One of: " + String.join(", ", positionConfig.getAllowed()))
