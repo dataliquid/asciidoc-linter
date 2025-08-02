@@ -157,6 +157,8 @@ class PlaceholderHighlightIntegrationTest {
             
             [ERROR]: Listing language is required [listing.language.required]
               File: %s:3:8
+              Actual: No language
+              Expected: Language required
             
                1 | = Test Document
                2 |\s
@@ -254,6 +256,8 @@ class PlaceholderHighlightIntegrationTest {
             
             [ERROR]: Image must have alt text [image.alt.required]
               File: %s:3:20
+              Actual: No alt text
+              Expected: Alt text required
             
                1 | = Test Document
                2 |\s
@@ -300,6 +304,8 @@ class PlaceholderHighlightIntegrationTest {
             
             [ERROR]: Image must have width specified [image.width.required]
               File: %s:3:39
+              Actual: No width
+              Expected: width required
             
                1 | = Test Document
                2 |\s
@@ -346,6 +352,8 @@ class PlaceholderHighlightIntegrationTest {
             
             [ERROR]: Image must have height specified [image.height.required]
               File: %s:3:49
+              Actual: No height
+              Expected: height required
             
                1 | = Test Document
                2 |\s
@@ -393,6 +401,8 @@ class PlaceholderHighlightIntegrationTest {
             
             [ERROR]: Paragraph has too few lines [paragraph.lines.min]
               File: %s:3:33
+              Actual: 1
+              Expected: At least 2 lines
             
                1 | = Test Document
                2 |\s
@@ -442,6 +452,8 @@ class PlaceholderHighlightIntegrationTest {
             
             [WARN]: Paragraph has too few lines [paragraph.lines.min]
               File: %s:4:36
+              Actual: 2
+              Expected: At least 3 lines
             
                1 | = Test Document
                2 |\s
@@ -491,6 +503,8 @@ class PlaceholderHighlightIntegrationTest {
             
             [ERROR]: Paragraph has too few lines [paragraph.lines.min]
               File: %s:3:47
+              Actual: 1
+              Expected: At least 3 lines
             
                1 | = Test Document
                2 |\s
@@ -724,6 +738,7 @@ class PlaceholderHighlightIntegrationTest {
             
             [ERROR]: Video controls are required but not enabled [video.controls.required]
               File: %s:3:20
+              Expected: controls
             
                1 | = Test Document
                2 |\s
@@ -1264,8 +1279,10 @@ class PlaceholderHighlightIntegrationTest {
             
             %s:
             
-            [ERROR]: Too few occurrences of section: headerTypeRule [section.min-occurrences]
+            [ERROR]: Missing required section 'headerTypeRule' at level 1 (expected in null at level 0) [section.min-occurrences]
               File: %s:1
+              Actual: 0 occurrences
+              Expected: At least 1 occurrence(s)
             
                1 | = Test Document
                2 |\s
@@ -1311,8 +1328,10 @@ class PlaceholderHighlightIntegrationTest {
             
             %s:
             
-            [ERROR]: Too few occurrences of section: headerTitleRule [section.min-occurrences]
+            [ERROR]: Missing required section 'headerTitleRule' at level 0 [section.min-occurrences]
               File: %s:1
+              Actual: 0 occurrences
+              Expected: At least 1 occurrence(s)
             
                1 | «= headerTitleRule»
                2 | Some content without any document title.
@@ -1371,8 +1390,10 @@ class PlaceholderHighlightIntegrationTest {
             
             %s:
             
-            [ERROR]: Too few occurrences of section: implementation [section.min-occurrences]
+            [ERROR]: Missing required section 'implementation' at level 4 (expected in details at level 3) [section.min-occurrences]
               File: %s:1
+              Actual: 0 occurrences
+              Expected: At least 1 occurrence(s)
             
                1 | = Test Document
                2 |\s
@@ -1694,6 +1715,8 @@ class PlaceholderHighlightIntegrationTest {
             
             [ERROR]: Admonition block requires a title [admonition.title.required]
               File: %s:4-1
+              Actual: No title
+              Expected: Title required
             
                1 | = Test Document
                2 |\s
@@ -1745,6 +1768,8 @@ class PlaceholderHighlightIntegrationTest {
             
             [ERROR]: Admonition block requires content [admonition.content.required]
               File: %s:4-1
+              Actual: No content
+              Expected: Content required
             
                1 | = Test Document
                2 |\s
@@ -1795,6 +1820,8 @@ class PlaceholderHighlightIntegrationTest {
             
             [ERROR]: Sidebar block requires a title [sidebar.title.required]
               File: %s:3-1
+              Actual: No title
+              Expected: Title required
             
                1 | = Test Document
                2 | «.Sidebar Title»
@@ -1844,6 +1871,8 @@ class PlaceholderHighlightIntegrationTest {
             
             [ERROR]: Sidebar block requires content [sidebar.content.required]
               File: %s:3:1
+              Actual: No content
+              Expected: Content required
             
                1 | = Test Document
                2 |\s
@@ -1894,6 +1923,8 @@ class PlaceholderHighlightIntegrationTest {
             
             [ERROR]: Sidebar block requires a position attribute [sidebar.position.required]
               File: %s:3:1
+              Actual: No position attribute
+              Expected: Position attribute required
             
                1 | = Test Document
                2 |\s
@@ -1947,6 +1978,8 @@ class PlaceholderHighlightIntegrationTest {
             
             [ERROR]: Verse author is required but not provided [verse.author.required]
               File: %s:3:7
+              Actual: No author
+              Expected: Author required
             
                1 | = Test Document
                2 |\s
@@ -2001,6 +2034,8 @@ class PlaceholderHighlightIntegrationTest {
             
             [ERROR]: Verse attribution is required but not provided [verse.attribution.required]
               File: %s:3:7
+              Actual: No attribution
+              Expected: Attribution required
             
                1 | = Test Document
                2 |\s
@@ -2053,6 +2088,8 @@ class PlaceholderHighlightIntegrationTest {
             
             [ERROR]: Verse block requires content [verse.content.required]
               File: %s:3:1
+              Actual: No content
+              Expected: Content required
             
                1 | = Test Document
                2 |\s
@@ -2105,6 +2142,8 @@ class PlaceholderHighlightIntegrationTest {
             
             [ERROR]: Pass block requires a type [pass.type.required]
               File: %s:3:1
+              Actual: No type specified
+              Expected: Type required (type attribute)
             
                1 | = Test Document
                2 |\s
@@ -2155,6 +2194,8 @@ class PlaceholderHighlightIntegrationTest {
             
             [ERROR]: Pass block requires content [pass.content.required]
               File: %s:3:1
+              Actual: No content
+              Expected: Content required
             
                1 | = Test Document
                2 |\s
@@ -2205,6 +2246,8 @@ class PlaceholderHighlightIntegrationTest {
             
             [ERROR]: Pass block requires a reason [pass.reason.required]
               File: %s:3:1
+              Actual: No reason provided
+              Expected: Reason required (reason attribute)
             
                1 | = Test Document
                2 |\s
@@ -2255,6 +2298,8 @@ class PlaceholderHighlightIntegrationTest {
             
             [ERROR]: Definition list term missing required description [dlist.descriptions.required]
               File: %s:3:1-5
+              Actual: No description
+              Expected: Description required
             
                1 | = Test Document
                2 |\s
@@ -2357,6 +2402,8 @@ class PlaceholderHighlightIntegrationTest {
             
             [ERROR]: Literal block requires minimum indentation of 4 spaces [literal.indentation.minSpaces]
               File: %s:4:1
+              Actual: 0 spaces
+              Expected: At least 4 spaces
             
                1 | = Test Document
                2 |\s
@@ -2407,6 +2454,8 @@ class PlaceholderHighlightIntegrationTest {
             
             [ERROR]: Unordered list has too few items [ulist.items.min]
               File: %s:4:14
+              Actual: 2
+              Expected: At least 3 items
             
                1 | = Test Document
                2 |\s
@@ -2460,6 +2509,8 @@ class PlaceholderHighlightIntegrationTest {
             
             [ERROR]: Too few occurrences of block: paragraph [block.occurrence.min]
               File: %s:2
+              Actual: 0
+              Expected: At least 1 occurrences
             
                1 | = Accept
                2 | «Paragraph content»
@@ -2507,6 +2558,8 @@ class PlaceholderHighlightIntegrationTest {
             
             [ERROR]: Too few occurrences of block: table [block.occurrence.min]
               File: %s:2
+              Actual: 0
+              Expected: At least 1 occurrences
             
                1 | = My Document
                2 | «|===
@@ -2596,6 +2649,8 @@ class PlaceholderHighlightIntegrationTest {
             
             [ERROR]: Too few occurrences of block: paragraph [block.occurrence.min]
               File: %s:7
+              Actual: 0
+              Expected: At least 1 occurrences
             
                4 |\s
                5 | == Main Section
@@ -2607,6 +2662,8 @@ class PlaceholderHighlightIntegrationTest {
             
             [ERROR]: Too few occurrences of block: listing [block.occurrence.min]
               File: %s:10
+              Actual: 0
+              Expected: At least 1 occurrences
             
                7 | === Sub Section
                8 |\s
@@ -2656,6 +2713,7 @@ class PlaceholderHighlightIntegrationTest {
             
             [ERROR]: Missing required attribute 'author' [metadata.required]
               File: %s:3:1
+              Expected: Attribute must be present
             
                1 | = Test Document
                2 | :email: test@example.com
@@ -2702,6 +2760,7 @@ class PlaceholderHighlightIntegrationTest {
             
             [ERROR]: Missing required attribute 'author' [metadata.required]
               File: %s:2:1
+              Expected: Attribute must be present
             
                1 | :email: test@example.com
                2 | «:author: value»
@@ -2752,6 +2811,7 @@ class PlaceholderHighlightIntegrationTest {
             
             [ERROR]: Missing required attribute 'author' [metadata.required]
               File: %s:7:1
+              Expected: Attribute must be present
             
                3 | date: 2024-01-01
                4 | ---
@@ -2796,6 +2856,7 @@ class PlaceholderHighlightIntegrationTest {
             
             [ERROR]: Missing required attribute 'author' [metadata.required]
               File: %s:1:1
+              Expected: Attribute must be present
             
                1 | «:author: value»
             
@@ -2844,6 +2905,7 @@ class PlaceholderHighlightIntegrationTest {
             
             [ERROR]: Missing required attribute 'revdate' [metadata.required]
               File: %s:2:1
+              Expected: Attribute must be present
             
                1 | = Test Document
                2 | «:revdate: value»
@@ -2852,6 +2914,7 @@ class PlaceholderHighlightIntegrationTest {
             
             [ERROR]: Missing required attribute 'version' [metadata.required]
               File: %s:2:1
+              Expected: Attribute must be present
             
                1 | = Test Document
                2 | «:version: value»
@@ -2860,6 +2923,7 @@ class PlaceholderHighlightIntegrationTest {
             
             [ERROR]: Missing required attribute 'author' [metadata.required]
               File: %s:2:1
+              Expected: Attribute must be present
             
                1 | = Test Document
                2 | «:author: value»

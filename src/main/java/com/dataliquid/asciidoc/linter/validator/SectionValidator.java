@@ -227,6 +227,12 @@ public final class SectionValidator {
 
     private void validateOccurrenceForConfig(SectionConfig config, String filename, 
                                             ValidationResult.Builder resultBuilder) {
+        validateOccurrenceForConfig(config, filename, resultBuilder, null);
+    }
+    
+    private void validateOccurrenceForConfig(SectionConfig config, String filename, 
+                                            ValidationResult.Builder resultBuilder,
+                                            SectionConfig parentConfig) {
         String key = createOccurrenceKey(config);
         int occurrences = sectionOccurrences.getOrDefault(key, 0);
         
@@ -242,13 +248,19 @@ public final class SectionValidator {
             // Generate section placeholder based on level
             String sectionPlaceholder = "=".repeat(config.level() + 1) + " " + config.name();
             
+            // Build context message
+            String context = "";
+            if (parentConfig != null) {
+                context = " (expected in " + parentConfig.name() + " at level " + parentConfig.level() + ")";
+            }
+            
             ValidationMessage message = ValidationMessage.builder()
                 .severity(Severity.ERROR)
                 .ruleId("section.min-occurrences")
                 .location(location)
-                .message("Too few occurrences of section: " + config.name())
-                .actualValue(String.valueOf(occurrences))
-                .expectedValue("At least " + config.min())
+                .message("Missing required section '" + config.name() + "' at level " + config.level() + context)
+                .actualValue(String.valueOf(occurrences) + " occurrences")
+                .expectedValue("At least " + config.min() + " occurrence(s)")
                 .errorType(ErrorType.MISSING_VALUE)
                 .missingValueHint(sectionPlaceholder)
                 .placeholderContext(PlaceholderContext.builder()
@@ -278,7 +290,7 @@ public final class SectionValidator {
         // Recursively validate subsection occurrences
         if (config.subsections() != null) {
             for (SectionConfig subsection : config.subsections()) {
-                validateOccurrenceForConfig(subsection, filename, resultBuilder);
+                validateOccurrenceForConfig(subsection, filename, resultBuilder, config);
             }
         }
     }

@@ -147,6 +147,8 @@ class UnderlineHighlightIntegrationTest {
             
             [ERROR]: Definition list term is too long [dlist.terms.maxLength]
               File: %s:3:1-71
+              Actual: This is a very long definition list term that exceeds twenty characters (length: 71)
+              Expected: Maximum length: 20
             
                1 | = Test Document
                2 |\s
@@ -202,6 +204,8 @@ class UnderlineHighlightIntegrationTest {
             
             [WARN]: Definition list term is too short [dlist.terms.minLength]
               File: %s:3:1-3
+              Actual: API (length: 3)
+              Expected: Minimum length: 10
             
                1 | = Test Document
                2 |\s
@@ -213,6 +217,8 @@ class UnderlineHighlightIntegrationTest {
             
             [WARN]: Definition list term is too short [dlist.terms.minLength]
               File: %s:6:1-4
+              Actual: Term (length: 4)
+              Expected: Minimum length: 10
             
                3 | API::
                4 |   Application Programming Interface
@@ -271,6 +277,8 @@ class UnderlineHighlightIntegrationTest {
             
             [ERROR]: Definition list term does not match required pattern [dlist.terms.pattern]
               File: %s:3:1-14
+              Actual: lowercase_term
+              Expected: Pattern: ^[A-Z][A-Z0-9_]+$
             
                1 | = Test Document
                2 |\s
@@ -282,6 +290,8 @@ class UnderlineHighlightIntegrationTest {
             
             [ERROR]: Definition list term does not match required pattern [dlist.terms.pattern]
               File: %s:9:1-10
+              Actual: Mixed-Case
+              Expected: Pattern: ^[A-Z][A-Z0-9_]+$
             
                6 | VALID_TERM::
                7 |   This term matches the pattern.
@@ -341,6 +351,8 @@ class UnderlineHighlightIntegrationTest {
                 
                 [ERROR]: Image URL does not match required pattern [image.url.pattern]
                   File: %s:3:8-35
+                  Actual: file:///local/path/image.png
+                  Expected: Pattern: ^https?://.*\\.(jpg|jpeg|png|gif|svg)$
                 
                    1 | = Test Document
                    2 |\s
@@ -352,6 +364,8 @@ class UnderlineHighlightIntegrationTest {
                 
                 [ERROR]: Image URL does not match required pattern [image.url.pattern]
                   File: %s:5:8-36
+                  Actual: https://example.com/image.bmp
+                  Expected: Pattern: ^https?://.*\\.(jpg|jpeg|png|gif|svg)$
                 
                    2 |\s
                    3 | image::file:///local/path/image.png[Local file]
@@ -407,6 +421,8 @@ class UnderlineHighlightIntegrationTest {
                 
                 [ERROR]: Image alt text is too long [image.alt.maxLength]
                   File: %s:3:20-95
+                  Actual: 76 characters
+                  Expected: At most 30 characters
                 
                    1 | = Test Document
                    2 |\s
@@ -418,6 +434,8 @@ class UnderlineHighlightIntegrationTest {
                 
                 [ERROR]: Image alt text is too long [image.alt.maxLength]
                   File: %s:7:18-91
+                  Actual: 74 characters
+                  Expected: At most 30 characters
                 
                    4 |\s
                    5 | image::logo.png[Short alt text]
@@ -471,6 +489,8 @@ class UnderlineHighlightIntegrationTest {
                 
                 [WARN]: Image alt text is too short [image.alt.minLength]
                   File: %s:3:17-20
+                  Actual: 4 characters
+                  Expected: At least 10 characters
                 
                    1 | = Test Document
                    2 |\s
@@ -482,6 +502,8 @@ class UnderlineHighlightIntegrationTest {
                 
                 [WARN]: Image alt text is too short [image.alt.minLength]
                   File: %s:7:16-17
+                  Actual: 2 characters
+                  Expected: At least 10 characters
                 
                    4 |\s
                    5 | image::screenshot.png[Application screenshot showing main window]
@@ -540,6 +562,8 @@ class UnderlineHighlightIntegrationTest {
                 
                 [ERROR]: Video URL does not match required pattern [video.url.pattern]
                   File: %s:3:8-30
+                  Actual: file:///local/video.mp4
+                  Expected: ^https?://.*\\.(mp4|webm|ogg|avi)$
                 
                    1 | = Test Document
                    2 |\s
@@ -551,6 +575,8 @@ class UnderlineHighlightIntegrationTest {
                 
                 [ERROR]: Video URL does not match required pattern [video.url.pattern]
                   File: %s:5:8-36
+                  Actual: https://example.com/video.mov
+                  Expected: ^https?://.*\\.(mp4|webm|ogg|avi)$
                 
                    2 |\s
                    3 | video::file:///local/video.mp4[Local video file]
@@ -606,6 +632,8 @@ class UnderlineHighlightIntegrationTest {
                 
                 [ERROR]: Video poster does not match required pattern [video.poster.pattern]
                   File: %s:3:45-68
+                  Actual: file:///local/poster.jpg
+                  Expected: ^https?://.*\\.(jpg|jpeg|png)$
                 
                    1 | = Test Document
                    2 |\s
@@ -617,6 +645,8 @@ class UnderlineHighlightIntegrationTest {
                 
                 [ERROR]: Video poster does not match required pattern [video.poster.pattern]
                   File: %s:5:45-74
+                  Actual: https://example.com/poster.bmp
+                  Expected: ^https?://.*\\.(jpg|jpeg|png)$
                 
                    2 |\s
                    3 | video::https://example.com/video.mp4[poster=file:///local/poster.jpg]
@@ -675,6 +705,8 @@ class UnderlineHighlightIntegrationTest {
                 
                 [ERROR]: Video caption is too long [video.caption.maxLength]
                   File: %s:3:1-91
+                  Actual: 90 characters
+                  Expected: <= 25 characters
                 
                    1 | = Test Document
                    2 |\s
@@ -686,6 +718,8 @@ class UnderlineHighlightIntegrationTest {
                 
                 [ERROR]: Video caption is too long [video.caption.maxLength]
                   File: %s:9:1-75
+                  Actual: 74 characters
+                  Expected: <= 25 characters
                 
                    6 | .Short caption
                    7 | video::https://example.com/demo.mp4[]
@@ -743,6 +777,8 @@ class UnderlineHighlightIntegrationTest {
                 
                 [WARN]: Video caption is too short [video.caption.minLength]
                   File: %s:3:1-5
+                  Actual: 4 characters
+                  Expected: >= 15 characters
                 
                    1 | = Test Document
                    2 |\s
@@ -754,6 +790,8 @@ class UnderlineHighlightIntegrationTest {
                 
                 [WARN]: Video caption is too short [video.caption.minLength]
                   File: %s:9:1-9
+                  Actual: 8 characters
+                  Expected: >= 15 characters
                 
                    6 | .Product demonstration video showing main features
                    7 | video::https://example.com/product.mp4[]
@@ -826,6 +864,8 @@ class UnderlineHighlightIntegrationTest {
                 
                 [ERROR]: Table header does not match required pattern [table.header.pattern]
                   File: %s:4:3-18
+                  Actual: lowercase header
+                  Expected: Pattern: ^[A-Z][a-zA-Z0-9 ]+$
                 
                    1 | = Test Document
                    2 |\s
@@ -838,6 +878,8 @@ class UnderlineHighlightIntegrationTest {
                 
                 [ERROR]: Table header does not match required pattern [table.header.pattern]
                   File: %s:16:3-21
+                  Actual: Special-Characters!
+                  Expected: Pattern: ^[A-Z][a-zA-Z0-9 ]+$
                 
                   13 | |===
                   14 |\s
@@ -850,6 +892,8 @@ class UnderlineHighlightIntegrationTest {
                 
                 [ERROR]: Table header does not match required pattern [table.header.pattern]
                   File: %s:16:25-32
+                  Actual: Column#2
+                  Expected: Pattern: ^[A-Z][a-zA-Z0-9 ]+$
                 
                   13 | |===
                   14 |\s
@@ -925,6 +969,8 @@ class UnderlineHighlightIntegrationTest {
                 
                 [WARN]: Table caption is too short [table.caption.minLength]
                   File: %s:3:1-8
+                  Actual: 7 characters
+                  Expected: At least 20 characters
                 
                    1 | = Test Document
                    2 |\s
@@ -936,6 +982,8 @@ class UnderlineHighlightIntegrationTest {
                 
                 [WARN]: Table caption is too short [table.caption.minLength]
                   File: %s:19:1-5
+                  Actual: 4 characters
+                  Expected: At least 20 characters
                 
                   16 | | David | 88
                   17 | |===
@@ -1008,6 +1056,8 @@ class UnderlineHighlightIntegrationTest {
                 
                 [ERROR]: Table caption is too long [table.caption.maxLength]
                   File: %s:3:1-91
+                  Actual: 90 characters
+                  Expected: At most 30 characters
                 
                    1 | = Test Document
                    2 |\s
@@ -1019,6 +1069,8 @@ class UnderlineHighlightIntegrationTest {
                 
                 [ERROR]: Table caption is too long [table.caption.maxLength]
                   File: %s:17:1-83
+                  Actual: 82 characters
+                  Expected: At most 30 characters
                 
                   14 | | 1 | 2
                   15 | |===
@@ -1091,6 +1143,8 @@ class UnderlineHighlightIntegrationTest {
                 
                 [ERROR]: Table caption does not match required pattern [table.caption.pattern]
                   File: %s:3:1-16
+                  Actual: Results Summary
+                  Expected: Pattern: ^Table \\d+\\.+
                 
                    1 | = Test Document
                    2 |\s
@@ -1102,6 +1156,8 @@ class UnderlineHighlightIntegrationTest {
                 
                 [ERROR]: Table caption does not match required pattern [table.caption.pattern]
                   File: %s:10:1-30
+                  Actual: Table 1. Valid caption format
+                  Expected: Pattern: ^Table \\d+\\.+
                 
                    7 | | Alice | 95
                    8 | |===
@@ -1114,6 +1170,8 @@ class UnderlineHighlightIntegrationTest {
                 
                 [ERROR]: Table caption does not match required pattern [table.caption.pattern]
                   File: %s:17:1-15
+                  Actual: Invalid format
+                  Expected: Pattern: ^Table \\d+\\.+
                 
                   14 | | 1 | 100
                   15 | |===
@@ -1179,6 +1237,8 @@ class UnderlineHighlightIntegrationTest {
                 
                 [ERROR]: Verse author is too long [verse.author.maxLength]
                   File: %s:3:10-54
+                  Actual: 45 characters
+                  Expected: At most 25 characters
                 
                    1 | = Test Document
                    2 |\s
@@ -1238,6 +1298,8 @@ class UnderlineHighlightIntegrationTest {
                 
                 [WARN]: Verse author is too short [verse.author.minLength]
                   File: %s:3:10-13
+                  Actual: 4 characters
+                  Expected: At least 10 characters
                 
                    1 | = Test Document
                    2 |\s
@@ -1302,6 +1364,8 @@ class UnderlineHighlightIntegrationTest {
                 
                 [ERROR]: Verse author does not match required pattern [verse.author.pattern]
                   File: %s:3:10-20
+                  Actual: shakespeare
+                  Expected: Pattern: ^[A-Z][a-z]+ [A-Z][a-z]+$
                 
                    1 | = Test Document
                    2 |\s
@@ -1313,6 +1377,8 @@ class UnderlineHighlightIntegrationTest {
                 
                 [ERROR]: Verse author does not match required pattern [verse.author.pattern]
                   File: %s:13:10-22
+                  Actual: E.E. Cummings
+                  Expected: Pattern: ^[A-Z][a-z]+ [A-Z][a-z]+$
                 
                   10 | I'm nobody! Who are you?
                   11 | ____
@@ -1373,6 +1439,8 @@ class UnderlineHighlightIntegrationTest {
                 
                 [ERROR]: Verse attribution is too long [verse.attribution.maxLength]
                   File: %s:3:33-60
+                  Actual: 28 characters
+                  Expected: At most 20 characters
                 
                    1 | = Test Document
                    2 |\s
@@ -1432,6 +1500,8 @@ class UnderlineHighlightIntegrationTest {
                 
                 [ERROR]: Verse attribution does not match required pattern [verse.attribution.pattern]
                   File: %s:3:26-37
+                  Actual: Unknown date
+                  Expected: Pattern: ^[A-Z][a-zA-Z\\s]+, \\d{4}$
                 
                    1 | = Test Document
                    2 |\s
@@ -1491,6 +1561,8 @@ class UnderlineHighlightIntegrationTest {
                 
                 [ERROR]: Verse content is too long [verse.content.maxLength]
                   File: %s:5:1-110
+                  Actual: 110 characters
+                  Expected: At most 50 characters
                 
                    2 |\s
                    3 | [verse]
@@ -1561,6 +1633,8 @@ class UnderlineHighlightIntegrationTest {
                 
                 [ERROR]: Pass block type 'javascript' is not allowed [pass.type.allowed]
                   File: %s:3:12-21
+                  Actual: javascript
+                  Expected: One of: html, xml, svg
                 
                    1 | = Test Document
                    2 |\s
@@ -1572,6 +1646,8 @@ class UnderlineHighlightIntegrationTest {
                 
                 [ERROR]: Pass block type 'css' is not allowed [pass.type.allowed]
                   File: %s:13:12-14
+                  Actual: css
+                  Expected: One of: html, xml, svg
                 
                   10 | <p>Valid HTML</p>
                   11 | ++++
@@ -1632,6 +1708,8 @@ class UnderlineHighlightIntegrationTest {
                 
                 [ERROR]: Pass block content is too long [pass.content.maxLength]
                   File: %s:5:1-95
+                  Actual: 95 characters
+                  Expected: Maximum 50 characters
                 
                    2 |\s
                    3 | [pass]
@@ -1697,6 +1775,8 @@ class UnderlineHighlightIntegrationTest {
                 
                 [ERROR]: Pass block content does not match required pattern [pass.content.pattern]
                   File: %s:5:1-24
+                  Actual: Content does not match pattern
+                  Expected: Pattern: ^<[^>]+>.*</[^>]+>$
                 
                    2 |\s
                    3 | [pass]
@@ -1709,6 +1789,8 @@ class UnderlineHighlightIntegrationTest {
                 
                 [ERROR]: Pass block content does not match required pattern [pass.content.pattern]
                   File: %s:15:1-15
+                  Actual: Content does not match pattern
+                  Expected: Pattern: ^<[^>]+>.*</[^>]+>$
                 
                   12 |\s
                   13 | [pass]
@@ -1772,6 +1854,8 @@ class UnderlineHighlightIntegrationTest {
                 
                 [WARN]: Pass block reason is too short [pass.reason.minLength]
                   File: %s:3:14-19
+                  Actual: 6 characters
+                  Expected: At least 20 characters
                 
                    1 | = Test Document
                    2 |\s
@@ -1783,6 +1867,8 @@ class UnderlineHighlightIntegrationTest {
                 
                 [WARN]: Pass block reason is too short [pass.reason.minLength]
                   File: %s:13:14-19
+                  Actual: 6 characters
+                  Expected: At least 20 characters
                 
                   10 | <legacy>Data</legacy>
                   11 | ++++
@@ -1848,6 +1934,8 @@ class UnderlineHighlightIntegrationTest {
                 
                 [ERROR]: Pass block reason is too long [pass.reason.maxLength]
                   File: %s:3:14-85
+                  Actual: 72 characters
+                  Expected: At most 30 characters
                 
                    1 | = Test Document
                    2 |\s
@@ -1859,6 +1947,8 @@ class UnderlineHighlightIntegrationTest {
                 
                 [ERROR]: Pass block reason is too long [pass.reason.maxLength]
                   File: %s:13:14-94
+                  Actual: 81 characters
+                  Expected: At most 30 characters
                 
                   10 | <valid>Content</valid>
                   11 | ++++
@@ -1929,6 +2019,8 @@ class UnderlineHighlightIntegrationTest {
                 
                 [ERROR]: Quote attribution does not match required pattern [quote.attribution.pattern]
                   File: %s:3:10-23
+                  Actual: shakespeare123
+                  Expected: Pattern: ^[A-Z][a-zA-Z\\s\\.]+$
                 
                    1 | = Test Document
                    2 |\s
@@ -1940,6 +2032,8 @@ class UnderlineHighlightIntegrationTest {
                 
                 [ERROR]: Quote attribution does not match required pattern [quote.attribution.pattern]
                   File: %s:13:10-18
+                  Actual: @john_doe
+                  Expected: Pattern: ^[A-Z][a-zA-Z\\s\\.]+$
                 
                   10 | All the world's a stage.
                   11 | ____
@@ -2005,6 +2099,8 @@ class UnderlineHighlightIntegrationTest {
                 
                 [ERROR]: Quote citation does not match required pattern [quote.citation.pattern]
                   File: %s:3:29-40
+                  Actual: unknown date
+                  Expected: Pattern: ^[A-Z][a-zA-Z0-9\\s]+, \\d{4}$
                 
                    1 | = Test Document
                    2 |\s
@@ -2016,6 +2112,8 @@ class UnderlineHighlightIntegrationTest {
                 
                 [ERROR]: Quote citation does not match required pattern [quote.citation.pattern]
                   File: %s:13:25-50
+                  Actual: The Picture of Dorian Gray
+                  Expected: Pattern: ^[A-Z][a-zA-Z0-9\\s]+, \\d{4}$
                 
                   10 | There is no greater agony than bearing an untold story inside you.
                   11 | ____
@@ -2098,6 +2196,8 @@ class UnderlineHighlightIntegrationTest {
                 
                 [ERROR]: Section title does not match required pattern [section.title.pattern]
                   File: %s:3:4-18
+                  Actual: Getting Started
+                  Expected: Pattern: ^(Introduction|Overview|Summary)$
                 
                    1 | = Test Document
                    2 |\s
@@ -2109,6 +2209,8 @@ class UnderlineHighlightIntegrationTest {
                 
                 [ERROR]: Section title does not match required pattern [section.title.pattern]
                   File: %s:7:5-21
+                  Actual: technical details
+                  Expected: Pattern: ^[A-Z][a-z]+ [A-Z][a-z]+$
                 
                    4 |\s
                    5 | This section title doesn't match the required pattern.
@@ -2162,6 +2264,8 @@ class UnderlineHighlightIntegrationTest {
                 
                 [ERROR]: Document title does not match required pattern [section.title.pattern]
                   File: %s:1:3-19
+                  Actual: My Test Document!
+                  Expected: Pattern: ^[A-Z][A-Z0-9\\s]+$
                 
                    1 | = My Test Document!
                      |   ~~~~~~~~~~~~~~~~~
@@ -2216,6 +2320,8 @@ class UnderlineHighlightIntegrationTest {
                 
                 [ERROR]: Section title does not match required pattern [section.title.pattern]
                   File: %s:3:4-14
+                  Actual: Wrong Title
+                  Expected: Pattern: ^Typ$
                 
                    1 | = Test Document
                    2 |\s
@@ -2291,6 +2397,8 @@ class UnderlineHighlightIntegrationTest {
                 
                 [ERROR]: Document title does not match required pattern [section.title.pattern]
                   File: %s:1:3-25
+                  Actual: Technical Documentation
+                  Expected: Pattern: ^[A-Z][a-zA-Z\\s]+Guide$
                 
                    1 | = Technical Documentation
                      |   ~~~~~~~~~~~~~~~~~~~~~~~
@@ -2300,6 +2408,8 @@ class UnderlineHighlightIntegrationTest {
                 
                 [ERROR]: Section title does not match required pattern [section.title.pattern]
                   File: %s:3:4-15
+                  Actual: Introduction
+                  Expected: Pattern: ^Chapter \\d+: .+$
                 
                    1 | = Technical Documentation
                    2 |\s
@@ -2311,6 +2421,8 @@ class UnderlineHighlightIntegrationTest {
                 
                 [WARN]: Section title does not match required pattern [section.title.pattern]
                   File: %s:7:5-12
+                  Actual: Overview
+                  Expected: Pattern: ^\\d+\\.\\d+ .+$
                 
                    4 |\s
                    5 | This doesn't match the Chapter pattern.
@@ -2323,6 +2435,8 @@ class UnderlineHighlightIntegrationTest {
                 
                 [WARN]: Section title does not match required pattern [section.title.pattern]
                   File: %s:19:5-22
+                  Actual: Setup Instructions
+                  Expected: Pattern: ^\\d+\\.\\d+ .+$
                 
                   16 |\s
                   17 | This subsection matches the pattern.
@@ -2387,6 +2501,8 @@ class UnderlineHighlightIntegrationTest {
                 
                 [ERROR]: Admonition type 'IMPORTANT' is not allowed [admonition.type.allowed]
                   File: %s:7:1-9
+                  Actual: IMPORTANT
+                  Expected: One of: NOTE, TIP, WARNING
                 
                    4 |\s
                    5 | TIP: This is a valid tip.
@@ -2399,6 +2515,8 @@ class UnderlineHighlightIntegrationTest {
                 
                 [ERROR]: Admonition type 'CAUTION' is not allowed [admonition.type.allowed]
                   File: %s:11:1-7
+                  Actual: CAUTION
+                  Expected: One of: NOTE, TIP, WARNING
                 
                    8 |\s
                    9 | WARNING: This is allowed.
@@ -2455,6 +2573,8 @@ class UnderlineHighlightIntegrationTest {
                 
                 [WARN]: Admonition title is too short [admonition.title.minLength]
                   File: %s:3:1-5
+                  Actual: 4 characters
+                  Expected: At least 10 characters
                 
                    1 | = Test Document
                    2 |\s
@@ -2466,6 +2586,8 @@ class UnderlineHighlightIntegrationTest {
                 
                 [WARN]: Admonition title is too short [admonition.title.minLength]
                   File: %s:9:1-4
+                  Actual: 3 characters
+                  Expected: At least 10 characters
                 
                    6 | .Important Information
                    7 | NOTE: This title has proper length.
@@ -2523,6 +2645,8 @@ class UnderlineHighlightIntegrationTest {
                 
                 [ERROR]: Admonition title is too long [admonition.title.maxLength]
                   File: %s:3:1-83
+                  Actual: 82 characters
+                  Expected: At most 25 characters
                 
                    1 | = Test Document
                    2 |\s
@@ -2534,6 +2658,8 @@ class UnderlineHighlightIntegrationTest {
                 
                 [ERROR]: Admonition title is too long [admonition.title.maxLength]
                   File: %s:9:1-52
+                  Actual: 51 characters
+                  Expected: At most 25 characters
                 
                    6 | .Short Title
                    7 | WARNING: Content here.
@@ -2591,6 +2717,8 @@ class UnderlineHighlightIntegrationTest {
                 
                 [ERROR]: Admonition title does not match required pattern [admonition.title.pattern]
                   File: %s:3:1-16
+                  Actual: lowercase title
+                  Expected: Pattern: ^[A-Z][a-zA-Z0-9 ]+$
                 
                    1 | = Test Document
                    2 |\s
@@ -2602,6 +2730,8 @@ class UnderlineHighlightIntegrationTest {
                 
                 [ERROR]: Admonition title does not match required pattern [admonition.title.pattern]
                   File: %s:9:1-20
+                  Actual: Title-with-hyphens!
+                  Expected: Pattern: ^[A-Z][a-zA-Z0-9 ]+$
                 
                    6 | .Valid Title Format
                    7 | WARNING: This title matches the pattern.
@@ -2656,6 +2786,8 @@ class UnderlineHighlightIntegrationTest {
                 
                 [WARN]: Admonition content is too short [admonition.content.minLength]
                   File: %s:3:7-16
+                  Actual: 10 characters
+                  Expected: At least 20 characters
                 
                    1 | = Test Document
                    2 |\s
@@ -2667,6 +2799,8 @@ class UnderlineHighlightIntegrationTest {
                 
                 [WARN]: Admonition content is too short [admonition.content.minLength]
                   File: %s:7:6-15
+                  Actual: 10 characters
+                  Expected: At least 20 characters
                 
                    4 |\s
                    5 | WARNING: This content has sufficient length to pass validation.
@@ -2720,6 +2854,8 @@ class UnderlineHighlightIntegrationTest {
                 
                 [ERROR]: Admonition content is too long [admonition.content.maxLength]
                   File: %s:3:7-102
+                  Actual: 96 characters
+                  Expected: At most 50 characters
                 
                    1 | = Test Document
                    2 |\s
@@ -2731,6 +2867,8 @@ class UnderlineHighlightIntegrationTest {
                 
                 [ERROR]: Admonition content is too long [admonition.content.maxLength]
                   File: %s:7:6-107
+                  Actual: 102 characters
+                  Expected: At most 50 characters
                 
                    4 |\s
                    5 | WARNING: Short and concise warning message.
@@ -2793,6 +2931,8 @@ class UnderlineHighlightIntegrationTest {
                 
                 [ERROR]: Admonition icon does not match required pattern [admonition.icon.pattern]
                   File: %s:3:12-18
+                  Actual: warning
+                  Expected: Pattern: ^icon:[a-z-]+\\[\\]$
                 
                    1 | = Test Document
                    2 |\s
@@ -2804,6 +2944,8 @@ class UnderlineHighlightIntegrationTest {
                 
                 [ERROR]: Admonition icon does not match required pattern [admonition.icon.pattern]
                   File: %s:13:15-26
+                  Actual: icon:ALERT[]
+                  Expected: Pattern: ^icon:[a-z-]+\\[\\]$
                 
                   10 | Valid icon format.
                   11 | ====
@@ -2885,6 +3027,8 @@ class UnderlineHighlightIntegrationTest {
                 
                 [ERROR]: Listing language 'ruby' is not allowed [listing.language.allowed]
                   File: %s:12:9-12
+                  Actual: ruby
+                  Expected: One of: java, python, javascript, xml
                 
                    9 | }
                   10 | ----
@@ -2897,6 +3041,8 @@ class UnderlineHighlightIntegrationTest {
                 
                 [ERROR]: Listing language 'golang' is not allowed [listing.language.allowed]
                   File: %s:22:9-14
+                  Actual: golang
+                  Expected: One of: java, python, javascript, xml
                 
                   19 | print("Hello World")
                   20 | ----
@@ -2973,6 +3119,8 @@ class UnderlineHighlightIntegrationTest {
                 
                 [ERROR]: Listing title does not match required pattern [listing.title.pattern]
                   File: %s:3:1-21
+                  Actual: Invalid title format
+                  Expected: Pattern: ^(Listing|Example|Code) \\d+\\..+
                 
                    1 | = Test Document
                    2 |\s
@@ -2984,6 +3132,8 @@ class UnderlineHighlightIntegrationTest {
                 
                 [ERROR]: Listing title does not match required pattern [listing.title.pattern]
                   File: %s:15:1-15
+                  Actual: My Code Sample
+                  Expected: Pattern: ^(Listing|Example|Code) \\d+\\..+
                 
                   12 | public class Valid {}
                   13 | ----
@@ -3040,6 +3190,8 @@ class UnderlineHighlightIntegrationTest {
                 
                 [ERROR]: Attribute 'author' does not match required pattern: actual 'john doe', expected pattern '^[A-Z][a-z]+ [A-Z][a-z]+$' [metadata.pattern]
                   File: %s:2:10-17
+                  Actual: john doe
+                  Expected: Pattern '^[A-Z][a-z]+ [A-Z][a-z]+$'
                 
                    1 | = Test Document
                    2 | :author: john doe
@@ -3089,6 +3241,8 @@ class UnderlineHighlightIntegrationTest {
                 
                 [ERROR]: Attribute 'description' is too short: actual 'Short' (5 characters), expected minimum 20 characters [metadata.length.min]
                   File: %s:3:15-19
+                  Actual: Short (5 characters)
+                  Expected: Minimum 20 characters
                 
                    1 | = Test Document
                    2 | :author: John Doe
@@ -3138,6 +3292,8 @@ class UnderlineHighlightIntegrationTest {
                 
                 [ERROR]: Attribute 'title' is too long: actual 'This is a very long title that exceeds the limit' (48 characters), expected maximum 10 characters [metadata.length.max]
                   File: %s:2:9-56
+                  Actual: This is a very long title that exceeds the limit (48 characters)
+                  Expected: Maximum 10 characters
                 
                    1 | = Test Document
                    2 | :title: This is a very long title that exceeds the limit
@@ -3187,6 +3343,8 @@ class UnderlineHighlightIntegrationTest {
                 
                 [ERROR]: Attribute 'version' does not match required pattern: actual '1.0', expected pattern '^\\d+\\.\\d+\\.\\d+$' [metadata.pattern]
                   File: %s:2:13-15
+                  Actual: 1.0
+                  Expected: Pattern '^\\d+\\.\\d+\\.\\d+$'
                 
                    1 | = Test Document
                    2 | :version:   1.0
@@ -3241,6 +3399,8 @@ class UnderlineHighlightIntegrationTest {
                 
                 [ERROR]: Attribute 'author' does not match required pattern: actual 'joe', expected pattern '^[A-Z][a-z]+ [A-Z][a-z]+$' [metadata.pattern]
                   File: %s:2:10-12
+                  Actual: joe
+                  Expected: Pattern '^[A-Z][a-z]+ [A-Z][a-z]+$'
                 
                    1 | = Test Document
                    2 | :author: joe
@@ -3251,6 +3411,8 @@ class UnderlineHighlightIntegrationTest {
                 
                 [ERROR]: Attribute 'author' is too short: actual 'joe' (3 characters), expected minimum 10 characters [metadata.length.min]
                   File: %s:2:10-12
+                  Actual: joe (3 characters)
+                  Expected: Minimum 10 characters
                 
                    1 | = Test Document
                    2 | :author: joe
@@ -3261,6 +3423,8 @@ class UnderlineHighlightIntegrationTest {
                 
                 [WARN]: Attribute 'version' does not match required pattern: actual '1.0-SNAPSHOT', expected pattern '^\\d+\\.\\d+\\.\\d+$' [metadata.pattern]
                   File: %s:3:11-22
+                  Actual: 1.0-SNAPSHOT
+                  Expected: Pattern '^\\d+\\.\\d+\\.\\d+$'
                 
                    1 | = Test Document
                    2 | :author: joe
