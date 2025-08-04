@@ -16,6 +16,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.dataliquid.asciidoc.linter.cli.display.SplashScreen;
 import com.dataliquid.asciidoc.linter.config.Severity;
+import com.dataliquid.asciidoc.linter.config.output.OutputFormat;
 
 /**
  * Main CLI entry point for the AsciiDoc linter.
@@ -133,11 +134,12 @@ public class LinterCLI {
         
         if (cmd.hasOption("output-config")) {
             String configName = cmd.getOptionValue("output-config");
-            // Validate predefined names
-            if (!configName.equals("enhanced") && !configName.equals("simple") && !configName.equals("compact")) {
+            try {
+                OutputFormat format = OutputFormat.fromValue(configName);
+                builder.outputConfigFormat(format);
+            } catch (IllegalArgumentException e) {
                 throw new IllegalArgumentException("Invalid output config name: " + configName + ". Valid options: enhanced, simple, compact");
             }
-            builder.outputConfigName(configName);
         }
         
         if (cmd.hasOption("output-config-file")) {

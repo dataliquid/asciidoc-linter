@@ -31,7 +31,7 @@ class CLIRunnerOutputConfigTest {
         // Test with predefined name
         CLIConfig config = CLIConfig.builder()
             .inputPatterns(java.util.List.of("*.adoc"))
-            .outputConfigName("simple")
+            .outputConfigFormat(OutputFormat.SIMPLE)
             .build();
         
         // Use reflection to access private method
@@ -84,20 +84,6 @@ class CLIRunnerOutputConfigTest {
         assertEquals(OutputFormat.ENHANCED, outputConfig.getFormat());
     }
 
-    @Test
-    void testInvalidPredefinedName() {
-        CLIRunner runner = new CLIRunner();
-        
-        CLIConfig config = CLIConfig.builder()
-            .inputPatterns(java.util.List.of("*.adoc"))
-            .outputConfigName("invalid")
-            .build();
-        
-        IOException exception = assertThrows(IOException.class, 
-            () -> invokeLoadOutputConfiguration(runner, config));
-        
-        assertTrue(exception.getMessage().contains("Predefined output configuration not found: invalid"));
-    }
 
     @Test
     void testNonExistentConfigFile() {

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Objects;
 
 import com.dataliquid.asciidoc.linter.config.Severity;
+import com.dataliquid.asciidoc.linter.config.output.OutputFormat;
 
 /**
  * Configuration object containing parsed CLI arguments.
@@ -15,7 +16,7 @@ public class CLIConfig {
     private final List<String> inputPatterns;
     private final Path baseDirectory;
     private final Path configFile;
-    private final String outputConfigName;
+    private final OutputFormat outputConfigFormat;
     private final Path outputConfigFile;
     private final String reportFormat;
     private final Path reportOutput;
@@ -28,7 +29,7 @@ public class CLIConfig {
         }
         this.baseDirectory = Objects.requireNonNull(builder.baseDirectory, "[" + getClass().getName() + "] baseDirectory must not be null");
         this.configFile = builder.configFile;
-        this.outputConfigName = builder.outputConfigName;
+        this.outputConfigFormat = builder.outputConfigFormat;
         this.outputConfigFile = builder.outputConfigFile;
         this.reportFormat = Objects.requireNonNull(builder.reportFormat, "[" + getClass().getName() + "] reportFormat must not be null");
         this.reportOutput = builder.reportOutput;
@@ -47,8 +48,8 @@ public class CLIConfig {
         return configFile;
     }
     
-    public String getOutputConfigName() {
-        return outputConfigName;
+    public OutputFormat getOutputConfigFormat() {
+        return outputConfigFormat;
     }
     
     public Path getOutputConfigFile() {
@@ -79,7 +80,7 @@ public class CLIConfig {
         private List<String> inputPatterns;
         private Path baseDirectory = Paths.get(System.getProperty("user.dir"));
         private Path configFile;
-        private String outputConfigName;
+        private OutputFormat outputConfigFormat;
         private Path outputConfigFile;
         private String reportFormat = "console";
         private Path reportOutput;
@@ -100,8 +101,8 @@ public class CLIConfig {
             return this;
         }
         
-        public Builder outputConfigName(String outputConfigName) {
-            this.outputConfigName = outputConfigName;
+        public Builder outputConfigFormat(OutputFormat outputConfigFormat) {
+            this.outputConfigFormat = outputConfigFormat;
             return this;
         }
         
