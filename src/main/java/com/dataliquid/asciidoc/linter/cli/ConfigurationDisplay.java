@@ -67,9 +67,9 @@ public class ConfigurationDisplay {
         drawConfigLine("Configuration:", configFile);
         
         // Output config - show name or file if specified
-        if (config.getOutputConfigName() != null) {
+        if (config.getOutputConfigFormat() != null) {
             drawConfigLine("Output config:", 
-                config.getOutputConfigName() + " (predefined)");
+                config.getOutputConfigFormat().getValue() + " (predefined)");
         } else if (config.getOutputConfigFile() != null) {
             drawConfigLine("Output config:", 
                 config.getOutputConfigFile().toString());
@@ -121,9 +121,9 @@ public class ConfigurationDisplay {
             config.getConfigFile().toString() : "default";
         entries.add(new ConfigEntry("Configuration", configFile));
         
-        if (config.getOutputConfigName() != null) {
+        if (config.getOutputConfigFormat() != null) {
             entries.add(new ConfigEntry("Output config", 
-                config.getOutputConfigName() + " (predefined)"));
+                config.getOutputConfigFormat().getValue() + " (predefined)"));
         } else if (config.getOutputConfigFile() != null) {
             entries.add(new ConfigEntry("Output config", 
                 config.getOutputConfigFile().toString()));
