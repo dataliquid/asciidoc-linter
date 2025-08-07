@@ -12,7 +12,7 @@ import com.dataliquid.asciidoc.linter.config.blocks.VerseBlock;
 import com.dataliquid.asciidoc.linter.report.console.FileContentCache;
 import com.dataliquid.asciidoc.linter.validator.ErrorType;
 import com.dataliquid.asciidoc.linter.validator.PlaceholderContext;
-import com.dataliquid.asciidoc.linter.validator.RuleIds;
+import static com.dataliquid.asciidoc.linter.validator.RuleIds.Verse.*;
 import com.dataliquid.asciidoc.linter.validator.SourceLocation;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
 
@@ -148,7 +148,7 @@ public final class VerseBlockValidator extends AbstractBlockValidator<VerseBlock
                 
             messages.add(ValidationMessage.builder()
                 .severity(verseConfig.getSeverity())
-                .ruleId(RuleIds.Verse.AUTHOR_REQUIRED)
+                .ruleId(AUTHOR_REQUIRED)
                 .location(authorLocation)
                 .message("Verse author is required but not provided")
                 .actualValue("No author")
@@ -168,7 +168,7 @@ public final class VerseBlockValidator extends AbstractBlockValidator<VerseBlock
                 AuthorPosition pos = findAuthorPosition(block, context);
                 messages.add(ValidationMessage.builder()
                     .severity(verseConfig.getSeverity())
-                    .ruleId(RuleIds.Verse.AUTHOR_MIN_LENGTH)
+                    .ruleId(AUTHOR_MIN_LENGTH)
                     .location(SourceLocation.builder()
                         .filename(context.getFilename())
                         .startLine(pos.lineNumber)
@@ -186,7 +186,7 @@ public final class VerseBlockValidator extends AbstractBlockValidator<VerseBlock
                 AuthorPosition pos = findAuthorPosition(block, context);
                 messages.add(ValidationMessage.builder()
                     .severity(verseConfig.getSeverity())
-                    .ruleId(RuleIds.Verse.AUTHOR_MAX_LENGTH)
+                    .ruleId(AUTHOR_MAX_LENGTH)
                     .location(SourceLocation.builder()
                         .filename(context.getFilename())
                         .startLine(pos.lineNumber)
@@ -206,7 +206,7 @@ public final class VerseBlockValidator extends AbstractBlockValidator<VerseBlock
                     AuthorPosition pos = findAuthorPosition(block, context);
                     messages.add(ValidationMessage.builder()
                         .severity(verseConfig.getSeverity())
-                        .ruleId(RuleIds.Verse.AUTHOR_PATTERN)
+                        .ruleId(AUTHOR_PATTERN)
                         .location(SourceLocation.builder()
                             .filename(context.getFilename())
                             .startLine(pos.lineNumber)
@@ -244,7 +244,7 @@ public final class VerseBlockValidator extends AbstractBlockValidator<VerseBlock
                 
             messages.add(ValidationMessage.builder()
                 .severity(verseConfig.getSeverity())
-                .ruleId(RuleIds.Verse.ATTRIBUTION_REQUIRED)
+                .ruleId(ATTRIBUTION_REQUIRED)
                 .location(attributionLocation)
                 .message("Verse attribution is required but not provided")
                 .actualValue("No attribution")
@@ -264,7 +264,7 @@ public final class VerseBlockValidator extends AbstractBlockValidator<VerseBlock
                 AttributionPosition pos = findAttributionPosition(block, context);
                 messages.add(ValidationMessage.builder()
                     .severity(verseConfig.getSeverity())
-                    .ruleId(RuleIds.Verse.ATTRIBUTION_MIN_LENGTH)
+                    .ruleId(ATTRIBUTION_MIN_LENGTH)
                     .location(SourceLocation.builder()
                         .filename(context.getFilename())
                         .startLine(pos.lineNumber)
@@ -282,7 +282,7 @@ public final class VerseBlockValidator extends AbstractBlockValidator<VerseBlock
                 AttributionPosition pos = findAttributionPosition(block, context);
                 messages.add(ValidationMessage.builder()
                     .severity(verseConfig.getSeverity())
-                    .ruleId(RuleIds.Verse.ATTRIBUTION_MAX_LENGTH)
+                    .ruleId(ATTRIBUTION_MAX_LENGTH)
                     .location(SourceLocation.builder()
                         .filename(context.getFilename())
                         .startLine(pos.lineNumber)
@@ -302,7 +302,7 @@ public final class VerseBlockValidator extends AbstractBlockValidator<VerseBlock
                     AttributionPosition pos = findAttributionPosition(block, context);
                     messages.add(ValidationMessage.builder()
                         .severity(verseConfig.getSeverity())
-                        .ruleId(RuleIds.Verse.ATTRIBUTION_PATTERN)
+                        .ruleId(ATTRIBUTION_PATTERN)
                         .location(SourceLocation.builder()
                             .filename(context.getFilename())
                             .startLine(pos.lineNumber)
@@ -339,7 +339,7 @@ public final class VerseBlockValidator extends AbstractBlockValidator<VerseBlock
                 
             messages.add(ValidationMessage.builder()
                 .severity(verseConfig.getSeverity())
-                .ruleId(RuleIds.Verse.CONTENT_REQUIRED)
+                .ruleId(CONTENT_REQUIRED)
                 .location(contentLocation)
                 .message("Verse block requires content")
                 .actualValue("No content")
@@ -359,7 +359,7 @@ public final class VerseBlockValidator extends AbstractBlockValidator<VerseBlock
             ContentPosition pos = findContentPosition(block, context);
             messages.add(ValidationMessage.builder()
                 .severity(verseConfig.getSeverity())
-                .ruleId(RuleIds.Verse.CONTENT_MIN_LENGTH)
+                .ruleId(CONTENT_MIN_LENGTH)
                 .location(SourceLocation.builder()
                     .filename(context.getFilename())
                     .startLine(pos.lineNumber)
@@ -378,7 +378,7 @@ public final class VerseBlockValidator extends AbstractBlockValidator<VerseBlock
                 ContentPosition pos = findContentPosition(block, context);
                 messages.add(ValidationMessage.builder()
                     .severity(verseConfig.getSeverity())
-                    .ruleId(RuleIds.Verse.CONTENT_MAX_LENGTH)
+                    .ruleId(CONTENT_MAX_LENGTH)
                     .location(SourceLocation.builder()
                         .filename(context.getFilename())
                         .startLine(pos.lineNumber)
@@ -398,7 +398,7 @@ public final class VerseBlockValidator extends AbstractBlockValidator<VerseBlock
                     ContentPosition pos = findContentPosition(block, context);
                     messages.add(ValidationMessage.builder()
                         .severity(verseConfig.getSeverity())
-                        .ruleId(RuleIds.Verse.CONTENT_PATTERN)
+                        .ruleId(CONTENT_PATTERN)
                         .location(SourceLocation.builder()
                             .filename(context.getFilename())
                             .startLine(pos.lineNumber)

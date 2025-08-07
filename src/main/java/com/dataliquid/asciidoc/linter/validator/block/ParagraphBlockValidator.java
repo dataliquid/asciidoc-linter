@@ -11,7 +11,7 @@ import com.dataliquid.asciidoc.linter.config.blocks.ParagraphBlock;
 import com.dataliquid.asciidoc.linter.config.rule.OccurrenceConfig;
 import com.dataliquid.asciidoc.linter.validator.ErrorType;
 import com.dataliquid.asciidoc.linter.validator.PlaceholderContext;
-import com.dataliquid.asciidoc.linter.validator.RuleIds;
+import static com.dataliquid.asciidoc.linter.validator.RuleIds.Paragraph.*;
 import com.dataliquid.asciidoc.linter.validator.SourceLocation;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
 import com.dataliquid.asciidoc.linter.report.console.FileContentCache;
@@ -110,7 +110,7 @@ public final class ParagraphBlockValidator extends AbstractBlockValidator<Paragr
             LinePosition pos = findLinePosition(block, context, actualLines);
             messages.add(ValidationMessage.builder()
                 .severity(severity)
-                .ruleId(RuleIds.Paragraph.LINES_MIN)
+                .ruleId(LINES_MIN)
                 .location(SourceLocation.builder()
                     .filename(context.getFilename())
                     .startLine(pos.lineNumber)
@@ -132,7 +132,7 @@ public final class ParagraphBlockValidator extends AbstractBlockValidator<Paragr
         if (lineConfig.max() != null && actualLines > lineConfig.max()) {
             messages.add(ValidationMessage.builder()
                 .severity(severity)
-                .ruleId(RuleIds.Paragraph.LINES_MAX)
+                .ruleId(LINES_MAX)
                 .location(context.createLocation(block))
                 .message("Paragraph has too many lines")
                 .actualValue(String.valueOf(actualLines))
@@ -158,7 +158,7 @@ public final class ParagraphBlockValidator extends AbstractBlockValidator<Paragr
                     
                 messages.add(ValidationMessage.builder()
                     .severity(severity)
-                    .ruleId(RuleIds.Paragraph.SENTENCE_OCCURRENCE_MIN)
+                    .ruleId(SENTENCE_OCCURRENCE_MIN)
                     .location(context.createLocation(block))
                     .message("Paragraph has too few sentences")
                     .actualValue("0")
@@ -228,7 +228,7 @@ public final class ParagraphBlockValidator extends AbstractBlockValidator<Paragr
         if (sentenceCount < occurrenceConfig.min()) {
             messages.add(ValidationMessage.builder()
                 .severity(severity)
-                .ruleId(RuleIds.Paragraph.SENTENCE_OCCURRENCE_MIN)
+                .ruleId(SENTENCE_OCCURRENCE_MIN)
                 .location(context.createLocation(block))
                 .message("Paragraph has too few sentences")
                 .actualValue(String.valueOf(sentenceCount))
@@ -244,7 +244,7 @@ public final class ParagraphBlockValidator extends AbstractBlockValidator<Paragr
         if (sentenceCount > occurrenceConfig.max()) {
             messages.add(ValidationMessage.builder()
                 .severity(severity)
-                .ruleId(RuleIds.Paragraph.SENTENCE_OCCURRENCE_MAX)
+                .ruleId(SENTENCE_OCCURRENCE_MAX)
                 .location(context.createLocation(block))
                 .message("Paragraph has too many sentences")
                 .actualValue(String.valueOf(sentenceCount))
@@ -271,7 +271,7 @@ public final class ParagraphBlockValidator extends AbstractBlockValidator<Paragr
             if (wordsConfig.getMin() != null && wordCount < wordsConfig.getMin()) {
                 messages.add(ValidationMessage.builder()
                     .severity(severity)
-                    .ruleId(RuleIds.Paragraph.SENTENCE_WORDS_MIN)
+                    .ruleId(SENTENCE_WORDS_MIN)
                     .location(context.createLocation(block))
                     .message("Sentence " + (i + 1) + " has too few words")
                     .actualValue(wordCount + " words")
@@ -282,7 +282,7 @@ public final class ParagraphBlockValidator extends AbstractBlockValidator<Paragr
             if (wordsConfig.getMax() != null && wordCount > wordsConfig.getMax()) {
                 messages.add(ValidationMessage.builder()
                     .severity(severity)
-                    .ruleId(RuleIds.Paragraph.SENTENCE_WORDS_MAX)
+                    .ruleId(SENTENCE_WORDS_MAX)
                     .location(context.createLocation(block))
                     .message("Sentence " + (i + 1) + " has too many words")
                     .actualValue(wordCount + " words")

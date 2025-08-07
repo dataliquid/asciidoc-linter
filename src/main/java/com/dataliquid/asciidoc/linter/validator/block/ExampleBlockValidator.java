@@ -12,7 +12,7 @@ import com.dataliquid.asciidoc.linter.config.Severity;
 import com.dataliquid.asciidoc.linter.config.blocks.ExampleBlock;
 import com.dataliquid.asciidoc.linter.validator.ErrorType;
 import com.dataliquid.asciidoc.linter.validator.PlaceholderContext;
-import com.dataliquid.asciidoc.linter.validator.RuleIds;
+import static com.dataliquid.asciidoc.linter.validator.RuleIds.Example.*;
 import com.dataliquid.asciidoc.linter.validator.SourceLocation;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
 
@@ -73,7 +73,7 @@ public final class ExampleBlockValidator extends AbstractBlockValidator<ExampleB
                     .startColumn(1)
                     .endColumn(1)
                     .build())
-                .ruleId(RuleIds.Example.CAPTION_REQUIRED)
+                .ruleId(CAPTION_REQUIRED)
                 .errorType(ErrorType.MISSING_VALUE)
                 .missingValueHint(".Example Title")
                 .placeholderContext(PlaceholderContext.builder()
@@ -95,7 +95,7 @@ public final class ExampleBlockValidator extends AbstractBlockValidator<ExampleB
                     caption.length(), config.getMinLength()))
                 .severity(determineSeverity(config.getSeverity(), block.getSeverity()))
                 .location(context.createLocation(node))
-                .ruleId(RuleIds.Example.CAPTION_MIN_LENGTH)
+                .ruleId(CAPTION_MIN_LENGTH)
                 .build());
         }
         
@@ -105,7 +105,7 @@ public final class ExampleBlockValidator extends AbstractBlockValidator<ExampleB
                     caption.length(), config.getMaxLength()))
                 .severity(determineSeverity(config.getSeverity(), block.getSeverity()))
                 .location(context.createLocation(node))
-                .ruleId(RuleIds.Example.CAPTION_MAX_LENGTH)
+                .ruleId(CAPTION_MAX_LENGTH)
                 .build());
         }
         
@@ -116,7 +116,7 @@ public final class ExampleBlockValidator extends AbstractBlockValidator<ExampleB
                     caption, config.getPattern().pattern()))
                 .severity(determineSeverity(config.getSeverity(), block.getSeverity()))
                 .location(context.createLocation(node))
-                .ruleId(RuleIds.Example.CAPTION_PATTERN)
+                .ruleId(CAPTION_PATTERN)
                 .build());
         }
         
@@ -147,7 +147,7 @@ public final class ExampleBlockValidator extends AbstractBlockValidator<ExampleB
                     .startColumn(1)
                     .endColumn(1)
                     .build())
-                .ruleId(RuleIds.Example.COLLAPSIBLE_REQUIRED)
+                .ruleId(COLLAPSIBLE_REQUIRED)
                 .errorType(ErrorType.MISSING_VALUE)
                 .missingValueHint("[%collapsible]")
                 .placeholderContext(PlaceholderContext.builder()
@@ -183,7 +183,7 @@ public final class ExampleBlockValidator extends AbstractBlockValidator<ExampleB
                         collapsibleAttr, config.getAllowed()))
                     .severity(determineSeverity(config.getSeverity(), block.getSeverity()))
                     .location(context.createLocation(node))
-                    .ruleId(RuleIds.Example.COLLAPSIBLE_ALLOWED)
+                    .ruleId(COLLAPSIBLE_ALLOWED)
                     .build());
             }
         }

@@ -12,7 +12,7 @@ import com.dataliquid.asciidoc.linter.config.Severity;
 import com.dataliquid.asciidoc.linter.config.blocks.AdmonitionBlock;
 import com.dataliquid.asciidoc.linter.validator.ErrorType;
 import com.dataliquid.asciidoc.linter.validator.PlaceholderContext;
-import com.dataliquid.asciidoc.linter.validator.RuleIds;
+import static com.dataliquid.asciidoc.linter.validator.RuleIds.Admonition.*;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
 import com.dataliquid.asciidoc.linter.validator.SourceLocation;
 import com.dataliquid.asciidoc.linter.report.console.FileContentCache;
@@ -132,7 +132,7 @@ public final class AdmonitionBlockValidator extends AbstractBlockValidator<Admon
         if (config.isRequired() && (admonitionType == null || admonitionType.trim().isEmpty())) {
             messages.add(ValidationMessage.builder()
                 .severity(severity)
-                .ruleId(RuleIds.Admonition.TYPE_REQUIRED)
+                .ruleId(TYPE_REQUIRED)
                 .location(context.createLocation(block))
                 .message("Admonition block must have a type")
                 .actualValue("No type")
@@ -147,7 +147,7 @@ public final class AdmonitionBlockValidator extends AbstractBlockValidator<Admon
                 TypePosition pos = findTypePosition(block, context, admonitionType);
                 messages.add(ValidationMessage.builder()
                     .severity(severity)
-                    .ruleId(RuleIds.Admonition.TYPE_ALLOWED)
+                    .ruleId(TYPE_ALLOWED)
                     .location(SourceLocation.builder()
                         .filename(context.getFilename())
                         .startLine(pos.lineNumber)
@@ -175,7 +175,7 @@ public final class AdmonitionBlockValidator extends AbstractBlockValidator<Admon
         if (config.isRequired() && (title == null || title.trim().isEmpty())) {
             messages.add(ValidationMessage.builder()
                 .severity(severity)
-                .ruleId(RuleIds.Admonition.TITLE_REQUIRED)
+                .ruleId(TITLE_REQUIRED)
                 .location(context.createLocation(block))
                 .message("Admonition block requires a title")
                 .actualValue("No title")
@@ -195,7 +195,7 @@ public final class AdmonitionBlockValidator extends AbstractBlockValidator<Admon
                 TitlePosition pos = findTitlePosition(block, context, title);
                 messages.add(ValidationMessage.builder()
                     .severity(severity)
-                    .ruleId(RuleIds.Admonition.TITLE_PATTERN)
+                    .ruleId(TITLE_PATTERN)
                     .location(SourceLocation.builder()
                         .filename(context.getFilename())
                         .startLine(pos.lineNumber)
@@ -214,7 +214,7 @@ public final class AdmonitionBlockValidator extends AbstractBlockValidator<Admon
                 TitlePosition pos = findTitlePosition(block, context, title);
                 messages.add(ValidationMessage.builder()
                     .severity(severity)
-                    .ruleId(RuleIds.Admonition.TITLE_MIN_LENGTH)
+                    .ruleId(TITLE_MIN_LENGTH)
                     .location(SourceLocation.builder()
                         .filename(context.getFilename())
                         .startLine(pos.lineNumber)
@@ -233,7 +233,7 @@ public final class AdmonitionBlockValidator extends AbstractBlockValidator<Admon
                 TitlePosition pos = findTitlePosition(block, context, title);
                 messages.add(ValidationMessage.builder()
                     .severity(severity)
-                    .ruleId(RuleIds.Admonition.TITLE_MAX_LENGTH)
+                    .ruleId(TITLE_MAX_LENGTH)
                     .location(SourceLocation.builder()
                         .filename(context.getFilename())
                         .startLine(pos.lineNumber)
@@ -262,7 +262,7 @@ public final class AdmonitionBlockValidator extends AbstractBlockValidator<Admon
         if (config.isRequired() && (content == null || content.trim().isEmpty())) {
             messages.add(ValidationMessage.builder()
                 .severity(severity)
-                .ruleId(RuleIds.Admonition.CONTENT_REQUIRED)
+                .ruleId(CONTENT_REQUIRED)
                 .location(context.createLocation(block))
                 .message("Admonition block requires content")
                 .actualValue("No content")
@@ -283,7 +283,7 @@ public final class AdmonitionBlockValidator extends AbstractBlockValidator<Admon
             ContentPosition pos = findContentPosition(block, context);
             messages.add(ValidationMessage.builder()
                 .severity(severity)
-                .ruleId(RuleIds.Admonition.CONTENT_MIN_LENGTH)
+                .ruleId(CONTENT_MIN_LENGTH)
                 .location(SourceLocation.builder()
                     .filename(context.getFilename())
                     .startLine(pos.lineNumber)
@@ -302,7 +302,7 @@ public final class AdmonitionBlockValidator extends AbstractBlockValidator<Admon
             ContentPosition pos = findContentPosition(block, context);
             messages.add(ValidationMessage.builder()
                 .severity(severity)
-                .ruleId(RuleIds.Admonition.CONTENT_MAX_LENGTH)
+                .ruleId(CONTENT_MAX_LENGTH)
                 .location(SourceLocation.builder()
                     .filename(context.getFilename())
                     .startLine(pos.lineNumber)
@@ -341,7 +341,7 @@ public final class AdmonitionBlockValidator extends AbstractBlockValidator<Admon
         if (config.min() != null && lineCount < config.min()) {
             messages.add(ValidationMessage.builder()
                 .severity(severity)
-                .ruleId(RuleIds.Admonition.CONTENT_LINES_MIN)
+                .ruleId(CONTENT_LINES_MIN)
                 .location(context.createLocation(block))
                 .message("Admonition block has too few lines")
                 .actualValue(String.valueOf(lineCount))
@@ -353,7 +353,7 @@ public final class AdmonitionBlockValidator extends AbstractBlockValidator<Admon
         if (config.max() != null && lineCount > config.max()) {
             messages.add(ValidationMessage.builder()
                 .severity(severity)
-                .ruleId(RuleIds.Admonition.CONTENT_LINES_MAX)
+                .ruleId(CONTENT_LINES_MAX)
                 .location(context.createLocation(block))
                 .message("Admonition block has too many lines")
                 .actualValue(String.valueOf(lineCount))
@@ -374,7 +374,7 @@ public final class AdmonitionBlockValidator extends AbstractBlockValidator<Admon
         if (config.isRequired() && !hasIcon) {
             messages.add(ValidationMessage.builder()
                 .severity(severity)
-                .ruleId(RuleIds.Admonition.ICON_REQUIRED)
+                .ruleId(ICON_REQUIRED)
                 .location(context.createLocation(block))
                 .message("Admonition block requires an icon")
                 .actualValue("No icon")
@@ -394,7 +394,7 @@ public final class AdmonitionBlockValidator extends AbstractBlockValidator<Admon
                 IconPosition pos = findIconPosition(block, context);
                 messages.add(ValidationMessage.builder()
                     .severity(severity)
-                    .ruleId(RuleIds.Admonition.ICON_PATTERN)
+                    .ruleId(ICON_PATTERN)
                     .location(SourceLocation.builder()
                         .filename(context.getFilename())
                         .startLine(pos.lineNumber)

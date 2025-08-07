@@ -15,7 +15,7 @@ import com.dataliquid.asciidoc.linter.config.blocks.DlistBlock;
 import com.dataliquid.asciidoc.linter.report.console.FileContentCache;
 import com.dataliquid.asciidoc.linter.validator.ErrorType;
 import com.dataliquid.asciidoc.linter.validator.PlaceholderContext;
-import com.dataliquid.asciidoc.linter.validator.RuleIds;
+import static com.dataliquid.asciidoc.linter.validator.RuleIds.Dlist.*;
 import com.dataliquid.asciidoc.linter.validator.SourceLocation;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
 
@@ -102,7 +102,7 @@ public final class DlistBlockValidator extends AbstractBlockValidator<DlistBlock
         if (config.getMin() != null && termCount < config.getMin()) {
             messages.add(ValidationMessage.builder()
                 .severity(severity)
-                .ruleId(RuleIds.Dlist.TERMS_MIN)
+                .ruleId(TERMS_MIN)
                 .location(context.createLocation(block))
                 .message("Definition list has too few terms")
                 .actualValue(String.valueOf(termCount))
@@ -114,7 +114,7 @@ public final class DlistBlockValidator extends AbstractBlockValidator<DlistBlock
         if (config.getMax() != null && termCount > config.getMax()) {
             messages.add(ValidationMessage.builder()
                 .severity(severity)
-                .ruleId(RuleIds.Dlist.TERMS_MAX)
+                .ruleId(TERMS_MAX)
                 .location(context.createLocation(block))
                 .message("Definition list has too many terms")
                 .actualValue(String.valueOf(termCount))
@@ -153,7 +153,7 @@ public final class DlistBlockValidator extends AbstractBlockValidator<DlistBlock
         if (pattern != null && !pattern.matcher(term).matches()) {
             messages.add(ValidationMessage.builder()
                 .severity(severity)
-                .ruleId(RuleIds.Dlist.TERMS_PATTERN)
+                .ruleId(TERMS_PATTERN)
                 .location(SourceLocation.builder()
                     .filename(context.getFilename())
                     .startLine(pos.lineNumber)
@@ -171,7 +171,7 @@ public final class DlistBlockValidator extends AbstractBlockValidator<DlistBlock
         if (config.getMinLength() != null && term.length() < config.getMinLength()) {
             messages.add(ValidationMessage.builder()
                 .severity(severity)
-                .ruleId(RuleIds.Dlist.TERMS_MIN_LENGTH)
+                .ruleId(TERMS_MIN_LENGTH)
                 .location(SourceLocation.builder()
                     .filename(context.getFilename())
                     .startLine(pos.lineNumber)
@@ -189,7 +189,7 @@ public final class DlistBlockValidator extends AbstractBlockValidator<DlistBlock
         if (config.getMaxLength() != null && term.length() > config.getMaxLength()) {
             messages.add(ValidationMessage.builder()
                 .severity(severity)
-                .ruleId(RuleIds.Dlist.TERMS_MAX_LENGTH)
+                .ruleId(TERMS_MAX_LENGTH)
                 .location(SourceLocation.builder()
                     .filename(context.getFilename())
                     .startLine(pos.lineNumber)
@@ -231,7 +231,7 @@ public final class DlistBlockValidator extends AbstractBlockValidator<DlistBlock
                     
                     messages.add(ValidationMessage.builder()
                         .severity(severity)
-                        .ruleId(RuleIds.Dlist.DESCRIPTIONS_REQUIRED)
+                        .ruleId(DESCRIPTIONS_REQUIRED)
                         .location(SourceLocation.builder()
                             .filename(context.getFilename())
                             .startLine(pos.lineNumber)
@@ -257,7 +257,7 @@ public final class DlistBlockValidator extends AbstractBlockValidator<DlistBlock
                 if (!pattern.matcher(descText).find()) {
                     messages.add(ValidationMessage.builder()
                         .severity(severity)
-                        .ruleId(RuleIds.Dlist.DESCRIPTIONS_PATTERN)
+                        .ruleId(DESCRIPTIONS_PATTERN)
                         .location(context.createLocation(block))
                         .message("Definition list description does not match required pattern")
                         .actualValue(descText.length() > 50 ? descText.substring(0, 50) + "..." : descText)

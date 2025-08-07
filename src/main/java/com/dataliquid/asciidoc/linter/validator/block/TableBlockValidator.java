@@ -17,7 +17,7 @@ import com.dataliquid.asciidoc.linter.config.blocks.TableBlock;
 import com.dataliquid.asciidoc.linter.report.console.FileContentCache;
 import com.dataliquid.asciidoc.linter.validator.ErrorType;
 import com.dataliquid.asciidoc.linter.validator.PlaceholderContext;
-import com.dataliquid.asciidoc.linter.validator.RuleIds;
+import static com.dataliquid.asciidoc.linter.validator.RuleIds.Table.*;
 import com.dataliquid.asciidoc.linter.validator.SourceLocation;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
 
@@ -111,7 +111,7 @@ public final class TableBlockValidator extends AbstractBlockValidator<TableBlock
         if (config.getMin() != null && columnCount < config.getMin()) {
             messages.add(ValidationMessage.builder()
                 .severity(severity)
-                .ruleId(RuleIds.Table.COLUMNS_MIN)
+                .ruleId(COLUMNS_MIN)
                 .location(context.createLocation(table))
                 .message("Table has too few columns")
                 .actualValue(String.valueOf(columnCount))
@@ -122,7 +122,7 @@ public final class TableBlockValidator extends AbstractBlockValidator<TableBlock
         if (config.getMax() != null && columnCount > config.getMax()) {
             messages.add(ValidationMessage.builder()
                 .severity(severity)
-                .ruleId(RuleIds.Table.COLUMNS_MAX)
+                .ruleId(COLUMNS_MAX)
                 .location(context.createLocation(table))
                 .message("Table has too many columns")
                 .actualValue(String.valueOf(columnCount))
@@ -144,7 +144,7 @@ public final class TableBlockValidator extends AbstractBlockValidator<TableBlock
         if (config.getMin() != null && rowCount < config.getMin()) {
             messages.add(ValidationMessage.builder()
                 .severity(severity)
-                .ruleId(RuleIds.Table.ROWS_MIN)
+                .ruleId(ROWS_MIN)
                 .location(context.createLocation(table))
                 .message("Table has too few rows")
                 .actualValue(String.valueOf(rowCount))
@@ -155,7 +155,7 @@ public final class TableBlockValidator extends AbstractBlockValidator<TableBlock
         if (config.getMax() != null && rowCount > config.getMax()) {
             messages.add(ValidationMessage.builder()
                 .severity(severity)
-                .ruleId(RuleIds.Table.ROWS_MAX)
+                .ruleId(ROWS_MAX)
                 .location(context.createLocation(table))
                 .message("Table has too many rows")
                 .actualValue(String.valueOf(rowCount))
@@ -178,7 +178,7 @@ public final class TableBlockValidator extends AbstractBlockValidator<TableBlock
             HeaderPosition pos = findHeaderPosition(table, context);
             messages.add(ValidationMessage.builder()
                 .severity(severity)
-                .ruleId(RuleIds.Table.HEADER_REQUIRED)
+                .ruleId(HEADER_REQUIRED)
                 .location(SourceLocation.builder()
                     .filename(context.getFilename())
                     .startLine(pos.lineNumber)
@@ -206,7 +206,7 @@ public final class TableBlockValidator extends AbstractBlockValidator<TableBlock
                         HeaderPosition pos = findHeaderCellPosition(table, context, content);
                         messages.add(ValidationMessage.builder()
                             .severity(severity)
-                            .ruleId(RuleIds.Table.HEADER_PATTERN)
+                            .ruleId(HEADER_PATTERN)
                             .location(SourceLocation.builder()
                                 .filename(context.getFilename())
                                 .startLine(pos.lineNumber)
@@ -238,7 +238,7 @@ public final class TableBlockValidator extends AbstractBlockValidator<TableBlock
             CaptionPosition pos = findCaptionPosition(table, context);
             messages.add(ValidationMessage.builder()
                 .severity(severity)
-                .ruleId(RuleIds.Table.CAPTION_REQUIRED)
+                .ruleId(CAPTION_REQUIRED)
                 .location(SourceLocation.builder()
                     .filename(context.getFilename())
                     .startLine(pos.lineNumber)
@@ -264,7 +264,7 @@ public final class TableBlockValidator extends AbstractBlockValidator<TableBlock
                     CaptionPosition pos = findCaptionPosition(table, context);
                     messages.add(ValidationMessage.builder()
                         .severity(severity)
-                        .ruleId(RuleIds.Table.CAPTION_PATTERN)
+                        .ruleId(CAPTION_PATTERN)
                         .location(SourceLocation.builder()
                             .filename(context.getFilename())
                             .startLine(pos.lineNumber)
@@ -284,7 +284,7 @@ public final class TableBlockValidator extends AbstractBlockValidator<TableBlock
                 CaptionPosition pos = findCaptionPosition(table, context);
                 messages.add(ValidationMessage.builder()
                     .severity(severity)
-                    .ruleId(RuleIds.Table.CAPTION_MIN_LENGTH)
+                    .ruleId(CAPTION_MIN_LENGTH)
                     .location(SourceLocation.builder()
                         .filename(context.getFilename())
                         .startLine(pos.lineNumber)
@@ -302,7 +302,7 @@ public final class TableBlockValidator extends AbstractBlockValidator<TableBlock
                 CaptionPosition pos = findCaptionPosition(table, context);
                 messages.add(ValidationMessage.builder()
                     .severity(severity)
-                    .ruleId(RuleIds.Table.CAPTION_MAX_LENGTH)
+                    .ruleId(CAPTION_MAX_LENGTH)
                     .location(SourceLocation.builder()
                         .filename(context.getFilename())
                         .startLine(pos.lineNumber)
@@ -333,7 +333,7 @@ public final class TableBlockValidator extends AbstractBlockValidator<TableBlock
             if (actualStyle == null || !actualStyle.contains(config.getStyle())) {
                 messages.add(ValidationMessage.builder()
                     .severity(severity)
-                    .ruleId(RuleIds.Table.FORMAT_STYLE)
+                    .ruleId(FORMAT_STYLE)
                     .location(context.createLocation(table))
                     .message("Table does not have required style")
                     .actualValue(actualStyle != null ? actualStyle : "default")
@@ -349,7 +349,7 @@ public final class TableBlockValidator extends AbstractBlockValidator<TableBlock
             if (frame == null || "none".equals(frame)) {
                 messages.add(ValidationMessage.builder()
                     .severity(severity)
-                    .ruleId(RuleIds.Table.FORMAT_BORDERS)
+                    .ruleId(FORMAT_BORDERS)
                     .location(context.createLocation(table))
                     .message("Table must have borders")
                     .actualValue("No borders")

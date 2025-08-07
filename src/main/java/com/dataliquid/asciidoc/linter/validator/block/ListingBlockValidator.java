@@ -13,7 +13,7 @@ import com.dataliquid.asciidoc.linter.config.blocks.ListingBlock;
 import com.dataliquid.asciidoc.linter.report.console.FileContentCache;
 import com.dataliquid.asciidoc.linter.validator.ErrorType;
 import com.dataliquid.asciidoc.linter.validator.PlaceholderContext;
-import com.dataliquid.asciidoc.linter.validator.RuleIds;
+import static com.dataliquid.asciidoc.linter.validator.RuleIds.Listing.*;
 import com.dataliquid.asciidoc.linter.validator.SourceLocation;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
 
@@ -125,7 +125,7 @@ public final class ListingBlockValidator extends AbstractBlockValidator<ListingB
             LanguagePosition pos = findLanguagePosition(block, context);
             messages.add(ValidationMessage.builder()
                 .severity(severity)
-                .ruleId(RuleIds.Listing.LANGUAGE_REQUIRED)
+                .ruleId(LANGUAGE_REQUIRED)
                 .location(SourceLocation.builder()
                     .filename(context.getFilename())
                     .startLine(pos.lineNumber)
@@ -151,7 +151,7 @@ public final class ListingBlockValidator extends AbstractBlockValidator<ListingB
                 LanguagePosition pos = findLanguagePosition(block, context, language);
                 messages.add(ValidationMessage.builder()
                     .severity(severity)
-                    .ruleId(RuleIds.Listing.LANGUAGE_ALLOWED)
+                    .ruleId(LANGUAGE_ALLOWED)
                     .location(SourceLocation.builder()
                         .filename(context.getFilename())
                         .startLine(pos.lineNumber)
@@ -179,7 +179,7 @@ public final class ListingBlockValidator extends AbstractBlockValidator<ListingB
         if (config.isRequired() && (title == null || title.trim().isEmpty())) {
             messages.add(ValidationMessage.builder()
                 .severity(severity)
-                .ruleId(RuleIds.Listing.TITLE_REQUIRED)
+                .ruleId(TITLE_REQUIRED)
                 .location(context.createLocation(block))
                 .message("Listing block must have a title")
                 .actualValue("No title")
@@ -193,7 +193,7 @@ public final class ListingBlockValidator extends AbstractBlockValidator<ListingB
                 TitlePosition pos = findTitlePosition(block, context, title);
                 messages.add(ValidationMessage.builder()
                     .severity(severity)
-                    .ruleId(RuleIds.Listing.TITLE_PATTERN)
+                    .ruleId(TITLE_PATTERN)
                     .location(SourceLocation.builder()
                         .filename(context.getFilename())
                         .startLine(pos.lineNumber)
@@ -225,7 +225,7 @@ public final class ListingBlockValidator extends AbstractBlockValidator<ListingB
         if (config.min() != null && lineCount < config.min()) {
             messages.add(ValidationMessage.builder()
                 .severity(severity)
-                .ruleId(RuleIds.Listing.LINES_MIN)
+                .ruleId(LINES_MIN)
                 .location(context.createLocation(block))
                 .message("Listing block has too few lines")
                 .actualValue(String.valueOf(lineCount))
@@ -237,7 +237,7 @@ public final class ListingBlockValidator extends AbstractBlockValidator<ListingB
         if (config.max() != null && lineCount > config.max()) {
             messages.add(ValidationMessage.builder()
                 .severity(severity)
-                .ruleId(RuleIds.Listing.LINES_MAX)
+                .ruleId(LINES_MAX)
                 .location(context.createLocation(block))
                 .message("Listing block has too many lines")
                 .actualValue(String.valueOf(lineCount))
@@ -262,7 +262,7 @@ public final class ListingBlockValidator extends AbstractBlockValidator<ListingB
         if (!config.isAllowed() && calloutCount > 0) {
             messages.add(ValidationMessage.builder()
                 .severity(severity)
-                .ruleId(RuleIds.Listing.CALLOUTS_NOT_ALLOWED)
+                .ruleId(CALLOUTS_NOT_ALLOWED)
                 .location(context.createLocation(block))
                 .message("Listing block must not contain callouts")
                 .actualValue(calloutCount + " callouts")
@@ -274,7 +274,7 @@ public final class ListingBlockValidator extends AbstractBlockValidator<ListingB
         if (config.getMax() != null && calloutCount > config.getMax()) {
             messages.add(ValidationMessage.builder()
                 .severity(severity)
-                .ruleId(RuleIds.Listing.CALLOUTS_MAX)
+                .ruleId(CALLOUTS_MAX)
                 .location(context.createLocation(block))
                 .message("Listing block has too many callouts")
                 .actualValue(String.valueOf(calloutCount))
