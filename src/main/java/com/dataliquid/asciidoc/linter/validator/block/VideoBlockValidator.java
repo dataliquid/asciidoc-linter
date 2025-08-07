@@ -1,5 +1,7 @@
 package com.dataliquid.asciidoc.linter.validator.block;
 
+import com.dataliquid.asciidoc.linter.validator.SourcePosition;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -90,7 +92,7 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
         
         // Check if required
         if (Boolean.TRUE.equals(urlConfig.getRequired()) && (url == null || url.trim().isEmpty())) {
-            UrlPosition pos = findUrlPosition(node, context, url);
+            SourcePosition pos = findSourcePosition(node, context, url);
             messages.add(ValidationMessage.builder()
                     .severity(severity)
                     .ruleId(URL_REQUIRED)
@@ -120,7 +122,7 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
         if (url != null && urlConfig.getPattern() != null) {
             Pattern pattern = urlConfig.getPattern();
             if (!pattern.matcher(url).matches()) {
-                UrlPosition pos = findUrlPosition(node, context, url);
+                SourcePosition pos = findSourcePosition(node, context, url);
                 messages.add(ValidationMessage.builder()
                         .severity(severity)
                         .ruleId(URL_PATTERN)
@@ -157,7 +159,7 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
         // Check if required
         if (Boolean.TRUE.equals(dimensionConfig.getRequired()) && 
             (dimensionStr == null || dimensionStr.trim().isEmpty())) {
-            DimensionPosition pos = findDimensionPosition(node, context, dimensionType, dimensionStr);
+            SourcePosition pos = findSourcePosition(node, context, dimensionType, dimensionStr);
             
             // Check if there are existing attributes
             boolean hasOtherAttributes = false;
@@ -263,7 +265,7 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
         
         // Check if required
         if (Boolean.TRUE.equals(posterConfig.getRequired()) && (poster == null || poster.trim().isEmpty())) {
-            PosterPosition pos = findPosterPosition(node, context, poster);
+            SourcePosition pos = findPosterPosition(node, context, poster);
             
             // Check if there are existing attributes
             boolean hasOtherAttributes = node.getAttribute(WIDTH) != null || 
@@ -302,7 +304,7 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
         if (poster != null && posterConfig.getPattern() != null) {
             Pattern pattern = posterConfig.getPattern();
             if (!pattern.matcher(poster).matches()) {
-                PosterPosition pos = findPosterPosition(node, context, poster);
+                SourcePosition pos = findPosterPosition(node, context, poster);
                 messages.add(ValidationMessage.builder()
                         .severity(severity)
                         .ruleId(POSTER_PATTERN)
@@ -339,7 +341,7 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
             boolean hasControls = controlsAttr != null && controlsAttr.contains("controls");
             
             if (!hasControls) {
-                ControlsPosition pos = findControlsPosition(node, context);
+                SourcePosition pos = findSourcePosition(node, context);
                 
                 // Check if there are existing attributes
                 boolean hasOtherAttributes = node.getAttribute(WIDTH) != null || 
@@ -393,7 +395,7 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
         
         // Check if required
         if (Boolean.TRUE.equals(captionConfig.getRequired()) && (caption == null || caption.trim().isEmpty())) {
-            CaptionPosition pos = findCaptionPosition(node, context);
+            SourcePosition pos = findSourcePosition(node, context);
             messages.add(ValidationMessage.builder()
                     .severity(severity)
                     .ruleId(CAPTION_REQUIRED)
@@ -424,7 +426,7 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
             int length = caption.length();
             
             if (captionConfig.getMinLength() != null && length < captionConfig.getMinLength()) {
-                CaptionPosition pos = findCaptionPosition(node, context);
+                SourcePosition pos = findSourcePosition(node, context);
                 messages.add(ValidationMessage.builder()
                         .severity(severity)
                         .ruleId(CAPTION_MIN_LENGTH)
@@ -447,7 +449,7 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
             }
             
             if (captionConfig.getMaxLength() != null && length > captionConfig.getMaxLength()) {
-                CaptionPosition pos = findCaptionPosition(node, context);
+                SourcePosition pos = findSourcePosition(node, context);
                 messages.add(ValidationMessage.builder()
                         .severity(severity)
                         .ruleId(CAPTION_MAX_LENGTH)
@@ -474,15 +476,15 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
     /**
      * Finds the column position of URL in video macro.
      */
-    private UrlPosition findUrlPosition(StructuralNode block, BlockValidationContext context, String url) {
+    private SourcePosition findSourcePosition(StructuralNode block, BlockValidationContext context, String url) {
         List<String> fileLines = fileCache.getFileLines(context.getFilename());
         if (fileLines.isEmpty() || block.getSourceLocation() == null) {
-            return new UrlPosition(1, 1, block.getSourceLocation() != null ? block.getSourceLocation().getLineNumber() : 1);
+            return new SourcePosition(1, 1, block.getSourceLocation() != null ? block.getSourceLocation().getLineNumber() : 1);
         }
         
         int lineNum = block.getSourceLocation().getLineNumber();
         if (lineNum <= 0 || lineNum > fileLines.size()) {
-            return new UrlPosition(1, 1, lineNum);
+            return new SourcePosition(1, 1, lineNum);
         }
         
         String sourceLine = fileLines.get(lineNum - 1);
@@ -499,30 +501,30 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
                 // Find the specific URL position
                 int urlStart = sourceLine.indexOf(url, videoStart + 7);
                 if (urlStart > videoStart && urlStart < urlEnd) {
-                    return new UrlPosition(urlStart + 1, urlStart + url.length(), lineNum);
+                    return new SourcePosition(urlStart + 1, urlStart + url.length(), lineNum);
                 }
             } else {
                 // No URL - position after "video::"
-                return new UrlPosition(videoStart + 8, videoStart + 8, lineNum);
+                return new SourcePosition(videoStart + 8, videoStart + 8, lineNum);
             }
         }
         
-        return new UrlPosition(1, 1, lineNum);
+        return new SourcePosition(1, 1, lineNum);
     }
     
     /**
      * Finds the column position of a dimension attribute (width/height) in video macro.
      */
-    private DimensionPosition findDimensionPosition(StructuralNode block, BlockValidationContext context, 
+    private SourcePosition findSourcePosition(StructuralNode block, BlockValidationContext context, 
                                                    String dimensionType, String dimensionValue) {
         List<String> fileLines = fileCache.getFileLines(context.getFilename());
         if (fileLines.isEmpty() || block.getSourceLocation() == null) {
-            return new DimensionPosition(1, 1, block.getSourceLocation() != null ? block.getSourceLocation().getLineNumber() : 1);
+            return new SourcePosition(1, 1, block.getSourceLocation() != null ? block.getSourceLocation().getLineNumber() : 1);
         }
         
         int lineNum = block.getSourceLocation().getLineNumber();
         if (lineNum <= 0 || lineNum > fileLines.size()) {
-            return new DimensionPosition(1, 1, lineNum);
+            return new SourcePosition(1, 1, lineNum);
         }
         
         String sourceLine = fileLines.get(lineNum - 1);
@@ -539,31 +541,31 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
                     String pattern = dimensionType + "=" + dimensionValue;
                     int dimStart = attributes.indexOf(pattern);
                     if (dimStart >= 0) {
-                        return new DimensionPosition(bracketStart + 2 + dimStart, 
+                        return new SourcePosition(bracketStart + 2 + dimStart, 
                                                    bracketStart + 2 + dimStart + pattern.length() - 1, lineNum);
                     }
                 } else {
                     // Missing dimension - position at end of attributes
-                    return new DimensionPosition(bracketEnd + 1, bracketEnd + 1, lineNum);
+                    return new SourcePosition(bracketEnd + 1, bracketEnd + 1, lineNum);
                 }
             }
         }
         
-        return new DimensionPosition(1, 1, lineNum);
+        return new SourcePosition(1, 1, lineNum);
     }
     
     /**
      * Finds the column position of poster attribute in video macro.
      */
-    private PosterPosition findPosterPosition(StructuralNode block, BlockValidationContext context, String poster) {
+    private SourcePosition findPosterPosition(StructuralNode block, BlockValidationContext context, String poster) {
         List<String> fileLines = fileCache.getFileLines(context.getFilename());
         if (fileLines.isEmpty() || block.getSourceLocation() == null) {
-            return new PosterPosition(1, 1, block.getSourceLocation() != null ? block.getSourceLocation().getLineNumber() : 1);
+            return new SourcePosition(1, 1, block.getSourceLocation() != null ? block.getSourceLocation().getLineNumber() : 1);
         }
         
         int lineNum = block.getSourceLocation().getLineNumber();
         if (lineNum <= 0 || lineNum > fileLines.size()) {
-            return new PosterPosition(1, 1, lineNum);
+            return new SourcePosition(1, 1, lineNum);
         }
         
         String sourceLine = fileLines.get(lineNum - 1);
@@ -582,30 +584,30 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
                     if (posterStart >= 0) {
                         // Position of the poster value (after "poster=")
                         int valueStart = bracketStart + 1 + posterStart + 7; // 7 = length of "poster="
-                        return new PosterPosition(valueStart + 1, valueStart + poster.length(), lineNum);
+                        return new SourcePosition(valueStart + 1, valueStart + poster.length(), lineNum);
                     }
                 } else {
                     // No poster - position at end of attributes
-                    return new PosterPosition(bracketEnd + 1, bracketEnd + 1, lineNum);
+                    return new SourcePosition(bracketEnd + 1, bracketEnd + 1, lineNum);
                 }
             }
         }
         
-        return new PosterPosition(1, 1, lineNum);
+        return new SourcePosition(1, 1, lineNum);
     }
     
     /**
      * Finds the column position for controls attribute in video macro.
      */
-    private ControlsPosition findControlsPosition(StructuralNode block, BlockValidationContext context) {
+    private SourcePosition findSourcePosition(StructuralNode block, BlockValidationContext context) {
         List<String> fileLines = fileCache.getFileLines(context.getFilename());
         if (fileLines.isEmpty() || block.getSourceLocation() == null) {
-            return new ControlsPosition(1, 1, block.getSourceLocation() != null ? block.getSourceLocation().getLineNumber() : 1);
+            return new SourcePosition(1, 1, block.getSourceLocation() != null ? block.getSourceLocation().getLineNumber() : 1);
         }
         
         int lineNum = block.getSourceLocation().getLineNumber();
         if (lineNum <= 0 || lineNum > fileLines.size()) {
-            return new ControlsPosition(1, 1, lineNum);
+            return new SourcePosition(1, 1, lineNum);
         }
         
         String sourceLine = fileLines.get(lineNum - 1);
@@ -615,20 +617,20 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
         if (bracketStart >= 0) {
             int bracketEnd = sourceLine.indexOf("]", bracketStart);
             if (bracketEnd > bracketStart) {
-                return new ControlsPosition(bracketEnd + 1, bracketEnd + 1, lineNum);
+                return new SourcePosition(bracketEnd + 1, bracketEnd + 1, lineNum);
             }
         }
         
-        return new ControlsPosition(1, 1, lineNum);
+        return new SourcePosition(1, 1, lineNum);
     }
     
     /**
      * Finds the column position for caption in video macro.
      */
-    private CaptionPosition findCaptionPosition(StructuralNode block, BlockValidationContext context) {
+    private SourcePosition findCaptionPosition(StructuralNode block, BlockValidationContext context) {
         List<String> fileLines = fileCache.getFileLines(context.getFilename());
         if (fileLines.isEmpty() || block.getSourceLocation() == null) {
-            return new CaptionPosition(1, 1, block.getSourceLocation() != null ? block.getSourceLocation().getLineNumber() : 1);
+            return new SourcePosition(1, 1, block.getSourceLocation() != null ? block.getSourceLocation().getLineNumber() : 1);
         }
         
         int videoLineNum = block.getSourceLocation().getLineNumber();
@@ -644,72 +646,17 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
                 // Check if line starts with "." followed by caption
                 if (captionLine.startsWith(".")) {
                     // Caption starts at column 1 (the dot) and ends at the line length
-                    return new CaptionPosition(1, captionLine.length(), captionLineNum);
+                    return new SourcePosition(1, captionLine.length(), captionLineNum);
                 }
             }
         }
         
         // Default to video line if caption not found
-        return new CaptionPosition(1, 1, videoLineNum);
+        return new SourcePosition(1, 1, videoLineNum);
     }
     
-    private static class UrlPosition {
-        final int startColumn;
-        final int endColumn;
-        final int lineNumber;
-        
-        UrlPosition(int startColumn, int endColumn, int lineNumber) {
-            this.startColumn = startColumn;
-            this.endColumn = endColumn;
-            this.lineNumber = lineNumber;
-        }
-    }
     
-    private static class DimensionPosition {
-        final int startColumn;
-        final int endColumn;
-        final int lineNumber;
-        
-        DimensionPosition(int startColumn, int endColumn, int lineNumber) {
-            this.startColumn = startColumn;
-            this.endColumn = endColumn;
-            this.lineNumber = lineNumber;
-        }
-    }
     
-    private static class PosterPosition {
-        final int startColumn;
-        final int endColumn;
-        final int lineNumber;
-        
-        PosterPosition(int startColumn, int endColumn, int lineNumber) {
-            this.startColumn = startColumn;
-            this.endColumn = endColumn;
-            this.lineNumber = lineNumber;
-        }
-    }
     
-    private static class ControlsPosition {
-        final int startColumn;
-        final int endColumn;
-        final int lineNumber;
-        
-        ControlsPosition(int startColumn, int endColumn, int lineNumber) {
-            this.startColumn = startColumn;
-            this.endColumn = endColumn;
-            this.lineNumber = lineNumber;
-        }
-    }
     
-    private static class CaptionPosition {
-        final int startColumn;
-        final int endColumn;
-        final int lineNumber;
-        
-        CaptionPosition(int startColumn, int endColumn, int lineNumber) {
-            this.startColumn = startColumn;
-            this.endColumn = endColumn;
-            this.lineNumber = lineNumber;
-        }
-    }
 }

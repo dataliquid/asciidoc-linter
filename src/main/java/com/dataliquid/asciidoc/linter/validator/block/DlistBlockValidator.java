@@ -1,5 +1,7 @@
 package com.dataliquid.asciidoc.linter.validator.block;
 
+import com.dataliquid.asciidoc.linter.validator.SourcePosition;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -147,7 +149,7 @@ public final class DlistBlockValidator extends AbstractBlockValidator<DlistBlock
                                    ListItem termItem,
                                    List<ValidationMessage> messages) {
         
-        TermPosition pos = findTermPosition(block, termItem, context, term);
+        SourcePosition pos = findSourcePosition(block, termItem, context, term);
         
         // Validate pattern
         if (pattern != null && !pattern.matcher(term).matches()) {
@@ -227,7 +229,7 @@ public final class DlistBlockValidator extends AbstractBlockValidator<DlistBlock
                 if (!terms.isEmpty()) {
                     ListItem firstTerm = terms.get(0);
                     String termText = firstTerm.getText();
-                    TermPosition pos = findTermPosition(block, firstTerm, context, termText);
+                    SourcePosition pos = findSourcePosition(block, firstTerm, context, termText);
                     
                     messages.add(ValidationMessage.builder()
                         .severity(severity)
@@ -271,7 +273,7 @@ public final class DlistBlockValidator extends AbstractBlockValidator<DlistBlock
     /**
      * Finds the column position of a term in definition list.
      */
-    private TermPosition findTermPosition(StructuralNode block, ListItem termItem, 
+    private SourcePosition findSourcePosition(StructuralNode block, ListItem termItem, 
                                         BlockValidationContext context, String term) {
         List<String> fileLines = fileCache.getFileLines(context.getFilename());
         
@@ -282,7 +284,7 @@ public final class DlistBlockValidator extends AbstractBlockValidator<DlistBlock
         }
         
         if (fileLines.isEmpty() || lineNum <= 0 || lineNum > fileLines.size()) {
-            return new TermPosition(1, 1, lineNum);
+            return new SourcePosition(1, 1, lineNum);
         }
         
         String sourceLine = fileLines.get(lineNum - 1);
@@ -294,7 +296,7 @@ public final class DlistBlockValidator extends AbstractBlockValidator<DlistBlock
             // Check if this is actually the term (followed by ::)
             int colonPos = sourceLine.indexOf("::", termStart);
             if (colonPos >= termStart + term.length()) {
-                return new TermPosition(termStart + 1, termStart + term.length(), lineNum);
+                return new SourcePosition(termStart + 1, termStart + term.length(), lineNum);
             }
         }
         
@@ -308,24 +310,13 @@ public final class DlistBlockValidator extends AbstractBlockValidator<DlistBlock
                 if (termStart >= 0) {
                     int colonPos = checkContent.indexOf("::", termStart);
                     if (colonPos >= termStart + term.length()) {
-                        return new TermPosition(termStart + 1, termStart + term.length(), checkLine);
+                        return new SourcePosition(termStart + 1, termStart + term.length(), checkLine);
                     }
                 }
             }
         }
         
-        return new TermPosition(1, 1, lineNum);
+        return new SourcePosition(1, 1, lineNum);
     }
     
-    private static class TermPosition {
-        final int startColumn;
-        final int endColumn;
-        final int lineNumber;
-        
-        TermPosition(int startColumn, int endColumn, int lineNumber) {
-            this.startColumn = startColumn;
-            this.endColumn = endColumn;
-            this.lineNumber = lineNumber;
-        }
-    }
 }

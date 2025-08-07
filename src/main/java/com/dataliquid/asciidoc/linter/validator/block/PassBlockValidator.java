@@ -1,5 +1,7 @@
 package com.dataliquid.asciidoc.linter.validator.block;
 
+import com.dataliquid.asciidoc.linter.validator.SourcePosition;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -133,7 +135,7 @@ public final class PassBlockValidator extends AbstractBlockValidator<PassBlock> 
         // Validate allowed types if specified
         if (passType != null && config.getAllowed() != null && !config.getAllowed().isEmpty()) {
             if (!config.getAllowed().contains(passType)) {
-                TypePosition pos = findTypePosition(block, context, passType);
+                SourcePosition pos = findPassTypePosition(block, context, passType);
                 messages.add(ValidationMessage.builder()
                     .severity(severity)
                     .ruleId(TYPE_ALLOWED)
@@ -183,7 +185,7 @@ public final class PassBlockValidator extends AbstractBlockValidator<PassBlock> 
         if (content != null && config.getMaxLength() != null) {
             int contentLength = content.length();
             if (contentLength > config.getMaxLength()) {
-                ContentPosition pos = findContentPosition(block, context);
+                SourcePosition pos = findSourcePosition(block, context);
                 messages.add(ValidationMessage.builder()
                     .severity(severity)
                     .ruleId(CONTENT_MAX_LENGTH)
@@ -204,7 +206,7 @@ public final class PassBlockValidator extends AbstractBlockValidator<PassBlock> 
         // Validate pattern
         if (content != null && config.getPattern() != null) {
             if (!config.getPattern().matcher(content).matches()) {
-                ContentPosition pos = findContentPosition(block, context);
+                SourcePosition pos = findSourcePosition(block, context);
                 messages.add(ValidationMessage.builder()
                     .severity(severity)
                     .ruleId(CONTENT_PATTERN)
@@ -255,7 +257,7 @@ public final class PassBlockValidator extends AbstractBlockValidator<PassBlock> 
             
             // Validate min length
             if (config.getMinLength() != null && reasonLength < config.getMinLength()) {
-                ReasonPosition pos = findReasonPosition(block, context, passReason);
+                SourcePosition pos = findReasonPosition(block, context, passReason);
                 messages.add(ValidationMessage.builder()
                     .severity(severity)
                     .ruleId(REASON_MIN_LENGTH)
@@ -274,7 +276,7 @@ public final class PassBlockValidator extends AbstractBlockValidator<PassBlock> 
             
             // Validate max length
             if (config.getMaxLength() != null && reasonLength > config.getMaxLength()) {
-                ReasonPosition pos = findReasonPosition(block, context, passReason);
+                SourcePosition pos = findReasonPosition(block, context, passReason);
                 messages.add(ValidationMessage.builder()
                     .severity(severity)
                     .ruleId(REASON_MAX_LENGTH)
@@ -296,10 +298,10 @@ public final class PassBlockValidator extends AbstractBlockValidator<PassBlock> 
     /**
      * Finds the position of pass block content.
      */
-    private ContentPosition findContentPosition(StructuralNode block, BlockValidationContext context) {
+    private SourcePosition findSourcePosition(StructuralNode block, BlockValidationContext context) {
         List<String> fileLines = fileCache.getFileLines(context.getFilename());
         if (fileLines.isEmpty() || block.getSourceLocation() == null) {
-            return new ContentPosition(1, 1, block.getSourceLocation() != null ? block.getSourceLocation().getLineNumber() : 1);
+            return new SourcePosition(1, 1, block.getSourceLocation() != null ? block.getSourceLocation().getLineNumber() : 1);
         }
         
         int blockLineNum = block.getSourceLocation().getLineNumber();
@@ -312,22 +314,22 @@ public final class PassBlockValidator extends AbstractBlockValidator<PassBlock> 
                 String line = fileLines.get(i - 1);
                 if (!line.trim().equals("++++") && !line.trim().isEmpty() && !line.trim().startsWith("[")) {
                     // Found content line
-                    return new ContentPosition(1, line.length(), i);
+                    return new SourcePosition(1, line.length(), i);
                 }
             }
         }
         
         // Default to block line
-        return new ContentPosition(1, 1, blockLineNum);
+        return new SourcePosition(1, 1, blockLineNum);
     }
     
     /**
      * Finds the position of type attribute or entire [pass] line.
      */
-    private TypePosition findTypePosition(StructuralNode block, BlockValidationContext context, String passType) {
+    private SourcePosition findPassTypePosition(StructuralNode block, BlockValidationContext context, String passType) {
         List<String> fileLines = fileCache.getFileLines(context.getFilename());
         if (fileLines.isEmpty() || block.getSourceLocation() == null) {
-            return new TypePosition(1, 1, block.getSourceLocation() != null ? block.getSourceLocation().getLineNumber() : 1);
+            return new SourcePosition(1, 1, block.getSourceLocation() != null ? block.getSourceLocation().getLineNumber() : 1);
         }
         
         int blockLineNum = block.getSourceLocation().getLineNumber();
@@ -352,29 +354,29 @@ public final class PassBlockValidator extends AbstractBlockValidator<PassBlock> 
                             }
                             valueEnd = i;
                         }
-                        return new TypePosition(valueStart + 1, valueEnd + 1, checkLine);
+                        return new SourcePosition(valueStart + 1, valueEnd + 1, checkLine);
                     }
                     // If no type= found, position after the comma if there is one
                     int commaPos = line.indexOf(",");
                     if (commaPos >= 0) {
-                        return new TypePosition(commaPos + 2, commaPos + 2, checkLine);
+                        return new SourcePosition(commaPos + 2, commaPos + 2, checkLine);
                     }
                     // Default to after [pass
-                    return new TypePosition(6, 6, checkLine);
+                    return new SourcePosition(6, 6, checkLine);
                 }
             }
         }
         
-        return new TypePosition(1, 1, blockLineNum);
+        return new SourcePosition(1, 1, blockLineNum);
     }
     
     /**
      * Finds the position of reason attribute in [pass] line.
      */
-    private ReasonPosition findReasonPosition(StructuralNode block, BlockValidationContext context, String reason) {
+    private SourcePosition findReasonPosition(StructuralNode block, BlockValidationContext context, String reason) {
         List<String> fileLines = fileCache.getFileLines(context.getFilename());
         if (fileLines.isEmpty() || block.getSourceLocation() == null) {
-            return new ReasonPosition(1, 1, block.getSourceLocation() != null ? block.getSourceLocation().getLineNumber() : 1);
+            return new SourcePosition(1, 1, block.getSourceLocation() != null ? block.getSourceLocation().getLineNumber() : 1);
         }
         
         int blockLineNum = block.getSourceLocation().getLineNumber();
@@ -400,56 +402,23 @@ public final class PassBlockValidator extends AbstractBlockValidator<PassBlock> 
                                 }
                                 valueEnd = i;
                             }
-                            return new ReasonPosition(valueStart + 1, valueEnd + 1, checkLine);
+                            return new SourcePosition(valueStart + 1, valueEnd + 1, checkLine);
                         }
                     }
                     // If no reason= found, position after the comma if there is one
                     int commaPos = line.indexOf(",");
                     if (commaPos >= 0) {
-                        return new ReasonPosition(commaPos + 2, commaPos + 2, checkLine);
+                        return new SourcePosition(commaPos + 2, commaPos + 2, checkLine);
                     }
                     // Default to after [pass
-                    return new ReasonPosition(6, 6, checkLine);
+                    return new SourcePosition(6, 6, checkLine);
                 }
             }
         }
         
-        return new ReasonPosition(1, 1, blockLineNum);
+        return new SourcePosition(1, 1, blockLineNum);
     }
     
-    private static class ContentPosition {
-        final int startColumn;
-        final int endColumn;
-        final int lineNumber;
-        
-        ContentPosition(int startColumn, int endColumn, int lineNumber) {
-            this.startColumn = startColumn;
-            this.endColumn = endColumn;
-            this.lineNumber = lineNumber;
-        }
-    }
     
-    private static class ReasonPosition {
-        final int startColumn;
-        final int endColumn;
-        final int lineNumber;
-        
-        ReasonPosition(int startColumn, int endColumn, int lineNumber) {
-            this.startColumn = startColumn;
-            this.endColumn = endColumn;
-            this.lineNumber = lineNumber;
-        }
-    }
     
-    private static class TypePosition {
-        final int startColumn;
-        final int endColumn;
-        final int lineNumber;
-        
-        TypePosition(int startColumn, int endColumn, int lineNumber) {
-            this.startColumn = startColumn;
-            this.endColumn = endColumn;
-            this.lineNumber = lineNumber;
-        }
-    }
 }

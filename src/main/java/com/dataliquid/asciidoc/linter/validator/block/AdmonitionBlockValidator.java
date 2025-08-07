@@ -15,6 +15,7 @@ import com.dataliquid.asciidoc.linter.validator.PlaceholderContext;
 import static com.dataliquid.asciidoc.linter.validator.RuleIds.Admonition.*;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
 import com.dataliquid.asciidoc.linter.validator.SourceLocation;
+import com.dataliquid.asciidoc.linter.validator.SourcePosition;
 import com.dataliquid.asciidoc.linter.report.console.FileContentCache;
 
 /**
@@ -144,7 +145,7 @@ public final class AdmonitionBlockValidator extends AbstractBlockValidator<Admon
         // Validate allowed types if specified
         if (admonitionType != null && config.getAllowed() != null && !config.getAllowed().isEmpty()) {
             if (!config.getAllowed().contains(admonitionType)) {
-                TypePosition pos = findTypePosition(block, context, admonitionType);
+                SourcePosition pos = findTypePosition(block, context, admonitionType);
                 messages.add(ValidationMessage.builder()
                     .severity(severity)
                     .ruleId(TYPE_ALLOWED)
@@ -192,7 +193,7 @@ public final class AdmonitionBlockValidator extends AbstractBlockValidator<Admon
         if (title != null) {
             // Validate pattern
             if (config.getPattern() != null && !config.getPattern().matcher(title).matches()) {
-                TitlePosition pos = findTitlePosition(block, context, title);
+                SourcePosition pos = findTitlePosition(block, context, title);
                 messages.add(ValidationMessage.builder()
                     .severity(severity)
                     .ruleId(TITLE_PATTERN)
@@ -211,7 +212,7 @@ public final class AdmonitionBlockValidator extends AbstractBlockValidator<Admon
             
             // Validate min length
             if (config.getMinLength() != null && title.length() < config.getMinLength()) {
-                TitlePosition pos = findTitlePosition(block, context, title);
+                SourcePosition pos = findTitlePosition(block, context, title);
                 messages.add(ValidationMessage.builder()
                     .severity(severity)
                     .ruleId(TITLE_MIN_LENGTH)
@@ -230,7 +231,7 @@ public final class AdmonitionBlockValidator extends AbstractBlockValidator<Admon
             
             // Validate max length
             if (config.getMaxLength() != null && title.length() > config.getMaxLength()) {
-                TitlePosition pos = findTitlePosition(block, context, title);
+                SourcePosition pos = findTitlePosition(block, context, title);
                 messages.add(ValidationMessage.builder()
                     .severity(severity)
                     .ruleId(TITLE_MAX_LENGTH)
@@ -280,7 +281,7 @@ public final class AdmonitionBlockValidator extends AbstractBlockValidator<Admon
         
         // Validate min length
         if (config.getMinLength() != null && contentLength < config.getMinLength()) {
-            ContentPosition pos = findContentPosition(block, context);
+            SourcePosition pos = findContentPosition(block, context);
             messages.add(ValidationMessage.builder()
                 .severity(severity)
                 .ruleId(CONTENT_MIN_LENGTH)
@@ -299,7 +300,7 @@ public final class AdmonitionBlockValidator extends AbstractBlockValidator<Admon
         
         // Validate max length
         if (config.getMaxLength() != null && contentLength > config.getMaxLength()) {
-            ContentPosition pos = findContentPosition(block, context);
+            SourcePosition pos = findContentPosition(block, context);
             messages.add(ValidationMessage.builder()
                 .severity(severity)
                 .ruleId(CONTENT_MAX_LENGTH)
@@ -391,7 +392,7 @@ public final class AdmonitionBlockValidator extends AbstractBlockValidator<Admon
         if (hasIcon && config.getPattern() != null) {
             String iconValue = getIconValue(block);
             if (iconValue != null && !config.getPattern().matcher(iconValue).matches()) {
-                IconPosition pos = findIconPosition(block, context);
+                SourcePosition pos = findIconPosition(block, context);
                 messages.add(ValidationMessage.builder()
                     .severity(severity)
                     .ruleId(ICON_PATTERN)
@@ -418,10 +419,10 @@ public final class AdmonitionBlockValidator extends AbstractBlockValidator<Admon
     /**
      * Finds the position of admonition title.
      */
-    private TitlePosition findTitlePosition(StructuralNode block, BlockValidationContext context, String title) {
+    private SourcePosition findTitlePosition(StructuralNode block, BlockValidationContext context, String title) {
         List<String> fileLines = fileCache.getFileLines(context.getFilename());
         if (fileLines.isEmpty() || block.getSourceLocation() == null) {
-            return new TitlePosition(1, 1, block.getSourceLocation() != null ? block.getSourceLocation().getLineNumber() : 1);
+            return new SourcePosition(1, 1, block.getSourceLocation() != null ? block.getSourceLocation().getLineNumber() : 1);
         }
         
         int blockLineNum = block.getSourceLocation().getLineNumber();
@@ -438,21 +439,21 @@ public final class AdmonitionBlockValidator extends AbstractBlockValidator<Admon
                     // Found the title line
                     int titleStart = line.indexOf(".");
                     int titleEnd = titleStart + 1 + title.length();
-                    return new TitlePosition(titleStart + 1, titleEnd, checkLine);
+                    return new SourcePosition(titleStart + 1, titleEnd, checkLine);
                 }
             }
         }
         
-        return new TitlePosition(1, 1, blockLineNum);
+        return new SourcePosition(1, 1, blockLineNum);
     }
     
     /**
      * Finds the position of admonition content.
      */
-    private ContentPosition findContentPosition(StructuralNode block, BlockValidationContext context) {
+    private SourcePosition findContentPosition(StructuralNode block, BlockValidationContext context) {
         List<String> fileLines = fileCache.getFileLines(context.getFilename());
         if (fileLines.isEmpty() || block.getSourceLocation() == null) {
-            return new ContentPosition(1, 1, block.getSourceLocation() != null ? block.getSourceLocation().getLineNumber() : 1);
+            return new SourcePosition(1, 1, block.getSourceLocation() != null ? block.getSourceLocation().getLineNumber() : 1);
         }
         
         int blockLineNum = block.getSourceLocation().getLineNumber();
@@ -471,25 +472,25 @@ public final class AdmonitionBlockValidator extends AbstractBlockValidator<Admon
                     }
                     // For content validation, highlight only the content part (after "NOTE: ")
                     if (contentStart < line.length()) {
-                        return new ContentPosition(contentStart + 1, line.length(), blockLineNum);
+                        return new SourcePosition(contentStart + 1, line.length(), blockLineNum);
                     } else {
                         // No content after the keyword
-                        return new ContentPosition(contentStart + 1, contentStart + 1, blockLineNum);
+                        return new SourcePosition(contentStart + 1, contentStart + 1, blockLineNum);
                     }
                 }
             }
         }
         
-        return new ContentPosition(1, 1, blockLineNum);
+        return new SourcePosition(1, 1, blockLineNum);
     }
     
     /**
      * Finds the position of the admonition type line.
      */
-    private TypePosition findTypePosition(StructuralNode block, BlockValidationContext context, String admonitionType) {
+    private SourcePosition findTypePosition(StructuralNode block, BlockValidationContext context, String admonitionType) {
         List<String> fileLines = fileCache.getFileLines(context.getFilename());
         if (fileLines.isEmpty() || block.getSourceLocation() == null) {
-            return new TypePosition(1, 1, block.getSourceLocation() != null ? block.getSourceLocation().getLineNumber() : 1);
+            return new SourcePosition(1, 1, block.getSourceLocation() != null ? block.getSourceLocation().getLineNumber() : 1);
         }
         
         int blockLineNum = block.getSourceLocation().getLineNumber();
@@ -504,57 +505,21 @@ public final class AdmonitionBlockValidator extends AbstractBlockValidator<Admon
                 int colonPos = typeStart + admonitionType.length();
                 if (colonPos < line.length() && line.charAt(colonPos) == ':') {
                     // Highlight only the admonition type keyword (not the colon or content)
-                    return new TypePosition(typeStart + 1, typeStart + admonitionType.length(), blockLineNum);
+                    return new SourcePosition(typeStart + 1, typeStart + admonitionType.length(), blockLineNum);
                 }
             }
         }
         
-        return new TypePosition(1, 1, blockLineNum);
-    }
-    
-    private static class TitlePosition {
-        final int startColumn;
-        final int endColumn;
-        final int lineNumber;
-        
-        TitlePosition(int startColumn, int endColumn, int lineNumber) {
-            this.startColumn = startColumn;
-            this.endColumn = endColumn;
-            this.lineNumber = lineNumber;
-        }
-    }
-    
-    private static class ContentPosition {
-        final int startColumn;
-        final int endColumn;
-        final int lineNumber;
-        
-        ContentPosition(int startColumn, int endColumn, int lineNumber) {
-            this.startColumn = startColumn;
-            this.endColumn = endColumn;
-            this.lineNumber = lineNumber;
-        }
-    }
-    
-    private static class TypePosition {
-        final int startColumn;
-        final int endColumn;
-        final int lineNumber;
-        
-        TypePosition(int startColumn, int endColumn, int lineNumber) {
-            this.startColumn = startColumn;
-            this.endColumn = endColumn;
-            this.lineNumber = lineNumber;
-        }
+        return new SourcePosition(1, 1, blockLineNum);
     }
     
     /**
      * Finds the position of icon attribute in admonition block.
      */
-    private IconPosition findIconPosition(StructuralNode block, BlockValidationContext context) {
+    private SourcePosition findIconPosition(StructuralNode block, BlockValidationContext context) {
         List<String> fileLines = fileCache.getFileLines(context.getFilename());
         if (fileLines.isEmpty() || block.getSourceLocation() == null) {
-            return new IconPosition(1, 1, block.getSourceLocation() != null ? block.getSourceLocation().getLineNumber() : 1);
+            return new SourcePosition(1, 1, block.getSourceLocation() != null ? block.getSourceLocation().getLineNumber() : 1);
         }
         
         int blockLineNum = block.getSourceLocation().getLineNumber();
@@ -604,31 +569,19 @@ public final class AdmonitionBlockValidator extends AbstractBlockValidator<Admon
                             valueEnd = i + 1; // Include current character
                         }
                         // Return 1-based positions (columns start at 1, not 0)
-                        return new IconPosition(valueStart + 1, valueEnd, checkLine);
+                        return new SourcePosition(valueStart + 1, valueEnd, checkLine);
                     }
                     
                     // If no icon= found, default to entire bracket content
                     int startBracket = line.indexOf('[');
                     int endBracket = line.indexOf(']');
                     if (startBracket >= 0 && endBracket > startBracket) {
-                        return new IconPosition(startBracket + 1, endBracket + 1, checkLine);
+                        return new SourcePosition(startBracket + 1, endBracket + 1, checkLine);
                     }
                 }
             }
         }
         
-        return new IconPosition(1, 1, blockLineNum);
-    }
-    
-    private static class IconPosition {
-        final int startColumn;
-        final int endColumn;
-        final int lineNumber;
-        
-        IconPosition(int startColumn, int endColumn, int lineNumber) {
-            this.startColumn = startColumn;
-            this.endColumn = endColumn;
-            this.lineNumber = lineNumber;
-        }
+        return new SourcePosition(1, 1, blockLineNum);
     }
 }

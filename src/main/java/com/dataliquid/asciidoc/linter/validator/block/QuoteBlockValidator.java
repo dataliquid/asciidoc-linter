@@ -1,5 +1,7 @@
 package com.dataliquid.asciidoc.linter.validator.block;
 
+import com.dataliquid.asciidoc.linter.validator.SourcePosition;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -65,7 +67,7 @@ public final class QuoteBlockValidator extends AbstractBlockValidator<QuoteBlock
         Severity severity = config.getSeverity() != null ? config.getSeverity() : blockSeverity;
         
         if (config.isRequired() && (attribution == null || attribution.trim().isEmpty())) {
-            AttributionPosition pos = findAttributionPosition(node, context);
+            SourcePosition pos = findSourcePosition(node, context);
             results.add(ValidationMessage.builder()
                 .severity(severity)
                 .ruleId(ATTRIBUTION_REQUIRED)
@@ -111,7 +113,7 @@ public final class QuoteBlockValidator extends AbstractBlockValidator<QuoteBlock
             
             // Validate pattern
             if (config.getPattern() != null && !config.getPattern().matcher(attribution).matches()) {
-                AttributionPosition pos = findAttributionPosition(node, context);
+                SourcePosition pos = findSourcePosition(node, context);
                 results.add(ValidationMessage.builder()
                     .severity(severity)
                     .ruleId(ATTRIBUTION_PATTERN)
@@ -137,7 +139,7 @@ public final class QuoteBlockValidator extends AbstractBlockValidator<QuoteBlock
         Severity severity = config.getSeverity() != null ? config.getSeverity() : blockSeverity;
         
         if (config.isRequired() && (citation == null || citation.trim().isEmpty())) {
-            CitationPosition pos = findCitationPosition(node, context);
+            SourcePosition pos = findSourcePosition(node, context);
             results.add(ValidationMessage.builder()
                 .severity(severity)
                 .ruleId(CITATION_REQUIRED)
@@ -183,7 +185,7 @@ public final class QuoteBlockValidator extends AbstractBlockValidator<QuoteBlock
             
             // Validate pattern
             if (config.getPattern() != null && !config.getPattern().matcher(citation).matches()) {
-                CitationPosition pos = findCitationPosition(node, context);
+                SourcePosition pos = findSourcePosition(node, context);
                 results.add(ValidationMessage.builder()
                     .severity(severity)
                     .ruleId(CITATION_PATTERN)
@@ -327,10 +329,10 @@ public final class QuoteBlockValidator extends AbstractBlockValidator<QuoteBlock
     /**
      * Finds the position for quote attribution.
      */
-    private AttributionPosition findAttributionPosition(StructuralNode node, BlockValidationContext context) {
+    private SourcePosition findSourcePosition(StructuralNode node, BlockValidationContext context) {
         List<String> fileLines = fileCache.getFileLines(context.getFilename());
         if (fileLines.isEmpty() || node.getSourceLocation() == null) {
-            return new AttributionPosition(7, 7, node.getSourceLocation() != null ? node.getSourceLocation().getLineNumber() : 1);
+            return new SourcePosition(7, 7, node.getSourceLocation() != null ? node.getSourceLocation().getLineNumber() : 1);
         }
         
         int lineNum = node.getSourceLocation().getLineNumber();
@@ -347,30 +349,30 @@ public final class QuoteBlockValidator extends AbstractBlockValidator<QuoteBlock
                         int firstQuoteEnd = line.indexOf("\"", firstQuoteStart + 1);
                         if (firstQuoteEnd > firstQuoteStart) {
                             // Found the attribution in quotes
-                            return new AttributionPosition(firstQuoteStart + 2, firstQuoteEnd, i + 1);
+                            return new SourcePosition(firstQuoteStart + 2, firstQuoteEnd, i + 1);
                         }
                     }
                     // If no quotes found but has comma, position after comma
                     int commaPos = line.indexOf(",");
                     if (commaPos >= 0) {
-                        return new AttributionPosition(commaPos + 2, commaPos + 2, i + 1);
+                        return new SourcePosition(commaPos + 2, commaPos + 2, i + 1);
                     }
                     // Default position after [quote
-                    return new AttributionPosition(7, 7, i + 1);
+                    return new SourcePosition(7, 7, i + 1);
                 }
             }
         }
         
-        return new AttributionPosition(7, 7, lineNum);
+        return new SourcePosition(7, 7, lineNum);
     }
     
     /**
      * Finds the position for quote citation.
      */
-    private CitationPosition findCitationPosition(StructuralNode node, BlockValidationContext context) {
+    private SourcePosition findCitationPosition(StructuralNode node, BlockValidationContext context) {
         List<String> fileLines = fileCache.getFileLines(context.getFilename());
         if (fileLines.isEmpty() || node.getSourceLocation() == null) {
-            return new CitationPosition(16, 16, node.getSourceLocation() != null ? node.getSourceLocation().getLineNumber() : 1);
+            return new SourcePosition(16, 16, node.getSourceLocation() != null ? node.getSourceLocation().getLineNumber() : 1);
         }
         
         int lineNum = node.getSourceLocation().getLineNumber();
@@ -392,41 +394,19 @@ public final class QuoteBlockValidator extends AbstractBlockValidator<QuoteBlock
                                 int secondQuoteEnd = line.indexOf("\"", secondQuoteStart + 1);
                                 if (secondQuoteEnd > secondQuoteStart) {
                                     // Found the citation in quotes
-                                    return new CitationPosition(secondQuoteStart + 2, secondQuoteEnd, i + 1);
+                                    return new SourcePosition(secondQuoteStart + 2, secondQuoteEnd, i + 1);
                                 }
                             }
                         }
                     }
                     // Default position
-                    return new CitationPosition(16, 16, i + 1);
+                    return new SourcePosition(16, 16, i + 1);
                 }
             }
         }
         
-        return new CitationPosition(16, 16, lineNum);
+        return new SourcePosition(16, 16, lineNum);
     }
     
-    private static class AttributionPosition {
-        final int startColumn;
-        final int endColumn;
-        final int lineNumber;
-        
-        AttributionPosition(int startColumn, int endColumn, int lineNumber) {
-            this.startColumn = startColumn;
-            this.endColumn = endColumn;
-            this.lineNumber = lineNumber;
-        }
-    }
     
-    private static class CitationPosition {
-        final int startColumn;
-        final int endColumn;
-        final int lineNumber;
-        
-        CitationPosition(int startColumn, int endColumn, int lineNumber) {
-            this.startColumn = startColumn;
-            this.endColumn = endColumn;
-            this.lineNumber = lineNumber;
-        }
-    }
 }

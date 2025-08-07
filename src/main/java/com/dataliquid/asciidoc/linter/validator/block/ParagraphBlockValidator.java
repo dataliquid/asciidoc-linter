@@ -1,5 +1,7 @@
 package com.dataliquid.asciidoc.linter.validator.block;
 
+import com.dataliquid.asciidoc.linter.validator.SourcePosition;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -107,7 +109,7 @@ public final class ParagraphBlockValidator extends AbstractBlockValidator<Paragr
         Severity severity = lineConfig.severity() != null ? lineConfig.severity() : blockConfig.getSeverity();
         
         if (lineConfig.min() != null && actualLines < lineConfig.min()) {
-            LinePosition pos = findLinePosition(block, context, actualLines);
+            SourcePosition pos = findSourcePosition(block, context, actualLines);
             messages.add(ValidationMessage.builder()
                 .severity(severity)
                 .ruleId(LINES_MIN)
@@ -305,15 +307,15 @@ public final class ParagraphBlockValidator extends AbstractBlockValidator<Paragr
     /**
      * Finds the position where additional lines should be added.
      */
-    private LinePosition findLinePosition(StructuralNode block, BlockValidationContext context, int currentLines) {
+    private SourcePosition findSourcePosition(StructuralNode block, BlockValidationContext context, int currentLines) {
         List<String> fileLines = fileCache.getFileLines(context.getFilename());
         if (fileLines.isEmpty() || block.getSourceLocation() == null) {
-            return new LinePosition(1, 1, block.getSourceLocation() != null ? block.getSourceLocation().getLineNumber() : 1);
+            return new SourcePosition(1, 1, block.getSourceLocation() != null ? block.getSourceLocation().getLineNumber() : 1);
         }
         
         int startLine = block.getSourceLocation().getLineNumber();
         if (startLine <= 0 || startLine > fileLines.size()) {
-            return new LinePosition(1, 1, startLine);
+            return new SourcePosition(1, 1, startLine);
         }
         
         // For paragraphs, we want to position at the end of the current content
@@ -332,22 +334,11 @@ public final class ParagraphBlockValidator extends AbstractBlockValidator<Paragr
             // Position at the end of the last line
             if (lastNonEmptyLine > 0 && lastNonEmptyLine <= fileLines.size()) {
                 String lastLine = fileLines.get(lastNonEmptyLine - 1);
-                return new LinePosition(lastLine.length() + 1, lastLine.length() + 1, lastNonEmptyLine);
+                return new SourcePosition(lastLine.length() + 1, lastLine.length() + 1, lastNonEmptyLine);
             }
         }
         
-        return new LinePosition(1, 1, startLine);
+        return new SourcePosition(1, 1, startLine);
     }
     
-    private static class LinePosition {
-        final int startColumn;
-        final int endColumn;
-        final int lineNumber;
-        
-        LinePosition(int startColumn, int endColumn, int lineNumber) {
-            this.startColumn = startColumn;
-            this.endColumn = endColumn;
-            this.lineNumber = lineNumber;
-        }
-    }
 }

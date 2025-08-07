@@ -12,6 +12,7 @@ import com.dataliquid.asciidoc.linter.validator.ErrorType;
 import com.dataliquid.asciidoc.linter.validator.PlaceholderContext;
 import static com.dataliquid.asciidoc.linter.validator.RuleIds.Literal.*;
 import com.dataliquid.asciidoc.linter.validator.SourceLocation;
+import com.dataliquid.asciidoc.linter.validator.SourcePosition;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
 
 /**
@@ -119,7 +120,7 @@ public final class LiteralBlockValidator extends AbstractBlockValidator<LiteralB
         
         // Check if title is required
         if (config.isRequired() && (title == null || title.trim().isEmpty())) {
-            TitlePosition pos = findTitlePosition(block, context);
+            SourcePosition pos = findTitlePosition(block, context);
             messages.add(ValidationMessage.builder()
                 .severity(severity)
                 .ruleId(TITLE_REQUIRED)
@@ -273,24 +274,12 @@ public final class LiteralBlockValidator extends AbstractBlockValidator<LiteralB
     /**
      * Finds the position where title should be inserted.
      */
-    private TitlePosition findTitlePosition(StructuralNode block, BlockValidationContext context) {
+    private SourcePosition findTitlePosition(StructuralNode block, BlockValidationContext context) {
         if (block.getSourceLocation() == null) {
-            return new TitlePosition(1, 1, 1);
+            return new SourcePosition(1, 1, 1);
         }
         
         int lineNum = block.getSourceLocation().getLineNumber();
-        return new TitlePosition(1, 1, lineNum);
-    }
-    
-    private static class TitlePosition {
-        final int startColumn;
-        final int endColumn;
-        final int lineNumber;
-        
-        TitlePosition(int startColumn, int endColumn, int lineNumber) {
-            this.startColumn = startColumn;
-            this.endColumn = endColumn;
-            this.lineNumber = lineNumber;
-        }
+        return new SourcePosition(1, 1, lineNum);
     }
 }
