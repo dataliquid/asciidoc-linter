@@ -95,7 +95,7 @@ public final class AdmonitionBlockValidator extends AbstractBlockValidator<Admon
         }
         
         // Try role attribute as fallback
-        Object role = block.getAttribute("role");
+        Object role = block.getAttribute(BlockAttributes.ROLE);
         if (role != null) {
             return role.toString().toUpperCase();
         }
@@ -106,13 +106,13 @@ public final class AdmonitionBlockValidator extends AbstractBlockValidator<Admon
     
     private boolean hasIcon(StructuralNode block) {
         // Check if icons are enabled at document level
-        Object docIcons = block.getDocument().getAttribute("icons");
+        Object docIcons = block.getDocument().getAttribute(BlockAttributes.ICONS);
         if (docIcons != null && "font".equals(docIcons.toString())) {
             return true;
         }
         
         // Check block-level icon attribute
-        Object blockIcon = block.getAttribute("icon");
+        Object blockIcon = block.getAttribute(BlockAttributes.ICON);
         return blockIcon != null && !"none".equals(blockIcon.toString());
     }
     
@@ -408,7 +408,7 @@ public final class AdmonitionBlockValidator extends AbstractBlockValidator<Admon
     }
     
     private String getIconValue(StructuralNode block) {
-        Object icon = block.getAttribute("icon");
+        Object icon = block.getAttribute(BlockAttributes.ICON);
         return icon != null ? icon.toString() : null;
     }
     

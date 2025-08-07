@@ -125,9 +125,9 @@ public final class ExampleBlockValidator extends AbstractBlockValidator<ExampleB
         ExampleBlock.CollapsibleConfig config = block.getCollapsible();
         
         // Check for collapsible attribute
-        Object collapsibleAttr = node.getAttribute("collapsible-option");
+        Object collapsibleAttr = node.getAttribute(BlockAttributes.COLLAPSIBLE_OPTION);
         if (collapsibleAttr == null) {
-            collapsibleAttr = node.getAttribute("collapsible");
+            collapsibleAttr = node.getAttribute(BlockAttributes.COLLAPSIBLE);
         }
         
         // Check if collapsible is required

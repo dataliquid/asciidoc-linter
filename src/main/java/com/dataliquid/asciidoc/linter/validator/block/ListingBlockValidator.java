@@ -85,13 +85,13 @@ public final class ListingBlockValidator extends AbstractBlockValidator<ListingB
     
     private String getLanguage(StructuralNode block) {
         // Language can be in different attributes
-        Object lang = block.getAttribute("language");
+        Object lang = block.getAttribute(BlockAttributes.LANGUAGE);
         if (lang != null) {
             return lang.toString();
         }
         
         // Try source attribute
-        lang = block.getAttribute("source");
+        lang = block.getAttribute(BlockAttributes.SOURCE);
         if (lang != null) {
             return lang.toString();
         }

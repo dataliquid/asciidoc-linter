@@ -325,7 +325,7 @@ public final class TableBlockValidator extends AbstractBlockValidator<TableBlock
         
         // Validate table style
         if (config.getStyle() != null) {
-            Object styleObj = table.getAttribute("options");
+            Object styleObj = table.getAttribute(BlockAttributes.OPTIONS);
             String actualStyle = styleObj != null ? styleObj.toString() : null;
             if (actualStyle == null || !actualStyle.contains(config.getStyle())) {
                 messages.add(ValidationMessage.builder()
@@ -341,7 +341,7 @@ public final class TableBlockValidator extends AbstractBlockValidator<TableBlock
         
         // Validate borders
         if (config.getBorders() != null && config.getBorders()) {
-            Object frameObj = table.getAttribute("frame");
+            Object frameObj = table.getAttribute(BlockAttributes.FRAME);
             String frame = frameObj != null ? frameObj.toString() : null;
             if (frame == null || "none".equals(frame)) {
                 messages.add(ValidationMessage.builder()

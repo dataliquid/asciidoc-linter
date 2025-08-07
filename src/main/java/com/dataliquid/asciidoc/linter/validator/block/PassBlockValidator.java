@@ -73,8 +73,8 @@ public final class PassBlockValidator extends AbstractBlockValidator<PassBlock> 
         List<ValidationMessage> messages = new ArrayList<>();
         
         // Get pass block attributes
-        String passType = getAttributeAsString(block, "type");
-        String passReason = getAttributeAsString(block, "reason");
+        String passType = getAttributeAsString(block, BlockAttributes.TYPE);
+        String passReason = getAttributeAsString(block, BlockAttributes.REASON);
         String content = getBlockContent(block);
         
         // Validate type

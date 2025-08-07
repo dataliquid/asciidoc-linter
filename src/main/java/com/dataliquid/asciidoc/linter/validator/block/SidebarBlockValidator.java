@@ -236,7 +236,7 @@ public final class SidebarBlockValidator extends AbstractBlockValidator<SidebarB
         SidebarBlock.PositionConfig positionConfig = config.getPosition();
         
         // Get position attribute
-        Object positionAttr = block.getAttribute("position");
+        Object positionAttr = block.getAttribute(BlockAttributes.POSITION);
         String position = positionAttr != null ? positionAttr.toString() : null;
         
         // Get severity with fallback to block severity

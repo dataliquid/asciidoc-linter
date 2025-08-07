@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.asciidoctor.ast.StructuralNode;
 
+import static com.dataliquid.asciidoc.linter.validator.block.BlockAttributes.*;
+
 import com.dataliquid.asciidoc.linter.config.BlockType;
 import com.dataliquid.asciidoc.linter.config.Severity;
 import com.dataliquid.asciidoc.linter.config.blocks.AudioBlock;
@@ -81,7 +83,7 @@ public final class AudioBlockValidator extends AbstractBlockValidator<AudioBlock
     
     private String getAudioUrl(StructuralNode block) {
         // Try different ways to get audio URL
-        Object target = block.getAttribute("target");
+        Object target = block.getAttribute(TARGET);
         if (target != null) {
             return target.toString();
         }
@@ -102,7 +104,7 @@ public final class AudioBlockValidator extends AbstractBlockValidator<AudioBlock
         }
         
         // Then try the caption attribute
-        Object caption = block.getAttribute("caption");
+        Object caption = block.getAttribute(CAPTION);
         if (caption != null) {
             return caption.toString();
         }
@@ -186,7 +188,7 @@ public final class AudioBlockValidator extends AbstractBlockValidator<AudioBlock
         Severity severity = autoplayConfig.getSeverity() != null ? 
             autoplayConfig.getSeverity() : audioConfig.getSeverity();
         
-        boolean hasAutoplay = hasOption(block, "autoplay");
+        boolean hasAutoplay = hasOption(block, AUTOPLAY);
         
         if (!autoplayConfig.isAllowed() && hasAutoplay) {
             messages.add(ValidationMessage.builder()
@@ -208,7 +210,7 @@ public final class AudioBlockValidator extends AbstractBlockValidator<AudioBlock
         Severity severity = controlsConfig.getSeverity() != null ? 
             controlsConfig.getSeverity() : audioConfig.getSeverity();
         
-        boolean hasControls = !hasOption(block, "nocontrols");
+        boolean hasControls = !hasOption(block, NOCONTROLS);
         
         if (controlsConfig.isRequired() && !hasControls) {
             ControlsPosition pos = findControlsPosition(block, context);
@@ -241,7 +243,7 @@ public final class AudioBlockValidator extends AbstractBlockValidator<AudioBlock
         Severity severity = loopConfig.getSeverity() != null ? 
             loopConfig.getSeverity() : audioConfig.getSeverity();
         
-        boolean hasLoop = hasOption(block, "loop");
+        boolean hasLoop = hasOption(block, LOOP);
         
         if (!loopConfig.isAllowed() && hasLoop) {
             messages.add(ValidationMessage.builder()
@@ -256,7 +258,7 @@ public final class AudioBlockValidator extends AbstractBlockValidator<AudioBlock
     }
     
     private boolean hasOption(StructuralNode block, String option) {
-        Object opts = block.getAttribute("opts");
+        Object opts = block.getAttribute(OPTS);
         if (opts != null) {
             String optsStr = opts.toString();
             return optsStr.contains(option);

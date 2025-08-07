@@ -274,19 +274,19 @@ public final class QuoteBlockValidator extends AbstractBlockValidator<QuoteBlock
     
     private String extractAttribution(StructuralNode node) {
         // Check for attribution attribute (standard way)
-        Object attribution = node.getAttribute("attribution");
+        Object attribution = node.getAttribute(BlockAttributes.ATTRIBUTION);
         if (attribution != null) {
             return attribution.toString();
         }
         
         // Check for author attribute (alternative way)
-        Object author = node.getAttribute("author");
+        Object author = node.getAttribute(BlockAttributes.AUTHOR);
         if (author != null) {
             return author.toString();
         }
         
         // Check for positional attribute [quote, Author, Source]
-        Object attr1 = node.getAttribute("1");
+        Object attr1 = node.getAttribute(BlockAttributes.ATTR_1);
         if (attr1 != null) {
             return attr1.toString();
         }
@@ -296,19 +296,19 @@ public final class QuoteBlockValidator extends AbstractBlockValidator<QuoteBlock
     
     private String extractCitation(StructuralNode node) {
         // Check for citetitle attribute (standard way for citation)
-        Object citetitle = node.getAttribute("citetitle");
+        Object citetitle = node.getAttribute(BlockAttributes.CITETITLE);
         if (citetitle != null) {
             return citetitle.toString();
         }
         
         // Check for source attribute (alternative way)
-        Object source = node.getAttribute("source");
+        Object source = node.getAttribute(BlockAttributes.SOURCE);
         if (source != null) {
             return source.toString();
         }
         
         // Check for positional attribute [quote, Author, Source]
-        Object attr2 = node.getAttribute("2");
+        Object attr2 = node.getAttribute(BlockAttributes.ATTR_2);
         if (attr2 != null) {
             return attr2.toString();
         }

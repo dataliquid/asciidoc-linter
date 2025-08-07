@@ -109,10 +109,10 @@ public final class BlockTypeDetector {
         }
         
         // Default: if it has attribution or citetitle, treat as quote
-        if (node.getAttribute("attribution") != null || 
-            node.getAttribute("citetitle") != null ||
-            node.getAttribute("author") != null ||
-            node.getAttribute("source") != null) {
+        if (node.getAttribute(BlockAttributes.ATTRIBUTION) != null || 
+            node.getAttribute(BlockAttributes.CITETITLE) != null ||
+            node.getAttribute(BlockAttributes.AUTHOR) != null ||
+            node.getAttribute(BlockAttributes.SOURCE) != null) {
             return BlockType.QUOTE;
         }
         
