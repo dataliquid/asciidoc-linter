@@ -9,6 +9,7 @@ import org.asciidoctor.ast.StructuralNode;
 
 import com.dataliquid.asciidoc.linter.config.common.Severity;
 import com.dataliquid.asciidoc.linter.config.blocks.Block;
+import com.dataliquid.asciidoc.linter.report.console.FileContentCache;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
 
 /**
@@ -18,6 +19,12 @@ import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
  * @param <T> The specific block configuration type
  */
 public abstract class AbstractBlockValidator<T extends Block> implements BlockTypeValidator {
+    
+    /**
+     * Shared file content cache for accessing source file content.
+     * Used by subclasses to find exact positions in source files for error reporting.
+     */
+    protected final FileContentCache fileCache = new FileContentCache();
     
     /**
      * Returns the specific block configuration class type.

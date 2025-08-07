@@ -1,5 +1,7 @@
 package com.dataliquid.asciidoc.linter.validator.block;
 
+import com.dataliquid.asciidoc.linter.validator.SourcePosition;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +16,6 @@ import com.dataliquid.asciidoc.linter.validator.PlaceholderContext;
 import static com.dataliquid.asciidoc.linter.validator.RuleIds.Paragraph.*;
 import com.dataliquid.asciidoc.linter.validator.SourceLocation;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
-import com.dataliquid.asciidoc.linter.report.console.FileContentCache;
 
 /**
  * Validator for paragraph blocks in AsciiDoc documents.
@@ -41,9 +42,7 @@ import com.dataliquid.asciidoc.linter.report.console.FileContentCache;
  * @see ParagraphBlock
  * @see BlockTypeValidator
  */
-public final class ParagraphBlockValidator extends AbstractBlockValidator<ParagraphBlock> {
-    private final FileContentCache fileCache = new FileContentCache();
-    
+public final class ParagraphBlockValidator extends AbstractBlockValidator<ParagraphBlock> {    
     @Override
     public BlockType getSupportedType() {
         return BlockType.PARAGRAPH;
@@ -104,19 +103,16 @@ public final class ParagraphBlockValidator extends AbstractBlockValidator<Paragr
                                  List<ValidationMessage> messages) {
         
         // Get severity with fallback to block severity
-        Severity severity = lineConfig.severity() != null ? lineConfig.severity() : blockConfig.getSeverity();
+        Severity severity = resolveSeverity(lineConfig.severity(), blockConfig.getSeverity());
         
         if (lineConfig.min() != null && actualLines < lineConfig.min()) {
-            LinePosition pos = findLinePosition(block, context, actualLines);
+            SourcePosition pos = findSourcePosition(block, context, actualLines);
             messages.add(ValidationMessage.builder()
                 .severity(severity)
                 .ruleId(LINES_MIN)
                 .location(SourceLocation.builder()
                     .filename(context.getFilename())
-                    .startLine(pos.lineNumber)
-                    .endLine(pos.lineNumber)
-                    .startColumn(pos.startColumn)
-                    .endColumn(pos.endColumn)
+                    .fromPosition(pos)
                     .build())
                 .message("Paragraph has too few lines")
                 .actualValue(String.valueOf(actualLines))
@@ -152,9 +148,7 @@ public final class ParagraphBlockValidator extends AbstractBlockValidator<Paragr
             // If content is empty and sentences are required, check occurrence min
             if (sentenceConfig.getOccurrence() != null && 
                 sentenceConfig.getOccurrence().min() > 0) {
-                Severity severity = sentenceConfig.getOccurrence().severity() != null 
-                    ? sentenceConfig.getOccurrence().severity() 
-                    : blockConfig.getSeverity();
+                Severity severity = resolveSeverity(sentenceConfig.getOccurrence().severity(), blockConfig.getSeverity());
                     
                 messages.add(ValidationMessage.builder()
                     .severity(severity)
@@ -221,9 +215,7 @@ public final class ParagraphBlockValidator extends AbstractBlockValidator<Paragr
                                           StructuralNode block,
                                           List<ValidationMessage> messages) {
         
-        Severity severity = occurrenceConfig.severity() != null 
-            ? occurrenceConfig.severity() 
-            : blockConfig.getSeverity();
+        Severity severity = resolveSeverity(occurrenceConfig.severity(), blockConfig.getSeverity());
         
         if (sentenceCount < occurrenceConfig.min()) {
             messages.add(ValidationMessage.builder()
@@ -260,9 +252,7 @@ public final class ParagraphBlockValidator extends AbstractBlockValidator<Paragr
                                         StructuralNode block,
                                         List<ValidationMessage> messages) {
         
-        Severity severity = wordsConfig.getSeverity() != null 
-            ? wordsConfig.getSeverity() 
-            : blockConfig.getSeverity();
+        Severity severity = resolveSeverity(wordsConfig.getSeverity(), blockConfig.getSeverity());
         
         for (int i = 0; i < sentences.size(); i++) {
             String sentence = sentences.get(i);
@@ -305,15 +295,15 @@ public final class ParagraphBlockValidator extends AbstractBlockValidator<Paragr
     /**
      * Finds the position where additional lines should be added.
      */
-    private LinePosition findLinePosition(StructuralNode block, BlockValidationContext context, int currentLines) {
+    private SourcePosition findSourcePosition(StructuralNode block, BlockValidationContext context, int currentLines) {
         List<String> fileLines = fileCache.getFileLines(context.getFilename());
         if (fileLines.isEmpty() || block.getSourceLocation() == null) {
-            return new LinePosition(1, 1, block.getSourceLocation() != null ? block.getSourceLocation().getLineNumber() : 1);
+            return new SourcePosition(1, 1, block.getSourceLocation() != null ? block.getSourceLocation().getLineNumber() : 1);
         }
         
         int startLine = block.getSourceLocation().getLineNumber();
         if (startLine <= 0 || startLine > fileLines.size()) {
-            return new LinePosition(1, 1, startLine);
+            return new SourcePosition(1, 1, startLine);
         }
         
         // For paragraphs, we want to position at the end of the current content
@@ -332,22 +322,11 @@ public final class ParagraphBlockValidator extends AbstractBlockValidator<Paragr
             // Position at the end of the last line
             if (lastNonEmptyLine > 0 && lastNonEmptyLine <= fileLines.size()) {
                 String lastLine = fileLines.get(lastNonEmptyLine - 1);
-                return new LinePosition(lastLine.length() + 1, lastLine.length() + 1, lastNonEmptyLine);
+                return new SourcePosition(lastLine.length() + 1, lastLine.length() + 1, lastNonEmptyLine);
             }
         }
         
-        return new LinePosition(1, 1, startLine);
+        return new SourcePosition(1, 1, startLine);
     }
     
-    private static class LinePosition {
-        final int startColumn;
-        final int endColumn;
-        final int lineNumber;
-        
-        LinePosition(int startColumn, int endColumn, int lineNumber) {
-            this.startColumn = startColumn;
-            this.endColumn = endColumn;
-            this.lineNumber = lineNumber;
-        }
-    }
 }

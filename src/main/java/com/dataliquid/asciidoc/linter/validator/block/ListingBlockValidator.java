@@ -1,5 +1,7 @@
 package com.dataliquid.asciidoc.linter.validator.block;
 
+import com.dataliquid.asciidoc.linter.validator.SourcePosition;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,7 +12,6 @@ import static com.dataliquid.asciidoc.linter.validator.block.BlockAttributes.*;
 import com.dataliquid.asciidoc.linter.config.blocks.BlockType;
 import com.dataliquid.asciidoc.linter.config.common.Severity;
 import com.dataliquid.asciidoc.linter.config.blocks.ListingBlock;
-import com.dataliquid.asciidoc.linter.report.console.FileContentCache;
 import com.dataliquid.asciidoc.linter.validator.ErrorType;
 import com.dataliquid.asciidoc.linter.validator.PlaceholderContext;
 import static com.dataliquid.asciidoc.linter.validator.RuleIds.Listing.*;
@@ -39,9 +40,7 @@ import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
  * @see ListingBlock
  * @see BlockTypeValidator
  */
-public final class ListingBlockValidator extends AbstractBlockValidator<ListingBlock> {
-    private final FileContentCache fileCache = new FileContentCache();
-    
+public final class ListingBlockValidator extends AbstractBlockValidator<ListingBlock> {    
     @Override
     public BlockType getSupportedType() {
         return BlockType.LISTING;
@@ -117,21 +116,18 @@ public final class ListingBlockValidator extends AbstractBlockValidator<ListingB
                                 List<ValidationMessage> messages) {
         
         // Get severity with fallback to block severity
-        Severity severity = config.getSeverity() != null ? config.getSeverity() : blockConfig.getSeverity();
+        Severity severity = resolveSeverity(config.getSeverity(), blockConfig.getSeverity());
         
         // Check if language is required
         if (config.isRequired() && (language == null || language.trim().isEmpty())) {
             // Find column position for missing language
-            LanguagePosition pos = findLanguagePosition(block, context);
+            SourcePosition pos = findSourcePosition(block, context);
             messages.add(ValidationMessage.builder()
                 .severity(severity)
                 .ruleId(LANGUAGE_REQUIRED)
                 .location(SourceLocation.builder()
                     .filename(context.getFilename())
-                    .startLine(pos.lineNumber)
-                    .endLine(pos.lineNumber)
-                    .startColumn(pos.startColumn)
-                    .endColumn(pos.endColumn)
+                    .fromPosition(pos)
                     .build())
                 .message("Listing language is required")
                 .actualValue("No language")
@@ -148,16 +144,13 @@ public final class ListingBlockValidator extends AbstractBlockValidator<ListingB
         if (language != null && config.getAllowed() != null && !config.getAllowed().isEmpty()) {
             if (!config.getAllowed().contains(language)) {
                 // Find column position for invalid language
-                LanguagePosition pos = findLanguagePosition(block, context, language);
+                SourcePosition pos = findLanguagePosition(block, context, language);
                 messages.add(ValidationMessage.builder()
                     .severity(severity)
                     .ruleId(LANGUAGE_ALLOWED)
                     .location(SourceLocation.builder()
                         .filename(context.getFilename())
-                        .startLine(pos.lineNumber)
-                        .endLine(pos.lineNumber)
-                        .startColumn(pos.startColumn)
-                        .endColumn(pos.endColumn)
+                        .fromPosition(pos)
                         .build())
                     .message("Listing language '" + language + "' is not allowed")
                     .actualValue(language)
@@ -174,7 +167,7 @@ public final class ListingBlockValidator extends AbstractBlockValidator<ListingB
                              List<ValidationMessage> messages) {
         
         // Get severity with fallback to block severity
-        Severity severity = config.getSeverity() != null ? config.getSeverity() : blockConfig.getSeverity();
+        Severity severity = resolveSeverity(config.getSeverity(), blockConfig.getSeverity());
         
         if (config.isRequired() && (title == null || title.trim().isEmpty())) {
             messages.add(ValidationMessage.builder()
@@ -190,16 +183,13 @@ public final class ListingBlockValidator extends AbstractBlockValidator<ListingB
         
         if (title != null && config.getPattern() != null) {
             if (!config.getPattern().matcher(title).matches()) {
-                TitlePosition pos = findTitlePosition(block, context, title);
+                SourcePosition pos = findTitlePosition(block, context, title);
                 messages.add(ValidationMessage.builder()
                     .severity(severity)
                     .ruleId(TITLE_PATTERN)
                     .location(SourceLocation.builder()
                         .filename(context.getFilename())
-                        .startLine(pos.lineNumber)
-                        .endLine(pos.lineNumber)
-                        .startColumn(pos.startColumn)
-                        .endColumn(pos.endColumn)
+                        .fromPosition(pos)
                         .build())
                     .message("Listing title does not match required pattern")
                     .actualValue(title)
@@ -253,7 +243,7 @@ public final class ListingBlockValidator extends AbstractBlockValidator<ListingB
                                 List<ValidationMessage> messages) {
         
         // Get severity with fallback to block severity
-        Severity severity = config.getSeverity() != null ? config.getSeverity() : blockConfig.getSeverity();
+        Severity severity = resolveSeverity(config.getSeverity(), blockConfig.getSeverity());
         
         // Count callouts in content
         int calloutCount = countCallouts(content);
@@ -307,20 +297,20 @@ public final class ListingBlockValidator extends AbstractBlockValidator<ListingB
     /**
      * Finds the column position where a language attribute should be or is located.
      */
-    private LanguagePosition findLanguagePosition(StructuralNode block, BlockValidationContext context) {
+    private SourcePosition findSourcePosition(StructuralNode block, BlockValidationContext context) {
         return findLanguagePosition(block, context, null);
     }
     
-    private LanguagePosition findLanguagePosition(StructuralNode block, BlockValidationContext context, String language) {
+    private SourcePosition findLanguagePosition(StructuralNode block, BlockValidationContext context, String language) {
         // Get the source line
         List<String> fileLines = fileCache.getFileLines(context.getFilename());
         if (fileLines.isEmpty() || block.getSourceLocation() == null) {
-            return new LanguagePosition(1, 1, block.getSourceLocation() != null ? block.getSourceLocation().getLineNumber() : 1);
+            return new SourcePosition(1, 1, block.getSourceLocation() != null ? block.getSourceLocation().getLineNumber() : 1);
         }
         
         int blockLineNum = block.getSourceLocation().getLineNumber();
         if (blockLineNum <= 0 || blockLineNum > fileLines.size()) {
-            return new LanguagePosition(1, 1, blockLineNum);
+            return new SourcePosition(1, 1, blockLineNum);
         }
         
         // For listing blocks, the source location often points to the delimiter (----)
@@ -344,33 +334,33 @@ public final class ListingBlockValidator extends AbstractBlockValidator<ListingB
                     // Find the specific language position
                     int langStart = sourceLine.indexOf(language, sourceStart);
                     if (langStart > sourceStart && langStart < sourceEnd) {
-                        return new LanguagePosition(langStart + 1, langStart + language.length(), attributeLineNum);
+                        return new SourcePosition(langStart + 1, langStart + language.length(), attributeLineNum);
                     }
                 }
                 // For missing language, position after "[source"
                 int commaPos = sourceLine.indexOf(",", sourceStart);
                 if (commaPos > sourceStart && commaPos < sourceEnd) {
                     // Language should be after the comma
-                    return new LanguagePosition(commaPos + 2, commaPos + 2, attributeLineNum);
+                    return new SourcePosition(commaPos + 2, commaPos + 2, attributeLineNum);
                 } else {
                     // No comma, language should be added before "]"
                     // sourceEnd is 0-based index of ], add 1 for 1-based column
-                    return new LanguagePosition(sourceEnd + 1, sourceEnd + 1, attributeLineNum);
+                    return new SourcePosition(sourceEnd + 1, sourceEnd + 1, attributeLineNum);
                 }
             }
         }
         
         // Default to beginning of line
-        return new LanguagePosition(1, 1, blockLineNum);
+        return new SourcePosition(1, 1, blockLineNum);
     }
     
     /**
      * Finds the position of listing title.
      */
-    private TitlePosition findTitlePosition(StructuralNode block, BlockValidationContext context, String title) {
+    private SourcePosition findTitlePosition(StructuralNode block, BlockValidationContext context, String title) {
         List<String> fileLines = fileCache.getFileLines(context.getFilename());
         if (fileLines.isEmpty() || block.getSourceLocation() == null) {
-            return new TitlePosition(1, 1, block.getSourceLocation() != null ? block.getSourceLocation().getLineNumber() : 1);
+            return new SourcePosition(1, 1, block.getSourceLocation() != null ? block.getSourceLocation().getLineNumber() : 1);
         }
         
         int blockLineNum = block.getSourceLocation().getLineNumber();
@@ -388,35 +378,13 @@ public final class ListingBlockValidator extends AbstractBlockValidator<ListingB
                     // Found the title line
                     int titleStart = line.indexOf(".");
                     int titleEnd = titleStart + 1 + title.length();
-                    return new TitlePosition(titleStart + 1, titleEnd, checkLine);
+                    return new SourcePosition(titleStart + 1, titleEnd, checkLine);
                 }
             }
         }
         
-        return new TitlePosition(1, 1, blockLineNum);
+        return new SourcePosition(1, 1, blockLineNum);
     }
     
-    private static class LanguagePosition {
-        final int startColumn;
-        final int endColumn;
-        final int lineNumber;
-        
-        LanguagePosition(int startColumn, int endColumn, int lineNumber) {
-            this.startColumn = startColumn;
-            this.endColumn = endColumn;
-            this.lineNumber = lineNumber;
-        }
-    }
     
-    private static class TitlePosition {
-        final int startColumn;
-        final int endColumn;
-        final int lineNumber;
-        
-        TitlePosition(int startColumn, int endColumn, int lineNumber) {
-            this.startColumn = startColumn;
-            this.endColumn = endColumn;
-            this.lineNumber = lineNumber;
-        }
-    }
 }

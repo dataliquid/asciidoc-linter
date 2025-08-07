@@ -1,5 +1,7 @@
 package com.dataliquid.asciidoc.linter.validator.block;
 
+import com.dataliquid.asciidoc.linter.validator.SourcePosition;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -14,7 +16,6 @@ import static com.dataliquid.asciidoc.linter.validator.block.BlockAttributes.*;
 import com.dataliquid.asciidoc.linter.config.blocks.BlockType;
 import com.dataliquid.asciidoc.linter.config.common.Severity;
 import com.dataliquid.asciidoc.linter.config.blocks.TableBlock;
-import com.dataliquid.asciidoc.linter.report.console.FileContentCache;
 import com.dataliquid.asciidoc.linter.validator.ErrorType;
 import com.dataliquid.asciidoc.linter.validator.PlaceholderContext;
 import static com.dataliquid.asciidoc.linter.validator.RuleIds.Table.*;
@@ -44,9 +45,7 @@ import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
  * @see TableBlock
  * @see BlockTypeValidator
  */
-public final class TableBlockValidator extends AbstractBlockValidator<TableBlock> {
-    private final FileContentCache fileCache = new FileContentCache();
-    
+public final class TableBlockValidator extends AbstractBlockValidator<TableBlock> {    
     @Override
     public BlockType getSupportedType() {
         return BlockType.TABLE;
@@ -104,7 +103,7 @@ public final class TableBlockValidator extends AbstractBlockValidator<TableBlock
                                List<ValidationMessage> messages) {
         
         // Get severity with fallback to block severity
-        Severity severity = config.getSeverity() != null ? config.getSeverity() : blockConfig.getSeverity();
+        Severity severity = resolveSeverity(config.getSeverity(), blockConfig.getSeverity());
         
         int columnCount = table.getColumns().size();
         
@@ -137,7 +136,7 @@ public final class TableBlockValidator extends AbstractBlockValidator<TableBlock
                             List<ValidationMessage> messages) {
         
         // Get severity with fallback to block severity
-        Severity severity = config.getSeverity() != null ? config.getSeverity() : blockConfig.getSeverity();
+        Severity severity = resolveSeverity(config.getSeverity(), blockConfig.getSeverity());
         
         int rowCount = table.getBody().size();
         
@@ -170,21 +169,18 @@ public final class TableBlockValidator extends AbstractBlockValidator<TableBlock
                               List<ValidationMessage> messages) {
         
         // Get severity with fallback to block severity
-        Severity severity = config.getSeverity() != null ? config.getSeverity() : blockConfig.getSeverity();
+        Severity severity = resolveSeverity(config.getSeverity(), blockConfig.getSeverity());
         
         boolean hasHeader = !table.getHeader().isEmpty();
         
         if (config.isRequired() && !hasHeader) {
-            HeaderPosition pos = findHeaderPosition(table, context);
+            SourcePosition pos = findHeaderPosition(table, context);
             messages.add(ValidationMessage.builder()
                 .severity(severity)
                 .ruleId(HEADER_REQUIRED)
                 .location(SourceLocation.builder()
                     .filename(context.getFilename())
-                    .startLine(pos.lineNumber)
-                    .endLine(pos.lineNumber)
-                    .startColumn(pos.startColumn)
-                    .endColumn(pos.endColumn)
+                    .fromPosition(pos)
                     .build())
                 .message("Table header is required but not provided")
                 .errorType(ErrorType.MISSING_VALUE)
@@ -203,16 +199,13 @@ public final class TableBlockValidator extends AbstractBlockValidator<TableBlock
                 for (Cell cell : headerRow.getCells()) {
                     String content = cell.getText();
                     if (!pattern.matcher(content).matches()) {
-                        HeaderPosition pos = findHeaderCellPosition(table, context, content);
+                        SourcePosition pos = findHeaderCellPosition(table, context, content);
                         messages.add(ValidationMessage.builder()
                             .severity(severity)
                             .ruleId(HEADER_PATTERN)
                             .location(SourceLocation.builder()
                                 .filename(context.getFilename())
-                                .startLine(pos.lineNumber)
-                                .endLine(pos.lineNumber)
-                                .startColumn(pos.startColumn)
-                                .endColumn(pos.endColumn)
+                                .fromPosition(pos)
                                 .build())
                             .message("Table header does not match required pattern")
                             .actualValue(content)
@@ -230,21 +223,18 @@ public final class TableBlockValidator extends AbstractBlockValidator<TableBlock
                                List<ValidationMessage> messages) {
         
         // Get severity with fallback to block severity
-        Severity severity = config.getSeverity() != null ? config.getSeverity() : blockConfig.getSeverity();
+        Severity severity = resolveSeverity(config.getSeverity(), blockConfig.getSeverity());
         
         String caption = table.getTitle();
         
         if (config.isRequired() && (caption == null || caption.trim().isEmpty())) {
-            CaptionPosition pos = findCaptionPosition(table, context);
+            SourcePosition pos = findSourcePosition(table, context);
             messages.add(ValidationMessage.builder()
                 .severity(severity)
                 .ruleId(CAPTION_REQUIRED)
                 .location(SourceLocation.builder()
                     .filename(context.getFilename())
-                    .startLine(pos.lineNumber)
-                    .endLine(pos.lineNumber)
-                    .startColumn(pos.startColumn)
-                    .endColumn(pos.endColumn)
+                    .fromPosition(pos)
                     .build())
                 .message("Table caption is required but not provided")
                 .errorType(ErrorType.MISSING_VALUE)
@@ -261,16 +251,13 @@ public final class TableBlockValidator extends AbstractBlockValidator<TableBlock
             if (config.getPattern() != null) {
                 Pattern pattern = config.getPattern();
                 if (!pattern.matcher(caption).matches()) {
-                    CaptionPosition pos = findCaptionPosition(table, context);
+                    SourcePosition pos = findSourcePosition(table, context);
                     messages.add(ValidationMessage.builder()
                         .severity(severity)
                         .ruleId(CAPTION_PATTERN)
                         .location(SourceLocation.builder()
                             .filename(context.getFilename())
-                            .startLine(pos.lineNumber)
-                            .endLine(pos.lineNumber)
-                            .startColumn(pos.startColumn)
-                            .endColumn(pos.endColumn)
+                            .fromPosition(pos)
                             .build())
                         .message("Table caption does not match required pattern")
                         .actualValue(caption)
@@ -281,16 +268,13 @@ public final class TableBlockValidator extends AbstractBlockValidator<TableBlock
             
             // Validate caption length
             if (config.getMinLength() != null && caption.length() < config.getMinLength()) {
-                CaptionPosition pos = findCaptionPosition(table, context);
+                SourcePosition pos = findSourcePosition(table, context);
                 messages.add(ValidationMessage.builder()
                     .severity(severity)
                     .ruleId(CAPTION_MIN_LENGTH)
                     .location(SourceLocation.builder()
                         .filename(context.getFilename())
-                        .startLine(pos.lineNumber)
-                        .endLine(pos.lineNumber)
-                        .startColumn(pos.startColumn)
-                        .endColumn(pos.endColumn)
+                        .fromPosition(pos)
                         .build())
                     .message("Table caption is too short")
                     .actualValue(caption.length() + " characters")
@@ -299,16 +283,13 @@ public final class TableBlockValidator extends AbstractBlockValidator<TableBlock
             }
             
             if (config.getMaxLength() != null && caption.length() > config.getMaxLength()) {
-                CaptionPosition pos = findCaptionPosition(table, context);
+                SourcePosition pos = findSourcePosition(table, context);
                 messages.add(ValidationMessage.builder()
                     .severity(severity)
                     .ruleId(CAPTION_MAX_LENGTH)
                     .location(SourceLocation.builder()
                         .filename(context.getFilename())
-                        .startLine(pos.lineNumber)
-                        .endLine(pos.lineNumber)
-                        .startColumn(pos.startColumn)
-                        .endColumn(pos.endColumn)
+                        .fromPosition(pos)
                         .build())
                     .message("Table caption is too long")
                     .actualValue(caption.length() + " characters")
@@ -324,7 +305,7 @@ public final class TableBlockValidator extends AbstractBlockValidator<TableBlock
                               List<ValidationMessage> messages) {
         
         // Get severity with fallback to block severity
-        Severity severity = config.getSeverity() != null ? config.getSeverity() : blockConfig.getSeverity();
+        Severity severity = resolveSeverity(config.getSeverity(), blockConfig.getSeverity());
         
         // Validate table style
         if (config.getStyle() != null) {
@@ -362,10 +343,10 @@ public final class TableBlockValidator extends AbstractBlockValidator<TableBlock
     /**
      * Finds the position for table caption.
      */
-    private CaptionPosition findCaptionPosition(Table table, BlockValidationContext context) {
+    private SourcePosition findSourcePosition(Table table, BlockValidationContext context) {
         List<String> fileLines = fileCache.getFileLines(context.getFilename());
         if (fileLines.isEmpty() || table.getSourceLocation() == null) {
-            return new CaptionPosition(1, 1, table.getSourceLocation() != null ? table.getSourceLocation().getLineNumber() : 1);
+            return new SourcePosition(1, 1, table.getSourceLocation() != null ? table.getSourceLocation().getLineNumber() : 1);
         }
         
         int tableLineNum = table.getSourceLocation().getLineNumber();
@@ -381,27 +362,27 @@ public final class TableBlockValidator extends AbstractBlockValidator<TableBlock
                 // Check if line starts with "." followed by caption
                 if (captionLine.startsWith(".")) {
                     // Caption starts at column 1 (the dot) and ends at the line length
-                    return new CaptionPosition(1, captionLine.length(), captionLineNum);
+                    return new SourcePosition(1, captionLine.length(), captionLineNum);
                 }
             }
         }
         
         // Default to table line if caption not found
-        return new CaptionPosition(1, 1, tableLineNum);
+        return new SourcePosition(1, 1, tableLineNum);
     }
     
     /**
      * Finds the position for table header.
      */
-    private HeaderPosition findHeaderPosition(Table table, BlockValidationContext context) {
+    private SourcePosition findHeaderPosition(Table table, BlockValidationContext context) {
         List<String> fileLines = fileCache.getFileLines(context.getFilename());
         if (fileLines.isEmpty() || table.getSourceLocation() == null) {
-            return new HeaderPosition(1, 1, table.getSourceLocation() != null ? table.getSourceLocation().getLineNumber() : 1);
+            return new SourcePosition(1, 1, table.getSourceLocation() != null ? table.getSourceLocation().getLineNumber() : 1);
         }
         
         int lineNum = table.getSourceLocation().getLineNumber();
         if (lineNum <= 0 || lineNum > fileLines.size()) {
-            return new HeaderPosition(1, 1, lineNum);
+            return new SourcePosition(1, 1, lineNum);
         }
         
         // Find the line after |===
@@ -409,25 +390,25 @@ public final class TableBlockValidator extends AbstractBlockValidator<TableBlock
             String line = fileLines.get(i);
             if (line.trim().equals("|===")) {
                 // Header should be on the next line
-                return new HeaderPosition(1, 1, i + 2);
+                return new SourcePosition(1, 1, i + 2);
             }
         }
         
-        return new HeaderPosition(1, 1, lineNum + 1);
+        return new SourcePosition(1, 1, lineNum + 1);
     }
     
     /**
      * Finds the position for a specific header cell.
      */
-    private HeaderPosition findHeaderCellPosition(Table table, BlockValidationContext context, String cellContent) {
+    private SourcePosition findHeaderCellPosition(Table table, BlockValidationContext context, String cellContent) {
         List<String> fileLines = fileCache.getFileLines(context.getFilename());
         if (fileLines.isEmpty() || table.getSourceLocation() == null) {
-            return new HeaderPosition(1, 1, table.getSourceLocation() != null ? table.getSourceLocation().getLineNumber() : 1);
+            return new SourcePosition(1, 1, table.getSourceLocation() != null ? table.getSourceLocation().getLineNumber() : 1);
         }
         
         int lineNum = table.getSourceLocation().getLineNumber();
         if (lineNum <= 0 || lineNum > fileLines.size()) {
-            return new HeaderPosition(1, 1, lineNum);
+            return new SourcePosition(1, 1, lineNum);
         }
         
         // Find the line after |===
@@ -441,37 +422,15 @@ public final class TableBlockValidator extends AbstractBlockValidator<TableBlock
                     // Find the specific cell content
                     int cellStart = headerLine.indexOf(cellContent);
                     if (cellStart >= 0) {
-                        return new HeaderPosition(cellStart + 1, cellStart + cellContent.length(), headerLineNum);
+                        return new SourcePosition(cellStart + 1, cellStart + cellContent.length(), headerLineNum);
                     }
                 }
                 break;
             }
         }
         
-        return new HeaderPosition(1, 1, lineNum);
+        return new SourcePosition(1, 1, lineNum);
     }
     
-    private static class CaptionPosition {
-        final int startColumn;
-        final int endColumn;
-        final int lineNumber;
-        
-        CaptionPosition(int startColumn, int endColumn, int lineNumber) {
-            this.startColumn = startColumn;
-            this.endColumn = endColumn;
-            this.lineNumber = lineNumber;
-        }
-    }
     
-    private static class HeaderPosition {
-        final int startColumn;
-        final int endColumn;
-        final int lineNumber;
-        
-        HeaderPosition(int startColumn, int endColumn, int lineNumber) {
-            this.startColumn = startColumn;
-            this.endColumn = endColumn;
-            this.lineNumber = lineNumber;
-        }
-    }
 }

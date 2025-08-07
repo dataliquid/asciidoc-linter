@@ -1,5 +1,7 @@
 package com.dataliquid.asciidoc.linter.validator.block;
 
+import com.dataliquid.asciidoc.linter.validator.SourcePosition;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,7 +11,6 @@ import static com.dataliquid.asciidoc.linter.validator.block.BlockAttributes.*;
 
 import com.dataliquid.asciidoc.linter.config.blocks.BlockType;
 import com.dataliquid.asciidoc.linter.config.blocks.VerseBlock;
-import com.dataliquid.asciidoc.linter.report.console.FileContentCache;
 import com.dataliquid.asciidoc.linter.validator.ErrorType;
 import com.dataliquid.asciidoc.linter.validator.PlaceholderContext;
 import static com.dataliquid.asciidoc.linter.validator.RuleIds.Verse.*;
@@ -37,9 +38,7 @@ import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
  * @see VerseBlock
  * @see BlockTypeValidator
  */
-public final class VerseBlockValidator extends AbstractBlockValidator<VerseBlock> {
-    private final FileContentCache fileCache = new FileContentCache();
-    
+public final class VerseBlockValidator extends AbstractBlockValidator<VerseBlock> {    
     @Override
     public BlockType getSupportedType() {
         return BlockType.VERSE;
@@ -165,16 +164,13 @@ public final class VerseBlockValidator extends AbstractBlockValidator<VerseBlock
         if (author != null && !author.trim().isEmpty()) {
             // Validate author length
             if (config.getMinLength() != null && author.length() < config.getMinLength()) {
-                AuthorPosition pos = findAuthorPosition(block, context);
+                SourcePosition pos = findSourcePosition(block, context);
                 messages.add(ValidationMessage.builder()
                     .severity(verseConfig.getSeverity())
                     .ruleId(AUTHOR_MIN_LENGTH)
                     .location(SourceLocation.builder()
                         .filename(context.getFilename())
-                        .startLine(pos.lineNumber)
-                        .endLine(pos.lineNumber)
-                        .startColumn(pos.startColumn)
-                        .endColumn(pos.endColumn)
+                        .fromPosition(pos)
                         .build())
                     .message("Verse author is too short")
                     .actualValue(author.length() + " characters")
@@ -183,16 +179,13 @@ public final class VerseBlockValidator extends AbstractBlockValidator<VerseBlock
             }
             
             if (config.getMaxLength() != null && author.length() > config.getMaxLength()) {
-                AuthorPosition pos = findAuthorPosition(block, context);
+                SourcePosition pos = findSourcePosition(block, context);
                 messages.add(ValidationMessage.builder()
                     .severity(verseConfig.getSeverity())
                     .ruleId(AUTHOR_MAX_LENGTH)
                     .location(SourceLocation.builder()
                         .filename(context.getFilename())
-                        .startLine(pos.lineNumber)
-                        .endLine(pos.lineNumber)
-                        .startColumn(pos.startColumn)
-                        .endColumn(pos.endColumn)
+                        .fromPosition(pos)
                         .build())
                     .message("Verse author is too long")
                     .actualValue(author.length() + " characters")
@@ -203,16 +196,13 @@ public final class VerseBlockValidator extends AbstractBlockValidator<VerseBlock
             // Validate pattern if specified
             if (config.getPattern() != null) {
                 if (!config.getPattern().matcher(author).matches()) {
-                    AuthorPosition pos = findAuthorPosition(block, context);
+                    SourcePosition pos = findSourcePosition(block, context);
                     messages.add(ValidationMessage.builder()
                         .severity(verseConfig.getSeverity())
                         .ruleId(AUTHOR_PATTERN)
                         .location(SourceLocation.builder()
                             .filename(context.getFilename())
-                            .startLine(pos.lineNumber)
-                            .endLine(pos.lineNumber)
-                            .startColumn(pos.startColumn)
-                            .endColumn(pos.endColumn)
+                            .fromPosition(pos)
                             .build())
                         .message("Verse author does not match required pattern")
                         .actualValue(author)
@@ -261,16 +251,13 @@ public final class VerseBlockValidator extends AbstractBlockValidator<VerseBlock
         if (attribution != null && !attribution.trim().isEmpty()) {
             // Validate attribution length
             if (config.getMinLength() != null && attribution.length() < config.getMinLength()) {
-                AttributionPosition pos = findAttributionPosition(block, context);
+                SourcePosition pos = findAttributionPosition(block, context);
                 messages.add(ValidationMessage.builder()
                     .severity(verseConfig.getSeverity())
                     .ruleId(ATTRIBUTION_MIN_LENGTH)
                     .location(SourceLocation.builder()
                         .filename(context.getFilename())
-                        .startLine(pos.lineNumber)
-                        .endLine(pos.lineNumber)
-                        .startColumn(pos.startColumn)
-                        .endColumn(pos.endColumn)
+                        .fromPosition(pos)
                         .build())
                     .message("Verse attribution is too short")
                     .actualValue(attribution.length() + " characters")
@@ -279,16 +266,13 @@ public final class VerseBlockValidator extends AbstractBlockValidator<VerseBlock
             }
             
             if (config.getMaxLength() != null && attribution.length() > config.getMaxLength()) {
-                AttributionPosition pos = findAttributionPosition(block, context);
+                SourcePosition pos = findAttributionPosition(block, context);
                 messages.add(ValidationMessage.builder()
                     .severity(verseConfig.getSeverity())
                     .ruleId(ATTRIBUTION_MAX_LENGTH)
                     .location(SourceLocation.builder()
                         .filename(context.getFilename())
-                        .startLine(pos.lineNumber)
-                        .endLine(pos.lineNumber)
-                        .startColumn(pos.startColumn)
-                        .endColumn(pos.endColumn)
+                        .fromPosition(pos)
                         .build())
                     .message("Verse attribution is too long")
                     .actualValue(attribution.length() + " characters")
@@ -299,16 +283,13 @@ public final class VerseBlockValidator extends AbstractBlockValidator<VerseBlock
             // Validate pattern if specified
             if (config.getPattern() != null) {
                 if (!config.getPattern().matcher(attribution).matches()) {
-                    AttributionPosition pos = findAttributionPosition(block, context);
+                    SourcePosition pos = findAttributionPosition(block, context);
                     messages.add(ValidationMessage.builder()
                         .severity(verseConfig.getSeverity())
                         .ruleId(ATTRIBUTION_PATTERN)
                         .location(SourceLocation.builder()
                             .filename(context.getFilename())
-                            .startLine(pos.lineNumber)
-                            .endLine(pos.lineNumber)
-                            .startColumn(pos.startColumn)
-                            .endColumn(pos.endColumn)
+                            .fromPosition(pos)
                             .build())
                         .message("Verse attribution does not match required pattern")
                         .actualValue(attribution)
@@ -356,16 +337,13 @@ public final class VerseBlockValidator extends AbstractBlockValidator<VerseBlock
         // Validate content length
         int contentLength = content != null ? content.length() : 0;
         if (config.getMinLength() != null && contentLength < config.getMinLength()) {
-            ContentPosition pos = findContentPosition(block, context);
+            SourcePosition pos = findContentPosition(block, context);
             messages.add(ValidationMessage.builder()
                 .severity(verseConfig.getSeverity())
                 .ruleId(CONTENT_MIN_LENGTH)
                 .location(SourceLocation.builder()
                     .filename(context.getFilename())
-                    .startLine(pos.lineNumber)
-                    .endLine(pos.lineNumber)
-                    .startColumn(pos.startColumn)
-                    .endColumn(pos.endColumn)
+                    .fromPosition(pos)
                     .build())
                 .message("Verse content is too short")
                 .actualValue(contentLength + " characters")
@@ -375,16 +353,13 @@ public final class VerseBlockValidator extends AbstractBlockValidator<VerseBlock
         
         if (content != null) {
             if (config.getMaxLength() != null && content.length() > config.getMaxLength()) {
-                ContentPosition pos = findContentPosition(block, context);
+                SourcePosition pos = findContentPosition(block, context);
                 messages.add(ValidationMessage.builder()
                     .severity(verseConfig.getSeverity())
                     .ruleId(CONTENT_MAX_LENGTH)
                     .location(SourceLocation.builder()
                         .filename(context.getFilename())
-                        .startLine(pos.lineNumber)
-                        .endLine(pos.lineNumber)
-                        .startColumn(pos.startColumn)
-                        .endColumn(pos.endColumn)
+                        .fromPosition(pos)
                         .build())
                     .message("Verse content is too long")
                     .actualValue(content.length() + " characters")
@@ -395,16 +370,13 @@ public final class VerseBlockValidator extends AbstractBlockValidator<VerseBlock
             // Validate pattern if specified
             if (config.getPattern() != null) {
                 if (!config.getPattern().matcher(content).matches()) {
-                    ContentPosition pos = findContentPosition(block, context);
+                    SourcePosition pos = findContentPosition(block, context);
                     messages.add(ValidationMessage.builder()
                         .severity(verseConfig.getSeverity())
                         .ruleId(CONTENT_PATTERN)
                         .location(SourceLocation.builder()
                             .filename(context.getFilename())
-                            .startLine(pos.lineNumber)
-                            .endLine(pos.lineNumber)
-                            .startColumn(pos.startColumn)
-                            .endColumn(pos.endColumn)
+                            .fromPosition(pos)
                             .build())
                         .message("Verse content does not match required pattern")
                         .actualValue(content.substring(0, Math.min(content.length(), 50)) + "...")
@@ -418,10 +390,10 @@ public final class VerseBlockValidator extends AbstractBlockValidator<VerseBlock
     /**
      * Finds the position of author in [verse] attribute line.
      */
-    private AuthorPosition findAuthorPosition(StructuralNode block, BlockValidationContext context) {
+    private SourcePosition findSourcePosition(StructuralNode block, BlockValidationContext context) {
         List<String> fileLines = fileCache.getFileLines(context.getFilename());
         if (fileLines.isEmpty() || block.getSourceLocation() == null) {
-            return new AuthorPosition(1, 1, block.getSourceLocation() != null ? block.getSourceLocation().getLineNumber() : 1);
+            return new SourcePosition(1, 1, block.getSourceLocation() != null ? block.getSourceLocation().getLineNumber() : 1);
         }
         
         int blockLineNum = block.getSourceLocation().getLineNumber();
@@ -438,29 +410,29 @@ public final class VerseBlockValidator extends AbstractBlockValidator<VerseBlock
                     if (authorStart >= 0) {
                         int authorEnd = line.indexOf("\"", authorStart + 1);
                         if (authorEnd > authorStart) {
-                            return new AuthorPosition(authorStart + 2, authorEnd, checkLine);
+                            return new SourcePosition(authorStart + 2, authorEnd, checkLine);
                         }
                     }
                     // No quotes found, position after comma
                     int commaPos = line.indexOf(",");
                     if (commaPos >= 0) {
-                        return new AuthorPosition(commaPos + 2, commaPos + 2, checkLine);
+                        return new SourcePosition(commaPos + 2, commaPos + 2, checkLine);
                     }
-                    return new AuthorPosition(1, line.length(), checkLine);
+                    return new SourcePosition(1, line.length(), checkLine);
                 }
             }
         }
         
-        return new AuthorPosition(1, 1, blockLineNum);
+        return new SourcePosition(1, 1, blockLineNum);
     }
     
     /**
      * Finds the position of attribution in [verse] attribute line.
      */
-    private AttributionPosition findAttributionPosition(StructuralNode block, BlockValidationContext context) {
+    private SourcePosition findAttributionPosition(StructuralNode block, BlockValidationContext context) {
         List<String> fileLines = fileCache.getFileLines(context.getFilename());
         if (fileLines.isEmpty() || block.getSourceLocation() == null) {
-            return new AttributionPosition(1, 1, block.getSourceLocation() != null ? block.getSourceLocation().getLineNumber() : 1);
+            return new SourcePosition(1, 1, block.getSourceLocation() != null ? block.getSourceLocation().getLineNumber() : 1);
         }
         
         int blockLineNum = block.getSourceLocation().getLineNumber();
@@ -472,36 +444,57 @@ public final class VerseBlockValidator extends AbstractBlockValidator<VerseBlock
                 String line = fileLines.get(checkLine - 1);
                 if (line.trim().startsWith("[verse")) {
                     // Found the [verse] line
-                    // Attribution is the second quoted parameter
-                    int firstQuoteStart = line.indexOf("\"");
-                    if (firstQuoteStart >= 0) {
-                        int firstQuoteEnd = line.indexOf("\"", firstQuoteStart + 1);
-                        if (firstQuoteEnd > firstQuoteStart) {
-                            // Look for second quoted parameter
-                            int secondQuoteStart = line.indexOf("\"", firstQuoteEnd + 1);
-                            if (secondQuoteStart >= 0) {
-                                int secondQuoteEnd = line.indexOf("\"", secondQuoteStart + 1);
-                                if (secondQuoteEnd > secondQuoteStart) {
-                                    return new AttributionPosition(secondQuoteStart + 2, secondQuoteEnd, checkLine);
+                    // Attribution is the third parameter (after verse and author)
+                    // Pattern: [verse, "author", "attribution"]
+                    int quoteCount = 0;
+                    int quoteStart = -1;
+                    int quoteEnd = -1;
+                    int searchPos = 0;
+                    
+                    // Find the second quoted string (first is author, second is attribution)
+                    while (searchPos < line.length() && quoteCount < 2) {
+                        int nextQuoteStart = line.indexOf("\"", searchPos);
+                        if (nextQuoteStart >= 0) {
+                            int nextQuoteEnd = line.indexOf("\"", nextQuoteStart + 1);
+                            if (nextQuoteEnd > nextQuoteStart) {
+                                quoteCount++;
+                                if (quoteCount == 2) {
+                                    // This is the attribution (second quoted string)
+                                    quoteStart = nextQuoteStart;
+                                    quoteEnd = nextQuoteEnd;
+                                    break;
                                 }
+                                searchPos = nextQuoteEnd + 1;
+                            } else {
+                                break; // No closing quote found
                             }
+                        } else {
+                            break; // No more quotes found
                         }
                     }
-                    return new AttributionPosition(1, line.length(), checkLine);
+                    
+                    if (quoteStart >= 0 && quoteEnd > quoteStart) {
+                        // Return position of the content between quotes, excluding the quotes
+                        // Column positions are 1-based
+                        return new SourcePosition(quoteStart + 2, quoteEnd, checkLine);
+                    }
+                    
+                    // If we can't find the third parameter, return a default position
+                    return new SourcePosition(1, 1, checkLine);
                 }
             }
         }
         
-        return new AttributionPosition(1, 1, blockLineNum);
+        return new SourcePosition(1, 1, blockLineNum);
     }
     
     /**
      * Finds the position of verse content.
      */
-    private ContentPosition findContentPosition(StructuralNode block, BlockValidationContext context) {
+    private SourcePosition findContentPosition(StructuralNode block, BlockValidationContext context) {
         List<String> fileLines = fileCache.getFileLines(context.getFilename());
         if (fileLines.isEmpty() || block.getSourceLocation() == null) {
-            return new ContentPosition(1, 1, block.getSourceLocation() != null ? block.getSourceLocation().getLineNumber() : 1);
+            return new SourcePosition(1, 1, block.getSourceLocation() != null ? block.getSourceLocation().getLineNumber() : 1);
         }
         
         int blockLineNum = block.getSourceLocation().getLineNumber();
@@ -514,48 +507,15 @@ public final class VerseBlockValidator extends AbstractBlockValidator<VerseBlock
                 String line = fileLines.get(i - 1);
                 if (!line.trim().equals("____") && !line.trim().isEmpty()) {
                     // Found content line
-                    return new ContentPosition(1, line.length(), i);
+                    return new SourcePosition(1, line.length(), i);
                 }
             }
         }
         
         // Default to block line
-        return new ContentPosition(1, 1, blockLineNum);
+        return new SourcePosition(1, 1, blockLineNum);
     }
     
-    private static class AuthorPosition {
-        final int startColumn;
-        final int endColumn;
-        final int lineNumber;
-        
-        AuthorPosition(int startColumn, int endColumn, int lineNumber) {
-            this.startColumn = startColumn;
-            this.endColumn = endColumn;
-            this.lineNumber = lineNumber;
-        }
-    }
     
-    private static class AttributionPosition {
-        final int startColumn;
-        final int endColumn;
-        final int lineNumber;
-        
-        AttributionPosition(int startColumn, int endColumn, int lineNumber) {
-            this.startColumn = startColumn;
-            this.endColumn = endColumn;
-            this.lineNumber = lineNumber;
-        }
-    }
     
-    private static class ContentPosition {
-        final int startColumn;
-        final int endColumn;
-        final int lineNumber;
-        
-        ContentPosition(int startColumn, int endColumn, int lineNumber) {
-            this.startColumn = startColumn;
-            this.endColumn = endColumn;
-            this.lineNumber = lineNumber;
-        }
-    }
 }
