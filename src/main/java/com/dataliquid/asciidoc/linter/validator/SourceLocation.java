@@ -139,6 +139,14 @@ public final class SourceLocation {
             return this;
         }
 
+        public Builder fromPosition(SourcePosition pos) {
+            this.startLine = pos.lineNumber;
+            this.endLine = pos.lineNumber;
+            this.startColumn = pos.startColumn;
+            this.endColumn = pos.endColumn;
+            return this;
+        }
+
         public SourceLocation build() {
             return new SourceLocation(this);
         }
