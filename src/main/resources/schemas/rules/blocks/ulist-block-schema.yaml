@@ -1,39 +1,18 @@
 $schema: https://json-schema.org/draft/2020-12/schema
 $id: https://dataliquid.com/asciidoc/linter/schemas/rules/blocks/ulist-block.schema.yaml
 title: Ulist Block Configuration Schema
-description: Schema for validating unordered list block configuration in AsciiDoc linter
+description: Schema for validating unordered list block configuration in AsciiDoc
+  linter
 type: object
 properties:
   name:
-    type: string
-    description: Optional name for the ulist block for better error messages
-    minLength: 1
-    maxLength: 50
+    $ref: https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/rule-name-type
   severity:
-    type: string
-    description: Default severity level for all rules in this block
-    enum: [error, warn, info]
+    $ref: https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/severity-type
   order:
-    type: integer
-    description: Order in which this block should appear relative to other blocks
-    minimum: 1
+    $ref: https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/order-type
   occurrence:
-    type: object
-    description: Occurrence rules for this block type
-    properties:
-      min:
-        type: integer
-        description: Minimum number of occurrences
-        minimum: 0
-      max:
-        type: integer
-        description: Maximum number of occurrences
-        minimum: 1
-      severity:
-        type: string
-        enum: [error, warn, info]
-        description: Severity for occurrence violations
-    additionalProperties: false
+    $ref: https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/occurrence-type
   items:
     type: object
     description: Item count validation rules
@@ -47,9 +26,7 @@ properties:
         description: Maximum number of items
         minimum: 1
       severity:
-        type: string
-        enum: [error, warn, info]
-        description: Severity for item count violations
+        $ref: https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/severity-type
     additionalProperties: false
   nestingLevel:
     type: object
@@ -60,13 +37,15 @@ properties:
         description: Maximum nesting level allowed
         minimum: 0
       severity:
-        type: string
-        enum: [error, warn, info]
-        description: Severity for nesting level violations
+        $ref: https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/severity-type
     additionalProperties: false
   markerStyle:
     type: string
     description: Expected marker style for list items
-    enum: ['*', '-', '.']
-required: [severity]
+    enum:
+    - '*'
+    - '-'
+    - .
+required:
+- severity
 additionalProperties: false

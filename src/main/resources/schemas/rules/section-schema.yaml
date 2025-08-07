@@ -5,15 +5,10 @@ description: Schema for validating document section configuration in AsciiDoc li
 type: object
 properties:
   name:
-    type: string
-    description: Optional name identifier for this section
-    minLength: 1
-    maxLength: 100
+    $ref: 'https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/rule-name-type'
     pattern: "^[a-zA-Z][a-zA-Z0-9_-]*$"
   order:
-    type: integer
-    description: Optional order in which this section should appear relative to siblings
-    minimum: 1
+    $ref: 'https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/order-type'
   level:
     type: integer
     description: The heading level of this section (0 = document title, 1 = main section, 2 = subsection, etc.)
@@ -34,13 +29,9 @@ properties:
     description: Title validation rules for this section
     properties:
       pattern:
-        type: string
-        description: Regular expression pattern the section title must match
-        minLength: 1
+        $ref: 'https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/pattern-property-type'
       severity:
-        type: string
-        description: Severity level for title validation violations
-        enum: [error, warn, info]
+        $ref: 'https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/severity-type'
         default: error
     required: [pattern, severity]
     additionalProperties: false
