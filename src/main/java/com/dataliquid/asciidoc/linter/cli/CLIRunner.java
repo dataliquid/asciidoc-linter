@@ -26,7 +26,7 @@ import com.dataliquid.asciidoc.linter.validator.ValidationResult;
 public class CLIRunner {
     
     private static final Logger logger = LogManager.getLogger(CLIRunner.class);
-    private static final String DEFAULT_CONFIG_FILE = ".linter-config.yaml";
+    private static final String DEFAULT_CONFIG_FILE = ".linter-rule-config.yaml";
     
     private final FileDiscoveryService fileDiscoveryService;
     private final CLIOutputHandler outputHandler;

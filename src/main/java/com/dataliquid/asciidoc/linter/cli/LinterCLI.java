@@ -64,8 +64,8 @@ public class LinterCLI {
             // Handle documentation generation
             if (cmd.hasOption("generate-docs")) {
                 // Input is not required for doc generation
-                if (!cmd.hasOption("config")) {
-                    System.err.println("Error: --config is required when using --generate-docs");
+                if (!cmd.hasOption("rule")) {
+                    System.err.println("Error: --rule is required when using --generate-docs");
                     return 2;
                 }
                 
@@ -123,8 +123,8 @@ public class LinterCLI {
         builder.inputPatterns(patterns);
         
         // Config file
-        if (cmd.hasOption("config")) {
-            builder.configFile(Paths.get(cmd.getOptionValue("config")));
+        if (cmd.hasOption("rule")) {
+            builder.configFile(Paths.get(cmd.getOptionValue("rule")));
         }
         
         // Output configuration
@@ -186,7 +186,7 @@ public class LinterCLI {
         String footer = "\nExamples:\n" +
             "  " + programName + " -i \"**/*.adoc\"\n" +
             "  " + programName + " -i \"docs/**/*.adoc,examples/**/*.asciidoc\" -f json -o report.json\n" +
-            "  " + programName + " --input \"src/*/docs/**/*.adoc,README.adoc\" --config strict.yaml --fail-level warn\n" +
+            "  " + programName + " --input \"src/*/docs/**/*.adoc,README.adoc\" --rule strict.yaml --fail-level warn\n" +
             "  " + programName + " -i \"**/*.adoc\" --output-config simple\n" +
             "  " + programName + " -i \"**/*.adoc\" --output-config-file my-output.yaml\n" +
             "\nAnt Pattern Syntax:\n" +
