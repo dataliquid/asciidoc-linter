@@ -44,7 +44,7 @@ properties:
           type: boolean
         uniqueItems: true
         examples:
-        - - true
+          - true
           - false
       severity:
         $ref: https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/severity-type

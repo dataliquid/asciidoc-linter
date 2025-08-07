@@ -263,7 +263,7 @@ public final class VerseBlockValidator extends AbstractBlockValidator<VerseBlock
         if (attribution != null && !attribution.trim().isEmpty()) {
             // Validate attribution length
             if (config.getMinLength() != null && attribution.length() < config.getMinLength()) {
-                SourcePosition pos = findSourcePosition(block, context);
+                SourcePosition pos = findAttributionPosition(block, context);
                 messages.add(ValidationMessage.builder()
                     .severity(verseConfig.getSeverity())
                     .ruleId(ATTRIBUTION_MIN_LENGTH)
@@ -281,7 +281,7 @@ public final class VerseBlockValidator extends AbstractBlockValidator<VerseBlock
             }
             
             if (config.getMaxLength() != null && attribution.length() > config.getMaxLength()) {
-                SourcePosition pos = findSourcePosition(block, context);
+                SourcePosition pos = findAttributionPosition(block, context);
                 messages.add(ValidationMessage.builder()
                     .severity(verseConfig.getSeverity())
                     .ruleId(ATTRIBUTION_MAX_LENGTH)
@@ -301,7 +301,7 @@ public final class VerseBlockValidator extends AbstractBlockValidator<VerseBlock
             // Validate pattern if specified
             if (config.getPattern() != null) {
                 if (!config.getPattern().matcher(attribution).matches()) {
-                    SourcePosition pos = findSourcePosition(block, context);
+                    SourcePosition pos = findAttributionPosition(block, context);
                     messages.add(ValidationMessage.builder()
                         .severity(verseConfig.getSeverity())
                         .ruleId(ATTRIBUTION_PATTERN)
@@ -358,7 +358,7 @@ public final class VerseBlockValidator extends AbstractBlockValidator<VerseBlock
         // Validate content length
         int contentLength = content != null ? content.length() : 0;
         if (config.getMinLength() != null && contentLength < config.getMinLength()) {
-            SourcePosition pos = findSourcePosition(block, context);
+            SourcePosition pos = findContentPosition(block, context);
             messages.add(ValidationMessage.builder()
                 .severity(verseConfig.getSeverity())
                 .ruleId(CONTENT_MIN_LENGTH)
@@ -377,7 +377,7 @@ public final class VerseBlockValidator extends AbstractBlockValidator<VerseBlock
         
         if (content != null) {
             if (config.getMaxLength() != null && content.length() > config.getMaxLength()) {
-                SourcePosition pos = findSourcePosition(block, context);
+                SourcePosition pos = findContentPosition(block, context);
                 messages.add(ValidationMessage.builder()
                     .severity(verseConfig.getSeverity())
                     .ruleId(CONTENT_MAX_LENGTH)
@@ -397,7 +397,7 @@ public final class VerseBlockValidator extends AbstractBlockValidator<VerseBlock
             // Validate pattern if specified
             if (config.getPattern() != null) {
                 if (!config.getPattern().matcher(content).matches()) {
-                    SourcePosition pos = findSourcePosition(block, context);
+                    SourcePosition pos = findContentPosition(block, context);
                     messages.add(ValidationMessage.builder()
                         .severity(verseConfig.getSeverity())
                         .ruleId(CONTENT_PATTERN)
@@ -474,22 +474,43 @@ public final class VerseBlockValidator extends AbstractBlockValidator<VerseBlock
                 String line = fileLines.get(checkLine - 1);
                 if (line.trim().startsWith("[verse")) {
                     // Found the [verse] line
-                    // Attribution is the second quoted parameter
-                    int firstQuoteStart = line.indexOf("\"");
-                    if (firstQuoteStart >= 0) {
-                        int firstQuoteEnd = line.indexOf("\"", firstQuoteStart + 1);
-                        if (firstQuoteEnd > firstQuoteStart) {
-                            // Look for second quoted parameter
-                            int secondQuoteStart = line.indexOf("\"", firstQuoteEnd + 1);
-                            if (secondQuoteStart >= 0) {
-                                int secondQuoteEnd = line.indexOf("\"", secondQuoteStart + 1);
-                                if (secondQuoteEnd > secondQuoteStart) {
-                                    return new SourcePosition(secondQuoteStart + 2, secondQuoteEnd, checkLine);
+                    // Attribution is the third parameter (after verse and author)
+                    // Pattern: [verse, "author", "attribution"]
+                    int quoteCount = 0;
+                    int quoteStart = -1;
+                    int quoteEnd = -1;
+                    int searchPos = 0;
+                    
+                    // Find the second quoted string (first is author, second is attribution)
+                    while (searchPos < line.length() && quoteCount < 2) {
+                        int nextQuoteStart = line.indexOf("\"", searchPos);
+                        if (nextQuoteStart >= 0) {
+                            int nextQuoteEnd = line.indexOf("\"", nextQuoteStart + 1);
+                            if (nextQuoteEnd > nextQuoteStart) {
+                                quoteCount++;
+                                if (quoteCount == 2) {
+                                    // This is the attribution (second quoted string)
+                                    quoteStart = nextQuoteStart;
+                                    quoteEnd = nextQuoteEnd;
+                                    break;
                                 }
+                                searchPos = nextQuoteEnd + 1;
+                            } else {
+                                break; // No closing quote found
                             }
+                        } else {
+                            break; // No more quotes found
                         }
                     }
-                    return new SourcePosition(1, line.length(), checkLine);
+                    
+                    if (quoteStart >= 0 && quoteEnd > quoteStart) {
+                        // Return position of the content between quotes, excluding the quotes
+                        // Column positions are 1-based
+                        return new SourcePosition(quoteStart + 2, quoteEnd, checkLine);
+                    }
+                    
+                    // If we can't find the third parameter, return a default position
+                    return new SourcePosition(1, 1, checkLine);
                 }
             }
         }
