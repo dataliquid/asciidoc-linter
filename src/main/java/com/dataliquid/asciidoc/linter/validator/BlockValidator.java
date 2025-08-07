@@ -297,7 +297,6 @@ public final class BlockValidator {
                 // Find the actual block positions for error reporting
                 int currentBlockIndex = -1;
                 int nextBlockIndex = -1;
-                int blockIndex = 0;
                 
                 for (int j = 0; j < blocks.size(); j++) {
                     StructuralNode block = blocks.get(j);
@@ -314,7 +313,6 @@ public final class BlockValidator {
                             nextBlockIndex = j;
                         }
                     }
-                    blockIndex++;
                 }
                 
                 String currentKey = current.getName() != null ? current.getName() : current.getType().toString();
