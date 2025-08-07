@@ -4,6 +4,11 @@ import java.util.Objects;
 
 import com.dataliquid.asciidoc.linter.config.Severity;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.MAX;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.MIN;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.SEVERITY;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.EMPTY;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
@@ -19,38 +24,38 @@ public final class LineConfig {
         this.severity = builder.severity;
     }
 
-    @JsonProperty("min")
+    @JsonProperty(MIN)
     public Integer min() { return min; }
     
-    @JsonProperty("max")
+    @JsonProperty(MAX)
     public Integer max() { return max; }
     
-    @JsonProperty("severity")
+    @JsonProperty(SEVERITY)
     public Severity severity() { return severity; }
 
     public static Builder builder() {
         return new Builder();
     }
 
-    @JsonPOJOBuilder(withPrefix = "")
+    @JsonPOJOBuilder(withPrefix = EMPTY)
     public static class Builder {
         private Integer min;
         private Integer max;
         private Severity severity;
 
-        @JsonProperty("min")
+        @JsonProperty(MIN)
         public Builder min(Integer min) {
             this.min = min;
             return this;
         }
 
-        @JsonProperty("max")
+        @JsonProperty(MAX)
         public Builder max(Integer max) {
             this.max = max;
             return this;
         }
 
-        @JsonProperty("severity")
+        @JsonProperty(SEVERITY)
         public Builder severity(Severity severity) {
             this.severity = severity;
             return this;

@@ -7,6 +7,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.*;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.EMPTY;
+
 @JsonDeserialize(builder = AttributeConfig.Builder.class)
 public final class AttributeConfig {
     private final String name;
@@ -27,32 +30,32 @@ public final class AttributeConfig {
         this.severity = builder.severity;
     }
 
-    @JsonProperty("name")
+    @JsonProperty(NAME)
     public String name() { return name; }
     
-    @JsonProperty("order")
+    @JsonProperty(ORDER)
     public Integer order() { return order; }
     
-    @JsonProperty("required")
+    @JsonProperty(REQUIRED)
     public boolean required() { return required; }
     
-    @JsonProperty("minLength")
+    @JsonProperty(MIN_LENGTH)
     public Integer minLength() { return minLength; }
     
-    @JsonProperty("maxLength")
+    @JsonProperty(MAX_LENGTH)
     public Integer maxLength() { return maxLength; }
     
-    @JsonProperty("pattern")
+    @JsonProperty(PATTERN)
     public String pattern() { return pattern; }
     
-    @JsonProperty("severity")
+    @JsonProperty(SEVERITY)
     public Severity severity() { return severity; }
 
     public static Builder builder() {
         return new Builder();
     }
 
-    @JsonPOJOBuilder(withPrefix = "")
+    @JsonPOJOBuilder(withPrefix = EMPTY)
     public static class Builder {
         private String name;
         private Integer order;
@@ -62,43 +65,43 @@ public final class AttributeConfig {
         private String pattern;
         private Severity severity;
 
-        @JsonProperty("name")
+        @JsonProperty(NAME)
         public Builder name(String name) {
             this.name = name;
             return this;
         }
 
-        @JsonProperty("order")
+        @JsonProperty(ORDER)
         public Builder order(Integer order) {
             this.order = order;
             return this;
         }
 
-        @JsonProperty("required")
+        @JsonProperty(REQUIRED)
         public Builder required(boolean required) {
             this.required = required;
             return this;
         }
 
-        @JsonProperty("minLength")
+        @JsonProperty(MIN_LENGTH)
         public Builder minLength(Integer minLength) {
             this.minLength = minLength;
             return this;
         }
 
-        @JsonProperty("maxLength")
+        @JsonProperty(MAX_LENGTH)
         public Builder maxLength(Integer maxLength) {
             this.maxLength = maxLength;
             return this;
         }
 
-        @JsonProperty("pattern")
+        @JsonProperty(PATTERN)
         public Builder pattern(String pattern) {
             this.pattern = pattern;
             return this;
         }
 
-        @JsonProperty("severity")
+        @JsonProperty(SEVERITY)
         public Builder severity(Severity severity) {
             this.severity = severity;
             return this;

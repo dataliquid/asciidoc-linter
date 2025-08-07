@@ -11,17 +11,30 @@ import com.dataliquid.asciidoc.linter.config.Severity;
 import com.dataliquid.asciidoc.linter.config.rule.LineConfig;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Admonition.ICON;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Admonition.TYPE;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.ALLOWED;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.CONTENT;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.LINES;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.MAX_LENGTH;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.MIN_LENGTH;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.PATTERN;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.REQUIRED;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.SEVERITY;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.TITLE;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.EMPTY;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
 @JsonDeserialize(builder = AdmonitionBlock.Builder.class)
 public final class AdmonitionBlock extends AbstractBlock {
-    @JsonProperty("type")
+    @JsonProperty(TYPE)
     private final TypeConfig type;
-    @JsonProperty("title")
+    @JsonProperty(TITLE)
     private final TitleConfig title;
-    @JsonProperty("content")
+    @JsonProperty(CONTENT)
     private final ContentConfig content;
-    @JsonProperty("icon")
+    @JsonProperty(ICON)
     private final IconConfig icon;
     
     private AdmonitionBlock(Builder builder) {
@@ -59,11 +72,11 @@ public final class AdmonitionBlock extends AbstractBlock {
     
     @JsonDeserialize(builder = TypeConfig.TypeConfigBuilder.class)
     public static class TypeConfig {
-        @JsonProperty("required")
+        @JsonProperty(REQUIRED)
         private final boolean required;
-        @JsonProperty("allowed")
+        @JsonProperty(ALLOWED)
         private final List<String> allowed;
-        @JsonProperty("severity")
+        @JsonProperty(SEVERITY)
         private final Severity severity;
         
         private TypeConfig(TypeConfigBuilder builder) {
@@ -90,7 +103,7 @@ public final class AdmonitionBlock extends AbstractBlock {
             return new TypeConfigBuilder();
         }
         
-        @JsonPOJOBuilder(withPrefix = "")
+        @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class TypeConfigBuilder {
             private boolean required;
             private List<String> allowed;
@@ -133,15 +146,15 @@ public final class AdmonitionBlock extends AbstractBlock {
     
     @JsonDeserialize(builder = TitleConfig.TitleConfigBuilder.class)
     public static class TitleConfig {
-        @JsonProperty("required")
+        @JsonProperty(REQUIRED)
         private final boolean required;
-        @JsonProperty("pattern")
+        @JsonProperty(PATTERN)
         private final Pattern pattern;
-        @JsonProperty("minLength")
+        @JsonProperty(MIN_LENGTH)
         private final Integer minLength;
-        @JsonProperty("maxLength")
+        @JsonProperty(MAX_LENGTH)
         private final Integer maxLength;
-        @JsonProperty("severity")
+        @JsonProperty(SEVERITY)
         private final Severity severity;
         
         private TitleConfig(TitleConfigBuilder builder) {
@@ -176,7 +189,7 @@ public final class AdmonitionBlock extends AbstractBlock {
             return new TitleConfigBuilder();
         }
         
-        @JsonPOJOBuilder(withPrefix = "")
+        @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class TitleConfigBuilder {
             private boolean required;
             private Pattern pattern;
@@ -240,15 +253,15 @@ public final class AdmonitionBlock extends AbstractBlock {
     
     @JsonDeserialize(builder = ContentConfig.ContentConfigBuilder.class)
     public static class ContentConfig {
-        @JsonProperty("required")
+        @JsonProperty(REQUIRED)
         private final boolean required;
-        @JsonProperty("minLength")
+        @JsonProperty(MIN_LENGTH)
         private final Integer minLength;
-        @JsonProperty("maxLength")
+        @JsonProperty(MAX_LENGTH)
         private final Integer maxLength;
-        @JsonProperty("lines")
+        @JsonProperty(LINES)
         private final LineConfig lines;
-        @JsonProperty("severity")
+        @JsonProperty(SEVERITY)
         private final Severity severity;
         
         private ContentConfig(ContentConfigBuilder builder) {
@@ -283,7 +296,7 @@ public final class AdmonitionBlock extends AbstractBlock {
             return new ContentConfigBuilder();
         }
         
-        @JsonPOJOBuilder(withPrefix = "")
+        @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class ContentConfigBuilder {
             private boolean required;
             private Integer minLength;
@@ -340,11 +353,11 @@ public final class AdmonitionBlock extends AbstractBlock {
     
     @JsonDeserialize(builder = IconConfig.IconConfigBuilder.class)
     public static class IconConfig {
-        @JsonProperty("required")
+        @JsonProperty(REQUIRED)
         private final boolean required;
-        @JsonProperty("pattern")
+        @JsonProperty(PATTERN)
         private final Pattern pattern;
-        @JsonProperty("severity")
+        @JsonProperty(SEVERITY)
         private final Severity severity;
         
         private IconConfig(IconConfigBuilder builder) {
@@ -369,7 +382,7 @@ public final class AdmonitionBlock extends AbstractBlock {
             return new IconConfigBuilder();
         }
         
-        @JsonPOJOBuilder(withPrefix = "")
+        @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class IconConfigBuilder {
             private boolean required;
             private Pattern pattern;
@@ -416,7 +429,7 @@ public final class AdmonitionBlock extends AbstractBlock {
         }
     }
     
-    @JsonPOJOBuilder(withPrefix = "")
+    @JsonPOJOBuilder(withPrefix = EMPTY)
     public static class Builder extends AbstractBuilder<Builder> {
         private TypeConfig type;
         private TitleConfig title;

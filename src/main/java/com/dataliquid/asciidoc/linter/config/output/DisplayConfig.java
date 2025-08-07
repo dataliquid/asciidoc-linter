@@ -4,6 +4,14 @@ import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Output.CONTEXT_LINES;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Output.HIGHLIGHT_STYLE;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Output.MAX_LINE_WIDTH;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Output.SHOW_HEADER;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Output.SHOW_LINE_NUMBERS;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Output.USE_COLORS;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.EMPTY;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
 /**
@@ -81,7 +89,7 @@ public final class DisplayConfig {
         return new Builder();
     }
     
-    @JsonPOJOBuilder(withPrefix = "")
+    @JsonPOJOBuilder(withPrefix = EMPTY)
     public static final class Builder {
         private int contextLines = DEFAULT_CONTEXT_LINES;
         private HighlightStyle highlightStyle = DEFAULT_HIGHLIGHT_STYLE;
@@ -93,37 +101,37 @@ public final class DisplayConfig {
         private Builder() {
         }
         
-        @JsonProperty("contextLines")
+        @JsonProperty(CONTEXT_LINES)
         public Builder contextLines(int contextLines) {
             this.contextLines = contextLines;
             return this;
         }
         
-        @JsonProperty("highlightStyle")
+        @JsonProperty(HIGHLIGHT_STYLE)
         public Builder highlightStyle(HighlightStyle highlightStyle) {
             this.highlightStyle = highlightStyle != null ? highlightStyle : DEFAULT_HIGHLIGHT_STYLE;
             return this;
         }
         
-        @JsonProperty("useColors")
+        @JsonProperty(USE_COLORS)
         public Builder useColors(boolean useColors) {
             this.useColors = useColors;
             return this;
         }
         
-        @JsonProperty("showLineNumbers")
+        @JsonProperty(SHOW_LINE_NUMBERS)
         public Builder showLineNumbers(boolean showLineNumbers) {
             this.showLineNumbers = showLineNumbers;
             return this;
         }
         
-        @JsonProperty("maxLineWidth")
+        @JsonProperty(MAX_LINE_WIDTH)
         public Builder maxLineWidth(int maxLineWidth) {
             this.maxLineWidth = maxLineWidth;
             return this;
         }
         
-        @JsonProperty("showHeader")
+        @JsonProperty(SHOW_HEADER)
         public Builder showHeader(boolean showHeader) {
             this.showHeader = showHeader;
             return this;

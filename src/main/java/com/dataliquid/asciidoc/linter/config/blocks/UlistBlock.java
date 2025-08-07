@@ -5,6 +5,14 @@ import java.util.Objects;
 import com.dataliquid.asciidoc.linter.config.BlockType;
 import com.dataliquid.asciidoc.linter.config.Severity;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.List.ITEMS;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.List.NESTING_LEVEL;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.List.MARKER_STYLE;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.MIN;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.MAX;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.SEVERITY;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.EMPTY;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
@@ -14,11 +22,11 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
  */
 @JsonDeserialize(builder = UlistBlock.Builder.class)
 public final class UlistBlock extends AbstractBlock {
-    @JsonProperty("items")
+    @JsonProperty(ITEMS)
     private final ItemsConfig items;
-    @JsonProperty("nestingLevel")
+    @JsonProperty(NESTING_LEVEL)
     private final NestingLevelConfig nestingLevel;
-    @JsonProperty("markerStyle")
+    @JsonProperty(MARKER_STYLE)
     private final String markerStyle;
     
     private UlistBlock(Builder builder) {
@@ -54,11 +62,11 @@ public final class UlistBlock extends AbstractBlock {
      */
     @JsonDeserialize(builder = ItemsConfig.ItemsConfigBuilder.class)
     public static class ItemsConfig {
-        @JsonProperty("min")
+        @JsonProperty(MIN)
         private final Integer min;
-        @JsonProperty("max")
+        @JsonProperty(MAX)
         private final Integer max;
-        @JsonProperty("severity")
+        @JsonProperty(SEVERITY)
         private final Severity severity;
         
         private ItemsConfig(ItemsConfigBuilder builder) {
@@ -83,7 +91,7 @@ public final class UlistBlock extends AbstractBlock {
             return new ItemsConfigBuilder();
         }
         
-        @JsonPOJOBuilder(withPrefix = "")
+        @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class ItemsConfigBuilder {
             private Integer min;
             private Integer max;
@@ -129,9 +137,9 @@ public final class UlistBlock extends AbstractBlock {
      */
     @JsonDeserialize(builder = NestingLevelConfig.NestingLevelConfigBuilder.class)
     public static class NestingLevelConfig {
-        @JsonProperty("max")
+        @JsonProperty(MAX)
         private final Integer max;
-        @JsonProperty("severity")
+        @JsonProperty(SEVERITY)
         private final Severity severity;
         
         private NestingLevelConfig(NestingLevelConfigBuilder builder) {
@@ -151,7 +159,7 @@ public final class UlistBlock extends AbstractBlock {
             return new NestingLevelConfigBuilder();
         }
         
-        @JsonPOJOBuilder(withPrefix = "")
+        @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class NestingLevelConfigBuilder {
             private Integer max;
             private Severity severity;
@@ -185,7 +193,7 @@ public final class UlistBlock extends AbstractBlock {
         }
     }
     
-    @JsonPOJOBuilder(withPrefix = "")
+    @JsonPOJOBuilder(withPrefix = EMPTY)
     public static class Builder extends AbstractBuilder<Builder> {
         private ItemsConfig items;
         private NestingLevelConfig nestingLevel;

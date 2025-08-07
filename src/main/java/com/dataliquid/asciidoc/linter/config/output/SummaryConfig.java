@@ -4,6 +4,12 @@ import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.ENABLED;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Output.SHOW_FILE_LIST;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Output.SHOW_MOST_COMMON;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Output.SHOW_STATISTICS;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.EMPTY;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
 /**
@@ -64,7 +70,7 @@ public final class SummaryConfig {
         return new Builder();
     }
     
-    @JsonPOJOBuilder(withPrefix = "")
+    @JsonPOJOBuilder(withPrefix = EMPTY)
     public static final class Builder {
         private boolean enabled = DEFAULT_ENABLED;
         private boolean showStatistics = DEFAULT_SHOW_STATISTICS;
@@ -74,25 +80,25 @@ public final class SummaryConfig {
         private Builder() {
         }
         
-        @JsonProperty("enabled")
+        @JsonProperty(ENABLED)
         public Builder enabled(boolean enabled) {
             this.enabled = enabled;
             return this;
         }
         
-        @JsonProperty("showStatistics")
+        @JsonProperty(SHOW_STATISTICS)
         public Builder showStatistics(boolean showStatistics) {
             this.showStatistics = showStatistics;
             return this;
         }
         
-        @JsonProperty("showMostCommon")
+        @JsonProperty(SHOW_MOST_COMMON)
         public Builder showMostCommon(boolean showMostCommon) {
             this.showMostCommon = showMostCommon;
             return this;
         }
         
-        @JsonProperty("showFileList")
+        @JsonProperty(SHOW_FILE_LIST)
         public Builder showFileList(boolean showFileList) {
             this.showFileList = showFileList;
             return this;

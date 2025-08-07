@@ -4,6 +4,10 @@ import java.util.Objects;
 
 import com.dataliquid.asciidoc.linter.config.Severity;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.PATTERN;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.SEVERITY;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.EMPTY;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
@@ -17,28 +21,28 @@ public final class TitleConfig {
         this.severity = builder.severity;
     }
 
-    @JsonProperty("pattern")
+    @JsonProperty(PATTERN)
     public String pattern() { return pattern; }
     
-    @JsonProperty("severity")
+    @JsonProperty(SEVERITY)
     public Severity severity() { return severity; }
 
     public static Builder builder() {
         return new Builder();
     }
 
-    @JsonPOJOBuilder(withPrefix = "")
+    @JsonPOJOBuilder(withPrefix = EMPTY)
     public static class Builder {
         private String pattern;
         private Severity severity = Severity.ERROR;
 
-        @JsonProperty("pattern")
+        @JsonProperty(PATTERN)
         public Builder pattern(String pattern) {
             this.pattern = pattern;
             return this;
         }
 
-        @JsonProperty("severity")
+        @JsonProperty(SEVERITY)
         public Builder severity(Severity severity) {
             this.severity = Objects.requireNonNull(severity, "[" + getClass().getName() + "] severity must not be null");
             return this;

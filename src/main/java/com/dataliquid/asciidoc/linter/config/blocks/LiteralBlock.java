@@ -6,6 +6,20 @@ import com.dataliquid.asciidoc.linter.config.BlockType;
 import com.dataliquid.asciidoc.linter.config.Severity;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.LINES;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.MAX;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.MAX_LENGTH;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.MIN;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.MIN_LENGTH;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.REQUIRED;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.SEVERITY;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.TITLE;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Literal.CONSISTENT;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Literal.INDENTATION;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Literal.MAX_SPACES;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Literal.MIN_SPACES;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.EMPTY;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
 /**
@@ -26,11 +40,11 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
  */
 @JsonDeserialize(builder = LiteralBlock.Builder.class)
 public final class LiteralBlock extends AbstractBlock {
-    @JsonProperty("title")
+    @JsonProperty(TITLE)
     private final TitleConfig title;
-    @JsonProperty("lines")
+    @JsonProperty(LINES)
     private final LinesConfig lines;
-    @JsonProperty("indentation")
+    @JsonProperty(INDENTATION)
     private final IndentationConfig indentation;
     
     private LiteralBlock(Builder builder) {
@@ -63,13 +77,13 @@ public final class LiteralBlock extends AbstractBlock {
     
     @JsonDeserialize(builder = TitleConfig.TitleConfigBuilder.class)
     public static class TitleConfig {
-        @JsonProperty("required")
+        @JsonProperty(REQUIRED)
         private final boolean required;
-        @JsonProperty("minLength")
+        @JsonProperty(MIN_LENGTH)
         private final Integer minLength;
-        @JsonProperty("maxLength")
+        @JsonProperty(MAX_LENGTH)
         private final Integer maxLength;
-        @JsonProperty("severity")
+        @JsonProperty(SEVERITY)
         private final Severity severity;
         
         private TitleConfig(TitleConfigBuilder builder) {
@@ -99,7 +113,7 @@ public final class LiteralBlock extends AbstractBlock {
             return new TitleConfigBuilder();
         }
         
-        @JsonPOJOBuilder(withPrefix = "")
+        @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class TitleConfigBuilder {
             private boolean required;
             private Integer minLength;
@@ -149,11 +163,11 @@ public final class LiteralBlock extends AbstractBlock {
     
     @JsonDeserialize(builder = LinesConfig.LinesConfigBuilder.class)
     public static class LinesConfig {
-        @JsonProperty("min")
+        @JsonProperty(MIN)
         private final Integer min;
-        @JsonProperty("max")
+        @JsonProperty(MAX)
         private final Integer max;
-        @JsonProperty("severity")
+        @JsonProperty(SEVERITY)
         private final Severity severity;
         
         private LinesConfig(LinesConfigBuilder builder) {
@@ -178,7 +192,7 @@ public final class LiteralBlock extends AbstractBlock {
             return new LinesConfigBuilder();
         }
         
-        @JsonPOJOBuilder(withPrefix = "")
+        @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class LinesConfigBuilder {
             private Integer min;
             private Integer max;
@@ -221,15 +235,15 @@ public final class LiteralBlock extends AbstractBlock {
     
     @JsonDeserialize(builder = IndentationConfig.IndentationConfigBuilder.class)
     public static class IndentationConfig {
-        @JsonProperty("required")
+        @JsonProperty(REQUIRED)
         private final boolean required;
-        @JsonProperty("consistent")
+        @JsonProperty(CONSISTENT)
         private final boolean consistent;
-        @JsonProperty("minSpaces")
+        @JsonProperty(MIN_SPACES)
         private final Integer minSpaces;
-        @JsonProperty("maxSpaces")
+        @JsonProperty(MAX_SPACES)
         private final Integer maxSpaces;
-        @JsonProperty("severity")
+        @JsonProperty(SEVERITY)
         private final Severity severity;
         
         private IndentationConfig(IndentationConfigBuilder builder) {
@@ -264,7 +278,7 @@ public final class LiteralBlock extends AbstractBlock {
             return new IndentationConfigBuilder();
         }
         
-        @JsonPOJOBuilder(withPrefix = "")
+        @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class IndentationConfigBuilder {
             private boolean required;
             private boolean consistent;
@@ -319,7 +333,7 @@ public final class LiteralBlock extends AbstractBlock {
         }
     }
     
-    @JsonPOJOBuilder(withPrefix = "")
+    @JsonPOJOBuilder(withPrefix = EMPTY)
     public static class Builder extends AbstractBuilder<Builder> {
         private TitleConfig title;
         private LinesConfig lines;

@@ -5,16 +5,26 @@ import java.util.regex.Pattern;
 
 import com.dataliquid.asciidoc.linter.config.BlockType;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Quote.AUTHOR;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Quote.ATTRIBUTION;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.CONTENT;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.DEFAULT_VALUE;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.MIN_LENGTH;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.MAX_LENGTH;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.PATTERN;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.REQUIRED;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.EMPTY;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
 @JsonDeserialize(builder = VerseBlock.Builder.class)
 public final class VerseBlock extends AbstractBlock {
-    @JsonProperty("author")
+    @JsonProperty(AUTHOR)
     private final AuthorConfig author;
-    @JsonProperty("attribution")
+    @JsonProperty(ATTRIBUTION)
     private final AttributionConfig attribution;
-    @JsonProperty("content")
+    @JsonProperty(CONTENT)
     private final ContentConfig content;
     
     private VerseBlock(Builder builder) {
@@ -47,15 +57,15 @@ public final class VerseBlock extends AbstractBlock {
     
     @JsonDeserialize(builder = AuthorConfig.AuthorConfigBuilder.class)
     public static class AuthorConfig {
-        @JsonProperty("defaultValue")
+        @JsonProperty(DEFAULT_VALUE)
         private final String defaultValue;
-        @JsonProperty("minLength")
+        @JsonProperty(MIN_LENGTH)
         private final Integer minLength;
-        @JsonProperty("maxLength")
+        @JsonProperty(MAX_LENGTH)
         private final Integer maxLength;
-        @JsonProperty("pattern")
+        @JsonProperty(PATTERN)
         private final Pattern pattern;
-        @JsonProperty("required")
+        @JsonProperty(REQUIRED)
         private final boolean required;
         
         private AuthorConfig(AuthorConfigBuilder builder) {
@@ -90,7 +100,7 @@ public final class VerseBlock extends AbstractBlock {
             return new AuthorConfigBuilder();
         }
         
-        @JsonPOJOBuilder(withPrefix = "")
+        @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class AuthorConfigBuilder {
             private String defaultValue;
             private Integer minLength;
@@ -154,15 +164,15 @@ public final class VerseBlock extends AbstractBlock {
     
     @JsonDeserialize(builder = AttributionConfig.AttributionConfigBuilder.class)
     public static class AttributionConfig {
-        @JsonProperty("defaultValue")
+        @JsonProperty(DEFAULT_VALUE)
         private final String defaultValue;
-        @JsonProperty("minLength")
+        @JsonProperty(MIN_LENGTH)
         private final Integer minLength;
-        @JsonProperty("maxLength")
+        @JsonProperty(MAX_LENGTH)
         private final Integer maxLength;
-        @JsonProperty("pattern")
+        @JsonProperty(PATTERN)
         private final Pattern pattern;
-        @JsonProperty("required")
+        @JsonProperty(REQUIRED)
         private final boolean required;
         
         private AttributionConfig(AttributionConfigBuilder builder) {
@@ -197,7 +207,7 @@ public final class VerseBlock extends AbstractBlock {
             return new AttributionConfigBuilder();
         }
         
-        @JsonPOJOBuilder(withPrefix = "")
+        @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class AttributionConfigBuilder {
             private String defaultValue;
             private Integer minLength;
@@ -261,13 +271,13 @@ public final class VerseBlock extends AbstractBlock {
     
     @JsonDeserialize(builder = ContentConfig.ContentConfigBuilder.class)
     public static class ContentConfig {
-        @JsonProperty("minLength")
+        @JsonProperty(MIN_LENGTH)
         private final Integer minLength;
-        @JsonProperty("maxLength")
+        @JsonProperty(MAX_LENGTH)
         private final Integer maxLength;
-        @JsonProperty("pattern")
+        @JsonProperty(PATTERN)
         private final Pattern pattern;
-        @JsonProperty("required")
+        @JsonProperty(REQUIRED)
         private final boolean required;
         
         private ContentConfig(ContentConfigBuilder builder) {
@@ -297,7 +307,7 @@ public final class VerseBlock extends AbstractBlock {
             return new ContentConfigBuilder();
         }
         
-        @JsonPOJOBuilder(withPrefix = "")
+        @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class ContentConfigBuilder {
             private Integer minLength;
             private Integer maxLength;
@@ -352,7 +362,7 @@ public final class VerseBlock extends AbstractBlock {
         }
     }
     
-    @JsonPOJOBuilder(withPrefix = "")
+    @JsonPOJOBuilder(withPrefix = EMPTY)
     public static class Builder extends AbstractBuilder<Builder> {
         private AuthorConfig author;
         private AttributionConfig attribution;

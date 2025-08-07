@@ -11,6 +11,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.*;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Document.ALLOWED_BLOCKS;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Document.SUBSECTIONS;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.EMPTY;
+
 @JsonDeserialize(builder = SectionConfig.Builder.class)
 public final class SectionConfig {
     private final String name;
@@ -33,35 +38,35 @@ public final class SectionConfig {
         this.subsections = Collections.unmodifiableList(new ArrayList<>(builder.subsections));
     }
 
-    @JsonProperty("name")
+    @JsonProperty(NAME)
     public String name() { return name; }
     
-    @JsonProperty("order")
+    @JsonProperty(ORDER)
     public Integer order() { return order; }
     
-    @JsonProperty("level")
+    @JsonProperty(LEVEL)
     public int level() { return level; }
     
-    @JsonProperty("min")
+    @JsonProperty(MIN)
     public int min() { return min; }
     
-    @JsonProperty("max")
+    @JsonProperty(MAX)
     public int max() { return max; }
     
-    @JsonProperty("title")
+    @JsonProperty(TITLE)
     public TitleConfig title() { return title; }
     
-    @JsonProperty("allowedBlocks")
+    @JsonProperty(ALLOWED_BLOCKS)
     public List<Block> allowedBlocks() { return allowedBlocks; }
     
-    @JsonProperty("subsections")
+    @JsonProperty(SUBSECTIONS)
     public List<SectionConfig> subsections() { return subsections; }
 
     public static Builder builder() {
         return new Builder();
     }
 
-    @JsonPOJOBuilder(withPrefix = "")
+    @JsonPOJOBuilder(withPrefix = EMPTY)
     public static class Builder {
         private String name;
         private Integer order;
@@ -72,43 +77,43 @@ public final class SectionConfig {
         private List<Block> allowedBlocks = new ArrayList<>();
         private List<SectionConfig> subsections = new ArrayList<>();
 
-        @JsonProperty("name")
+        @JsonProperty(NAME)
         public Builder name(String name) {
             this.name = name;
             return this;
         }
 
-        @JsonProperty("order")
+        @JsonProperty(ORDER)
         public Builder order(Integer order) {
             this.order = order;
             return this;
         }
 
-        @JsonProperty("level")
+        @JsonProperty(LEVEL)
         public Builder level(int level) {
             this.level = level;
             return this;
         }
 
-        @JsonProperty("min")
+        @JsonProperty(MIN)
         public Builder min(int min) {
             this.min = min;
             return this;
         }
 
-        @JsonProperty("max")
+        @JsonProperty(MAX)
         public Builder max(int max) {
             this.max = max;
             return this;
         }
 
-        @JsonProperty("title")
+        @JsonProperty(TITLE)
         public Builder title(TitleConfig title) {
             this.title = title;
             return this;
         }
 
-        @JsonProperty("allowedBlocks")
+        @JsonProperty(ALLOWED_BLOCKS)
         @JsonDeserialize(using = BlockListDeserializer.class)
         public Builder allowedBlocks(List<Block> allowedBlocks) {
             this.allowedBlocks = allowedBlocks != null ? new ArrayList<>(allowedBlocks) : new ArrayList<>();
@@ -120,7 +125,7 @@ public final class SectionConfig {
             return this;
         }
 
-        @JsonProperty("subsections")
+        @JsonProperty(SUBSECTIONS)
         public Builder subsections(List<SectionConfig> subsections) {
             this.subsections = subsections != null ? new ArrayList<>(subsections) : new ArrayList<>();
             return this;
