@@ -10,6 +10,7 @@ import com.dataliquid.asciidoc.linter.config.Severity;
 import com.dataliquid.asciidoc.linter.config.blocks.LiteralBlock;
 import com.dataliquid.asciidoc.linter.validator.ErrorType;
 import com.dataliquid.asciidoc.linter.validator.PlaceholderContext;
+import static com.dataliquid.asciidoc.linter.validator.RuleIds.Literal.*;
 import com.dataliquid.asciidoc.linter.validator.SourceLocation;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
 
@@ -121,7 +122,7 @@ public final class LiteralBlockValidator extends AbstractBlockValidator<LiteralB
             TitlePosition pos = findTitlePosition(block, context);
             messages.add(ValidationMessage.builder()
                 .severity(severity)
-                .ruleId("literal.title.required")
+                .ruleId(TITLE_REQUIRED)
                 .location(SourceLocation.builder()
                     .filename(context.getFilename())
                     .startLine(pos.lineNumber)
@@ -204,7 +205,7 @@ public final class LiteralBlockValidator extends AbstractBlockValidator<LiteralB
                     block.getSourceLocation().getLineNumber() + lineNumber : lineNumber;
                 messages.add(ValidationMessage.builder()
                     .severity(severity)
-                    .ruleId("literal.indentation.minSpaces")
+                    .ruleId(INDENTATION_MIN_SPACES)
                     .location(SourceLocation.builder()
                         .filename(context.getFilename())
                         .startLine(currentLineNum)
@@ -228,7 +229,7 @@ public final class LiteralBlockValidator extends AbstractBlockValidator<LiteralB
             if (config.getMaxSpaces() != null && indentSpaces > config.getMaxSpaces()) {
                 messages.add(ValidationMessage.builder()
                     .severity(severity)
-                    .ruleId("literal.indentation.maxSpaces")
+                    .ruleId(INDENTATION_MAX_SPACES)
                     .location(context.createLocation(block))
                     .message("Line " + lineNumber + " has excessive indentation")
                     .actualValue(indentSpaces + " spaces")
@@ -243,7 +244,7 @@ public final class LiteralBlockValidator extends AbstractBlockValidator<LiteralB
                 } else if (indentSpaces != firstIndentation) {
                     messages.add(ValidationMessage.builder()
                         .severity(severity)
-                        .ruleId("literal.indentation.consistent")
+                        .ruleId(INDENTATION_CONSISTENT)
                         .location(context.createLocation(block))
                         .message("Line " + lineNumber + " has inconsistent indentation")
                         .actualValue(indentSpaces + " spaces")

@@ -14,6 +14,7 @@ import com.dataliquid.asciidoc.linter.config.blocks.VideoBlock;
 import com.dataliquid.asciidoc.linter.report.console.FileContentCache;
 import com.dataliquid.asciidoc.linter.validator.ErrorType;
 import com.dataliquid.asciidoc.linter.validator.PlaceholderContext;
+import static com.dataliquid.asciidoc.linter.validator.RuleIds.Video.*;
 import com.dataliquid.asciidoc.linter.validator.SourceLocation;
 import com.dataliquid.asciidoc.linter.validator.Suggestion;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
@@ -92,7 +93,7 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
             UrlPosition pos = findUrlPosition(node, context, url);
             messages.add(ValidationMessage.builder()
                     .severity(severity)
-                    .ruleId("video.url.required")
+                    .ruleId(URL_REQUIRED)
                     .message("Video URL is required but not provided")
                     .location(SourceLocation.builder()
                         .filename(context.getFilename())
@@ -122,7 +123,7 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
                 UrlPosition pos = findUrlPosition(node, context, url);
                 messages.add(ValidationMessage.builder()
                         .severity(severity)
-                        .ruleId("video.url.pattern")
+                        .ruleId(URL_PATTERN)
                         .message("Video URL does not match required pattern")
                         .location(SourceLocation.builder()
                             .filename(context.getFilename())
@@ -172,7 +173,7 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
             
             messages.add(ValidationMessage.builder()
                     .severity(severity)
-                    .ruleId("video." + dimensionType + ".required")
+                    .ruleId(dimensionType.equals(WIDTH) ? WIDTH_REQUIRED : HEIGHT_REQUIRED)
                     .message(String.format("Video %s is required but not provided", dimensionType))
                     .location(SourceLocation.builder()
                         .filename(context.getFilename())
@@ -206,7 +207,7 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
                 if (dimensionConfig.getMinValue() != null && value < dimensionConfig.getMinValue()) {
                     messages.add(ValidationMessage.builder()
                             .severity(severity)
-                            .ruleId("video." + dimensionType + ".min")
+                            .ruleId(dimensionType.equals(WIDTH) ? WIDTH_MIN : HEIGHT_MIN)
                             .message(String.format("Video %s is below minimum value", dimensionType))
                             .location(context.createLocation(node))
                             .errorType(ErrorType.OUT_OF_RANGE)
@@ -222,7 +223,7 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
                 if (dimensionConfig.getMaxValue() != null && value > dimensionConfig.getMaxValue()) {
                     messages.add(ValidationMessage.builder()
                             .severity(severity)
-                            .ruleId("video." + dimensionType + ".max")
+                            .ruleId(dimensionType.equals(WIDTH) ? WIDTH_MAX : HEIGHT_MAX)
                             .message(String.format("Video %s exceeds maximum value", dimensionType))
                             .location(context.createLocation(node))
                             .errorType(ErrorType.OUT_OF_RANGE)
@@ -237,7 +238,7 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
             } catch (NumberFormatException e) {
                 messages.add(ValidationMessage.builder()
                         .severity(severity)
-                        .ruleId("video." + dimensionType + ".invalid")
+                        .ruleId(dimensionType.equals(WIDTH) ? WIDTH_INVALID : HEIGHT_INVALID)
                         .message(String.format("Video %s is not a valid number", dimensionType))
                         .location(context.createLocation(node))
                         .errorType(ErrorType.INVALID_PATTERN)
@@ -271,7 +272,7 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
             
             messages.add(ValidationMessage.builder()
                     .severity(severity)
-                    .ruleId("video.poster.required")
+                    .ruleId(POSTER_REQUIRED)
                     .message("Video poster image is required but not provided")
                     .location(SourceLocation.builder()
                         .filename(context.getFilename())
@@ -304,7 +305,7 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
                 PosterPosition pos = findPosterPosition(node, context, poster);
                 messages.add(ValidationMessage.builder()
                         .severity(severity)
-                        .ruleId("video.poster.pattern")
+                        .ruleId(POSTER_PATTERN)
                         .message("Video poster does not match required pattern")
                         .location(SourceLocation.builder()
                             .filename(context.getFilename())
@@ -347,7 +348,7 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
                 
                 messages.add(ValidationMessage.builder()
                         .severity(severity)
-                        .ruleId("video.controls.required")
+                        .ruleId(CONTROLS_REQUIRED)
                         .message("Video controls are required but not enabled")
                         .location(SourceLocation.builder()
                             .filename(context.getFilename())
@@ -395,7 +396,7 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
             CaptionPosition pos = findCaptionPosition(node, context);
             messages.add(ValidationMessage.builder()
                     .severity(severity)
-                    .ruleId("video.caption.required")
+                    .ruleId(CAPTION_REQUIRED)
                     .message("Video caption is required but not provided")
                     .location(SourceLocation.builder()
                         .filename(context.getFilename())
@@ -426,7 +427,7 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
                 CaptionPosition pos = findCaptionPosition(node, context);
                 messages.add(ValidationMessage.builder()
                         .severity(severity)
-                        .ruleId("video.caption.minLength")
+                        .ruleId(CAPTION_MIN_LENGTH)
                         .message("Video caption is too short")
                         .location(SourceLocation.builder()
                             .filename(context.getFilename())
@@ -449,7 +450,7 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
                 CaptionPosition pos = findCaptionPosition(node, context);
                 messages.add(ValidationMessage.builder()
                         .severity(severity)
-                        .ruleId("video.caption.maxLength")
+                        .ruleId(CAPTION_MAX_LENGTH)
                         .message("Video caption is too long")
                         .location(SourceLocation.builder()
                             .filename(context.getFilename())

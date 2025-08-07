@@ -13,6 +13,7 @@ import com.dataliquid.asciidoc.linter.config.blocks.AudioBlock;
 import com.dataliquid.asciidoc.linter.report.console.FileContentCache;
 import com.dataliquid.asciidoc.linter.validator.ErrorType;
 import com.dataliquid.asciidoc.linter.validator.PlaceholderContext;
+import static com.dataliquid.asciidoc.linter.validator.RuleIds.Audio.*;
 import com.dataliquid.asciidoc.linter.validator.SourceLocation;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
 
@@ -126,7 +127,7 @@ public final class AudioBlockValidator extends AbstractBlockValidator<AudioBlock
             UrlPosition pos = findUrlPosition(block, context, url);
             messages.add(ValidationMessage.builder()
                 .severity(severity)
-                .ruleId("audio.url.required")
+                .ruleId(URL_REQUIRED)
                 .location(SourceLocation.builder()
                     .filename(context.getFilename())
                     .startLine(pos.lineNumber)
@@ -149,7 +150,7 @@ public final class AudioBlockValidator extends AbstractBlockValidator<AudioBlock
             if (!urlConfig.getPattern().matcher(url).matches()) {
                 messages.add(ValidationMessage.builder()
                     .severity(severity)
-                    .ruleId("audio.url.pattern")
+                    .ruleId(URL_PATTERN)
                     .location(context.createLocation(block))
                     .message("Audio URL does not match required pattern")
                     .actualValue(url)
@@ -193,7 +194,7 @@ public final class AudioBlockValidator extends AbstractBlockValidator<AudioBlock
         if (!autoplayConfig.isAllowed() && hasAutoplay) {
             messages.add(ValidationMessage.builder()
                 .severity(severity)
-                .ruleId("audio.options.autoplay.notAllowed")
+                .ruleId(OPTIONS_AUTOPLAY_NOT_ALLOWED)
                 .location(context.createLocation(block))
                 .message("Audio autoplay is not allowed")
                 .actualValue("autoplay enabled")
@@ -216,7 +217,7 @@ public final class AudioBlockValidator extends AbstractBlockValidator<AudioBlock
             ControlsPosition pos = findControlsPosition(block, context);
             messages.add(ValidationMessage.builder()
                 .severity(severity)
-                .ruleId("audio.options.controls.required")
+                .ruleId(OPTIONS_CONTROLS_REQUIRED)
                 .location(SourceLocation.builder()
                     .filename(context.getFilename())
                     .startLine(pos.lineNumber)
@@ -248,7 +249,7 @@ public final class AudioBlockValidator extends AbstractBlockValidator<AudioBlock
         if (!loopConfig.isAllowed() && hasLoop) {
             messages.add(ValidationMessage.builder()
                 .severity(severity)
-                .ruleId("audio.options.loop.notAllowed")
+                .ruleId(OPTIONS_LOOP_NOT_ALLOWED)
                 .location(context.createLocation(block))
                 .message("Audio loop is not allowed")
                 .actualValue("loop enabled")
@@ -282,7 +283,7 @@ public final class AudioBlockValidator extends AbstractBlockValidator<AudioBlock
             TitlePosition pos = findTitlePosition(block, context);
             messages.add(ValidationMessage.builder()
                 .severity(severity)
-                .ruleId("audio.title.required")
+                .ruleId(TITLE_REQUIRED)
                 .location(SourceLocation.builder()
                     .filename(context.getFilename())
                     .startLine(pos.lineNumber)
@@ -305,7 +306,7 @@ public final class AudioBlockValidator extends AbstractBlockValidator<AudioBlock
             if (titleConfig.getMinLength() != null && title.length() < titleConfig.getMinLength()) {
                 messages.add(ValidationMessage.builder()
                     .severity(severity)
-                    .ruleId("audio.title.minLength")
+                    .ruleId(TITLE_MIN_LENGTH)
                     .location(context.createLocation(block))
                     .message("Audio title is too short")
                     .actualValue(title.length() + " characters")
@@ -317,7 +318,7 @@ public final class AudioBlockValidator extends AbstractBlockValidator<AudioBlock
             if (titleConfig.getMaxLength() != null && title.length() > titleConfig.getMaxLength()) {
                 messages.add(ValidationMessage.builder()
                     .severity(severity)
-                    .ruleId("audio.title.maxLength")
+                    .ruleId(TITLE_MAX_LENGTH)
                     .location(context.createLocation(block))
                     .message("Audio title is too long")
                     .actualValue(title.length() + " characters")

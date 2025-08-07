@@ -1,5 +1,7 @@
 package com.dataliquid.asciidoc.linter.validator;
 
+import static com.dataliquid.asciidoc.linter.validator.RuleIds.Section.*;
+
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -115,7 +117,7 @@ public final class SectionValidator {
                 ValidationMessage message = ValidationMessage.builder()
                     .severity(configWithPattern.title() != null && configWithPattern.title().severity() != null ? 
                             configWithPattern.title().severity() : Severity.ERROR)
-                    .ruleId("section.title.pattern")
+                    .ruleId(TITLE_PATTERN)
                     .location(location)
                     .message("Section title does not match required pattern")
                     .actualValue(title)
@@ -126,7 +128,7 @@ public final class SectionValidator {
                 // No configs for this level at all
                 ValidationMessage message = ValidationMessage.builder()
                     .severity(Severity.ERROR)
-                    .ruleId("section.unexpected")
+                    .ruleId(UNEXPECTED)
                     .location(location)
                     .message("Section not allowed at level " + level + ": '" + title + "'")
                     .actualValue(title)
@@ -188,7 +190,7 @@ public final class SectionValidator {
             if (!pattern.matcher(title).matches()) {
                 ValidationMessage message = ValidationMessage.builder()
                     .severity(titleConfig.severity())
-                    .ruleId("section.title.pattern")
+                    .ruleId(TITLE_PATTERN)
                     .location(location)
                     .message("Section title does not match required pattern")
                     .actualValue(title)
@@ -208,7 +210,7 @@ public final class SectionValidator {
             SourceLocation location = createLocation(filename, section);
             ValidationMessage message = ValidationMessage.builder()
                 .severity(Severity.ERROR)
-                .ruleId("section.level")
+                .ruleId(LEVEL)
                 .location(location)
                 .message("Section level mismatch")
                 .actualValue(String.valueOf(actualLevel))
@@ -256,7 +258,7 @@ public final class SectionValidator {
             
             ValidationMessage message = ValidationMessage.builder()
                 .severity(Severity.ERROR)
-                .ruleId("section.min-occurrences")
+                .ruleId(MIN_OCCURRENCES)
                 .location(location)
                 .message("Missing required section '" + config.name() + "' at level " + config.level() + context)
                 .actualValue(String.valueOf(occurrences) + " occurrences")
@@ -278,7 +280,7 @@ public final class SectionValidator {
             
             ValidationMessage message = ValidationMessage.builder()
                 .severity(Severity.ERROR)
-                .ruleId("section.max-occurrences")
+                .ruleId(MAX_OCCURRENCES)
                 .location(location)
                 .message("Too many occurrences of section: " + config.name())
                 .actualValue(String.valueOf(occurrences))
@@ -302,7 +304,7 @@ public final class SectionValidator {
             if (!pattern.matcher(title).matches()) {
                 ValidationMessage message = ValidationMessage.builder()
                     .severity(titleConfig.severity())
-                    .ruleId("section.title.pattern")
+                    .ruleId(TITLE_PATTERN)
                     .location(location)
                     .message("Document title does not match required pattern")
                     .actualValue(title)
@@ -340,7 +342,7 @@ public final class SectionValidator {
             // Otherwise, use the original validation for backward compatibility
             ValidationMessage message = ValidationMessage.builder()
                 .severity(Severity.ERROR)
-                .ruleId("section.level0.missing")
+                .ruleId(LEVEL0_MISSING)
                 .location(location)
                 .message("Document title is required")
                 .actualValue("No title")
@@ -397,7 +399,7 @@ public final class SectionValidator {
                 
                 ValidationMessage message = ValidationMessage.builder()
                     .severity(Severity.ERROR)
-                    .ruleId("section.order")
+                    .ruleId(ORDER)
                     .location(location)
                     .message("Section order violation")
                     .actualValue(current.name() + " appears after " + next.name())

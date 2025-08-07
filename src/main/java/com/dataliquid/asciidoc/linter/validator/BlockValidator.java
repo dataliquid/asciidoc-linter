@@ -11,6 +11,8 @@ import org.asciidoctor.ast.Document;
 import org.asciidoctor.ast.Section;
 import org.asciidoctor.ast.StructuralNode;
 
+import static com.dataliquid.asciidoc.linter.validator.RuleIds.Block.*;
+
 import com.dataliquid.asciidoc.linter.config.BlockType;
 import com.dataliquid.asciidoc.linter.config.Severity;
 import com.dataliquid.asciidoc.linter.config.blocks.Block;
@@ -140,7 +142,7 @@ public final class BlockValidator {
                     // Unknown block type - add validation message
                     messages.add(ValidationMessage.builder()
                         .severity(Severity.ERROR)
-                        .ruleId("block.type.unknown")
+                        .ruleId(TYPE_UNKNOWN)
                         .location(context.createLocation(block))
                         .message("Unknown block type: " + block.getContext())
                         .actualValue(block.getContext())
@@ -156,7 +158,7 @@ public final class BlockValidator {
                     // Block type not allowed
                     messages.add(ValidationMessage.builder()
                         .severity(Severity.ERROR)
-                        .ruleId("block.type.not-allowed")
+                        .ruleId(TYPE_NOT_ALLOWED)
                         .location(context.createLocation(block))
                         .message("Block type not allowed in " + container.getContainerType())
                         .actualValue(actualType.toString())
@@ -180,7 +182,7 @@ public final class BlockValidator {
                 // Handle validation exceptions gracefully
                 messages.add(ValidationMessage.builder()
                     .severity(Severity.ERROR)
-                    .ruleId("block.validation.error")
+                    .ruleId(VALIDATION_ERROR)
                     .location(context.createLocation(block))
                     .message("Error validating block: " + e.getMessage())
                     .build());
@@ -320,7 +322,7 @@ public final class BlockValidator {
                 
                 messages.add(ValidationMessage.builder()
                     .severity(Severity.ERROR)
-                    .ruleId("block.order")
+                    .ruleId(ORDER)
                     .location(context.createLocation(blocks.get(currentBlockIndex)))
                     .message("Block order violation: '" + currentKey + "' (order=" + current.getOrder() + 
                             ") appears after '" + nextKey + "' (order=" + next.getOrder() + ")")
