@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.asciidoctor.ast.StructuralNode;
 
+import static com.dataliquid.asciidoc.linter.validator.block.BlockAttributes.*;
+
 import com.dataliquid.asciidoc.linter.config.BlockType;
 import com.dataliquid.asciidoc.linter.config.Severity;
 import com.dataliquid.asciidoc.linter.config.blocks.ListingBlock;
@@ -85,13 +87,13 @@ public final class ListingBlockValidator extends AbstractBlockValidator<ListingB
     
     private String getLanguage(StructuralNode block) {
         // Language can be in different attributes
-        Object lang = block.getAttribute("language");
+        Object lang = block.getAttribute(LANGUAGE);
         if (lang != null) {
             return lang.toString();
         }
         
         // Try source attribute
-        lang = block.getAttribute("source");
+        lang = block.getAttribute(SOURCE);
         if (lang != null) {
             return lang.toString();
         }

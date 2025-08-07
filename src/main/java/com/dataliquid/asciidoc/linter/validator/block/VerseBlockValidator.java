@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.asciidoctor.ast.StructuralNode;
 
+import static com.dataliquid.asciidoc.linter.validator.block.BlockAttributes.*;
+
 import com.dataliquid.asciidoc.linter.config.BlockType;
 import com.dataliquid.asciidoc.linter.config.blocks.VerseBlock;
 import com.dataliquid.asciidoc.linter.report.console.FileContentCache;
@@ -78,20 +80,20 @@ public final class VerseBlockValidator extends AbstractBlockValidator<VerseBlock
     
     private String getAuthor(StructuralNode block) {
         // Author can be in attribution attribute (standard way)
-        Object attr = block.getAttribute("attribution");
+        Object attr = block.getAttribute(ATTRIBUTION);
         if (attr != null) {
             return attr.toString();
         }
         
         // Check for author attribute
-        attr = block.getAttribute("author");
+        attr = block.getAttribute(AUTHOR);
         if (attr != null) {
             return attr.toString();
         }
         
         // Check for positional attribute [verse, Author, Source]
         // AsciidoctorJ puts "verse" in attribute "1", author in "2"
-        Object attr2 = block.getAttribute("2");
+        Object attr2 = block.getAttribute(ATTR_2);
         if (attr2 != null) {
             return attr2.toString();
         }
@@ -101,20 +103,20 @@ public final class VerseBlockValidator extends AbstractBlockValidator<VerseBlock
     
     private String getAttribution(StructuralNode block) {
         // Or in citetitle attribute (this is where AsciidoctorJ puts the citation)
-        Object attr = block.getAttribute("citetitle");
+        Object attr = block.getAttribute(CITETITLE);
         if (attr != null) {
             return attr.toString();
         }
         
         // Attribution can be in attribution attribute
-        attr = block.getAttribute("attribution");
+        attr = block.getAttribute(ATTRIBUTION);
         if (attr != null) {
             return attr.toString();
         }
         
         // Check for positional attribute [verse, Author, Source]
         // AsciidoctorJ puts "verse" in attribute "1", author in "2", source in "3"
-        Object attr3 = block.getAttribute("3");
+        Object attr3 = block.getAttribute(ATTR_3);
         if (attr3 != null) {
             return attr3.toString();
         }

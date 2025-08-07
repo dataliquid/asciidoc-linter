@@ -23,7 +23,6 @@ import com.dataliquid.asciidoc.linter.config.rule.OccurrenceConfig;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
 import com.dataliquid.asciidoc.linter.validator.ErrorType;
 import org.asciidoctor.ast.Cursor;
-import org.asciidoctor.ast.Block;
 
 /**
  * Unit tests for {@link ParagraphBlockValidator}.

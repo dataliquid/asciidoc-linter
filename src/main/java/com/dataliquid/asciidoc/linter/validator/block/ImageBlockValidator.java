@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.asciidoctor.ast.StructuralNode;
 
+import static com.dataliquid.asciidoc.linter.validator.block.BlockAttributes.*;
+
 import com.dataliquid.asciidoc.linter.config.BlockType;
 import com.dataliquid.asciidoc.linter.config.blocks.ImageBlock;
 import com.dataliquid.asciidoc.linter.report.console.FileContentCache;
@@ -86,7 +88,7 @@ public final class ImageBlockValidator extends AbstractBlockValidator<ImageBlock
     
     private String getImageUrl(StructuralNode block) {
         // Try different ways to get image URL
-        Object target = block.getAttribute("target");
+        Object target = block.getAttribute(TARGET);
         if (target != null) {
             return target.toString();
         }
@@ -100,12 +102,12 @@ public final class ImageBlockValidator extends AbstractBlockValidator<ImageBlock
     }
     
     private String getAltText(StructuralNode block) {
-        Object alt = block.getAttribute("alt");
+        Object alt = block.getAttribute(ALT);
         if (alt != null) {
             String altStr = alt.toString();
             // AsciidoctorJ generates default alt text from filename when none is provided
             // e.g., "missing-image.png" becomes "missing image"
-            Object target = block.getAttribute("target");
+            Object target = block.getAttribute(TARGET);
             if (target != null) {
                 String targetStr = target.toString();
                 // Remove file extension and convert to expected alt text format

@@ -6,6 +6,8 @@ import java.util.regex.Pattern;
 
 import org.asciidoctor.ast.StructuralNode;
 
+import static com.dataliquid.asciidoc.linter.validator.block.BlockAttributes.*;
+
 import com.dataliquid.asciidoc.linter.config.BlockType;
 import com.dataliquid.asciidoc.linter.config.Severity;
 import com.dataliquid.asciidoc.linter.config.blocks.VideoBlock;
@@ -52,11 +54,11 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
         
         // Validate dimensions
         if (videoConfig.getWidth() != null) {
-            validateDimension(node, videoConfig, "width", videoConfig.getWidth(), messages, context);
+            validateDimension(node, videoConfig, WIDTH, videoConfig.getWidth(), messages, context);
         }
         
         if (videoConfig.getHeight() != null) {
-            validateDimension(node, videoConfig, "height", videoConfig.getHeight(), messages, context);
+            validateDimension(node, videoConfig, HEIGHT, videoConfig.getHeight(), messages, context);
         }
         
         // Validate poster
@@ -79,7 +81,7 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
     
     private void validateUrl(StructuralNode node, VideoBlock videoConfig, List<ValidationMessage> messages, BlockValidationContext context) {
         VideoBlock.UrlConfig urlConfig = videoConfig.getUrl();
-        String url = (String) node.getAttribute("target");
+        String url = (String) node.getAttribute(TARGET);
         
         // Determine severity
         Severity severity = urlConfig.getSeverity() != null ? 
@@ -158,14 +160,14 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
             
             // Check if there are existing attributes
             boolean hasOtherAttributes = false;
-            if (dimensionType.equals("width")) {
-                hasOtherAttributes = node.getAttribute("height") != null || 
-                                   node.getAttribute("poster") != null || 
-                                   node.getAttribute("options") != null;
-            } else if (dimensionType.equals("height")) {
-                hasOtherAttributes = node.getAttribute("width") != null || 
-                                   node.getAttribute("poster") != null || 
-                                   node.getAttribute("options") != null;
+            if (dimensionType.equals(WIDTH)) {
+                hasOtherAttributes = node.getAttribute(HEIGHT) != null || 
+                                   node.getAttribute(POSTER) != null || 
+                                   node.getAttribute(OPTIONS) != null;
+            } else if (dimensionType.equals(HEIGHT)) {
+                hasOtherAttributes = node.getAttribute(WIDTH) != null || 
+                                   node.getAttribute(POSTER) != null || 
+                                   node.getAttribute(OPTIONS) != null;
             }
             
             messages.add(ValidationMessage.builder()
@@ -180,7 +182,7 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
                         .endColumn(pos.endColumn)
                         .build())
                     .errorType(ErrorType.MISSING_VALUE)
-                    .missingValueHint(dimensionType.equals("width") ? "640" : "360")
+                    .missingValueHint(dimensionType.equals(WIDTH) ? "640" : "360")
                     .placeholderContext(PlaceholderContext.builder()
                         .type(hasOtherAttributes ? PlaceholderContext.PlaceholderType.ATTRIBUTE_IN_LIST : 
                                                   PlaceholderContext.PlaceholderType.ATTRIBUTE_VALUE)
@@ -252,7 +254,7 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
     
     private void validatePoster(StructuralNode node, VideoBlock videoConfig, List<ValidationMessage> messages, BlockValidationContext context) {
         VideoBlock.PosterConfig posterConfig = videoConfig.getPoster();
-        String poster = (String) node.getAttribute("poster");
+        String poster = (String) node.getAttribute(POSTER);
         
         // Determine severity
         Severity severity = posterConfig.getSeverity() != null ? 
@@ -263,9 +265,9 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
             PosterPosition pos = findPosterPosition(node, context, poster);
             
             // Check if there are existing attributes
-            boolean hasOtherAttributes = node.getAttribute("width") != null || 
-                                       node.getAttribute("height") != null || 
-                                       node.getAttribute("options") != null;
+            boolean hasOtherAttributes = node.getAttribute(WIDTH) != null || 
+                                       node.getAttribute(HEIGHT) != null || 
+                                       node.getAttribute(OPTIONS) != null;
             
             messages.add(ValidationMessage.builder()
                     .severity(severity)
@@ -325,7 +327,7 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
     
     private void validateControls(StructuralNode node, VideoBlock videoConfig, List<ValidationMessage> messages, BlockValidationContext context) {
         VideoBlock.ControlsConfig controlsConfig = videoConfig.getOptions().getControls();
-        String controlsAttr = (String) node.getAttribute("options");
+        String controlsAttr = (String) node.getAttribute(OPTIONS);
         
         // Determine severity
         Severity severity = controlsConfig.getSeverity() != null ? 
@@ -339,9 +341,9 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
                 ControlsPosition pos = findControlsPosition(node, context);
                 
                 // Check if there are existing attributes
-                boolean hasOtherAttributes = node.getAttribute("width") != null || 
-                                           node.getAttribute("height") != null || 
-                                           node.getAttribute("poster") != null;
+                boolean hasOtherAttributes = node.getAttribute(WIDTH) != null || 
+                                           node.getAttribute(HEIGHT) != null || 
+                                           node.getAttribute(POSTER) != null;
                 
                 messages.add(ValidationMessage.builder()
                         .severity(severity)
@@ -377,7 +379,7 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
     
     private void validateCaption(StructuralNode node, VideoBlock videoConfig, List<ValidationMessage> messages, BlockValidationContext context) {
         VideoBlock.CaptionConfig captionConfig = videoConfig.getCaption();
-        String caption = (String) node.getAttribute("caption");
+        String caption = (String) node.getAttribute(CAPTION);
         
         // If no caption attribute, check for title
         if (caption == null) {

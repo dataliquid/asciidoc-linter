@@ -9,6 +9,8 @@ import org.asciidoctor.ast.Row;
 import org.asciidoctor.ast.StructuralNode;
 import org.asciidoctor.ast.Table;
 
+import static com.dataliquid.asciidoc.linter.validator.block.BlockAttributes.*;
+
 import com.dataliquid.asciidoc.linter.config.BlockType;
 import com.dataliquid.asciidoc.linter.config.Severity;
 import com.dataliquid.asciidoc.linter.config.blocks.TableBlock;
@@ -325,7 +327,7 @@ public final class TableBlockValidator extends AbstractBlockValidator<TableBlock
         
         // Validate table style
         if (config.getStyle() != null) {
-            Object styleObj = table.getAttribute("options");
+            Object styleObj = table.getAttribute(OPTIONS);
             String actualStyle = styleObj != null ? styleObj.toString() : null;
             if (actualStyle == null || !actualStyle.contains(config.getStyle())) {
                 messages.add(ValidationMessage.builder()
@@ -341,7 +343,7 @@ public final class TableBlockValidator extends AbstractBlockValidator<TableBlock
         
         // Validate borders
         if (config.getBorders() != null && config.getBorders()) {
-            Object frameObj = table.getAttribute("frame");
+            Object frameObj = table.getAttribute(FRAME);
             String frame = frameObj != null ? frameObj.toString() : null;
             if (frame == null || "none".equals(frame)) {
                 messages.add(ValidationMessage.builder()

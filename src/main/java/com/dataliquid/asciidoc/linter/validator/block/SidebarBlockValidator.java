@@ -6,6 +6,8 @@ import java.util.regex.Pattern;
 
 import org.asciidoctor.ast.StructuralNode;
 
+import static com.dataliquid.asciidoc.linter.validator.block.BlockAttributes.*;
+
 import com.dataliquid.asciidoc.linter.config.BlockType;
 import com.dataliquid.asciidoc.linter.config.Severity;
 import com.dataliquid.asciidoc.linter.config.blocks.SidebarBlock;
@@ -236,7 +238,7 @@ public final class SidebarBlockValidator extends AbstractBlockValidator<SidebarB
         SidebarBlock.PositionConfig positionConfig = config.getPosition();
         
         // Get position attribute
-        Object positionAttr = block.getAttribute("position");
+        Object positionAttr = block.getAttribute(POSITION);
         String position = positionAttr != null ? positionAttr.toString() : null;
         
         // Get severity with fallback to block severity

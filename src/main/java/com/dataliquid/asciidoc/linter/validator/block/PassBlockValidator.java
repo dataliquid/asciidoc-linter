@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.asciidoctor.ast.StructuralNode;
 
+import static com.dataliquid.asciidoc.linter.validator.block.BlockAttributes.*;
+
 import com.dataliquid.asciidoc.linter.config.BlockType;
 import com.dataliquid.asciidoc.linter.config.Severity;
 import com.dataliquid.asciidoc.linter.config.blocks.PassBlock;
@@ -73,8 +75,8 @@ public final class PassBlockValidator extends AbstractBlockValidator<PassBlock> 
         List<ValidationMessage> messages = new ArrayList<>();
         
         // Get pass block attributes
-        String passType = getAttributeAsString(block, "type");
-        String passReason = getAttributeAsString(block, "reason");
+        String passType = getAttributeAsString(block, TYPE);
+        String passReason = getAttributeAsString(block, REASON);
         String content = getBlockContent(block);
         
         // Validate type
