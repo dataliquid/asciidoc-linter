@@ -6,20 +6,36 @@ import java.util.regex.Pattern;
 import com.dataliquid.asciidoc.linter.config.BlockType;
 import com.dataliquid.asciidoc.linter.config.Severity;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Table.COLUMNS;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Table.ROWS;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Table.HEADER;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.CAPTION;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Table.FORMAT;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.MIN;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.MAX;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.SEVERITY;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.REQUIRED;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.PATTERN;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.MIN_LENGTH;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.MAX_LENGTH;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Table.STYLE;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Table.BORDERS;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.EMPTY;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
 @JsonDeserialize(builder = TableBlock.Builder.class)
 public final class TableBlock extends AbstractBlock {
-    @JsonProperty("columns")
+    @JsonProperty(COLUMNS)
     private final DimensionConfig columns;
-    @JsonProperty("rows")
+    @JsonProperty(ROWS)
     private final DimensionConfig rows;
-    @JsonProperty("header")
+    @JsonProperty(HEADER)
     private final HeaderConfig header;
-    @JsonProperty("caption")
+    @JsonProperty(CAPTION)
     private final CaptionConfig caption;
-    @JsonProperty("format")
+    @JsonProperty(FORMAT)
     private final FormatConfig format;
     
     private TableBlock(Builder builder) {
@@ -62,11 +78,11 @@ public final class TableBlock extends AbstractBlock {
     
     @JsonDeserialize(builder = DimensionConfig.DimensionConfigBuilder.class)
     public static class DimensionConfig {
-        @JsonProperty("min")
+        @JsonProperty(MIN)
         private final Integer min;
-        @JsonProperty("max")
+        @JsonProperty(MAX)
         private final Integer max;
-        @JsonProperty("severity")
+        @JsonProperty(SEVERITY)
         private final Severity severity;
         
         private DimensionConfig(DimensionConfigBuilder builder) {
@@ -91,7 +107,7 @@ public final class TableBlock extends AbstractBlock {
             return new DimensionConfigBuilder();
         }
         
-        @JsonPOJOBuilder(withPrefix = "")
+        @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class DimensionConfigBuilder {
             private Integer min;
             private Integer max;
@@ -134,11 +150,11 @@ public final class TableBlock extends AbstractBlock {
     
     @JsonDeserialize(builder = HeaderConfig.HeaderConfigBuilder.class)
     public static class HeaderConfig {
-        @JsonProperty("required")
+        @JsonProperty(REQUIRED)
         private final boolean required;
-        @JsonProperty("pattern")
+        @JsonProperty(PATTERN)
         private final Pattern pattern;
-        @JsonProperty("severity")
+        @JsonProperty(SEVERITY)
         private final Severity severity;
         
         private HeaderConfig(HeaderConfigBuilder builder) {
@@ -163,7 +179,7 @@ public final class TableBlock extends AbstractBlock {
             return new HeaderConfigBuilder();
         }
         
-        @JsonPOJOBuilder(withPrefix = "")
+        @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class HeaderConfigBuilder {
             private boolean required;
             private Pattern pattern;
@@ -212,15 +228,15 @@ public final class TableBlock extends AbstractBlock {
     
     @JsonDeserialize(builder = CaptionConfig.CaptionConfigBuilder.class)
     public static class CaptionConfig {
-        @JsonProperty("required")
+        @JsonProperty(REQUIRED)
         private final boolean required;
-        @JsonProperty("pattern")
+        @JsonProperty(PATTERN)
         private final Pattern pattern;
-        @JsonProperty("minLength")
+        @JsonProperty(MIN_LENGTH)
         private final Integer minLength;
-        @JsonProperty("maxLength")
+        @JsonProperty(MAX_LENGTH)
         private final Integer maxLength;
-        @JsonProperty("severity")
+        @JsonProperty(SEVERITY)
         private final Severity severity;
         
         private CaptionConfig(CaptionConfigBuilder builder) {
@@ -255,7 +271,7 @@ public final class TableBlock extends AbstractBlock {
             return new CaptionConfigBuilder();
         }
         
-        @JsonPOJOBuilder(withPrefix = "")
+        @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class CaptionConfigBuilder {
             private boolean required;
             private Pattern pattern;
@@ -319,11 +335,11 @@ public final class TableBlock extends AbstractBlock {
     
     @JsonDeserialize(builder = FormatConfig.FormatConfigBuilder.class)
     public static class FormatConfig {
-        @JsonProperty("style")
+        @JsonProperty(STYLE)
         private final String style;
-        @JsonProperty("borders")
+        @JsonProperty(BORDERS)
         private final Boolean borders;
-        @JsonProperty("severity")
+        @JsonProperty(SEVERITY)
         private final Severity severity;
         
         private FormatConfig(FormatConfigBuilder builder) {
@@ -348,7 +364,7 @@ public final class TableBlock extends AbstractBlock {
             return new FormatConfigBuilder();
         }
         
-        @JsonPOJOBuilder(withPrefix = "")
+        @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class FormatConfigBuilder {
             private String style;
             private Boolean borders;
@@ -389,7 +405,7 @@ public final class TableBlock extends AbstractBlock {
         }
     }
     
-    @JsonPOJOBuilder(withPrefix = "")
+    @JsonPOJOBuilder(withPrefix = EMPTY)
     public static class Builder extends AbstractBuilder<Builder> {
         private DimensionConfig columns;
         private DimensionConfig rows;

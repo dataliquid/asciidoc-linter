@@ -11,17 +11,28 @@ import com.dataliquid.asciidoc.linter.config.Severity;
 import com.dataliquid.asciidoc.linter.config.rule.LineConfig;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.ALLOWED;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.LINES;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.MAX;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.PATTERN;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.REQUIRED;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.SEVERITY;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.TITLE;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Listing.CALLOUTS;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Listing.LANGUAGE;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.EMPTY;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
 @JsonDeserialize(builder = ListingBlock.Builder.class)
 public final class ListingBlock extends AbstractBlock {
-    @JsonProperty("language")
+    @JsonProperty(LANGUAGE)
     private final LanguageConfig language;
-    @JsonProperty("lines")
+    @JsonProperty(LINES)
     private final LineConfig lines;
-    @JsonProperty("title")
+    @JsonProperty(TITLE)
     private final TitleConfig title;
-    @JsonProperty("callouts")
+    @JsonProperty(CALLOUTS)
     private final CalloutsConfig callouts;
     
     private ListingBlock(Builder builder) {
@@ -59,11 +70,11 @@ public final class ListingBlock extends AbstractBlock {
     
     @JsonDeserialize(builder = LanguageConfig.LanguageConfigBuilder.class)
     public static class LanguageConfig {
-        @JsonProperty("required")
+        @JsonProperty(REQUIRED)
         private final boolean required;
-        @JsonProperty("allowed")
+        @JsonProperty(ALLOWED)
         private final List<String> allowed;
-        @JsonProperty("severity")
+        @JsonProperty(SEVERITY)
         private final Severity severity;
         
         private LanguageConfig(LanguageConfigBuilder builder) {
@@ -90,7 +101,7 @@ public final class ListingBlock extends AbstractBlock {
             return new LanguageConfigBuilder();
         }
         
-        @JsonPOJOBuilder(withPrefix = "")
+        @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class LanguageConfigBuilder {
             private boolean required;
             private List<String> allowed;
@@ -133,11 +144,11 @@ public final class ListingBlock extends AbstractBlock {
     
     @JsonDeserialize(builder = TitleConfig.TitleConfigBuilder.class)
     public static class TitleConfig {
-        @JsonProperty("required")
+        @JsonProperty(REQUIRED)
         private final boolean required;
-        @JsonProperty("pattern")
+        @JsonProperty(PATTERN)
         private final Pattern pattern;
-        @JsonProperty("severity")
+        @JsonProperty(SEVERITY)
         private final Severity severity;
         
         private TitleConfig(TitleConfigBuilder builder) {
@@ -162,7 +173,7 @@ public final class ListingBlock extends AbstractBlock {
             return new TitleConfigBuilder();
         }
         
-        @JsonPOJOBuilder(withPrefix = "")
+        @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class TitleConfigBuilder {
             private boolean required;
             private Pattern pattern;
@@ -211,11 +222,11 @@ public final class ListingBlock extends AbstractBlock {
     
     @JsonDeserialize(builder = CalloutsConfig.CalloutsConfigBuilder.class)
     public static class CalloutsConfig {
-        @JsonProperty("allowed")
+        @JsonProperty(ALLOWED)
         private final boolean allowed;
-        @JsonProperty("max")
+        @JsonProperty(MAX)
         private final Integer max;
-        @JsonProperty("severity")
+        @JsonProperty(SEVERITY)
         private final Severity severity;
         
         private CalloutsConfig(CalloutsConfigBuilder builder) {
@@ -240,7 +251,7 @@ public final class ListingBlock extends AbstractBlock {
             return new CalloutsConfigBuilder();
         }
         
-        @JsonPOJOBuilder(withPrefix = "")
+        @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class CalloutsConfigBuilder {
             private boolean allowed;
             private Integer max;
@@ -281,7 +292,7 @@ public final class ListingBlock extends AbstractBlock {
         }
     }
     
-    @JsonPOJOBuilder(withPrefix = "")
+    @JsonPOJOBuilder(withPrefix = EMPTY)
     public static class Builder extends AbstractBuilder<Builder> {
         private LanguageConfig language;
         private LineConfig lines;

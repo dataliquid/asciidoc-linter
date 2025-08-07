@@ -7,15 +7,29 @@ import com.dataliquid.asciidoc.linter.config.BlockType;
 import com.dataliquid.asciidoc.linter.config.Severity;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.ALLOWED;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.MAX_LENGTH;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.MIN_LENGTH;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.OPTIONS;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.PATTERN;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.REQUIRED;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.SEVERITY;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.TITLE;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.URL;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Media.AUTOPLAY;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Media.CONTROLS;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Media.LOOP;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.EMPTY;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
 @JsonDeserialize(builder = AudioBlock.Builder.class)
 public final class AudioBlock extends AbstractBlock {
-    @JsonProperty("url")
+    @JsonProperty(URL)
     private final UrlConfig url;
-    @JsonProperty("options")
+    @JsonProperty(OPTIONS)
     private final OptionsConfig options;
-    @JsonProperty("title")
+    @JsonProperty(TITLE)
     private final TitleConfig title;
     
     private AudioBlock(Builder builder) {
@@ -48,11 +62,11 @@ public final class AudioBlock extends AbstractBlock {
     
     @JsonDeserialize(builder = UrlConfig.UrlConfigBuilder.class)
     public static class UrlConfig {
-        @JsonProperty("required")
+        @JsonProperty(REQUIRED)
         private final boolean required;
-        @JsonProperty("pattern")
+        @JsonProperty(PATTERN)
         private final Pattern pattern;
-        @JsonProperty("severity")
+        @JsonProperty(SEVERITY)
         private final Severity severity;
         
         private UrlConfig(UrlConfigBuilder builder) {
@@ -77,7 +91,7 @@ public final class AudioBlock extends AbstractBlock {
             return new UrlConfigBuilder();
         }
         
-        @JsonPOJOBuilder(withPrefix = "")
+        @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class UrlConfigBuilder {
             private boolean required;
             private Pattern pattern;
@@ -126,11 +140,11 @@ public final class AudioBlock extends AbstractBlock {
     
     @JsonDeserialize(builder = OptionsConfig.OptionsConfigBuilder.class)
     public static class OptionsConfig {
-        @JsonProperty("autoplay")
+        @JsonProperty(AUTOPLAY)
         private final AutoplayConfig autoplay;
-        @JsonProperty("controls")
+        @JsonProperty(CONTROLS)
         private final ControlsConfig controls;
-        @JsonProperty("loop")
+        @JsonProperty(LOOP)
         private final LoopConfig loop;
         
         private OptionsConfig(OptionsConfigBuilder builder) {
@@ -155,7 +169,7 @@ public final class AudioBlock extends AbstractBlock {
             return new OptionsConfigBuilder();
         }
         
-        @JsonPOJOBuilder(withPrefix = "")
+        @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class OptionsConfigBuilder {
             private AutoplayConfig autoplay;
             private ControlsConfig controls;
@@ -198,9 +212,9 @@ public final class AudioBlock extends AbstractBlock {
     
     @JsonDeserialize(builder = AutoplayConfig.AutoplayConfigBuilder.class)
     public static class AutoplayConfig {
-        @JsonProperty("allowed")
+        @JsonProperty(ALLOWED)
         private final boolean allowed;
-        @JsonProperty("severity")
+        @JsonProperty(SEVERITY)
         private final Severity severity;
         
         private AutoplayConfig(AutoplayConfigBuilder builder) {
@@ -220,7 +234,7 @@ public final class AudioBlock extends AbstractBlock {
             return new AutoplayConfigBuilder();
         }
         
-        @JsonPOJOBuilder(withPrefix = "")
+        @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class AutoplayConfigBuilder {
             private boolean allowed;
             private Severity severity;
@@ -256,9 +270,9 @@ public final class AudioBlock extends AbstractBlock {
     
     @JsonDeserialize(builder = ControlsConfig.ControlsConfigBuilder.class)
     public static class ControlsConfig {
-        @JsonProperty("required")
+        @JsonProperty(REQUIRED)
         private final boolean required;
-        @JsonProperty("severity")
+        @JsonProperty(SEVERITY)
         private final Severity severity;
         
         private ControlsConfig(ControlsConfigBuilder builder) {
@@ -278,7 +292,7 @@ public final class AudioBlock extends AbstractBlock {
             return new ControlsConfigBuilder();
         }
         
-        @JsonPOJOBuilder(withPrefix = "")
+        @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class ControlsConfigBuilder {
             private boolean required;
             private Severity severity;
@@ -314,9 +328,9 @@ public final class AudioBlock extends AbstractBlock {
     
     @JsonDeserialize(builder = LoopConfig.LoopConfigBuilder.class)
     public static class LoopConfig {
-        @JsonProperty("allowed")
+        @JsonProperty(ALLOWED)
         private final boolean allowed;
-        @JsonProperty("severity")
+        @JsonProperty(SEVERITY)
         private final Severity severity;
         
         private LoopConfig(LoopConfigBuilder builder) {
@@ -336,7 +350,7 @@ public final class AudioBlock extends AbstractBlock {
             return new LoopConfigBuilder();
         }
         
-        @JsonPOJOBuilder(withPrefix = "")
+        @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class LoopConfigBuilder {
             private boolean allowed;
             private Severity severity;
@@ -372,13 +386,13 @@ public final class AudioBlock extends AbstractBlock {
     
     @JsonDeserialize(builder = TitleConfig.TitleConfigBuilder.class)
     public static class TitleConfig {
-        @JsonProperty("required")
+        @JsonProperty(REQUIRED)
         private final boolean required;
-        @JsonProperty("minLength")
+        @JsonProperty(MIN_LENGTH)
         private final Integer minLength;
-        @JsonProperty("maxLength")
+        @JsonProperty(MAX_LENGTH)
         private final Integer maxLength;
-        @JsonProperty("severity")
+        @JsonProperty(SEVERITY)
         private final Severity severity;
         
         private TitleConfig(TitleConfigBuilder builder) {
@@ -408,7 +422,7 @@ public final class AudioBlock extends AbstractBlock {
             return new TitleConfigBuilder();
         }
         
-        @JsonPOJOBuilder(withPrefix = "")
+        @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class TitleConfigBuilder {
             private boolean required;
             private Integer minLength;
@@ -456,7 +470,7 @@ public final class AudioBlock extends AbstractBlock {
         }
     }
     
-    @JsonPOJOBuilder(withPrefix = "")
+    @JsonPOJOBuilder(withPrefix = EMPTY)
     public static class Builder extends AbstractBuilder<Builder> {
         private UrlConfig url;
         private OptionsConfig options;

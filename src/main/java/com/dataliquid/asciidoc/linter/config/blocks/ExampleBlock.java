@@ -8,6 +8,16 @@ import com.dataliquid.asciidoc.linter.config.BlockType;
 import com.dataliquid.asciidoc.linter.config.Severity;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.ALLOWED;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.CAPTION;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.MAX_LENGTH;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.MIN_LENGTH;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.PATTERN;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.REQUIRED;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.SEVERITY;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Example.COLLAPSIBLE;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.EMPTY;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
 /**
@@ -71,18 +81,18 @@ public class ExampleBlock extends AbstractBlock {
         return new Builder();
     }
     
-    @JsonPOJOBuilder(withPrefix = "")
+    @JsonPOJOBuilder(withPrefix = EMPTY)
     public static class Builder extends AbstractBlock.AbstractBuilder<Builder> {
         private CaptionConfig caption;
         private CollapsibleConfig collapsible;
         
-        @JsonProperty("caption")
+        @JsonProperty(CAPTION)
         public Builder caption(CaptionConfig caption) {
             this.caption = caption;
             return this;
         }
         
-        @JsonProperty("collapsible")
+        @JsonProperty(COLLAPSIBLE)
         public Builder collapsible(CollapsibleConfig collapsible) {
             this.collapsible = collapsible;
             return this;
@@ -169,7 +179,7 @@ public class ExampleBlock extends AbstractBlock {
             return new Builder();
         }
         
-        @JsonPOJOBuilder(withPrefix = "")
+        @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class Builder {
             private boolean required = false;
             private Pattern pattern;
@@ -177,31 +187,31 @@ public class ExampleBlock extends AbstractBlock {
             private Integer maxLength;
             private Severity severity;
             
-            @JsonProperty("required")
+            @JsonProperty(REQUIRED)
             public Builder required(boolean required) {
                 this.required = required;
                 return this;
             }
             
-            @JsonProperty("pattern")
+            @JsonProperty(PATTERN)
             public Builder pattern(String pattern) {
                 this.pattern = pattern != null ? Pattern.compile(pattern) : null;
                 return this;
             }
             
-            @JsonProperty("minLength")
+            @JsonProperty(MIN_LENGTH)
             public Builder minLength(Integer minLength) {
                 this.minLength = minLength;
                 return this;
             }
             
-            @JsonProperty("maxLength")
+            @JsonProperty(MAX_LENGTH)
             public Builder maxLength(Integer maxLength) {
                 this.maxLength = maxLength;
                 return this;
             }
             
-            @JsonProperty("severity")
+            @JsonProperty(SEVERITY)
             public Builder severity(Severity severity) {
                 this.severity = severity;
                 return this;
@@ -269,25 +279,25 @@ public class ExampleBlock extends AbstractBlock {
             return new Builder();
         }
         
-        @JsonPOJOBuilder(withPrefix = "")
+        @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class Builder {
             private boolean required = false;
             private List<Boolean> allowed;
             private Severity severity;
             
-            @JsonProperty("required")
+            @JsonProperty(REQUIRED)
             public Builder required(boolean required) {
                 this.required = required;
                 return this;
             }
             
-            @JsonProperty("allowed")
+            @JsonProperty(ALLOWED)
             public Builder allowed(List<Boolean> allowed) {
                 this.allowed = allowed;
                 return this;
             }
             
-            @JsonProperty("severity")
+            @JsonProperty(SEVERITY)
             public Builder severity(Severity severity) {
                 this.severity = severity;
                 return this;

@@ -5,19 +5,25 @@ import com.dataliquid.asciidoc.linter.config.Severity;
 import com.dataliquid.asciidoc.linter.config.rule.OccurrenceConfig;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.NAME;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.OCCURRENCE;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.ORDER;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.SEVERITY;
+import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.TYPE;
+
 public interface Block {
-    @JsonProperty("type")
+    @JsonProperty(TYPE)
     BlockType getType();
     
-    @JsonProperty("name")
+    @JsonProperty(NAME)
     String getName();
     
-    @JsonProperty("severity")
+    @JsonProperty(SEVERITY)
     Severity getSeverity();
     
-    @JsonProperty("occurrence")
+    @JsonProperty(OCCURRENCE)
     OccurrenceConfig getOccurrence();
     
-    @JsonProperty("order")
+    @JsonProperty(ORDER)
     Integer getOrder();
 }
