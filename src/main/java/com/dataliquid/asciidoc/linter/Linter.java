@@ -416,7 +416,7 @@ public class Linter {
         return ValidationResult.builder()
             .addScannedFile(file.toString())
             .addMessage(ValidationMessage.builder()
-                .severity(com.dataliquid.asciidoc.linter.config.Severity.ERROR)
+                .severity(com.dataliquid.asciidoc.linter.config.common.Severity.ERROR)
                 .ruleId("io-error")
                 .location(SourceLocation.builder()
                     .filename(file.toString())
@@ -435,7 +435,7 @@ public class Linter {
     
     private ValidationMessage createParseErrorMessage(String filename, Exception e) {
         return ValidationMessage.builder()
-            .severity(com.dataliquid.asciidoc.linter.config.Severity.ERROR)
+            .severity(com.dataliquid.asciidoc.linter.config.common.Severity.ERROR)
             .ruleId("parse-error")
             .location(SourceLocation.builder()
                 .filename(filename)

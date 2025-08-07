@@ -7,7 +7,7 @@ import java.util.regex.PatternSyntaxException;
 
 import org.asciidoctor.ast.StructuralNode;
 
-import com.dataliquid.asciidoc.linter.config.Severity;
+import com.dataliquid.asciidoc.linter.config.common.Severity;
 import com.dataliquid.asciidoc.linter.config.blocks.Block;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
 

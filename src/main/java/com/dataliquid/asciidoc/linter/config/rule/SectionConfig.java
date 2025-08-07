@@ -11,10 +11,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
-import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.*;
-import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Document.ALLOWED_BLOCKS;
-import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Document.SUBSECTIONS;
-import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.EMPTY;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.*;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Document.ALLOWED_BLOCKS;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Document.SUBSECTIONS;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.EMPTY;
 
 @JsonDeserialize(builder = SectionConfig.Builder.class)
 public final class SectionConfig {

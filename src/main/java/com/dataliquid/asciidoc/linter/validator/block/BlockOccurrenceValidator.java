@@ -54,7 +54,7 @@ public final class BlockOccurrenceValidator {
         // Validate occurrence count
         
         // Determine severity: use occurrence-specific severity if present, otherwise fall back to block severity
-        com.dataliquid.asciidoc.linter.config.Severity severity = occurrences.severity() != null 
+        com.dataliquid.asciidoc.linter.config.common.Severity severity = occurrences.severity() != null 
             ? occurrences.severity() 
             : block.getSeverity();
         

@@ -2,7 +2,7 @@ package com.dataliquid.asciidoc.linter.validator.block;
 
 import org.asciidoctor.ast.StructuralNode;
 
-import com.dataliquid.asciidoc.linter.config.BlockType;
+import com.dataliquid.asciidoc.linter.config.blocks.BlockType;
 
 import static com.dataliquid.asciidoc.linter.validator.block.BlockAttributes.*;
 

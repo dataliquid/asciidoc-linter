@@ -143,10 +143,10 @@ public class SummaryRenderer {
                 List<ValidationMessage> messages = entry.getValue();
                 
                 long errorCount = messages.stream()
-                    .filter(msg -> msg.getSeverity() == com.dataliquid.asciidoc.linter.config.Severity.ERROR)
+                    .filter(msg -> msg.getSeverity() == com.dataliquid.asciidoc.linter.config.common.Severity.ERROR)
                     .count();
                 long warnCount = messages.stream()
-                    .filter(msg -> msg.getSeverity() == com.dataliquid.asciidoc.linter.config.Severity.WARN)
+                    .filter(msg -> msg.getSeverity() == com.dataliquid.asciidoc.linter.config.common.Severity.WARN)
                     .count();
                 
                 writer.printf("  - %s: ", filename);
@@ -196,7 +196,7 @@ public class SummaryRenderer {
     
     private int getFilesWithErrorCount(ValidationResult result) {
         return (int) result.getMessages().stream()
-            .filter(msg -> msg.getSeverity() == com.dataliquid.asciidoc.linter.config.Severity.ERROR)
+            .filter(msg -> msg.getSeverity() == com.dataliquid.asciidoc.linter.config.common.Severity.ERROR)
             .map(msg -> msg.getLocation().getFilename())
             .distinct()
             .count();

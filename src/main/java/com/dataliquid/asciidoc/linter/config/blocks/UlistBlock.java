@@ -2,17 +2,17 @@ package com.dataliquid.asciidoc.linter.config.blocks;
 
 import java.util.Objects;
 
-import com.dataliquid.asciidoc.linter.config.BlockType;
-import com.dataliquid.asciidoc.linter.config.Severity;
+import com.dataliquid.asciidoc.linter.config.blocks.BlockType;
+import com.dataliquid.asciidoc.linter.config.common.Severity;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.List.ITEMS;
-import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.List.NESTING_LEVEL;
-import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.List.MARKER_STYLE;
-import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.MIN;
-import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.MAX;
-import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.SEVERITY;
-import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.EMPTY;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.List.ITEMS;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.List.NESTING_LEVEL;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.List.MARKER_STYLE;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.MIN;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.MAX;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.SEVERITY;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.EMPTY;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
