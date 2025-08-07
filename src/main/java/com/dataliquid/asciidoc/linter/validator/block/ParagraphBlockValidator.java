@@ -103,7 +103,7 @@ public final class ParagraphBlockValidator extends AbstractBlockValidator<Paragr
                                  List<ValidationMessage> messages) {
         
         // Get severity with fallback to block severity
-        Severity severity = lineConfig.severity() != null ? lineConfig.severity() : blockConfig.getSeverity();
+        Severity severity = resolveSeverity(lineConfig.severity(), blockConfig.getSeverity());
         
         if (lineConfig.min() != null && actualLines < lineConfig.min()) {
             SourcePosition pos = findSourcePosition(block, context, actualLines);
@@ -148,9 +148,7 @@ public final class ParagraphBlockValidator extends AbstractBlockValidator<Paragr
             // If content is empty and sentences are required, check occurrence min
             if (sentenceConfig.getOccurrence() != null && 
                 sentenceConfig.getOccurrence().min() > 0) {
-                Severity severity = sentenceConfig.getOccurrence().severity() != null 
-                    ? sentenceConfig.getOccurrence().severity() 
-                    : blockConfig.getSeverity();
+                Severity severity = resolveSeverity(sentenceConfig.getOccurrence().severity(), blockConfig.getSeverity());
                     
                 messages.add(ValidationMessage.builder()
                     .severity(severity)
@@ -217,9 +215,7 @@ public final class ParagraphBlockValidator extends AbstractBlockValidator<Paragr
                                           StructuralNode block,
                                           List<ValidationMessage> messages) {
         
-        Severity severity = occurrenceConfig.severity() != null 
-            ? occurrenceConfig.severity() 
-            : blockConfig.getSeverity();
+        Severity severity = resolveSeverity(occurrenceConfig.severity(), blockConfig.getSeverity());
         
         if (sentenceCount < occurrenceConfig.min()) {
             messages.add(ValidationMessage.builder()
@@ -256,9 +252,7 @@ public final class ParagraphBlockValidator extends AbstractBlockValidator<Paragr
                                         StructuralNode block,
                                         List<ValidationMessage> messages) {
         
-        Severity severity = wordsConfig.getSeverity() != null 
-            ? wordsConfig.getSeverity() 
-            : blockConfig.getSeverity();
+        Severity severity = resolveSeverity(wordsConfig.getSeverity(), blockConfig.getSeverity());
         
         for (int i = 0; i < sentences.size(); i++) {
             String sentence = sentences.get(i);

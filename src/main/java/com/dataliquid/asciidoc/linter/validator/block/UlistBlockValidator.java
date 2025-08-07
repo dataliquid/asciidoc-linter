@@ -92,7 +92,7 @@ public final class UlistBlockValidator extends AbstractBlockValidator<UlistBlock
                                   List<ValidationMessage> messages) {
         
         // Get severity with fallback to block severity
-        Severity severity = config.getSeverity() != null ? config.getSeverity() : blockConfig.getSeverity();
+        Severity severity = resolveSeverity(config.getSeverity(), blockConfig.getSeverity());
         
         int itemCount = items.size();
         
@@ -137,7 +137,7 @@ public final class UlistBlockValidator extends AbstractBlockValidator<UlistBlock
                                     List<ValidationMessage> messages) {
         
         // Get severity with fallback to block severity
-        Severity severity = config.getSeverity() != null ? config.getSeverity() : blockConfig.getSeverity();
+        Severity severity = resolveSeverity(config.getSeverity(), blockConfig.getSeverity());
         
         int nestingLevel = calculateNestingLevel(block);
         

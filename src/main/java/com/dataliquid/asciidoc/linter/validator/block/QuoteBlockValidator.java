@@ -61,7 +61,7 @@ public final class QuoteBlockValidator extends AbstractBlockValidator<QuoteBlock
                                Severity blockSeverity, List<ValidationMessage> results,
                                BlockValidationContext context) {
         String attribution = extractAttribution(node);
-        Severity severity = config.getSeverity() != null ? config.getSeverity() : blockSeverity;
+        Severity severity = resolveSeverity(config.getSeverity(), blockSeverity);
         
         if (config.isRequired() && (attribution == null || attribution.trim().isEmpty())) {
             SourcePosition pos = findSourcePosition(node, context);
@@ -127,7 +127,7 @@ public final class QuoteBlockValidator extends AbstractBlockValidator<QuoteBlock
                                Severity blockSeverity, List<ValidationMessage> results,
                                BlockValidationContext context) {
         String citation = extractCitation(node);
-        Severity severity = config.getSeverity() != null ? config.getSeverity() : blockSeverity;
+        Severity severity = resolveSeverity(config.getSeverity(), blockSeverity);
         
         if (config.isRequired() && (citation == null || citation.trim().isEmpty())) {
             SourcePosition pos = findCitationPosition(node, context);
@@ -239,7 +239,7 @@ public final class QuoteBlockValidator extends AbstractBlockValidator<QuoteBlock
                               BlockValidationContext context) {
         String[] lines = content.split("\n");
         int lineCount = lines.length;
-        Severity severity = config.getSeverity() != null ? config.getSeverity() : blockSeverity;
+        Severity severity = resolveSeverity(config.getSeverity(), blockSeverity);
         
         if (config.getMin() != null && lineCount < config.getMin()) {
             results.add(ValidationMessage.builder()

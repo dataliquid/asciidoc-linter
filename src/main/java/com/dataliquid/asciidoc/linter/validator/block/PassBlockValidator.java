@@ -110,7 +110,7 @@ public final class PassBlockValidator extends AbstractBlockValidator<PassBlock> 
                             List<ValidationMessage> messages) {
         
         // Get severity with fallback to block severity
-        Severity severity = config.getSeverity() != null ? config.getSeverity() : blockConfig.getSeverity();
+        Severity severity = resolveSeverity(config.getSeverity(), blockConfig.getSeverity());
         
         // Check if type is required
         if (config.isRequired() && (passType == null || passType.trim().isEmpty())) {
@@ -155,7 +155,7 @@ public final class PassBlockValidator extends AbstractBlockValidator<PassBlock> 
                                List<ValidationMessage> messages) {
         
         // Get severity with fallback to block severity
-        Severity severity = config.getSeverity() != null ? config.getSeverity() : blockConfig.getSeverity();
+        Severity severity = resolveSeverity(config.getSeverity(), blockConfig.getSeverity());
         
         // Check if content is required
         if (config.isRequired() && (content == null || content.trim().isEmpty())) {
@@ -220,7 +220,7 @@ public final class PassBlockValidator extends AbstractBlockValidator<PassBlock> 
                                      List<ValidationMessage> messages) {
         
         // Get severity with fallback to block severity
-        Severity severity = config.getSeverity() != null ? config.getSeverity() : blockConfig.getSeverity();
+        Severity severity = resolveSeverity(config.getSeverity(), blockConfig.getSeverity());
         
         // Check if reason is required
         if (config.isRequired() && (passReason == null || passReason.trim().isEmpty())) {

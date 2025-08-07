@@ -93,7 +93,7 @@ public final class DlistBlockValidator extends AbstractBlockValidator<DlistBlock
                              List<ValidationMessage> messages) {
         
         // Get severity with fallback to block severity
-        Severity severity = config.getSeverity() != null ? config.getSeverity() : blockConfig.getSeverity();
+        Severity severity = resolveSeverity(config.getSeverity(), blockConfig.getSeverity());
         
         int termCount = entries.size();
         
@@ -202,7 +202,7 @@ public final class DlistBlockValidator extends AbstractBlockValidator<DlistBlock
                                     List<ValidationMessage> messages) {
         
         // Get severity with fallback to block severity
-        Severity severity = config.getSeverity() != null ? config.getSeverity() : blockConfig.getSeverity();
+        Severity severity = resolveSeverity(config.getSeverity(), blockConfig.getSeverity());
         
         Pattern pattern = config.getPattern() != null ? Pattern.compile(config.getPattern()) : null;
         

@@ -103,7 +103,7 @@ public final class TableBlockValidator extends AbstractBlockValidator<TableBlock
                                List<ValidationMessage> messages) {
         
         // Get severity with fallback to block severity
-        Severity severity = config.getSeverity() != null ? config.getSeverity() : blockConfig.getSeverity();
+        Severity severity = resolveSeverity(config.getSeverity(), blockConfig.getSeverity());
         
         int columnCount = table.getColumns().size();
         
@@ -136,7 +136,7 @@ public final class TableBlockValidator extends AbstractBlockValidator<TableBlock
                             List<ValidationMessage> messages) {
         
         // Get severity with fallback to block severity
-        Severity severity = config.getSeverity() != null ? config.getSeverity() : blockConfig.getSeverity();
+        Severity severity = resolveSeverity(config.getSeverity(), blockConfig.getSeverity());
         
         int rowCount = table.getBody().size();
         
@@ -169,7 +169,7 @@ public final class TableBlockValidator extends AbstractBlockValidator<TableBlock
                               List<ValidationMessage> messages) {
         
         // Get severity with fallback to block severity
-        Severity severity = config.getSeverity() != null ? config.getSeverity() : blockConfig.getSeverity();
+        Severity severity = resolveSeverity(config.getSeverity(), blockConfig.getSeverity());
         
         boolean hasHeader = !table.getHeader().isEmpty();
         
@@ -223,7 +223,7 @@ public final class TableBlockValidator extends AbstractBlockValidator<TableBlock
                                List<ValidationMessage> messages) {
         
         // Get severity with fallback to block severity
-        Severity severity = config.getSeverity() != null ? config.getSeverity() : blockConfig.getSeverity();
+        Severity severity = resolveSeverity(config.getSeverity(), blockConfig.getSeverity());
         
         String caption = table.getTitle();
         
@@ -305,7 +305,7 @@ public final class TableBlockValidator extends AbstractBlockValidator<TableBlock
                               List<ValidationMessage> messages) {
         
         // Get severity with fallback to block severity
-        Severity severity = config.getSeverity() != null ? config.getSeverity() : blockConfig.getSeverity();
+        Severity severity = resolveSeverity(config.getSeverity(), blockConfig.getSeverity());
         
         // Validate table style
         if (config.getStyle() != null) {

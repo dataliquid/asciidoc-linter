@@ -119,8 +119,7 @@ public final class AudioBlockValidator extends AbstractBlockValidator<AudioBlock
                            List<ValidationMessage> messages,
                            AudioBlock audioConfig) {
         
-        Severity severity = urlConfig.getSeverity() != null ? 
-            urlConfig.getSeverity() : audioConfig.getSeverity();
+        Severity severity = resolveSeverity(urlConfig.getSeverity(), audioConfig.getSeverity());
         
         // Check if URL is required
         if (urlConfig.isRequired() && (url == null || url.trim().isEmpty())) {
@@ -183,8 +182,7 @@ public final class AudioBlockValidator extends AbstractBlockValidator<AudioBlock
                                 List<ValidationMessage> messages,
                                 AudioBlock audioConfig) {
         
-        Severity severity = autoplayConfig.getSeverity() != null ? 
-            autoplayConfig.getSeverity() : audioConfig.getSeverity();
+        Severity severity = resolveSeverity(autoplayConfig.getSeverity(), audioConfig.getSeverity());
         
         boolean hasAutoplay = hasOption(block, AUTOPLAY);
         
@@ -205,8 +203,7 @@ public final class AudioBlockValidator extends AbstractBlockValidator<AudioBlock
                                 List<ValidationMessage> messages,
                                 AudioBlock audioConfig) {
         
-        Severity severity = controlsConfig.getSeverity() != null ? 
-            controlsConfig.getSeverity() : audioConfig.getSeverity();
+        Severity severity = resolveSeverity(controlsConfig.getSeverity(), audioConfig.getSeverity());
         
         boolean hasControls = !hasOption(block, NOCONTROLS);
         
@@ -235,8 +232,7 @@ public final class AudioBlockValidator extends AbstractBlockValidator<AudioBlock
                             List<ValidationMessage> messages,
                             AudioBlock audioConfig) {
         
-        Severity severity = loopConfig.getSeverity() != null ? 
-            loopConfig.getSeverity() : audioConfig.getSeverity();
+        Severity severity = resolveSeverity(loopConfig.getSeverity(), audioConfig.getSeverity());
         
         boolean hasLoop = hasOption(block, LOOP);
         
@@ -270,8 +266,7 @@ public final class AudioBlockValidator extends AbstractBlockValidator<AudioBlock
                              List<ValidationMessage> messages,
                              AudioBlock audioConfig) {
         
-        Severity severity = titleConfig.getSeverity() != null ? 
-            titleConfig.getSeverity() : audioConfig.getSeverity();
+        Severity severity = resolveSeverity(titleConfig.getSeverity(), audioConfig.getSeverity());
         
         if (titleConfig.isRequired() && (title == null || title.trim().isEmpty())) {
             SourcePosition pos = findTitlePosition(block, context);

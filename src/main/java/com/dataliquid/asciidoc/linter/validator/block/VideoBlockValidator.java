@@ -84,8 +84,7 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
         String url = (String) node.getAttribute(TARGET);
         
         // Determine severity
-        Severity severity = urlConfig.getSeverity() != null ? 
-            urlConfig.getSeverity() : videoConfig.getSeverity();
+        Severity severity = resolveSeverity(urlConfig.getSeverity(), videoConfig.getSeverity());
         
         // Check if required
         if (Boolean.TRUE.equals(urlConfig.getRequired()) && (url == null || url.trim().isEmpty())) {
@@ -144,8 +143,7 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
         String dimensionStr = (String) node.getAttribute(dimensionType);
         
         // Determine severity
-        Severity severity = dimensionConfig.getSeverity() != null ? 
-            dimensionConfig.getSeverity() : videoConfig.getSeverity();
+        Severity severity = resolveSeverity(dimensionConfig.getSeverity(), videoConfig.getSeverity());
         
         // Check if required
         if (Boolean.TRUE.equals(dimensionConfig.getRequired()) && 
@@ -248,8 +246,7 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
         String poster = (String) node.getAttribute(POSTER);
         
         // Determine severity
-        Severity severity = posterConfig.getSeverity() != null ? 
-            posterConfig.getSeverity() : videoConfig.getSeverity();
+        Severity severity = resolveSeverity(posterConfig.getSeverity(), videoConfig.getSeverity());
         
         // Check if required
         if (Boolean.TRUE.equals(posterConfig.getRequired()) && (poster == null || poster.trim().isEmpty())) {
@@ -315,8 +312,7 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
         String controlsAttr = (String) node.getAttribute(OPTIONS);
         
         // Determine severity
-        Severity severity = controlsConfig.getSeverity() != null ? 
-            controlsConfig.getSeverity() : videoConfig.getSeverity();
+        Severity severity = resolveSeverity(controlsConfig.getSeverity(), videoConfig.getSeverity());
         
         // Check if controls are required
         if (Boolean.TRUE.equals(controlsConfig.getRequired())) {
@@ -369,8 +365,7 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
         }
         
         // Determine severity
-        Severity severity = captionConfig.getSeverity() != null ? 
-            captionConfig.getSeverity() : videoConfig.getSeverity();
+        Severity severity = resolveSeverity(captionConfig.getSeverity(), videoConfig.getSeverity());
         
         // Check if required
         if (Boolean.TRUE.equals(captionConfig.getRequired()) && (caption == null || caption.trim().isEmpty())) {

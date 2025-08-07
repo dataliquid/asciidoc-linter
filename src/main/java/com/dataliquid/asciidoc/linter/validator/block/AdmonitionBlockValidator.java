@@ -124,7 +124,7 @@ public final class AdmonitionBlockValidator extends AbstractBlockValidator<Admon
                             List<ValidationMessage> messages) {
         
         // Get severity with fallback to block severity
-        Severity severity = config.getSeverity() != null ? config.getSeverity() : blockConfig.getSeverity();
+        Severity severity = resolveSeverity(config.getSeverity(), blockConfig.getSeverity());
         
         // Check if type is required
         if (config.isRequired() && (admonitionType == null || admonitionType.trim().isEmpty())) {
@@ -165,7 +165,7 @@ public final class AdmonitionBlockValidator extends AbstractBlockValidator<Admon
                              List<ValidationMessage> messages) {
         
         // Get severity with fallback to block severity
-        Severity severity = config.getSeverity() != null ? config.getSeverity() : blockConfig.getSeverity();
+        Severity severity = resolveSeverity(config.getSeverity(), blockConfig.getSeverity());
         
         if (config.isRequired() && (title == null || title.trim().isEmpty())) {
             messages.add(ValidationMessage.builder()
@@ -242,7 +242,7 @@ public final class AdmonitionBlockValidator extends AbstractBlockValidator<Admon
                                List<ValidationMessage> messages) {
         
         // Get severity with fallback to block severity
-        Severity severity = config.getSeverity() != null ? config.getSeverity() : blockConfig.getSeverity();
+        Severity severity = resolveSeverity(config.getSeverity(), blockConfig.getSeverity());
         
         // Check if content is required
         if (config.isRequired() && (content == null || content.trim().isEmpty())) {
@@ -349,7 +349,7 @@ public final class AdmonitionBlockValidator extends AbstractBlockValidator<Admon
                             List<ValidationMessage> messages) {
         
         // Get severity with fallback to block severity
-        Severity severity = config.getSeverity() != null ? config.getSeverity() : blockConfig.getSeverity();
+        Severity severity = resolveSeverity(config.getSeverity(), blockConfig.getSeverity());
         
         if (config.isRequired() && !hasIcon) {
             messages.add(ValidationMessage.builder()

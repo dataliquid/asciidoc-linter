@@ -116,7 +116,7 @@ public final class ListingBlockValidator extends AbstractBlockValidator<ListingB
                                 List<ValidationMessage> messages) {
         
         // Get severity with fallback to block severity
-        Severity severity = config.getSeverity() != null ? config.getSeverity() : blockConfig.getSeverity();
+        Severity severity = resolveSeverity(config.getSeverity(), blockConfig.getSeverity());
         
         // Check if language is required
         if (config.isRequired() && (language == null || language.trim().isEmpty())) {
@@ -167,7 +167,7 @@ public final class ListingBlockValidator extends AbstractBlockValidator<ListingB
                              List<ValidationMessage> messages) {
         
         // Get severity with fallback to block severity
-        Severity severity = config.getSeverity() != null ? config.getSeverity() : blockConfig.getSeverity();
+        Severity severity = resolveSeverity(config.getSeverity(), blockConfig.getSeverity());
         
         if (config.isRequired() && (title == null || title.trim().isEmpty())) {
             messages.add(ValidationMessage.builder()
@@ -243,7 +243,7 @@ public final class ListingBlockValidator extends AbstractBlockValidator<ListingB
                                 List<ValidationMessage> messages) {
         
         // Get severity with fallback to block severity
-        Severity severity = config.getSeverity() != null ? config.getSeverity() : blockConfig.getSeverity();
+        Severity severity = resolveSeverity(config.getSeverity(), blockConfig.getSeverity());
         
         // Count callouts in content
         int calloutCount = countCallouts(content);

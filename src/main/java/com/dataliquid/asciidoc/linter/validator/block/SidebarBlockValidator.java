@@ -78,7 +78,7 @@ public final class SidebarBlockValidator extends AbstractBlockValidator<SidebarB
         boolean hasTitle = title != null && !title.trim().isEmpty();
         
         // Get severity with fallback to block severity
-        Severity severity = titleConfig.getSeverity() != null ? titleConfig.getSeverity() : config.getSeverity();
+        Severity severity = resolveSeverity(titleConfig.getSeverity(), config.getSeverity());
         
         // Check if title is required
         if (titleConfig.isRequired() && !hasTitle) {
@@ -207,7 +207,7 @@ public final class SidebarBlockValidator extends AbstractBlockValidator<SidebarB
         int lineCount = lines.length;
         
         // Get severity with fallback to block severity
-        Severity severity = linesConfig.getSeverity() != null ? linesConfig.getSeverity() : config.getSeverity();
+        Severity severity = resolveSeverity(linesConfig.getSeverity(), config.getSeverity());
         
         // Validate minimum lines
         if (linesConfig.getMin() != null && lineCount < linesConfig.getMin()) {
@@ -243,7 +243,7 @@ public final class SidebarBlockValidator extends AbstractBlockValidator<SidebarB
         String position = positionAttr != null ? positionAttr.toString() : null;
         
         // Get severity with fallback to block severity
-        Severity severity = positionConfig.getSeverity() != null ? positionConfig.getSeverity() : config.getSeverity();
+        Severity severity = resolveSeverity(positionConfig.getSeverity(), config.getSeverity());
         
         // Check if position is required
         if (positionConfig.isRequired() && (position == null || position.isEmpty())) {
