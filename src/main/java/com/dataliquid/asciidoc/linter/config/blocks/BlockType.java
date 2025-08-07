@@ -1,4 +1,4 @@
-package com.dataliquid.asciidoc.linter.config;
+package com.dataliquid.asciidoc.linter.config.blocks;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;

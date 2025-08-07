@@ -2,10 +2,15 @@ package com.dataliquid.asciidoc.linter.config.blocks;
 
 import java.util.Objects;
 
-import com.dataliquid.asciidoc.linter.config.BlockType;
-import com.dataliquid.asciidoc.linter.config.Severity;
+import com.dataliquid.asciidoc.linter.config.blocks.BlockType;
+import com.dataliquid.asciidoc.linter.config.common.Severity;
 import com.dataliquid.asciidoc.linter.config.rule.OccurrenceConfig;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.NAME;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.OCCURRENCE;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.ORDER;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.SEVERITY;
 
 public abstract class AbstractBlock implements Block {
     private final String name;
@@ -33,28 +38,28 @@ public abstract class AbstractBlock implements Block {
         protected OccurrenceConfig occurrence;
         protected Integer order;
         
-        @JsonProperty("name")
+        @JsonProperty(NAME)
         @SuppressWarnings("unchecked")
         public T name(String name) {
             this.name = name;
             return (T) this;
         }
         
-        @JsonProperty("severity")
+        @JsonProperty(SEVERITY)
         @SuppressWarnings("unchecked")
         public T severity(Severity severity) {
             this.severity = severity;
             return (T) this;
         }
         
-        @JsonProperty("occurrence")
+        @JsonProperty(OCCURRENCE)
         @SuppressWarnings("unchecked")
         public T occurrence(OccurrenceConfig occurrence) {
             this.occurrence = occurrence;
             return (T) this;
         }
         
-        @JsonProperty("order")
+        @JsonProperty(ORDER)
         @SuppressWarnings("unchecked")
         public T order(Integer order) {
             this.order = order;

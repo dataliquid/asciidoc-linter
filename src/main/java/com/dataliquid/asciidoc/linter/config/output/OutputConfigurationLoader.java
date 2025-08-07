@@ -64,16 +64,19 @@ public class OutputConfigurationLoader {
     }
     
     /**
-     * Returns the default output configuration.
+     * Loads a predefined output configuration from resources.
+     * 
+     * @param format The output format to load configuration for
+     * @return The loaded output configuration
+     * @throws IOException if the configuration cannot be loaded
      */
-    public OutputConfiguration getDefaultConfiguration() {
-        return OutputConfiguration.defaultConfig();
-    }
-    
-    /**
-     * Returns a compact configuration for CI/CD environments.
-     */
-    public OutputConfiguration getCompactConfiguration() {
-        return OutputConfiguration.compactConfig();
+    public OutputConfiguration loadPredefinedConfiguration(OutputFormat format) throws IOException {
+        String resourcePath = "/output-configs/" + format.getValue() + ".yaml";
+        try (InputStream input = getClass().getResourceAsStream(resourcePath)) {
+            if (input == null) {
+                throw new IOException("Predefined output configuration not found: " + format.getValue());
+            }
+            return loadConfiguration(input);
+        }
     }
 }

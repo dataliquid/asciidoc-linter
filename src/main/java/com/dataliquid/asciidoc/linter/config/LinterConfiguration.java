@@ -6,6 +6,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
+import com.dataliquid.asciidoc.linter.config.document.DocumentConfiguration;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Document.DOCUMENT;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.EMPTY;
+
 @JsonDeserialize(builder = LinterConfiguration.Builder.class)
 public final class LinterConfiguration {
     private final DocumentConfiguration document;
@@ -14,18 +18,18 @@ public final class LinterConfiguration {
         this.document = builder.document;
     }
 
-    @JsonProperty("document")
+    @JsonProperty(DOCUMENT)
     public DocumentConfiguration document() { return document; }
 
     public static Builder builder() {
         return new Builder();
     }
 
-    @JsonPOJOBuilder(withPrefix = "")
+    @JsonPOJOBuilder(withPrefix = EMPTY)
     public static class Builder {
         private DocumentConfiguration document;
 
-        @JsonProperty("document")
+        @JsonProperty(DOCUMENT)
         public Builder document(DocumentConfiguration document) {
             this.document = document;
             return this;

@@ -1,16 +1,20 @@
 package com.dataliquid.asciidoc.linter.validator.block;
 
+import com.dataliquid.asciidoc.linter.validator.SourcePosition;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import org.asciidoctor.ast.StructuralNode;
 
-import com.dataliquid.asciidoc.linter.config.BlockType;
-import com.dataliquid.asciidoc.linter.config.Severity;
+import static com.dataliquid.asciidoc.linter.validator.block.BlockAttributes.*;
+
+import com.dataliquid.asciidoc.linter.config.blocks.BlockType;
+import com.dataliquid.asciidoc.linter.config.common.Severity;
 import com.dataliquid.asciidoc.linter.config.blocks.AudioBlock;
-import com.dataliquid.asciidoc.linter.report.console.FileContentCache;
 import com.dataliquid.asciidoc.linter.validator.ErrorType;
 import com.dataliquid.asciidoc.linter.validator.PlaceholderContext;
+import static com.dataliquid.asciidoc.linter.validator.RuleIds.Audio.*;
 import com.dataliquid.asciidoc.linter.validator.SourceLocation;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
 
@@ -38,7 +42,6 @@ import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
  * @see BlockTypeValidator
  */
 public final class AudioBlockValidator extends AbstractBlockValidator<AudioBlock> {
-    private final FileContentCache fileCache = new FileContentCache();
     
     @Override
     public BlockType getSupportedType() {
@@ -81,7 +84,7 @@ public final class AudioBlockValidator extends AbstractBlockValidator<AudioBlock
     
     private String getAudioUrl(StructuralNode block) {
         // Try different ways to get audio URL
-        Object target = block.getAttribute("target");
+        Object target = block.getAttribute(TARGET);
         if (target != null) {
             return target.toString();
         }
@@ -102,7 +105,7 @@ public final class AudioBlockValidator extends AbstractBlockValidator<AudioBlock
         }
         
         // Then try the caption attribute
-        Object caption = block.getAttribute("caption");
+        Object caption = block.getAttribute(CAPTION);
         if (caption != null) {
             return caption.toString();
         }
@@ -116,21 +119,17 @@ public final class AudioBlockValidator extends AbstractBlockValidator<AudioBlock
                            List<ValidationMessage> messages,
                            AudioBlock audioConfig) {
         
-        Severity severity = urlConfig.getSeverity() != null ? 
-            urlConfig.getSeverity() : audioConfig.getSeverity();
+        Severity severity = resolveSeverity(urlConfig.getSeverity(), audioConfig.getSeverity());
         
         // Check if URL is required
         if (urlConfig.isRequired() && (url == null || url.trim().isEmpty())) {
-            UrlPosition pos = findUrlPosition(block, context, url);
+            SourcePosition pos = findSourcePosition(block, context, url);
             messages.add(ValidationMessage.builder()
                 .severity(severity)
-                .ruleId("audio.url.required")
+                .ruleId(URL_REQUIRED)
                 .location(SourceLocation.builder()
                     .filename(context.getFilename())
-                    .startLine(pos.lineNumber)
-                    .endLine(pos.lineNumber)
-                    .startColumn(pos.startColumn)
-                    .endColumn(pos.endColumn)
+                    .fromPosition(pos)
                     .build())
                 .message("Audio URL is required but not provided")
                 .errorType(ErrorType.MISSING_VALUE)
@@ -147,7 +146,7 @@ public final class AudioBlockValidator extends AbstractBlockValidator<AudioBlock
             if (!urlConfig.getPattern().matcher(url).matches()) {
                 messages.add(ValidationMessage.builder()
                     .severity(severity)
-                    .ruleId("audio.url.pattern")
+                    .ruleId(URL_PATTERN)
                     .location(context.createLocation(block))
                     .message("Audio URL does not match required pattern")
                     .actualValue(url)
@@ -183,15 +182,14 @@ public final class AudioBlockValidator extends AbstractBlockValidator<AudioBlock
                                 List<ValidationMessage> messages,
                                 AudioBlock audioConfig) {
         
-        Severity severity = autoplayConfig.getSeverity() != null ? 
-            autoplayConfig.getSeverity() : audioConfig.getSeverity();
+        Severity severity = resolveSeverity(autoplayConfig.getSeverity(), audioConfig.getSeverity());
         
-        boolean hasAutoplay = hasOption(block, "autoplay");
+        boolean hasAutoplay = hasOption(block, AUTOPLAY);
         
         if (!autoplayConfig.isAllowed() && hasAutoplay) {
             messages.add(ValidationMessage.builder()
                 .severity(severity)
-                .ruleId("audio.options.autoplay.notAllowed")
+                .ruleId(OPTIONS_AUTOPLAY_NOT_ALLOWED)
                 .location(context.createLocation(block))
                 .message("Audio autoplay is not allowed")
                 .actualValue("autoplay enabled")
@@ -205,22 +203,18 @@ public final class AudioBlockValidator extends AbstractBlockValidator<AudioBlock
                                 List<ValidationMessage> messages,
                                 AudioBlock audioConfig) {
         
-        Severity severity = controlsConfig.getSeverity() != null ? 
-            controlsConfig.getSeverity() : audioConfig.getSeverity();
+        Severity severity = resolveSeverity(controlsConfig.getSeverity(), audioConfig.getSeverity());
         
-        boolean hasControls = !hasOption(block, "nocontrols");
+        boolean hasControls = !hasOption(block, NOCONTROLS);
         
         if (controlsConfig.isRequired() && !hasControls) {
-            ControlsPosition pos = findControlsPosition(block, context);
+            SourcePosition pos = findSourcePosition(block, context);
             messages.add(ValidationMessage.builder()
                 .severity(severity)
-                .ruleId("audio.options.controls.required")
+                .ruleId(OPTIONS_CONTROLS_REQUIRED)
                 .location(SourceLocation.builder()
                     .filename(context.getFilename())
-                    .startLine(pos.lineNumber)
-                    .endLine(pos.lineNumber)
-                    .startColumn(pos.startColumn)
-                    .endColumn(pos.endColumn)
+                    .fromPosition(pos)
                     .build())
                 .message("Audio controls are required but not enabled")
                 .errorType(ErrorType.MISSING_VALUE)
@@ -238,15 +232,14 @@ public final class AudioBlockValidator extends AbstractBlockValidator<AudioBlock
                             List<ValidationMessage> messages,
                             AudioBlock audioConfig) {
         
-        Severity severity = loopConfig.getSeverity() != null ? 
-            loopConfig.getSeverity() : audioConfig.getSeverity();
+        Severity severity = resolveSeverity(loopConfig.getSeverity(), audioConfig.getSeverity());
         
-        boolean hasLoop = hasOption(block, "loop");
+        boolean hasLoop = hasOption(block, LOOP);
         
         if (!loopConfig.isAllowed() && hasLoop) {
             messages.add(ValidationMessage.builder()
                 .severity(severity)
-                .ruleId("audio.options.loop.notAllowed")
+                .ruleId(OPTIONS_LOOP_NOT_ALLOWED)
                 .location(context.createLocation(block))
                 .message("Audio loop is not allowed")
                 .actualValue("loop enabled")
@@ -256,7 +249,7 @@ public final class AudioBlockValidator extends AbstractBlockValidator<AudioBlock
     }
     
     private boolean hasOption(StructuralNode block, String option) {
-        Object opts = block.getAttribute("opts");
+        Object opts = block.getAttribute(OPTS);
         if (opts != null) {
             String optsStr = opts.toString();
             return optsStr.contains(option);
@@ -273,20 +266,16 @@ public final class AudioBlockValidator extends AbstractBlockValidator<AudioBlock
                              List<ValidationMessage> messages,
                              AudioBlock audioConfig) {
         
-        Severity severity = titleConfig.getSeverity() != null ? 
-            titleConfig.getSeverity() : audioConfig.getSeverity();
+        Severity severity = resolveSeverity(titleConfig.getSeverity(), audioConfig.getSeverity());
         
         if (titleConfig.isRequired() && (title == null || title.trim().isEmpty())) {
-            TitlePosition pos = findTitlePosition(block, context);
+            SourcePosition pos = findTitlePosition(block, context);
             messages.add(ValidationMessage.builder()
                 .severity(severity)
-                .ruleId("audio.title.required")
+                .ruleId(TITLE_REQUIRED)
                 .location(SourceLocation.builder()
                     .filename(context.getFilename())
-                    .startLine(pos.lineNumber)
-                    .endLine(pos.lineNumber)
-                    .startColumn(pos.startColumn)
-                    .endColumn(pos.endColumn)
+                    .fromPosition(pos)
                     .build())
                 .message("Audio title is required but not provided")
                 .errorType(ErrorType.MISSING_VALUE)
@@ -303,7 +292,7 @@ public final class AudioBlockValidator extends AbstractBlockValidator<AudioBlock
             if (titleConfig.getMinLength() != null && title.length() < titleConfig.getMinLength()) {
                 messages.add(ValidationMessage.builder()
                     .severity(severity)
-                    .ruleId("audio.title.minLength")
+                    .ruleId(TITLE_MIN_LENGTH)
                     .location(context.createLocation(block))
                     .message("Audio title is too short")
                     .actualValue(title.length() + " characters")
@@ -315,7 +304,7 @@ public final class AudioBlockValidator extends AbstractBlockValidator<AudioBlock
             if (titleConfig.getMaxLength() != null && title.length() > titleConfig.getMaxLength()) {
                 messages.add(ValidationMessage.builder()
                     .severity(severity)
-                    .ruleId("audio.title.maxLength")
+                    .ruleId(TITLE_MAX_LENGTH)
                     .location(context.createLocation(block))
                     .message("Audio title is too long")
                     .actualValue(title.length() + " characters")
@@ -328,15 +317,15 @@ public final class AudioBlockValidator extends AbstractBlockValidator<AudioBlock
     /**
      * Finds the column position of URL in audio macro.
      */
-    private UrlPosition findUrlPosition(StructuralNode block, BlockValidationContext context, String url) {
+    private SourcePosition findSourcePosition(StructuralNode block, BlockValidationContext context, String url) {
         List<String> fileLines = fileCache.getFileLines(context.getFilename());
         if (fileLines.isEmpty() || block.getSourceLocation() == null) {
-            return new UrlPosition(1, 1, block.getSourceLocation() != null ? block.getSourceLocation().getLineNumber() : 1);
+            return new SourcePosition(1, 1, block.getSourceLocation() != null ? block.getSourceLocation().getLineNumber() : 1);
         }
         
         int lineNum = block.getSourceLocation().getLineNumber();
         if (lineNum <= 0 || lineNum > fileLines.size()) {
-            return new UrlPosition(1, 1, lineNum);
+            return new SourcePosition(1, 1, lineNum);
         }
         
         String sourceLine = fileLines.get(lineNum - 1);
@@ -353,29 +342,29 @@ public final class AudioBlockValidator extends AbstractBlockValidator<AudioBlock
                 // Find the specific URL position
                 int urlStart = sourceLine.indexOf(url, audioStart + 7);
                 if (urlStart > audioStart && urlStart < urlEnd) {
-                    return new UrlPosition(urlStart + 1, urlStart + url.length(), lineNum);
+                    return new SourcePosition(urlStart + 1, urlStart + url.length(), lineNum);
                 }
             } else {
                 // No URL - position after "audio::"
-                return new UrlPosition(audioStart + 8, audioStart + 8, lineNum);
+                return new SourcePosition(audioStart + 8, audioStart + 8, lineNum);
             }
         }
         
-        return new UrlPosition(1, 1, lineNum);
+        return new SourcePosition(1, 1, lineNum);
     }
     
     /**
      * Finds the column position for controls attribute in audio macro.
      */
-    private ControlsPosition findControlsPosition(StructuralNode block, BlockValidationContext context) {
+    private SourcePosition findSourcePosition(StructuralNode block, BlockValidationContext context) {
         List<String> fileLines = fileCache.getFileLines(context.getFilename());
         if (fileLines.isEmpty() || block.getSourceLocation() == null) {
-            return new ControlsPosition(1, 1, block.getSourceLocation() != null ? block.getSourceLocation().getLineNumber() : 1);
+            return new SourcePosition(1, 1, block.getSourceLocation() != null ? block.getSourceLocation().getLineNumber() : 1);
         }
         
         int lineNum = block.getSourceLocation().getLineNumber();
         if (lineNum <= 0 || lineNum > fileLines.size()) {
-            return new ControlsPosition(1, 1, lineNum);
+            return new SourcePosition(1, 1, lineNum);
         }
         
         String sourceLine = fileLines.get(lineNum - 1);
@@ -385,61 +374,28 @@ public final class AudioBlockValidator extends AbstractBlockValidator<AudioBlock
         if (bracketStart >= 0) {
             int bracketEnd = sourceLine.indexOf("]", bracketStart);
             if (bracketEnd > bracketStart) {
-                return new ControlsPosition(bracketEnd + 1, bracketEnd + 1, lineNum);
+                return new SourcePosition(bracketEnd + 1, bracketEnd + 1, lineNum);
             }
         }
         
-        return new ControlsPosition(1, 1, lineNum);
+        return new SourcePosition(1, 1, lineNum);
     }
     
     /**
      * Finds the column position for title in audio macro.
      */
-    private TitlePosition findTitlePosition(StructuralNode block, BlockValidationContext context) {
+    private SourcePosition findTitlePosition(StructuralNode block, BlockValidationContext context) {
         if (block.getSourceLocation() == null) {
-            return new TitlePosition(1, 1, 1);
+            return new SourcePosition(1, 1, 1);
         }
         
         int lineNum = block.getSourceLocation().getLineNumber();
         
         // Title is typically on the line before the audio macro
         // Return position for the line before the audio
-        return new TitlePosition(1, 1, lineNum);
+        return new SourcePosition(1, 1, lineNum);
     }
     
-    private static class UrlPosition {
-        final int startColumn;
-        final int endColumn;
-        final int lineNumber;
-        
-        UrlPosition(int startColumn, int endColumn, int lineNumber) {
-            this.startColumn = startColumn;
-            this.endColumn = endColumn;
-            this.lineNumber = lineNumber;
-        }
-    }
     
-    private static class ControlsPosition {
-        final int startColumn;
-        final int endColumn;
-        final int lineNumber;
-        
-        ControlsPosition(int startColumn, int endColumn, int lineNumber) {
-            this.startColumn = startColumn;
-            this.endColumn = endColumn;
-            this.lineNumber = lineNumber;
-        }
-    }
     
-    private static class TitlePosition {
-        final int startColumn;
-        final int endColumn;
-        final int lineNumber;
-        
-        TitlePosition(int startColumn, int endColumn, int lineNumber) {
-            this.startColumn = startColumn;
-            this.endColumn = endColumn;
-            this.lineNumber = lineNumber;
-        }
-    }
 }

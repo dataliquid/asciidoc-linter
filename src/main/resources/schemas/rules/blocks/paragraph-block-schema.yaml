@@ -5,35 +5,13 @@ description: Schema for validating paragraph block configuration in AsciiDoc lin
 type: object
 properties:
   name:
-    type: string
-    description: Optional name for the paragraph block for better error messages
-    minLength: 1
-    maxLength: 50
+    $ref: https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/rule-name-type
   severity:
-    type: string
-    description: Default severity level for all rules in this block
-    enum: [error, warn, info]
+    $ref: https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/severity-type
   order:
-    type: integer
-    description: Order in which this block should appear relative to other blocks
-    minimum: 1
+    $ref: https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/order-type
   occurrence:
-    type: object
-    description: Occurrence rules for this block type
-    properties:
-      min:
-        type: integer
-        description: Minimum number of occurrences
-        minimum: 0
-      max:
-        type: integer
-        description: Maximum number of occurrences
-        minimum: 1
-      severity:
-        type: string
-        enum: [error, warn, info]
-        description: Severity for occurrence violations
-    additionalProperties: false
+    $ref: https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/occurrence-type
   lines:
     type: object
     description: Line count validation rules
@@ -47,9 +25,7 @@ properties:
         description: Maximum number of lines in the paragraph
         minimum: 1
       severity:
-        type: string
-        enum: [error, warn, info]
-        description: Severity for line count violations (overrides block severity)
+        $ref: https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/severity-type
     additionalProperties: false
   sentence:
     type: object
@@ -68,9 +44,7 @@ properties:
             description: Maximum number of sentences per paragraph
             minimum: 1
           severity:
-            type: string
-            enum: [error, warn, info]
-            description: Severity for sentence count violations (overrides block severity)
+            $ref: https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/severity-type
         additionalProperties: false
       words:
         type: object
@@ -85,10 +59,9 @@ properties:
             description: Maximum number of words per sentence
             minimum: 1
           severity:
-            type: string
-            enum: [error, warn, info]
-            description: Severity for word count violations (overrides block severity)
+            $ref: https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/severity-type
         additionalProperties: false
     additionalProperties: false
-required: [severity]
+required:
+- severity
 additionalProperties: false

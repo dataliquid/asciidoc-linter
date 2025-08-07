@@ -4,6 +4,10 @@ import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.ENABLED;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.THRESHOLD;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.EMPTY;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
 /**
@@ -47,7 +51,7 @@ public final class ErrorGroupingConfig {
         return new Builder();
     }
     
-    @JsonPOJOBuilder(withPrefix = "")
+    @JsonPOJOBuilder(withPrefix = EMPTY)
     public static final class Builder {
         private boolean enabled = DEFAULT_ENABLED;
         private int threshold = DEFAULT_THRESHOLD;
@@ -55,13 +59,13 @@ public final class ErrorGroupingConfig {
         private Builder() {
         }
         
-        @JsonProperty("enabled")
+        @JsonProperty(ENABLED)
         public Builder enabled(boolean enabled) {
             this.enabled = enabled;
             return this;
         }
         
-        @JsonProperty("threshold")
+        @JsonProperty(THRESHOLD)
         public Builder threshold(int threshold) {
             this.threshold = threshold;
             return this;

@@ -36,7 +36,7 @@ public class DocumentationGenerator {
     public int run(CommandLine cmd) {
         try {
             // Load configuration
-            String configPath = cmd.getOptionValue("config", ".linter-config.yaml");
+            String configPath = cmd.getOptionValue("rule", ".linter-rule-config.yaml");
             LinterConfiguration config = loadConfiguration(configPath);
             
             // Parse visualization styles

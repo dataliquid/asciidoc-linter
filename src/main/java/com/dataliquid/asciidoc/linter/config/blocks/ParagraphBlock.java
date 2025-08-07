@@ -2,20 +2,24 @@ package com.dataliquid.asciidoc.linter.config.blocks;
 
 import java.util.Objects;
 
-import com.dataliquid.asciidoc.linter.config.BlockType;
-import com.dataliquid.asciidoc.linter.config.Severity;
+import com.dataliquid.asciidoc.linter.config.blocks.BlockType;
+import com.dataliquid.asciidoc.linter.config.common.Severity;
 import com.dataliquid.asciidoc.linter.config.rule.LineConfig;
 import com.dataliquid.asciidoc.linter.config.rule.OccurrenceConfig;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.*;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Paragraph.*;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.EMPTY;
+
 @JsonDeserialize(builder = ParagraphBlock.Builder.class)
 public final class ParagraphBlock extends AbstractBlock {
-    @JsonProperty("lines")
+    @JsonProperty(LINES)
     private final LineConfig lines;
     
-    @JsonProperty("sentence")
+    @JsonProperty(SENTENCE)
     private final SentenceConfig sentence;
     
     private ParagraphBlock(Builder builder) {
@@ -36,7 +40,7 @@ public final class ParagraphBlock extends AbstractBlock {
         return new Builder();
     }
     
-    @JsonPOJOBuilder(withPrefix = "")
+    @JsonPOJOBuilder(withPrefix = EMPTY)
     public static class Builder extends AbstractBuilder<Builder> {
         private LineConfig lines;
         private SentenceConfig sentence;
@@ -78,10 +82,10 @@ public final class ParagraphBlock extends AbstractBlock {
      */
     @JsonDeserialize(builder = SentenceConfig.Builder.class)
     public static final class SentenceConfig {
-        @JsonProperty("occurrence")
+        @JsonProperty(OCCURRENCE)
         private final OccurrenceConfig occurrence;
         
-        @JsonProperty("words")
+        @JsonProperty(WORDS)
         private final WordsConfig words;
         
         private SentenceConfig(Builder builder) {
@@ -96,18 +100,18 @@ public final class ParagraphBlock extends AbstractBlock {
             return new Builder();
         }
         
-        @JsonPOJOBuilder(withPrefix = "")
+        @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class Builder {
             private OccurrenceConfig occurrence;
             private WordsConfig words;
             
-            @JsonProperty("occurrence")
+            @JsonProperty(OCCURRENCE)
             public Builder occurrence(OccurrenceConfig occurrence) {
                 this.occurrence = occurrence;
                 return this;
             }
             
-            @JsonProperty("words")
+            @JsonProperty(WORDS)
             public Builder words(WordsConfig words) {
                 this.words = words;
                 return this;
@@ -138,13 +142,13 @@ public final class ParagraphBlock extends AbstractBlock {
      */
     @JsonDeserialize(builder = WordsConfig.Builder.class)
     public static final class WordsConfig {
-        @JsonProperty("min")
+        @JsonProperty(MIN)
         private final Integer min;
         
-        @JsonProperty("max")
+        @JsonProperty(MAX)
         private final Integer max;
         
-        @JsonProperty("severity")
+        @JsonProperty(SEVERITY)
         private final Severity severity;
         
         private WordsConfig(Builder builder) {
@@ -161,25 +165,25 @@ public final class ParagraphBlock extends AbstractBlock {
             return new Builder();
         }
         
-        @JsonPOJOBuilder(withPrefix = "")
+        @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class Builder {
             private Integer min;
             private Integer max;
             private Severity severity;
             
-            @JsonProperty("min")
+            @JsonProperty(MIN)
             public Builder min(Integer min) {
                 this.min = min;
                 return this;
             }
             
-            @JsonProperty("max")
+            @JsonProperty(MAX)
             public Builder max(Integer max) {
                 this.max = max;
                 return this;
             }
             
-            @JsonProperty("severity")
+            @JsonProperty(SEVERITY)
             public Builder severity(Severity severity) {
                 this.severity = severity;
                 return this;

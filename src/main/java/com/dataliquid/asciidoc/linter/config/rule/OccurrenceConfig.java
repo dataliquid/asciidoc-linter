@@ -2,8 +2,14 @@ package com.dataliquid.asciidoc.linter.config.rule;
 
 import java.util.Objects;
 
-import com.dataliquid.asciidoc.linter.config.Severity;
+import com.dataliquid.asciidoc.linter.config.common.Severity;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.MAX;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.MIN;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.ORDER;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.SEVERITY;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.EMPTY;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
@@ -21,48 +27,48 @@ public final class OccurrenceConfig {
         this.severity = builder.severity;
     }
 
-    @JsonProperty("order")
+    @JsonProperty(ORDER)
     public Integer order() { return order; }
     
-    @JsonProperty("min")
+    @JsonProperty(MIN)
     public int min() { return min; }
     
-    @JsonProperty("max")
+    @JsonProperty(MAX)
     public int max() { return max; }
     
-    @JsonProperty("severity")
+    @JsonProperty(SEVERITY)
     public Severity severity() { return severity; }
 
     public static Builder builder() {
         return new Builder();
     }
 
-    @JsonPOJOBuilder(withPrefix = "")
+    @JsonPOJOBuilder(withPrefix = EMPTY)
     public static class Builder {
         private Integer order;
         private int min = 0;
         private int max = Integer.MAX_VALUE;
         private Severity severity;
 
-        @JsonProperty("order")
+        @JsonProperty(ORDER)
         public Builder order(Integer order) {
             this.order = order;
             return this;
         }
 
-        @JsonProperty("min")
+        @JsonProperty(MIN)
         public Builder min(int min) {
             this.min = min;
             return this;
         }
 
-        @JsonProperty("max")
+        @JsonProperty(MAX)
         public Builder max(int max) {
             this.max = max;
             return this;
         }
 
-        @JsonProperty("severity")
+        @JsonProperty(SEVERITY)
         public Builder severity(Severity severity) {
             this.severity = severity;
             return this;

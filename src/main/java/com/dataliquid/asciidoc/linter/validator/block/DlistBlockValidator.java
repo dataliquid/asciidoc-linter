@@ -1,5 +1,7 @@
 package com.dataliquid.asciidoc.linter.validator.block;
 
+import com.dataliquid.asciidoc.linter.validator.SourcePosition;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -9,12 +11,12 @@ import org.asciidoctor.ast.DescriptionListEntry;
 import org.asciidoctor.ast.ListItem;
 import org.asciidoctor.ast.StructuralNode;
 
-import com.dataliquid.asciidoc.linter.config.BlockType;
-import com.dataliquid.asciidoc.linter.config.Severity;
+import com.dataliquid.asciidoc.linter.config.blocks.BlockType;
+import com.dataliquid.asciidoc.linter.config.common.Severity;
 import com.dataliquid.asciidoc.linter.config.blocks.DlistBlock;
-import com.dataliquid.asciidoc.linter.report.console.FileContentCache;
 import com.dataliquid.asciidoc.linter.validator.ErrorType;
 import com.dataliquid.asciidoc.linter.validator.PlaceholderContext;
+import static com.dataliquid.asciidoc.linter.validator.RuleIds.Dlist.*;
 import com.dataliquid.asciidoc.linter.validator.SourceLocation;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
 
@@ -40,9 +42,7 @@ import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
  * @see DlistBlock
  * @see BlockTypeValidator
  */
-public final class DlistBlockValidator extends AbstractBlockValidator<DlistBlock> {
-    private final FileContentCache fileCache = new FileContentCache();
-    
+public final class DlistBlockValidator extends AbstractBlockValidator<DlistBlock> {    
     @Override
     public BlockType getSupportedType() {
         return BlockType.DLIST;
@@ -93,7 +93,7 @@ public final class DlistBlockValidator extends AbstractBlockValidator<DlistBlock
                              List<ValidationMessage> messages) {
         
         // Get severity with fallback to block severity
-        Severity severity = config.getSeverity() != null ? config.getSeverity() : blockConfig.getSeverity();
+        Severity severity = resolveSeverity(config.getSeverity(), blockConfig.getSeverity());
         
         int termCount = entries.size();
         
@@ -101,7 +101,7 @@ public final class DlistBlockValidator extends AbstractBlockValidator<DlistBlock
         if (config.getMin() != null && termCount < config.getMin()) {
             messages.add(ValidationMessage.builder()
                 .severity(severity)
-                .ruleId("dlist.terms.min")
+                .ruleId(TERMS_MIN)
                 .location(context.createLocation(block))
                 .message("Definition list has too few terms")
                 .actualValue(String.valueOf(termCount))
@@ -113,7 +113,7 @@ public final class DlistBlockValidator extends AbstractBlockValidator<DlistBlock
         if (config.getMax() != null && termCount > config.getMax()) {
             messages.add(ValidationMessage.builder()
                 .severity(severity)
-                .ruleId("dlist.terms.max")
+                .ruleId(TERMS_MAX)
                 .location(context.createLocation(block))
                 .message("Definition list has too many terms")
                 .actualValue(String.valueOf(termCount))
@@ -146,19 +146,16 @@ public final class DlistBlockValidator extends AbstractBlockValidator<DlistBlock
                                    ListItem termItem,
                                    List<ValidationMessage> messages) {
         
-        TermPosition pos = findTermPosition(block, termItem, context, term);
+        SourcePosition pos = findSourcePosition(block, termItem, context, term);
         
         // Validate pattern
         if (pattern != null && !pattern.matcher(term).matches()) {
             messages.add(ValidationMessage.builder()
                 .severity(severity)
-                .ruleId("dlist.terms.pattern")
+                .ruleId(TERMS_PATTERN)
                 .location(SourceLocation.builder()
                     .filename(context.getFilename())
-                    .startLine(pos.lineNumber)
-                    .endLine(pos.lineNumber)
-                    .startColumn(pos.startColumn)
-                    .endColumn(pos.endColumn)
+                    .fromPosition(pos)
                     .build())
                 .message("Definition list term does not match required pattern")
                 .actualValue(term)
@@ -170,13 +167,10 @@ public final class DlistBlockValidator extends AbstractBlockValidator<DlistBlock
         if (config.getMinLength() != null && term.length() < config.getMinLength()) {
             messages.add(ValidationMessage.builder()
                 .severity(severity)
-                .ruleId("dlist.terms.minLength")
+                .ruleId(TERMS_MIN_LENGTH)
                 .location(SourceLocation.builder()
                     .filename(context.getFilename())
-                    .startLine(pos.lineNumber)
-                    .endLine(pos.lineNumber)
-                    .startColumn(pos.startColumn)
-                    .endColumn(pos.endColumn)
+                    .fromPosition(pos)
                     .build())
                 .message("Definition list term is too short")
                 .actualValue(term + " (length: " + term.length() + ")")
@@ -188,13 +182,10 @@ public final class DlistBlockValidator extends AbstractBlockValidator<DlistBlock
         if (config.getMaxLength() != null && term.length() > config.getMaxLength()) {
             messages.add(ValidationMessage.builder()
                 .severity(severity)
-                .ruleId("dlist.terms.maxLength")
+                .ruleId(TERMS_MAX_LENGTH)
                 .location(SourceLocation.builder()
                     .filename(context.getFilename())
-                    .startLine(pos.lineNumber)
-                    .endLine(pos.lineNumber)
-                    .startColumn(pos.startColumn)
-                    .endColumn(pos.endColumn)
+                    .fromPosition(pos)
                     .build())
                 .message("Definition list term is too long")
                 .actualValue(term + " (length: " + term.length() + ")")
@@ -211,7 +202,7 @@ public final class DlistBlockValidator extends AbstractBlockValidator<DlistBlock
                                     List<ValidationMessage> messages) {
         
         // Get severity with fallback to block severity
-        Severity severity = config.getSeverity() != null ? config.getSeverity() : blockConfig.getSeverity();
+        Severity severity = resolveSeverity(config.getSeverity(), blockConfig.getSeverity());
         
         Pattern pattern = config.getPattern() != null ? Pattern.compile(config.getPattern()) : null;
         
@@ -226,17 +217,14 @@ public final class DlistBlockValidator extends AbstractBlockValidator<DlistBlock
                 if (!terms.isEmpty()) {
                     ListItem firstTerm = terms.get(0);
                     String termText = firstTerm.getText();
-                    TermPosition pos = findTermPosition(block, firstTerm, context, termText);
+                    SourcePosition pos = findSourcePosition(block, firstTerm, context, termText);
                     
                     messages.add(ValidationMessage.builder()
                         .severity(severity)
-                        .ruleId("dlist.descriptions.required")
+                        .ruleId(DESCRIPTIONS_REQUIRED)
                         .location(SourceLocation.builder()
                             .filename(context.getFilename())
-                            .startLine(pos.lineNumber)
-                            .endLine(pos.lineNumber)
-                            .startColumn(pos.startColumn)
-                            .endColumn(pos.endColumn)
+                            .fromPosition(pos)
                             .build())
                         .message("Definition list term missing required description")
                         .actualValue("No description")
@@ -256,7 +244,7 @@ public final class DlistBlockValidator extends AbstractBlockValidator<DlistBlock
                 if (!pattern.matcher(descText).find()) {
                     messages.add(ValidationMessage.builder()
                         .severity(severity)
-                        .ruleId("dlist.descriptions.pattern")
+                        .ruleId(DESCRIPTIONS_PATTERN)
                         .location(context.createLocation(block))
                         .message("Definition list description does not match required pattern")
                         .actualValue(descText.length() > 50 ? descText.substring(0, 50) + "..." : descText)
@@ -270,7 +258,7 @@ public final class DlistBlockValidator extends AbstractBlockValidator<DlistBlock
     /**
      * Finds the column position of a term in definition list.
      */
-    private TermPosition findTermPosition(StructuralNode block, ListItem termItem, 
+    private SourcePosition findSourcePosition(StructuralNode block, ListItem termItem, 
                                         BlockValidationContext context, String term) {
         List<String> fileLines = fileCache.getFileLines(context.getFilename());
         
@@ -281,7 +269,7 @@ public final class DlistBlockValidator extends AbstractBlockValidator<DlistBlock
         }
         
         if (fileLines.isEmpty() || lineNum <= 0 || lineNum > fileLines.size()) {
-            return new TermPosition(1, 1, lineNum);
+            return new SourcePosition(1, 1, lineNum);
         }
         
         String sourceLine = fileLines.get(lineNum - 1);
@@ -293,7 +281,7 @@ public final class DlistBlockValidator extends AbstractBlockValidator<DlistBlock
             // Check if this is actually the term (followed by ::)
             int colonPos = sourceLine.indexOf("::", termStart);
             if (colonPos >= termStart + term.length()) {
-                return new TermPosition(termStart + 1, termStart + term.length(), lineNum);
+                return new SourcePosition(termStart + 1, termStart + term.length(), lineNum);
             }
         }
         
@@ -307,24 +295,13 @@ public final class DlistBlockValidator extends AbstractBlockValidator<DlistBlock
                 if (termStart >= 0) {
                     int colonPos = checkContent.indexOf("::", termStart);
                     if (colonPos >= termStart + term.length()) {
-                        return new TermPosition(termStart + 1, termStart + term.length(), checkLine);
+                        return new SourcePosition(termStart + 1, termStart + term.length(), checkLine);
                     }
                 }
             }
         }
         
-        return new TermPosition(1, 1, lineNum);
+        return new SourcePosition(1, 1, lineNum);
     }
     
-    private static class TermPosition {
-        final int startColumn;
-        final int endColumn;
-        final int lineNumber;
-        
-        TermPosition(int startColumn, int endColumn, int lineNumber) {
-            this.startColumn = startColumn;
-            this.endColumn = endColumn;
-            this.lineNumber = lineNumber;
-        }
-    }
 }

@@ -4,6 +4,13 @@ import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Output.DISPLAY;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Output.ERROR_GROUPING;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Output.FORMAT;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Output.SUGGESTIONS;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Output.SUMMARY;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.EMPTY;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
 /**
@@ -100,7 +107,7 @@ public final class OutputConfiguration {
         return new Builder();
     }
     
-    @JsonPOJOBuilder(withPrefix = "")
+    @JsonPOJOBuilder(withPrefix = EMPTY)
     public static final class Builder {
         private OutputFormat format = DEFAULT_FORMAT;
         private DisplayConfig display = DisplayConfig.builder().build();
@@ -111,31 +118,31 @@ public final class OutputConfiguration {
         private Builder() {
         }
         
-        @JsonProperty("format")
+        @JsonProperty(FORMAT)
         public Builder format(OutputFormat format) {
             this.format = format != null ? format : DEFAULT_FORMAT;
             return this;
         }
         
-        @JsonProperty("display")
+        @JsonProperty(DISPLAY)
         public Builder display(DisplayConfig display) {
             this.display = display != null ? display : DisplayConfig.builder().build();
             return this;
         }
         
-        @JsonProperty("suggestions")
+        @JsonProperty(SUGGESTIONS)
         public Builder suggestions(SuggestionsConfig suggestions) {
             this.suggestions = suggestions != null ? suggestions : SuggestionsConfig.builder().build();
             return this;
         }
         
-        @JsonProperty("errorGrouping")
+        @JsonProperty(ERROR_GROUPING)
         public Builder errorGrouping(ErrorGroupingConfig errorGrouping) {
             this.errorGrouping = errorGrouping != null ? errorGrouping : ErrorGroupingConfig.builder().build();
             return this;
         }
         
-        @JsonProperty("summary")
+        @JsonProperty(SUMMARY)
         public Builder summary(SummaryConfig summary) {
             this.summary = summary != null ? summary : SummaryConfig.builder().build();
             return this;

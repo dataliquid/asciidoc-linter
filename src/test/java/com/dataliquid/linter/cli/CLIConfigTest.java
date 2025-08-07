@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import com.dataliquid.asciidoc.linter.cli.CLIConfig;
-import com.dataliquid.asciidoc.linter.config.Severity;
+import com.dataliquid.asciidoc.linter.config.common.Severity;
 
 @DisplayName("CLIConfig")
 class CLIConfigTest {

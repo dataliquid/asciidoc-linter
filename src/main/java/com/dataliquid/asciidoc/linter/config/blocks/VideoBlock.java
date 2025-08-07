@@ -3,10 +3,26 @@ package com.dataliquid.asciidoc.linter.config.blocks;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
-import com.dataliquid.asciidoc.linter.config.BlockType;
-import com.dataliquid.asciidoc.linter.config.Severity;
+import com.dataliquid.asciidoc.linter.config.blocks.BlockType;
+import com.dataliquid.asciidoc.linter.config.common.Severity;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.URL;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.WIDTH;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.HEIGHT;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Media.POSTER;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.OPTIONS;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.CAPTION;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.REQUIRED;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.PATTERN;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.SEVERITY;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.MIN_VALUE;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.MAX_VALUE;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Media.CONTROLS;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.MIN_LENGTH;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.MAX_LENGTH;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.EMPTY;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
@@ -81,7 +97,7 @@ public class VideoBlock extends AbstractBlock {
         return Objects.hash(super.hashCode(), url, width, height, poster, options, caption);
     }
 
-    @JsonPOJOBuilder(withPrefix = "")
+    @JsonPOJOBuilder(withPrefix = EMPTY)
     public static class Builder extends AbstractBuilder<Builder> {
         private UrlConfig url;
         private DimensionConfig width;
@@ -90,37 +106,37 @@ public class VideoBlock extends AbstractBlock {
         private OptionsConfig options;
         private CaptionConfig caption;
 
-        @JsonProperty("url")
+        @JsonProperty(URL)
         public Builder url(UrlConfig url) {
             this.url = url;
             return this;
         }
 
-        @JsonProperty("width")
+        @JsonProperty(WIDTH)
         public Builder width(DimensionConfig width) {
             this.width = width;
             return this;
         }
 
-        @JsonProperty("height")
+        @JsonProperty(HEIGHT)
         public Builder height(DimensionConfig height) {
             this.height = height;
             return this;
         }
 
-        @JsonProperty("poster")
+        @JsonProperty(POSTER)
         public Builder poster(PosterConfig poster) {
             this.poster = poster;
             return this;
         }
 
-        @JsonProperty("options")
+        @JsonProperty(OPTIONS)
         public Builder options(OptionsConfig options) {
             this.options = options;
             return this;
         }
 
-        @JsonProperty("caption")
+        @JsonProperty(CAPTION)
         public Builder caption(CaptionConfig caption) {
             this.caption = caption;
             return this;
@@ -186,19 +202,19 @@ public class VideoBlock extends AbstractBlock {
             return p != null ? p.pattern() : null;
         }
 
-        @JsonPOJOBuilder(withPrefix = "")
+        @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class Builder {
             private Boolean required;
             private Pattern pattern;
             private Severity severity;
 
-            @JsonProperty("required")
+            @JsonProperty(REQUIRED)
             public Builder required(Boolean required) {
                 this.required = required;
                 return this;
             }
 
-            @JsonProperty("pattern")
+            @JsonProperty(PATTERN)
             public Builder pattern(Pattern pattern) {
                 this.pattern = pattern;
                 return this;
@@ -210,7 +226,7 @@ public class VideoBlock extends AbstractBlock {
                 return this;
             }
 
-            @JsonProperty("severity")
+            @JsonProperty(SEVERITY)
             public Builder severity(Severity severity) {
                 this.severity = severity;
                 return this;
@@ -272,32 +288,32 @@ public class VideoBlock extends AbstractBlock {
             return Objects.hash(required, minValue, maxValue, severity);
         }
 
-        @JsonPOJOBuilder(withPrefix = "")
+        @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class Builder {
             private Boolean required;
             private Integer minValue;
             private Integer maxValue;
             private Severity severity;
 
-            @JsonProperty("required")
+            @JsonProperty(REQUIRED)
             public Builder required(Boolean required) {
                 this.required = required;
                 return this;
             }
 
-            @JsonProperty("minValue")
+            @JsonProperty(MIN_VALUE)
             public Builder minValue(Integer minValue) {
                 this.minValue = minValue;
                 return this;
             }
 
-            @JsonProperty("maxValue")
+            @JsonProperty(MAX_VALUE)
             public Builder maxValue(Integer maxValue) {
                 this.maxValue = maxValue;
                 return this;
             }
 
-            @JsonProperty("severity")
+            @JsonProperty(SEVERITY)
             public Builder severity(Severity severity) {
                 this.severity = severity;
                 return this;
@@ -362,19 +378,19 @@ public class VideoBlock extends AbstractBlock {
             return p != null ? p.pattern() : null;
         }
 
-        @JsonPOJOBuilder(withPrefix = "")
+        @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class Builder {
             private Boolean required;
             private Pattern pattern;
             private Severity severity;
 
-            @JsonProperty("required")
+            @JsonProperty(REQUIRED)
             public Builder required(Boolean required) {
                 this.required = required;
                 return this;
             }
 
-            @JsonProperty("pattern")
+            @JsonProperty(PATTERN)
             public Builder pattern(Pattern pattern) {
                 this.pattern = pattern;
                 return this;
@@ -386,7 +402,7 @@ public class VideoBlock extends AbstractBlock {
                 return this;
             }
 
-            @JsonProperty("severity")
+            @JsonProperty(SEVERITY)
             public Builder severity(Severity severity) {
                 this.severity = severity;
                 return this;
@@ -427,11 +443,11 @@ public class VideoBlock extends AbstractBlock {
             return Objects.hash(controls);
         }
 
-        @JsonPOJOBuilder(withPrefix = "")
+        @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class Builder {
             private ControlsConfig controls;
 
-            @JsonProperty("controls")
+            @JsonProperty(CONTROLS)
             public Builder controls(ControlsConfig controls) {
                 this.controls = controls;
                 return this;
@@ -479,18 +495,18 @@ public class VideoBlock extends AbstractBlock {
             return Objects.hash(required, severity);
         }
 
-        @JsonPOJOBuilder(withPrefix = "")
+        @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class Builder {
             private Boolean required;
             private Severity severity;
 
-            @JsonProperty("required")
+            @JsonProperty(REQUIRED)
             public Builder required(Boolean required) {
                 this.required = required;
                 return this;
             }
 
-            @JsonProperty("severity")
+            @JsonProperty(SEVERITY)
             public Builder severity(Severity severity) {
                 this.severity = severity;
                 return this;
@@ -552,32 +568,32 @@ public class VideoBlock extends AbstractBlock {
             return Objects.hash(required, minLength, maxLength, severity);
         }
 
-        @JsonPOJOBuilder(withPrefix = "")
+        @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class Builder {
             private Boolean required;
             private Integer minLength;
             private Integer maxLength;
             private Severity severity;
 
-            @JsonProperty("required")
+            @JsonProperty(REQUIRED)
             public Builder required(Boolean required) {
                 this.required = required;
                 return this;
             }
 
-            @JsonProperty("minLength")
+            @JsonProperty(MIN_LENGTH)
             public Builder minLength(Integer minLength) {
                 this.minLength = minLength;
                 return this;
             }
 
-            @JsonProperty("maxLength")
+            @JsonProperty(MAX_LENGTH)
             public Builder maxLength(Integer maxLength) {
                 this.maxLength = maxLength;
                 return this;
             }
 
-            @JsonProperty("severity")
+            @JsonProperty(SEVERITY)
             public Builder severity(Severity severity) {
                 this.severity = severity;
                 return this;

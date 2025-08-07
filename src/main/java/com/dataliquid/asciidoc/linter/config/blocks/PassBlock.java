@@ -6,11 +6,15 @@ import java.util.List;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
-import com.dataliquid.asciidoc.linter.config.BlockType;
-import com.dataliquid.asciidoc.linter.config.Severity;
+import com.dataliquid.asciidoc.linter.config.blocks.BlockType;
+import com.dataliquid.asciidoc.linter.config.common.Severity;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.*;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Pass.REASON;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.EMPTY;
 
 /**
  * Configuration for pass blocks (passthrough content) in AsciiDoc.
@@ -36,11 +40,11 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
  */
 @JsonDeserialize(builder = PassBlock.Builder.class)
 public final class PassBlock extends AbstractBlock {
-    @JsonProperty("type")
+    @JsonProperty(TYPE)
     private final TypeConfig type;
-    @JsonProperty("content")
+    @JsonProperty(CONTENT)
     private final ContentConfig content;
-    @JsonProperty("reason")
+    @JsonProperty(REASON)
     private final ReasonConfig reason;
     
     private PassBlock(Builder builder) {
@@ -73,11 +77,11 @@ public final class PassBlock extends AbstractBlock {
     
     @JsonDeserialize(builder = TypeConfig.TypeConfigBuilder.class)
     public static class TypeConfig {
-        @JsonProperty("required")
+        @JsonProperty(REQUIRED)
         private final boolean required;
-        @JsonProperty("allowed")
+        @JsonProperty(ALLOWED)
         private final List<String> allowed;
-        @JsonProperty("severity")
+        @JsonProperty(SEVERITY)
         private final Severity severity;
         
         private TypeConfig(TypeConfigBuilder builder) {
@@ -104,7 +108,7 @@ public final class PassBlock extends AbstractBlock {
             return new TypeConfigBuilder();
         }
         
-        @JsonPOJOBuilder(withPrefix = "")
+        @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class TypeConfigBuilder {
             private boolean required;
             private List<String> allowed;
@@ -147,13 +151,13 @@ public final class PassBlock extends AbstractBlock {
     
     @JsonDeserialize(builder = ContentConfig.ContentConfigBuilder.class)
     public static class ContentConfig {
-        @JsonProperty("required")
+        @JsonProperty(REQUIRED)
         private final boolean required;
-        @JsonProperty("maxLength")
+        @JsonProperty(MAX_LENGTH)
         private final Integer maxLength;
-        @JsonProperty("pattern")
+        @JsonProperty(PATTERN)
         private final Pattern pattern;
-        @JsonProperty("severity")
+        @JsonProperty(SEVERITY)
         private final Severity severity;
         
         private ContentConfig(ContentConfigBuilder builder) {
@@ -183,7 +187,7 @@ public final class PassBlock extends AbstractBlock {
             return new ContentConfigBuilder();
         }
         
-        @JsonPOJOBuilder(withPrefix = "")
+        @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class ContentConfigBuilder {
             private boolean required;
             private Integer maxLength;
@@ -240,13 +244,13 @@ public final class PassBlock extends AbstractBlock {
     
     @JsonDeserialize(builder = ReasonConfig.ReasonConfigBuilder.class)
     public static class ReasonConfig {
-        @JsonProperty("required")
+        @JsonProperty(REQUIRED)
         private final boolean required;
-        @JsonProperty("minLength")
+        @JsonProperty(MIN_LENGTH)
         private final Integer minLength;
-        @JsonProperty("maxLength")
+        @JsonProperty(MAX_LENGTH)
         private final Integer maxLength;
-        @JsonProperty("severity")
+        @JsonProperty(SEVERITY)
         private final Severity severity;
         
         private ReasonConfig(ReasonConfigBuilder builder) {
@@ -276,7 +280,7 @@ public final class PassBlock extends AbstractBlock {
             return new ReasonConfigBuilder();
         }
         
-        @JsonPOJOBuilder(withPrefix = "")
+        @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class ReasonConfigBuilder {
             private boolean required;
             private Integer minLength;
@@ -324,7 +328,7 @@ public final class PassBlock extends AbstractBlock {
         }
     }
     
-    @JsonPOJOBuilder(withPrefix = "")
+    @JsonPOJOBuilder(withPrefix = EMPTY)
     public static class Builder extends AbstractBuilder<Builder> {
         private TypeConfig type;
         private ContentConfig content;

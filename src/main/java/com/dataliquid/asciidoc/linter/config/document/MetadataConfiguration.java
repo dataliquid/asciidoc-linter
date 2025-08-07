@@ -1,4 +1,4 @@
-package com.dataliquid.asciidoc.linter.config;
+package com.dataliquid.asciidoc.linter.config.document;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10,6 +10,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Document.ATTRIBUTES;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.EMPTY;
+
 @JsonDeserialize(builder = MetadataConfiguration.Builder.class)
 public final class MetadataConfiguration {
     private final List<AttributeConfig> attributes;
@@ -18,7 +21,7 @@ public final class MetadataConfiguration {
         this.attributes = Collections.unmodifiableList(new ArrayList<>(builder.attributes));
     }
 
-    @JsonProperty("attributes")
+    @JsonProperty(ATTRIBUTES)
     public List<AttributeConfig> attributes() { 
         return attributes; 
     }
@@ -27,11 +30,11 @@ public final class MetadataConfiguration {
         return new Builder();
     }
 
-    @JsonPOJOBuilder(withPrefix = "")
+    @JsonPOJOBuilder(withPrefix = EMPTY)
     public static class Builder {
         private List<AttributeConfig> attributes = new ArrayList<>();
 
-        @JsonProperty("attributes")
+        @JsonProperty(ATTRIBUTES)
         public Builder attributes(List<AttributeConfig> attributes) {
             this.attributes = attributes != null ? new ArrayList<>(attributes) : new ArrayList<>();
             return this;

@@ -1,4 +1,4 @@
-package com.dataliquid.asciidoc.linter.config;
+package com.dataliquid.asciidoc.linter.config.document;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10,6 +10,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Document.METADATA;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Document.SECTIONS;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.EMPTY;
+
 @JsonDeserialize(builder = DocumentConfiguration.Builder.class)
 public final class DocumentConfiguration {
     private final MetadataConfiguration metadata;
@@ -20,28 +24,28 @@ public final class DocumentConfiguration {
         this.sections = Collections.unmodifiableList(new ArrayList<>(builder.sections));
     }
 
-    @JsonProperty("metadata")
+    @JsonProperty(METADATA)
     public MetadataConfiguration metadata() { return metadata; }
     
-    @JsonProperty("sections")
+    @JsonProperty(SECTIONS)
     public List<SectionConfig> sections() { return sections; }
 
     public static Builder builder() {
         return new Builder();
     }
 
-    @JsonPOJOBuilder(withPrefix = "")
+    @JsonPOJOBuilder(withPrefix = EMPTY)
     public static class Builder {
         private MetadataConfiguration metadata;
         private List<SectionConfig> sections = new ArrayList<>();
 
-        @JsonProperty("metadata")
+        @JsonProperty(METADATA)
         public Builder metadata(MetadataConfiguration metadata) {
             this.metadata = metadata;
             return this;
         }
 
-        @JsonProperty("sections")
+        @JsonProperty(SECTIONS)
         public Builder sections(List<SectionConfig> sections) {
             this.sections = sections != null ? new ArrayList<>(sections) : new ArrayList<>();
             return this;

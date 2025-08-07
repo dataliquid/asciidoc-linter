@@ -1,7 +1,6 @@
 package com.dataliquid.asciidoc.linter.cli;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -13,10 +12,11 @@ import org.apache.logging.log4j.Logger;
 
 import com.dataliquid.asciidoc.linter.Linter;
 import com.dataliquid.asciidoc.linter.config.LinterConfiguration;
-import com.dataliquid.asciidoc.linter.config.Severity;
+import com.dataliquid.asciidoc.linter.config.common.Severity;
 import com.dataliquid.asciidoc.linter.config.loader.ConfigurationLoader;
 import com.dataliquid.asciidoc.linter.config.output.OutputConfiguration;
 import com.dataliquid.asciidoc.linter.config.output.OutputConfigurationLoader;
+import com.dataliquid.asciidoc.linter.config.output.OutputFormat;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
 import com.dataliquid.asciidoc.linter.validator.ValidationResult;
 
@@ -26,7 +26,7 @@ import com.dataliquid.asciidoc.linter.validator.ValidationResult;
 public class CLIRunner {
     
     private static final Logger logger = LogManager.getLogger(CLIRunner.class);
-    private static final String DEFAULT_CONFIG_FILE = ".linter-config.yaml";
+    private static final String DEFAULT_CONFIG_FILE = ".linter-rule-config.yaml";
     
     private final FileDiscoveryService fileDiscoveryService;
     private final CLIOutputHandler outputHandler;
@@ -116,32 +116,17 @@ public class CLIRunner {
     }
     
     private OutputConfiguration loadOutputConfiguration(CLIConfig config) throws IOException {
-        String outputConfigName = config.getOutputConfigName();
+        OutputFormat outputConfigFormat = config.getOutputConfigFormat();
         Path outputConfigFile = config.getOutputConfigFile();
         
         // If neither is specified, use default (enhanced)
-        if (outputConfigName == null && outputConfigFile == null) {
-            // Load default enhanced configuration from resources
-            String resourcePath = "/output-configs/enhanced.yaml";
-            try (InputStream input = getClass().getResourceAsStream(resourcePath)) {
-                if (input != null) {
-                    return outputConfigurationLoader.loadConfiguration(input);
-                }
-            }
-            // Fallback to default configuration
-            return outputConfigurationLoader.getDefaultConfiguration();
+        if (outputConfigFormat == null && outputConfigFile == null) {
+            return outputConfigurationLoader.loadPredefinedConfiguration(OutputFormat.ENHANCED);
         }
         
-        // If predefined name is specified
-        if (outputConfigName != null) {
-            // Load from resources
-            String resourcePath = "/output-configs/" + outputConfigName + ".yaml";
-            try (InputStream input = getClass().getResourceAsStream(resourcePath)) {
-                if (input == null) {
-                    throw new IOException("Predefined output configuration not found: " + outputConfigName);
-                }
-                return outputConfigurationLoader.loadConfiguration(input);
-            }
+        // If predefined format is specified
+        if (outputConfigFormat != null) {
+            return outputConfigurationLoader.loadPredefinedConfiguration(outputConfigFormat);
         }
         
         // If custom file is specified
@@ -153,7 +138,7 @@ public class CLIRunner {
         }
         
         // Should never reach here due to the first check
-        return outputConfigurationLoader.getDefaultConfiguration();
+        throw new IllegalStateException("No output configuration specified");
     }
     
     private int determineExitCode(ValidationResult result, Severity failLevel) {

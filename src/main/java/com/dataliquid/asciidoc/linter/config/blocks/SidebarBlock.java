@@ -4,9 +4,23 @@ import java.util.List;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
-import com.dataliquid.asciidoc.linter.config.BlockType;
-import com.dataliquid.asciidoc.linter.config.Severity;
+import com.dataliquid.asciidoc.linter.config.blocks.BlockType;
+import com.dataliquid.asciidoc.linter.config.common.Severity;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.TITLE;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.CONTENT;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Sidebar.POSITION;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.REQUIRED;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.MIN_LENGTH;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.MAX_LENGTH;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.PATTERN;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.SEVERITY;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.LINES;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.MIN;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.MAX;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.ALLOWED;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.EMPTY;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
@@ -25,11 +39,11 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
  */
 @JsonDeserialize(builder = SidebarBlock.Builder.class)
 public final class SidebarBlock extends AbstractBlock {
-    @JsonProperty("title")
+    @JsonProperty(TITLE)
     private final TitleConfig title;
-    @JsonProperty("content")
+    @JsonProperty(CONTENT)
     private final ContentConfig content;
-    @JsonProperty("position")
+    @JsonProperty(POSITION)
     private final PositionConfig position;
     
     private SidebarBlock(Builder builder) {
@@ -62,15 +76,15 @@ public final class SidebarBlock extends AbstractBlock {
     
     @JsonDeserialize(builder = TitleConfig.TitleConfigBuilder.class)
     public static class TitleConfig {
-        @JsonProperty("required")
+        @JsonProperty(REQUIRED)
         private final boolean required;
-        @JsonProperty("minLength")
+        @JsonProperty(MIN_LENGTH)
         private final Integer minLength;
-        @JsonProperty("maxLength")
+        @JsonProperty(MAX_LENGTH)
         private final Integer maxLength;
-        @JsonProperty("pattern")
+        @JsonProperty(PATTERN)
         private final Pattern pattern;
-        @JsonProperty("severity")
+        @JsonProperty(SEVERITY)
         private final Severity severity;
         
         private TitleConfig(TitleConfigBuilder builder) {
@@ -105,7 +119,7 @@ public final class SidebarBlock extends AbstractBlock {
             return new TitleConfigBuilder();
         }
         
-        @JsonPOJOBuilder(withPrefix = "")
+        @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class TitleConfigBuilder {
             private boolean required;
             private Integer minLength;
@@ -169,13 +183,13 @@ public final class SidebarBlock extends AbstractBlock {
     
     @JsonDeserialize(builder = ContentConfig.ContentConfigBuilder.class)
     public static class ContentConfig {
-        @JsonProperty("required")
+        @JsonProperty(REQUIRED)
         private final boolean required;
-        @JsonProperty("minLength")
+        @JsonProperty(MIN_LENGTH)
         private final Integer minLength;
-        @JsonProperty("maxLength")
+        @JsonProperty(MAX_LENGTH)
         private final Integer maxLength;
-        @JsonProperty("lines")
+        @JsonProperty(LINES)
         private final LinesConfig lines;
         
         private ContentConfig(ContentConfigBuilder builder) {
@@ -205,7 +219,7 @@ public final class SidebarBlock extends AbstractBlock {
             return new ContentConfigBuilder();
         }
         
-        @JsonPOJOBuilder(withPrefix = "")
+        @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class ContentConfigBuilder {
             private boolean required;
             private Integer minLength;
@@ -255,11 +269,11 @@ public final class SidebarBlock extends AbstractBlock {
     
     @JsonDeserialize(builder = LinesConfig.LinesConfigBuilder.class)
     public static class LinesConfig {
-        @JsonProperty("min")
+        @JsonProperty(MIN)
         private final Integer min;
-        @JsonProperty("max")
+        @JsonProperty(MAX)
         private final Integer max;
-        @JsonProperty("severity")
+        @JsonProperty(SEVERITY)
         private final Severity severity;
         
         private LinesConfig(LinesConfigBuilder builder) {
@@ -284,7 +298,7 @@ public final class SidebarBlock extends AbstractBlock {
             return new LinesConfigBuilder();
         }
         
-        @JsonPOJOBuilder(withPrefix = "")
+        @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class LinesConfigBuilder {
             private Integer min;
             private Integer max;
@@ -327,11 +341,11 @@ public final class SidebarBlock extends AbstractBlock {
     
     @JsonDeserialize(builder = PositionConfig.PositionConfigBuilder.class)
     public static class PositionConfig {
-        @JsonProperty("required")
+        @JsonProperty(REQUIRED)
         private final boolean required;
-        @JsonProperty("allowed")
+        @JsonProperty(ALLOWED)
         private final List<String> allowed;
-        @JsonProperty("severity")
+        @JsonProperty(SEVERITY)
         private final Severity severity;
         
         private PositionConfig(PositionConfigBuilder builder) {
@@ -356,7 +370,7 @@ public final class SidebarBlock extends AbstractBlock {
             return new PositionConfigBuilder();
         }
         
-        @JsonPOJOBuilder(withPrefix = "")
+        @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class PositionConfigBuilder {
             private boolean required;
             private List<String> allowed;
@@ -397,7 +411,7 @@ public final class SidebarBlock extends AbstractBlock {
         }
     }
     
-    @JsonPOJOBuilder(withPrefix = "")
+    @JsonPOJOBuilder(withPrefix = EMPTY)
     public static class Builder extends AbstractBuilder<Builder> {
         private TitleConfig title;
         private ContentConfig content;

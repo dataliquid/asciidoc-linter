@@ -21,14 +21,13 @@ properties:
 
 $defs:
   severity:
-    type: string
-    enum: [error, warn, info]
+    $ref: 'https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/severity-type'
   
   metadata:
-    $ref: './metadata-schema.yaml'
+    $ref: './documents/metadata-schema.yaml'
   
   section:
-    $ref: './section-schema.yaml'
+    $ref: './documents/section-schema.yaml'
 
 examples:
   - document:

@@ -1,18 +1,20 @@
 package com.dataliquid.asciidoc.linter.validator.block;
 
+import com.dataliquid.asciidoc.linter.validator.SourcePosition;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import org.asciidoctor.ast.StructuralNode;
 
-import com.dataliquid.asciidoc.linter.config.BlockType;
-import com.dataliquid.asciidoc.linter.config.Severity;
+import com.dataliquid.asciidoc.linter.config.blocks.BlockType;
+import com.dataliquid.asciidoc.linter.config.common.Severity;
 import com.dataliquid.asciidoc.linter.config.blocks.UlistBlock;
 import com.dataliquid.asciidoc.linter.validator.ErrorType;
 import com.dataliquid.asciidoc.linter.validator.PlaceholderContext;
+import static com.dataliquid.asciidoc.linter.validator.RuleIds.Ulist.*;
 import com.dataliquid.asciidoc.linter.validator.SourceLocation;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
-import com.dataliquid.asciidoc.linter.report.console.FileContentCache;
 
 /**
  * Validator for unordered list (ulist) blocks in AsciiDoc documents.
@@ -35,9 +37,7 @@ import com.dataliquid.asciidoc.linter.report.console.FileContentCache;
  * @see UlistBlock
  * @see BlockTypeValidator
  */
-public final class UlistBlockValidator extends AbstractBlockValidator<UlistBlock> {
-    private final FileContentCache fileCache = new FileContentCache();
-    
+public final class UlistBlockValidator extends AbstractBlockValidator<UlistBlock> {    
     @Override
     public BlockType getSupportedType() {
         return BlockType.ULIST;
@@ -92,22 +92,19 @@ public final class UlistBlockValidator extends AbstractBlockValidator<UlistBlock
                                   List<ValidationMessage> messages) {
         
         // Get severity with fallback to block severity
-        Severity severity = config.getSeverity() != null ? config.getSeverity() : blockConfig.getSeverity();
+        Severity severity = resolveSeverity(config.getSeverity(), blockConfig.getSeverity());
         
         int itemCount = items.size();
         
         // Validate min items
         if (config.getMin() != null && itemCount < config.getMin()) {
-            ItemPosition pos = findItemInsertPosition(block, context, items);
+            SourcePosition pos = findItemInsertPosition(block, context, items);
             messages.add(ValidationMessage.builder()
                 .severity(severity)
-                .ruleId("ulist.items.min")
+                .ruleId(ITEMS_MIN)
                 .location(SourceLocation.builder()
                     .filename(context.getFilename())
-                    .startLine(pos.lineNumber)
-                    .endLine(pos.lineNumber)
-                    .startColumn(pos.startColumn)
-                    .endColumn(pos.endColumn)
+                    .fromPosition(pos)
                     .build())
                 .message("Unordered list has too few items")
                 .errorType(ErrorType.MISSING_VALUE)
@@ -124,7 +121,7 @@ public final class UlistBlockValidator extends AbstractBlockValidator<UlistBlock
         if (config.getMax() != null && itemCount > config.getMax()) {
             messages.add(ValidationMessage.builder()
                 .severity(severity)
-                .ruleId("ulist.items.max")
+                .ruleId(ITEMS_MAX)
                 .location(context.createLocation(block))
                 .message("Unordered list has too many items")
                 .actualValue(String.valueOf(itemCount))
@@ -140,7 +137,7 @@ public final class UlistBlockValidator extends AbstractBlockValidator<UlistBlock
                                     List<ValidationMessage> messages) {
         
         // Get severity with fallback to block severity
-        Severity severity = config.getSeverity() != null ? config.getSeverity() : blockConfig.getSeverity();
+        Severity severity = resolveSeverity(config.getSeverity(), blockConfig.getSeverity());
         
         int nestingLevel = calculateNestingLevel(block);
         
@@ -148,7 +145,7 @@ public final class UlistBlockValidator extends AbstractBlockValidator<UlistBlock
         if (config.getMax() != null && nestingLevel > config.getMax()) {
             messages.add(ValidationMessage.builder()
                 .severity(severity)
-                .ruleId("ulist.nestingLevel.max")
+                .ruleId(NESTING_LEVEL_MAX)
                 .location(context.createLocation(block))
                 .message("Unordered list exceeds maximum nesting level")
                 .actualValue(String.valueOf(nestingLevel))
@@ -167,16 +164,13 @@ public final class UlistBlockValidator extends AbstractBlockValidator<UlistBlock
         String actualMarkerStyle = getMarkerStyle(block);
         
         if (actualMarkerStyle != null && !actualMarkerStyle.equals(expectedMarkerStyle)) {
-            MarkerPosition pos = findMarkerPosition(block, context);
+            SourcePosition pos = findSourcePosition(block, context);
             messages.add(ValidationMessage.builder()
                 .severity(blockConfig.getSeverity())
-                .ruleId("ulist.markerStyle")
+                .ruleId(MARKER_STYLE)
                 .location(SourceLocation.builder()
                     .filename(context.getFilename())
-                    .startLine(pos.lineNumber)
-                    .endLine(pos.lineNumber)
-                    .startColumn(pos.startColumn)
-                    .endColumn(pos.endColumn)
+                    .fromPosition(pos)
                     .build())
                 .message("Unordered list uses incorrect marker style")
                 .actualValue(actualMarkerStyle)
@@ -248,10 +242,10 @@ public final class UlistBlockValidator extends AbstractBlockValidator<UlistBlock
     /**
      * Finds the position where new item should be inserted.
      */
-    private ItemPosition findItemInsertPosition(StructuralNode block, BlockValidationContext context, 
+    private SourcePosition findItemInsertPosition(StructuralNode block, BlockValidationContext context, 
                                                List<StructuralNode> items) {
         if (block.getSourceLocation() == null) {
-            return new ItemPosition(1, 1, 1);
+            return new SourcePosition(1, 1, 1);
         }
         
         List<String> fileLines = fileCache.getFileLines(context.getFilename());
@@ -264,7 +258,7 @@ public final class UlistBlockValidator extends AbstractBlockValidator<UlistBlock
                 if (lineNum > 0 && lineNum <= fileLines.size()) {
                     String line = fileLines.get(lineNum - 1);
                     // Return position at end of line to insert on next line
-                    return new ItemPosition(line.length() + 1, line.length() + 1, lineNum);
+                    return new SourcePosition(line.length() + 1, line.length() + 1, lineNum);
                 }
             }
         }
@@ -273,17 +267,17 @@ public final class UlistBlockValidator extends AbstractBlockValidator<UlistBlock
         int lineNum = block.getSourceLocation().getLineNumber();
         if (lineNum > 0 && lineNum <= fileLines.size()) {
             String line = fileLines.get(lineNum - 1);
-            return new ItemPosition(line.length() + 1, line.length() + 1, lineNum);
+            return new SourcePosition(line.length() + 1, line.length() + 1, lineNum);
         }
-        return new ItemPosition(1, 1, lineNum);
+        return new SourcePosition(1, 1, lineNum);
     }
     
     /**
      * Finds the position of the first marker in the list.
      */
-    private MarkerPosition findMarkerPosition(StructuralNode block, BlockValidationContext context) {
+    private SourcePosition findSourcePosition(StructuralNode block, BlockValidationContext context) {
         if (block.getSourceLocation() == null) {
-            return new MarkerPosition(1, 1, 1);
+            return new SourcePosition(1, 1, 1);
         }
         
         List<String> fileLines = fileCache.getFileLines(context.getFilename());
@@ -297,16 +291,16 @@ public final class UlistBlockValidator extends AbstractBlockValidator<UlistBlock
                 if (!Character.isWhitespace(c)) {
                     // Found the marker
                     if (c == '*' || c == '-' || c == '.') {
-                        return new MarkerPosition(i + 1, i + 1, lineNum);
+                        return new SourcePosition(i + 1, i + 1, lineNum);
                     }
                     break;
                 }
             }
             // Default to start of line if no marker found
-            return new MarkerPosition(1, 1, lineNum);
+            return new SourcePosition(1, 1, lineNum);
         }
         
-        return new MarkerPosition(1, 1, lineNum);
+        return new SourcePosition(1, 1, lineNum);
     }
     
     /**
@@ -322,16 +316,13 @@ public final class UlistBlockValidator extends AbstractBlockValidator<UlistBlock
                     if ("ulist".equals(nestedBlock.getContext())) {
                         String nestedMarkerStyle = getMarkerStyle(nestedBlock);
                         if (nestedMarkerStyle != null && !nestedMarkerStyle.equals(expectedMarkerStyle)) {
-                            MarkerPosition pos = findMarkerPosition(nestedBlock, context);
+                            SourcePosition pos = findSourcePosition(nestedBlock, context);
                             messages.add(ValidationMessage.builder()
                                 .severity(blockConfig.getSeverity())
-                                .ruleId("ulist.markerStyle")
+                                .ruleId(MARKER_STYLE)
                                 .location(SourceLocation.builder()
                                     .filename(context.getFilename())
-                                    .startLine(pos.lineNumber)
-                                    .endLine(pos.lineNumber)
-                                    .startColumn(pos.startColumn)
-                                    .endColumn(pos.endColumn)
+                                    .fromPosition(pos)
                                     .build())
                                 .message("Unordered list marker style '" + nestedMarkerStyle + "' does not match expected style '" + expectedMarkerStyle + "'")
                                 .actualValue(nestedMarkerStyle)
@@ -350,27 +341,5 @@ public final class UlistBlockValidator extends AbstractBlockValidator<UlistBlock
         }
     }
     
-    private static class ItemPosition {
-        final int startColumn;
-        final int endColumn;
-        final int lineNumber;
-        
-        ItemPosition(int startColumn, int endColumn, int lineNumber) {
-            this.startColumn = startColumn;
-            this.endColumn = endColumn;
-            this.lineNumber = lineNumber;
-        }
-    }
     
-    private static class MarkerPosition {
-        final int startColumn;
-        final int endColumn;
-        final int lineNumber;
-        
-        MarkerPosition(int startColumn, int endColumn, int lineNumber) {
-            this.startColumn = startColumn;
-            this.endColumn = endColumn;
-            this.lineNumber = lineNumber;
-        }
-    }
 }

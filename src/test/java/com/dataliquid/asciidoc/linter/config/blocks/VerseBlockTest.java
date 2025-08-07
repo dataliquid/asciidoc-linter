@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
 
 import org.junit.jupiter.api.Test;
 
-import com.dataliquid.asciidoc.linter.config.Severity;
+import com.dataliquid.asciidoc.linter.config.common.Severity;
 
 class VerseBlockTest {
     

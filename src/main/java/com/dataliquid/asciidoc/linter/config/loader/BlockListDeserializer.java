@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.dataliquid.asciidoc.linter.config.BlockType;
+import com.dataliquid.asciidoc.linter.config.blocks.BlockType;
 import com.dataliquid.asciidoc.linter.config.blocks.AdmonitionBlock;
 import com.dataliquid.asciidoc.linter.config.blocks.AudioBlock;
 import com.dataliquid.asciidoc.linter.config.blocks.Block;

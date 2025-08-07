@@ -2943,7 +2943,7 @@ class UnderlineHighlightIntegrationTest {
                    6 | ====
                 
                 [ERROR]: Admonition icon does not match required pattern [admonition.icon.pattern]
-                  File: %s:13:15-26
+                  File: %s:13:16-27
                   Actual: icon:ALERT[]
                   Expected: Pattern: ^icon:[a-z-]+\\[\\]$
                 
@@ -2951,7 +2951,7 @@ class UnderlineHighlightIntegrationTest {
                   11 | ====
                   12 |\s
                   13 | [WARNING,icon="icon:ALERT[]"]
-                     |               ~~~~~~~~~~~~
+                     |                ~~~~~~~~~~~~
                   14 | ====
                   15 | Invalid uppercase icon.
                   16 | ====

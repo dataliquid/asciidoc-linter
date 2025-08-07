@@ -20,8 +20,7 @@ class OutputConfigIntegrationTest {
     @Test
     void testLoadEnhancedConfig() throws IOException {
         OutputConfigurationLoader loader = new OutputConfigurationLoader();
-        OutputConfiguration config = loader.loadConfiguration(
-            getClass().getResourceAsStream("/output-configs/enhanced.yaml"));
+        OutputConfiguration config = loader.loadPredefinedConfiguration(OutputFormat.ENHANCED);
         
         assertNotNull(config);
         assertEquals(OutputFormat.ENHANCED, config.getFormat());
@@ -35,8 +34,7 @@ class OutputConfigIntegrationTest {
     @Test
     void testLoadSimpleConfig() throws IOException {
         OutputConfigurationLoader loader = new OutputConfigurationLoader();
-        OutputConfiguration config = loader.loadConfiguration(
-            getClass().getResourceAsStream("/output-configs/simple.yaml"));
+        OutputConfiguration config = loader.loadPredefinedConfiguration(OutputFormat.SIMPLE);
         
         assertNotNull(config);
         assertEquals(OutputFormat.SIMPLE, config.getFormat());
@@ -48,8 +46,7 @@ class OutputConfigIntegrationTest {
     @Test
     void testLoadCompactConfig() throws IOException {
         OutputConfigurationLoader loader = new OutputConfigurationLoader();
-        OutputConfiguration config = loader.loadConfiguration(
-            getClass().getResourceAsStream("/output-configs/compact.yaml"));
+        OutputConfiguration config = loader.loadPredefinedConfiguration(OutputFormat.COMPACT);
         
         assertNotNull(config);
         assertEquals(OutputFormat.COMPACT, config.getFormat());

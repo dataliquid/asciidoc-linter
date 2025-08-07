@@ -4,6 +4,9 @@ import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Output.OUTPUT;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.EMPTY;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
 /**
@@ -39,14 +42,14 @@ public final class OutputConfigWrapper {
         return new Builder();
     }
     
-    @JsonPOJOBuilder(withPrefix = "")
+    @JsonPOJOBuilder(withPrefix = EMPTY)
     public static final class Builder {
         private OutputConfiguration output;
         
         private Builder() {
         }
         
-        @JsonProperty("output")
+        @JsonProperty(OUTPUT)
         public Builder output(OutputConfiguration output) {
             this.output = output;
             return this;

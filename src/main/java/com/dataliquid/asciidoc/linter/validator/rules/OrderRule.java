@@ -7,9 +7,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import com.dataliquid.asciidoc.linter.config.Severity;
+import com.dataliquid.asciidoc.linter.config.common.Severity;
 import com.dataliquid.asciidoc.linter.validator.SourceLocation;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
+
+import static com.dataliquid.asciidoc.linter.validator.RuleIds.Metadata.ORDER;
 
 public final class OrderRule implements AttributeRule {
     private final Map<String, OrderConfig> orderConfigs;
@@ -21,7 +23,7 @@ public final class OrderRule implements AttributeRule {
 
     @Override
     public String getRuleId() {
-        return "metadata.order";
+        return ORDER;
     }
 
     @Override

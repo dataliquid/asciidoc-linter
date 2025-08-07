@@ -4,6 +4,12 @@ import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.ENABLED;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Output.MAX_PER_ERROR;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Output.SHOW_AUTO_FIX_HINT;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Output.SHOW_EXAMPLES;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.EMPTY;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
 /**
@@ -64,7 +70,7 @@ public final class SuggestionsConfig {
         return new Builder();
     }
     
-    @JsonPOJOBuilder(withPrefix = "")
+    @JsonPOJOBuilder(withPrefix = EMPTY)
     public static final class Builder {
         private boolean enabled = DEFAULT_ENABLED;
         private int maxPerError = DEFAULT_MAX_PER_ERROR;
@@ -74,25 +80,25 @@ public final class SuggestionsConfig {
         private Builder() {
         }
         
-        @JsonProperty("enabled")
+        @JsonProperty(ENABLED)
         public Builder enabled(boolean enabled) {
             this.enabled = enabled;
             return this;
         }
         
-        @JsonProperty("maxPerError")
+        @JsonProperty(MAX_PER_ERROR)
         public Builder maxPerError(int maxPerError) {
             this.maxPerError = maxPerError;
             return this;
         }
         
-        @JsonProperty("showExamples")
+        @JsonProperty(SHOW_EXAMPLES)
         public Builder showExamples(boolean showExamples) {
             this.showExamples = showExamples;
             return this;
         }
         
-        @JsonProperty("showAutoFixHint")
+        @JsonProperty(SHOW_AUTO_FIX_HINT)
         public Builder showAutoFixHint(boolean showAutoFixHint) {
             this.showAutoFixHint = showAutoFixHint;
             return this;

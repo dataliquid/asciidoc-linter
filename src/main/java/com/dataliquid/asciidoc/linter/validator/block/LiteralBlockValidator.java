@@ -5,12 +5,14 @@ import java.util.List;
 
 import org.asciidoctor.ast.StructuralNode;
 
-import com.dataliquid.asciidoc.linter.config.BlockType;
-import com.dataliquid.asciidoc.linter.config.Severity;
+import com.dataliquid.asciidoc.linter.config.blocks.BlockType;
+import com.dataliquid.asciidoc.linter.config.common.Severity;
 import com.dataliquid.asciidoc.linter.config.blocks.LiteralBlock;
 import com.dataliquid.asciidoc.linter.validator.ErrorType;
 import com.dataliquid.asciidoc.linter.validator.PlaceholderContext;
+import static com.dataliquid.asciidoc.linter.validator.RuleIds.Literal.*;
 import com.dataliquid.asciidoc.linter.validator.SourceLocation;
+import com.dataliquid.asciidoc.linter.validator.SourcePosition;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
 
 /**
@@ -118,16 +120,13 @@ public final class LiteralBlockValidator extends AbstractBlockValidator<LiteralB
         
         // Check if title is required
         if (config.isRequired() && (title == null || title.trim().isEmpty())) {
-            TitlePosition pos = findTitlePosition(block, context);
+            SourcePosition pos = findTitlePosition(block, context);
             messages.add(ValidationMessage.builder()
                 .severity(severity)
-                .ruleId("literal.title.required")
+                .ruleId(TITLE_REQUIRED)
                 .location(SourceLocation.builder()
                     .filename(context.getFilename())
-                    .startLine(pos.lineNumber)
-                    .endLine(pos.lineNumber)
-                    .startColumn(pos.startColumn)
-                    .endColumn(pos.endColumn)
+                    .fromPosition(pos)
                     .build())
                 .message("Literal block requires a title")
                 .errorType(ErrorType.MISSING_VALUE)
@@ -204,7 +203,7 @@ public final class LiteralBlockValidator extends AbstractBlockValidator<LiteralB
                     block.getSourceLocation().getLineNumber() + lineNumber : lineNumber;
                 messages.add(ValidationMessage.builder()
                     .severity(severity)
-                    .ruleId("literal.indentation.minSpaces")
+                    .ruleId(INDENTATION_MIN_SPACES)
                     .location(SourceLocation.builder()
                         .filename(context.getFilename())
                         .startLine(currentLineNum)
@@ -228,7 +227,7 @@ public final class LiteralBlockValidator extends AbstractBlockValidator<LiteralB
             if (config.getMaxSpaces() != null && indentSpaces > config.getMaxSpaces()) {
                 messages.add(ValidationMessage.builder()
                     .severity(severity)
-                    .ruleId("literal.indentation.maxSpaces")
+                    .ruleId(INDENTATION_MAX_SPACES)
                     .location(context.createLocation(block))
                     .message("Line " + lineNumber + " has excessive indentation")
                     .actualValue(indentSpaces + " spaces")
@@ -243,7 +242,7 @@ public final class LiteralBlockValidator extends AbstractBlockValidator<LiteralB
                 } else if (indentSpaces != firstIndentation) {
                     messages.add(ValidationMessage.builder()
                         .severity(severity)
-                        .ruleId("literal.indentation.consistent")
+                        .ruleId(INDENTATION_CONSISTENT)
                         .location(context.createLocation(block))
                         .message("Line " + lineNumber + " has inconsistent indentation")
                         .actualValue(indentSpaces + " spaces")
@@ -272,24 +271,12 @@ public final class LiteralBlockValidator extends AbstractBlockValidator<LiteralB
     /**
      * Finds the position where title should be inserted.
      */
-    private TitlePosition findTitlePosition(StructuralNode block, BlockValidationContext context) {
+    private SourcePosition findTitlePosition(StructuralNode block, BlockValidationContext context) {
         if (block.getSourceLocation() == null) {
-            return new TitlePosition(1, 1, 1);
+            return new SourcePosition(1, 1, 1);
         }
         
         int lineNum = block.getSourceLocation().getLineNumber();
-        return new TitlePosition(1, 1, lineNum);
-    }
-    
-    private static class TitlePosition {
-        final int startColumn;
-        final int endColumn;
-        final int lineNumber;
-        
-        TitlePosition(int startColumn, int endColumn, int lineNumber) {
-            this.startColumn = startColumn;
-            this.endColumn = endColumn;
-            this.lineNumber = lineNumber;
-        }
+        return new SourcePosition(1, 1, lineNum);
     }
 }

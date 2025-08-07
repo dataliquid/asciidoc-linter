@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import com.dataliquid.asciidoc.linter.config.BlockType;
+import com.dataliquid.asciidoc.linter.config.blocks.BlockType;
 
 /**
  * Factory for creating block type validators.

@@ -15,15 +15,14 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import com.dataliquid.asciidoc.linter.config.BlockType;
-import com.dataliquid.asciidoc.linter.config.Severity;
+import com.dataliquid.asciidoc.linter.config.blocks.BlockType;
+import com.dataliquid.asciidoc.linter.config.common.Severity;
 import com.dataliquid.asciidoc.linter.config.blocks.ParagraphBlock;
 import com.dataliquid.asciidoc.linter.config.rule.LineConfig;
 import com.dataliquid.asciidoc.linter.config.rule.OccurrenceConfig;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
 import com.dataliquid.asciidoc.linter.validator.ErrorType;
 import org.asciidoctor.ast.Cursor;
-import org.asciidoctor.ast.Block;
 
 /**
  * Unit tests for {@link ParagraphBlockValidator}.

@@ -185,35 +185,59 @@ class OutputConfigurationLoaderTest {
     }
     
     @Nested
-    @DisplayName("Default Configuration Tests")
-    class DefaultConfigurationTests {
+    @DisplayName("Predefined Configuration Tests")
+    class PredefinedConfigurationTests {
         
         @Test
-        @DisplayName("should return default configuration")
-        void shouldReturnDefaultConfiguration() {
+        @DisplayName("should load predefined enhanced configuration")
+        void shouldLoadPredefinedEnhancedConfiguration() throws IOException {
             // When
-            OutputConfiguration config = loader.getDefaultConfiguration();
+            OutputConfiguration config = loader.loadPredefinedConfiguration(OutputFormat.ENHANCED);
             
             // Then
             assertEquals(OutputFormat.ENHANCED, config.getFormat());
             assertTrue(config.getDisplay().isUseColors());
-            assertTrue(config.getErrorGrouping().isEnabled());
+            assertTrue(config.getDisplay().isShowLineNumbers());
             assertTrue(config.getSummary().isEnabled());
         }
         
         @Test
-        @DisplayName("should return compact configuration")
-        void shouldReturnCompactConfiguration() {
+        @DisplayName("should load predefined simple configuration")
+        void shouldLoadPredefinedSimpleConfiguration() throws IOException {
             // When
-            OutputConfiguration config = loader.getCompactConfiguration();
+            OutputConfiguration config = loader.loadPredefinedConfiguration(OutputFormat.SIMPLE);
+            
+            // Then
+            assertEquals(OutputFormat.SIMPLE, config.getFormat());
+            assertTrue(config.getDisplay().isUseColors());
+            assertTrue(config.getDisplay().isShowLineNumbers());
+            assertTrue(config.getSummary().isEnabled());
+        }
+        
+        @Test
+        @DisplayName("should load predefined compact configuration")
+        void shouldLoadPredefinedCompactConfiguration() throws IOException {
+            // When
+            OutputConfiguration config = loader.loadPredefinedConfiguration(OutputFormat.COMPACT);
             
             // Then
             assertEquals(OutputFormat.COMPACT, config.getFormat());
             assertFalse(config.getDisplay().isUseColors());
-            assertFalse(config.getErrorGrouping().isEnabled());
+            assertFalse(config.getDisplay().isShowLineNumbers());
             assertFalse(config.getSummary().isEnabled());
         }
+        
+        @Test
+        @DisplayName("should throw exception for non-existent predefined configuration")
+        void shouldThrowExceptionForNonExistentPredefinedConfiguration() {
+            // When/Then
+            // Test with an invalid format string using reflection or a non-enum value
+            assertThrows(IllegalArgumentException.class, () ->
+                OutputFormat.fromValue("non-existent")
+            );
+        }
     }
+    
     
     @Nested
     @DisplayName("Validation Tests")

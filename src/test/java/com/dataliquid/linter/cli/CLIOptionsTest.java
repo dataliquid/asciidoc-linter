@@ -30,7 +30,7 @@ class CLIOptionsTest {
     @DisplayName("should parse short form arguments")
     void shouldParseShortFormArguments() throws ParseException {
         // Given
-        String[] args = {"-i", "**/*.adoc", "-c", "config.yaml", "-f", "json", "-o", "report.json"};
+        String[] args = {"-i", "**/*.adoc", "-r", "config.yaml", "-f", "json", "-o", "report.json"};
         
         // When
         CommandLine cmd = parser.parse(cliOptions.getOptions(), args);
@@ -38,7 +38,7 @@ class CLIOptionsTest {
         // Then
         assertTrue(cmd.hasOption("i"));
         assertEquals("**/*.adoc", cmd.getOptionValue("i"));
-        assertEquals("config.yaml", cmd.getOptionValue("c"));
+        assertEquals("config.yaml", cmd.getOptionValue("r"));
         assertEquals("json", cmd.getOptionValue("f"));
         assertEquals("report.json", cmd.getOptionValue("o"));
     }
@@ -47,7 +47,7 @@ class CLIOptionsTest {
     @DisplayName("should parse long form arguments")
     void shouldParseLongFormArguments() throws ParseException {
         // Given
-        String[] args = {"--input", "docs/**/*.adoc,examples/**/*.asciidoc", "--config", "config.yaml", 
+        String[] args = {"--input", "docs/**/*.adoc,examples/**/*.asciidoc", "--rule", "config.yaml", 
                         "--report-format", "json", "--report-output", "report.json"};
         
         // When
@@ -56,7 +56,7 @@ class CLIOptionsTest {
         // Then
         assertTrue(cmd.hasOption("input"));
         assertEquals("docs/**/*.adoc,examples/**/*.asciidoc", cmd.getOptionValue("input"));
-        assertEquals("config.yaml", cmd.getOptionValue("config"));
+        assertEquals("config.yaml", cmd.getOptionValue("rule"));
         assertEquals("json", cmd.getOptionValue("report-format"));
         assertEquals("report.json", cmd.getOptionValue("report-output"));
     }
@@ -65,14 +65,14 @@ class CLIOptionsTest {
     @DisplayName("should parse without input when using generate-docs")
     void shouldParseWithoutInputWhenUsingGenerateDocs() throws ParseException {
         // Given
-        String[] args = {"--generate-docs", "-c", "config.yaml"};
+        String[] args = {"--generate-docs", "-r", "config.yaml"};
         
         // When
         CommandLine cmd = parser.parse(cliOptions.getOptions(), args);
         
         // Then
         assertTrue(cmd.hasOption("generate-docs"));
-        assertTrue(cmd.hasOption("config"));
+        assertTrue(cmd.hasOption("rule"));
         assertFalse(cmd.hasOption("input"));
     }
     
