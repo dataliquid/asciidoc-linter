@@ -13,6 +13,8 @@ import com.dataliquid.asciidoc.linter.validator.ErrorType;
 import com.dataliquid.asciidoc.linter.validator.SourceLocation;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
 
+import static com.dataliquid.asciidoc.linter.validator.RuleIds.Metadata.REQUIRED;
+
 public final class RequiredRule implements AttributeRule {
     private final Map<String, RequiredAttribute> requiredAttributes;
 
@@ -22,7 +24,7 @@ public final class RequiredRule implements AttributeRule {
 
     @Override
     public String getRuleId() {
-        return "metadata.required";
+        return REQUIRED;
     }
 
     @Override

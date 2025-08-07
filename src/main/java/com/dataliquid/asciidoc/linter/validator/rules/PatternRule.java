@@ -14,6 +14,8 @@ import com.dataliquid.asciidoc.linter.validator.SourceLocation;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
 import com.dataliquid.asciidoc.linter.validator.ErrorType;
 
+import static com.dataliquid.asciidoc.linter.validator.RuleIds.Metadata.PATTERN;
+
 public final class PatternRule implements AttributeRule {
     private final Map<String, PatternConfig> patternConfigs;
 
@@ -23,7 +25,7 @@ public final class PatternRule implements AttributeRule {
 
     @Override
     public String getRuleId() {
-        return "metadata.pattern";
+        return PATTERN;
     }
 
     @Override
