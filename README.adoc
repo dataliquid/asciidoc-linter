@@ -84,13 +84,13 @@ The linter processes AsciiDoc files using AsciidoctorJ and applies configurable 
 java -jar asciidoc-linter.jar -i "**/*.adoc"
 
 # With custom configuration
-java -jar asciidoc-linter.jar -i "docs/**/*.adoc" -c .linter-config.yaml
+java -jar asciidoc-linter.jar -i "docs/**/*.adoc" -r .linter-rule-config.yaml
 
 # JSON output for CI/CD
 java -jar asciidoc-linter.jar -i "**/*.adoc" -f json -o report.json
 
 # Generate documentation for your configuration
-java -jar asciidoc-linter.jar -c my-rules.yaml --generate-docs
+java -jar asciidoc-linter.jar -r my-rules.yaml --generate-docs
 ----
 
 === Configuration Example

@@ -25,11 +25,11 @@ public class CLIOptions {
             .build());
         
         // Configuration file
-        options.addOption(Option.builder("c")
-            .longOpt("config")
+        options.addOption(Option.builder("r")
+            .longOpt("rule")
             .hasArg()
             .argName("file")
-            .desc("YAML configuration file (default: .linter-config.yaml)")
+            .desc("YAML rule configuration file (default: .linter-rule-config.yaml)")
             .build());
         
         // Report format
