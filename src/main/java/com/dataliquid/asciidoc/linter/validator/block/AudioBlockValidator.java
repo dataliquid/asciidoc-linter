@@ -282,7 +282,7 @@ public final class AudioBlockValidator extends AbstractBlockValidator<AudioBlock
             titleConfig.getSeverity() : audioConfig.getSeverity();
         
         if (titleConfig.isRequired() && (title == null || title.trim().isEmpty())) {
-            SourcePosition pos = findSourcePosition(block, context);
+            SourcePosition pos = findTitlePosition(block, context);
             messages.add(ValidationMessage.builder()
                 .severity(severity)
                 .ruleId(TITLE_REQUIRED)

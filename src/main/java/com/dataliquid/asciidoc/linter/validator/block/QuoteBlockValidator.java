@@ -139,7 +139,7 @@ public final class QuoteBlockValidator extends AbstractBlockValidator<QuoteBlock
         Severity severity = config.getSeverity() != null ? config.getSeverity() : blockSeverity;
         
         if (config.isRequired() && (citation == null || citation.trim().isEmpty())) {
-            SourcePosition pos = findSourcePosition(node, context);
+            SourcePosition pos = findCitationPosition(node, context);
             results.add(ValidationMessage.builder()
                 .severity(severity)
                 .ruleId(CITATION_REQUIRED)
@@ -185,7 +185,7 @@ public final class QuoteBlockValidator extends AbstractBlockValidator<QuoteBlock
             
             // Validate pattern
             if (config.getPattern() != null && !config.getPattern().matcher(citation).matches()) {
-                SourcePosition pos = findSourcePosition(node, context);
+                SourcePosition pos = findCitationPosition(node, context);
                 results.add(ValidationMessage.builder()
                     .severity(severity)
                     .ruleId(CITATION_PATTERN)

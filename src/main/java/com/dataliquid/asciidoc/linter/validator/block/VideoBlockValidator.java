@@ -395,7 +395,7 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
         
         // Check if required
         if (Boolean.TRUE.equals(captionConfig.getRequired()) && (caption == null || caption.trim().isEmpty())) {
-            SourcePosition pos = findSourcePosition(node, context);
+            SourcePosition pos = findCaptionPosition(node, context);
             messages.add(ValidationMessage.builder()
                     .severity(severity)
                     .ruleId(CAPTION_REQUIRED)
@@ -426,7 +426,7 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
             int length = caption.length();
             
             if (captionConfig.getMinLength() != null && length < captionConfig.getMinLength()) {
-                SourcePosition pos = findSourcePosition(node, context);
+                SourcePosition pos = findCaptionPosition(node, context);
                 messages.add(ValidationMessage.builder()
                         .severity(severity)
                         .ruleId(CAPTION_MIN_LENGTH)
@@ -449,7 +449,7 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
             }
             
             if (captionConfig.getMaxLength() != null && length > captionConfig.getMaxLength()) {
-                SourcePosition pos = findSourcePosition(node, context);
+                SourcePosition pos = findCaptionPosition(node, context);
                 messages.add(ValidationMessage.builder()
                         .severity(severity)
                         .ruleId(CAPTION_MAX_LENGTH)

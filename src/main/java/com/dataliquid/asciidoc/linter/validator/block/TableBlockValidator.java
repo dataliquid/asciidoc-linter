@@ -177,7 +177,7 @@ public final class TableBlockValidator extends AbstractBlockValidator<TableBlock
         boolean hasHeader = !table.getHeader().isEmpty();
         
         if (config.isRequired() && !hasHeader) {
-            SourcePosition pos = findSourcePosition(table, context);
+            SourcePosition pos = findHeaderPosition(table, context);
             messages.add(ValidationMessage.builder()
                 .severity(severity)
                 .ruleId(HEADER_REQUIRED)
