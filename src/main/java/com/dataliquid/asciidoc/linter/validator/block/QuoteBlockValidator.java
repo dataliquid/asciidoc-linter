@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.asciidoctor.ast.StructuralNode;
 
+import static com.dataliquid.asciidoc.linter.validator.block.BlockAttributes.*;
+
 import com.dataliquid.asciidoc.linter.config.BlockType;
 import com.dataliquid.asciidoc.linter.config.Severity;
 import com.dataliquid.asciidoc.linter.config.blocks.QuoteBlock;
@@ -274,19 +276,19 @@ public final class QuoteBlockValidator extends AbstractBlockValidator<QuoteBlock
     
     private String extractAttribution(StructuralNode node) {
         // Check for attribution attribute (standard way)
-        Object attribution = node.getAttribute(BlockAttributes.ATTRIBUTION);
+        Object attribution = node.getAttribute(ATTRIBUTION);
         if (attribution != null) {
             return attribution.toString();
         }
         
         // Check for author attribute (alternative way)
-        Object author = node.getAttribute(BlockAttributes.AUTHOR);
+        Object author = node.getAttribute(AUTHOR);
         if (author != null) {
             return author.toString();
         }
         
         // Check for positional attribute [quote, Author, Source]
-        Object attr1 = node.getAttribute(BlockAttributes.ATTR_1);
+        Object attr1 = node.getAttribute(ATTR_1);
         if (attr1 != null) {
             return attr1.toString();
         }
@@ -296,19 +298,19 @@ public final class QuoteBlockValidator extends AbstractBlockValidator<QuoteBlock
     
     private String extractCitation(StructuralNode node) {
         // Check for citetitle attribute (standard way for citation)
-        Object citetitle = node.getAttribute(BlockAttributes.CITETITLE);
+        Object citetitle = node.getAttribute(CITETITLE);
         if (citetitle != null) {
             return citetitle.toString();
         }
         
         // Check for source attribute (alternative way)
-        Object source = node.getAttribute(BlockAttributes.SOURCE);
+        Object source = node.getAttribute(SOURCE);
         if (source != null) {
             return source.toString();
         }
         
         // Check for positional attribute [quote, Author, Source]
-        Object attr2 = node.getAttribute(BlockAttributes.ATTR_2);
+        Object attr2 = node.getAttribute(ATTR_2);
         if (attr2 != null) {
             return attr2.toString();
         }

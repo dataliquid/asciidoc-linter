@@ -4,6 +4,8 @@ import org.asciidoctor.ast.StructuralNode;
 
 import com.dataliquid.asciidoc.linter.config.BlockType;
 
+import static com.dataliquid.asciidoc.linter.validator.block.BlockAttributes.*;
+
 /**
  * Detects the type of AsciidoctorJ blocks and maps them to our BlockType enum.
  */
@@ -109,10 +111,10 @@ public final class BlockTypeDetector {
         }
         
         // Default: if it has attribution or citetitle, treat as quote
-        if (node.getAttribute(BlockAttributes.ATTRIBUTION) != null || 
-            node.getAttribute(BlockAttributes.CITETITLE) != null ||
-            node.getAttribute(BlockAttributes.AUTHOR) != null ||
-            node.getAttribute(BlockAttributes.SOURCE) != null) {
+        if (node.getAttribute(ATTRIBUTION) != null || 
+            node.getAttribute(CITETITLE) != null ||
+            node.getAttribute(AUTHOR) != null ||
+            node.getAttribute(SOURCE) != null) {
             return BlockType.QUOTE;
         }
         

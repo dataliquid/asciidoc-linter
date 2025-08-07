@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.asciidoctor.ast.StructuralNode;
 
+import static com.dataliquid.asciidoc.linter.validator.block.BlockAttributes.*;
+
 import com.dataliquid.asciidoc.linter.config.BlockType;
 import com.dataliquid.asciidoc.linter.config.Severity;
 import com.dataliquid.asciidoc.linter.config.blocks.ExampleBlock;
@@ -125,9 +127,9 @@ public final class ExampleBlockValidator extends AbstractBlockValidator<ExampleB
         ExampleBlock.CollapsibleConfig config = block.getCollapsible();
         
         // Check for collapsible attribute
-        Object collapsibleAttr = node.getAttribute(BlockAttributes.COLLAPSIBLE_OPTION);
+        Object collapsibleAttr = node.getAttribute(COLLAPSIBLE_OPTION);
         if (collapsibleAttr == null) {
-            collapsibleAttr = node.getAttribute(BlockAttributes.COLLAPSIBLE);
+            collapsibleAttr = node.getAttribute(COLLAPSIBLE);
         }
         
         // Check if collapsible is required

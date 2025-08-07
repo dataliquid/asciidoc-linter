@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.asciidoctor.ast.StructuralNode;
 
+import static com.dataliquid.asciidoc.linter.validator.block.BlockAttributes.*;
+
 import com.dataliquid.asciidoc.linter.config.BlockType;
 import com.dataliquid.asciidoc.linter.config.Severity;
 import com.dataliquid.asciidoc.linter.config.blocks.AdmonitionBlock;
@@ -95,7 +97,7 @@ public final class AdmonitionBlockValidator extends AbstractBlockValidator<Admon
         }
         
         // Try role attribute as fallback
-        Object role = block.getAttribute(BlockAttributes.ROLE);
+        Object role = block.getAttribute(ROLE);
         if (role != null) {
             return role.toString().toUpperCase();
         }
@@ -106,13 +108,13 @@ public final class AdmonitionBlockValidator extends AbstractBlockValidator<Admon
     
     private boolean hasIcon(StructuralNode block) {
         // Check if icons are enabled at document level
-        Object docIcons = block.getDocument().getAttribute(BlockAttributes.ICONS);
+        Object docIcons = block.getDocument().getAttribute(ICONS);
         if (docIcons != null && "font".equals(docIcons.toString())) {
             return true;
         }
         
         // Check block-level icon attribute
-        Object blockIcon = block.getAttribute(BlockAttributes.ICON);
+        Object blockIcon = block.getAttribute(ICON);
         return blockIcon != null && !"none".equals(blockIcon.toString());
     }
     
@@ -408,7 +410,7 @@ public final class AdmonitionBlockValidator extends AbstractBlockValidator<Admon
     }
     
     private String getIconValue(StructuralNode block) {
-        Object icon = block.getAttribute(BlockAttributes.ICON);
+        Object icon = block.getAttribute(ICON);
         return icon != null ? icon.toString() : null;
     }
     
