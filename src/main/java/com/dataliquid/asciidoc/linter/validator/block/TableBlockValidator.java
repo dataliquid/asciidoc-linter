@@ -16,7 +16,6 @@ import static com.dataliquid.asciidoc.linter.validator.block.BlockAttributes.*;
 import com.dataliquid.asciidoc.linter.config.blocks.BlockType;
 import com.dataliquid.asciidoc.linter.config.common.Severity;
 import com.dataliquid.asciidoc.linter.config.blocks.TableBlock;
-import com.dataliquid.asciidoc.linter.report.console.FileContentCache;
 import com.dataliquid.asciidoc.linter.validator.ErrorType;
 import com.dataliquid.asciidoc.linter.validator.PlaceholderContext;
 import static com.dataliquid.asciidoc.linter.validator.RuleIds.Table.*;
@@ -46,9 +45,7 @@ import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
  * @see TableBlock
  * @see BlockTypeValidator
  */
-public final class TableBlockValidator extends AbstractBlockValidator<TableBlock> {
-    private final FileContentCache fileCache = new FileContentCache();
-    
+public final class TableBlockValidator extends AbstractBlockValidator<TableBlock> {    
     @Override
     public BlockType getSupportedType() {
         return BlockType.TABLE;

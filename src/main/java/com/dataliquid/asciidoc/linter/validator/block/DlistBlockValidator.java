@@ -14,7 +14,6 @@ import org.asciidoctor.ast.StructuralNode;
 import com.dataliquid.asciidoc.linter.config.blocks.BlockType;
 import com.dataliquid.asciidoc.linter.config.common.Severity;
 import com.dataliquid.asciidoc.linter.config.blocks.DlistBlock;
-import com.dataliquid.asciidoc.linter.report.console.FileContentCache;
 import com.dataliquid.asciidoc.linter.validator.ErrorType;
 import com.dataliquid.asciidoc.linter.validator.PlaceholderContext;
 import static com.dataliquid.asciidoc.linter.validator.RuleIds.Dlist.*;
@@ -43,9 +42,7 @@ import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
  * @see DlistBlock
  * @see BlockTypeValidator
  */
-public final class DlistBlockValidator extends AbstractBlockValidator<DlistBlock> {
-    private final FileContentCache fileCache = new FileContentCache();
-    
+public final class DlistBlockValidator extends AbstractBlockValidator<DlistBlock> {    
     @Override
     public BlockType getSupportedType() {
         return BlockType.DLIST;

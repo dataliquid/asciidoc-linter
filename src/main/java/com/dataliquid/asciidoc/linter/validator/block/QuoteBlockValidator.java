@@ -12,7 +12,6 @@ import static com.dataliquid.asciidoc.linter.validator.block.BlockAttributes.*;
 import com.dataliquid.asciidoc.linter.config.blocks.BlockType;
 import com.dataliquid.asciidoc.linter.config.common.Severity;
 import com.dataliquid.asciidoc.linter.config.blocks.QuoteBlock;
-import com.dataliquid.asciidoc.linter.report.console.FileContentCache;
 import com.dataliquid.asciidoc.linter.validator.ErrorType;
 import com.dataliquid.asciidoc.linter.validator.PlaceholderContext;
 import static com.dataliquid.asciidoc.linter.validator.RuleIds.Quote.*;
@@ -23,9 +22,7 @@ import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
  * Validator for quote blocks.
  * Based on the YAML schema structure for validating AsciiDoc quote blocks.
  */
-public final class QuoteBlockValidator extends AbstractBlockValidator<QuoteBlock> {
-    private final FileContentCache fileCache = new FileContentCache();
-    
+public final class QuoteBlockValidator extends AbstractBlockValidator<QuoteBlock> {    
     @Override
     public BlockType getSupportedType() {
         return BlockType.QUOTE;

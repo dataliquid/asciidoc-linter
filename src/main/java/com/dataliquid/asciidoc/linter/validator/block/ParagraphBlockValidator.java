@@ -16,7 +16,6 @@ import com.dataliquid.asciidoc.linter.validator.PlaceholderContext;
 import static com.dataliquid.asciidoc.linter.validator.RuleIds.Paragraph.*;
 import com.dataliquid.asciidoc.linter.validator.SourceLocation;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
-import com.dataliquid.asciidoc.linter.report.console.FileContentCache;
 
 /**
  * Validator for paragraph blocks in AsciiDoc documents.
@@ -43,9 +42,7 @@ import com.dataliquid.asciidoc.linter.report.console.FileContentCache;
  * @see ParagraphBlock
  * @see BlockTypeValidator
  */
-public final class ParagraphBlockValidator extends AbstractBlockValidator<ParagraphBlock> {
-    private final FileContentCache fileCache = new FileContentCache();
-    
+public final class ParagraphBlockValidator extends AbstractBlockValidator<ParagraphBlock> {    
     @Override
     public BlockType getSupportedType() {
         return BlockType.PARAGRAPH;

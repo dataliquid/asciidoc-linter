@@ -11,7 +11,6 @@ import static com.dataliquid.asciidoc.linter.validator.block.BlockAttributes.*;
 
 import com.dataliquid.asciidoc.linter.config.blocks.BlockType;
 import com.dataliquid.asciidoc.linter.config.blocks.ImageBlock;
-import com.dataliquid.asciidoc.linter.report.console.FileContentCache;
 import com.dataliquid.asciidoc.linter.validator.ErrorType;
 import com.dataliquid.asciidoc.linter.validator.PlaceholderContext;
 import static com.dataliquid.asciidoc.linter.validator.RuleIds.Image.*;
@@ -43,9 +42,7 @@ import org.apache.logging.log4j.Logger;
  * @see BlockTypeValidator
  */
 public final class ImageBlockValidator extends AbstractBlockValidator<ImageBlock> {
-    private static final Logger logger = LogManager.getLogger(ImageBlockValidator.class);
-    private final FileContentCache fileCache = new FileContentCache();
-    
+    private static final Logger logger = LogManager.getLogger(ImageBlockValidator.class);    
     @Override
     public BlockType getSupportedType() {
         return BlockType.IMAGE;

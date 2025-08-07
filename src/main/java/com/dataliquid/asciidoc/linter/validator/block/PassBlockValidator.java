@@ -12,7 +12,6 @@ import static com.dataliquid.asciidoc.linter.validator.block.BlockAttributes.*;
 import com.dataliquid.asciidoc.linter.config.blocks.BlockType;
 import com.dataliquid.asciidoc.linter.config.common.Severity;
 import com.dataliquid.asciidoc.linter.config.blocks.PassBlock;
-import com.dataliquid.asciidoc.linter.report.console.FileContentCache;
 import com.dataliquid.asciidoc.linter.validator.ErrorType;
 import com.dataliquid.asciidoc.linter.validator.PlaceholderContext;
 import static com.dataliquid.asciidoc.linter.validator.RuleIds.Pass.*;
@@ -57,9 +56,7 @@ import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
  * @see PassBlock
  * @see BlockTypeValidator
  */
-public final class PassBlockValidator extends AbstractBlockValidator<PassBlock> {
-    private final FileContentCache fileCache = new FileContentCache();
-    
+public final class PassBlockValidator extends AbstractBlockValidator<PassBlock> {    
     @Override
     public BlockType getSupportedType() {
         return BlockType.PASS;

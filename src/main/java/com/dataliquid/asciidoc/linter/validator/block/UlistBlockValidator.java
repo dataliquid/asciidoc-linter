@@ -15,7 +15,6 @@ import com.dataliquid.asciidoc.linter.validator.PlaceholderContext;
 import static com.dataliquid.asciidoc.linter.validator.RuleIds.Ulist.*;
 import com.dataliquid.asciidoc.linter.validator.SourceLocation;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
-import com.dataliquid.asciidoc.linter.report.console.FileContentCache;
 
 /**
  * Validator for unordered list (ulist) blocks in AsciiDoc documents.
@@ -38,9 +37,7 @@ import com.dataliquid.asciidoc.linter.report.console.FileContentCache;
  * @see UlistBlock
  * @see BlockTypeValidator
  */
-public final class UlistBlockValidator extends AbstractBlockValidator<UlistBlock> {
-    private final FileContentCache fileCache = new FileContentCache();
-    
+public final class UlistBlockValidator extends AbstractBlockValidator<UlistBlock> {    
     @Override
     public BlockType getSupportedType() {
         return BlockType.ULIST;

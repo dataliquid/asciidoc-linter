@@ -12,7 +12,6 @@ import static com.dataliquid.asciidoc.linter.validator.block.BlockAttributes.*;
 import com.dataliquid.asciidoc.linter.config.blocks.BlockType;
 import com.dataliquid.asciidoc.linter.config.common.Severity;
 import com.dataliquid.asciidoc.linter.config.blocks.AudioBlock;
-import com.dataliquid.asciidoc.linter.report.console.FileContentCache;
 import com.dataliquid.asciidoc.linter.validator.ErrorType;
 import com.dataliquid.asciidoc.linter.validator.PlaceholderContext;
 import static com.dataliquid.asciidoc.linter.validator.RuleIds.Audio.*;
@@ -43,7 +42,6 @@ import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
  * @see BlockTypeValidator
  */
 public final class AudioBlockValidator extends AbstractBlockValidator<AudioBlock> {
-    private final FileContentCache fileCache = new FileContentCache();
     
     @Override
     public BlockType getSupportedType() {

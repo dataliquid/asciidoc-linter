@@ -13,7 +13,6 @@ import static com.dataliquid.asciidoc.linter.validator.block.BlockAttributes.*;
 import com.dataliquid.asciidoc.linter.config.blocks.BlockType;
 import com.dataliquid.asciidoc.linter.config.common.Severity;
 import com.dataliquid.asciidoc.linter.config.blocks.VideoBlock;
-import com.dataliquid.asciidoc.linter.report.console.FileContentCache;
 import com.dataliquid.asciidoc.linter.validator.ErrorType;
 import com.dataliquid.asciidoc.linter.validator.PlaceholderContext;
 import static com.dataliquid.asciidoc.linter.validator.RuleIds.Video.*;
@@ -31,9 +30,7 @@ import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
  * - Controls requirement
  * - Caption validation
  */
-public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock> {
-    private final FileContentCache fileCache = new FileContentCache();
-    
+public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock> {    
     @Override
     public BlockType getSupportedType() {
         return BlockType.VIDEO;

@@ -16,7 +16,6 @@ import static com.dataliquid.asciidoc.linter.validator.RuleIds.Admonition.*;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
 import com.dataliquid.asciidoc.linter.validator.SourceLocation;
 import com.dataliquid.asciidoc.linter.validator.SourcePosition;
-import com.dataliquid.asciidoc.linter.report.console.FileContentCache;
 
 /**
  * Validator for admonition blocks in AsciiDoc documents.
@@ -41,9 +40,7 @@ import com.dataliquid.asciidoc.linter.report.console.FileContentCache;
  * @see AdmonitionBlock
  * @see BlockTypeValidator
  */
-public final class AdmonitionBlockValidator extends AbstractBlockValidator<AdmonitionBlock> {
-    private final FileContentCache fileCache = new FileContentCache();
-    
+public final class AdmonitionBlockValidator extends AbstractBlockValidator<AdmonitionBlock> {    
     @Override
     public BlockType getSupportedType() {
         return BlockType.ADMONITION;
