@@ -1,39 +1,18 @@
 $schema: https://json-schema.org/draft/2020-12/schema
 $id: https://dataliquid.com/asciidoc/linter/schemas/rules/blocks/dlist-block.schema.yaml
 title: Dlist Block Configuration Schema
-description: Schema for validating definition list block configuration in AsciiDoc linter
+description: Schema for validating definition list block configuration in AsciiDoc
+  linter
 type: object
 properties:
   name:
-    type: string
-    description: Optional name for the dlist block for better error messages
-    minLength: 1
-    maxLength: 50
+    $ref: https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/rule-name-type
   severity:
-    type: string
-    description: Default severity level for all rules in this block
-    enum: [error, warn, info]
+    $ref: https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/severity-type
   order:
-    type: integer
-    description: Order in which this block should appear relative to other blocks
-    minimum: 1
+    $ref: https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/order-type
   occurrence:
-    type: object
-    description: Occurrence rules for this block type
-    properties:
-      min:
-        type: integer
-        description: Minimum number of occurrences
-        minimum: 0
-      max:
-        type: integer
-        description: Maximum number of occurrences
-        minimum: 1
-      severity:
-        type: string
-        enum: [error, warn, info]
-        description: Severity for occurrence violations
-    additionalProperties: false
+    $ref: https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/occurrence-type
   terms:
     type: object
     description: Term validation rules
@@ -47,28 +26,20 @@ properties:
         description: Maximum number of terms
         minimum: 1
       pattern:
-        type: string
-        description: Regex pattern that terms must match
+        $ref: https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/pattern-property-type
       minLength:
-        type: integer
-        description: Minimum length for each term
-        minimum: 1
+        $ref: https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/minLength-property-type
       maxLength:
-        type: integer
-        description: Maximum length for each term
-        minimum: 1
+        $ref: https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/maxLength-property-type
       severity:
-        type: string
-        enum: [error, warn, info]
-        description: Severity for term violations
+        $ref: https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/severity-type
     additionalProperties: false
   descriptions:
     type: object
     description: Description validation rules
     properties:
       required:
-        type: boolean
-        description: Whether descriptions are required for all terms
+        $ref: https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/required-property-type
       min:
         type: integer
         description: Minimum number of description items
@@ -78,12 +49,9 @@ properties:
         description: Maximum number of description items
         minimum: 1
       pattern:
-        type: string
-        description: Regex pattern that descriptions must match
+        $ref: https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/pattern-property-type
       severity:
-        type: string
-        enum: [error, warn, info]
-        description: Severity for description violations
+        $ref: https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/severity-type
     additionalProperties: false
   nestingLevel:
     type: object
@@ -94,9 +62,7 @@ properties:
         description: Maximum nesting level allowed
         minimum: 0
       severity:
-        type: string
-        enum: [error, warn, info]
-        description: Severity for nesting level violations
+        $ref: https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/severity-type
     additionalProperties: false
   delimiterStyle:
     type: object
@@ -107,14 +73,16 @@ properties:
         description: List of allowed delimiters
         items:
           type: string
-          enum: ['::', ':::', '::::']
+          enum:
+          - '::'
+          - ':::'
+          - '::::'
       consistent:
         type: boolean
         description: Whether delimiter style must be consistent throughout the list
       severity:
-        type: string
-        enum: [error, warn, info]
-        description: Severity for delimiter style violations
+        $ref: https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/severity-type
     additionalProperties: false
-required: [severity]
+required:
+- severity
 additionalProperties: false

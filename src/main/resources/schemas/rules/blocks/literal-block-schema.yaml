@@ -5,54 +5,25 @@ description: Schema for validating literal block configuration in AsciiDoc linte
 type: object
 properties:
   name:
-    type: string
-    description: Optional name for the literal block for better error messages
-    minLength: 1
-    maxLength: 50
+    $ref: https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/rule-name-type
   severity:
-    type: string
-    description: Default severity level for all rules in this block
-    enum: [error, warn, info]
+    $ref: https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/severity-type
   order:
-    type: integer
-    description: Order in which this block should appear relative to other blocks
-    minimum: 1
+    $ref: https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/order-type
   occurrence:
-    type: object
-    description: Occurrence rules for this block type
-    properties:
-      min:
-        type: integer
-        description: Minimum number of occurrences
-        minimum: 0
-      max:
-        type: integer
-        description: Maximum number of occurrences
-        minimum: 1
-      severity:
-        type: string
-        enum: [error, warn, info]
-        description: Severity for occurrence violations
-    additionalProperties: false
+    $ref: https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/occurrence-type
   title:
     type: object
     description: Title validation rules
     properties:
       required:
-        type: boolean
-        description: Whether a title is required
+        $ref: https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/required-property-type
       minLength:
-        type: integer
-        description: Minimum title length in characters
-        minimum: 1
+        $ref: https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/minLength-property-type
       maxLength:
-        type: integer
-        description: Maximum title length in characters
-        minimum: 1
+        $ref: https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/maxLength-property-type
       severity:
-        type: string
-        enum: [error, warn, info]
-        description: Severity for title violations
+        $ref: https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/severity-type
     additionalProperties: false
   lines:
     type: object
@@ -67,17 +38,14 @@ properties:
         description: Maximum number of lines
         minimum: 1
       severity:
-        type: string
-        enum: [error, warn, info]
-        description: Severity for line count violations
+        $ref: https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/severity-type
     additionalProperties: false
   indentation:
     type: object
     description: Indentation validation rules
     properties:
       required:
-        type: boolean
-        description: Whether indentation checking is required
+        $ref: https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/required-property-type
       consistent:
         type: boolean
         description: Whether all non-empty lines must have consistent indentation
@@ -90,9 +58,8 @@ properties:
         description: Maximum number of leading spaces
         minimum: 1
       severity:
-        type: string
-        enum: [error, warn, info]
-        description: Severity for indentation violations
+        $ref: https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/severity-type
     additionalProperties: false
-required: [severity]
+required:
+- severity
 additionalProperties: false
