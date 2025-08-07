@@ -11,7 +11,7 @@ import java.util.Set;
 
 import org.asciidoctor.ast.Document;
 
-import com.dataliquid.asciidoc.linter.config.MetadataConfiguration;
+import com.dataliquid.asciidoc.linter.config.document.MetadataConfiguration;
 import com.dataliquid.asciidoc.linter.config.rule.AttributeConfig;
 import com.dataliquid.asciidoc.linter.validator.rules.AttributeRule;
 import com.dataliquid.asciidoc.linter.validator.rules.LengthRule;

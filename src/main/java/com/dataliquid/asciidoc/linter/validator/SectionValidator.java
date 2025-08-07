@@ -15,8 +15,8 @@ import org.asciidoctor.ast.Document;
 import org.asciidoctor.ast.Section;
 import org.asciidoctor.ast.StructuralNode;
 
-import com.dataliquid.asciidoc.linter.config.DocumentConfiguration;
-import com.dataliquid.asciidoc.linter.config.Severity;
+import com.dataliquid.asciidoc.linter.config.document.DocumentConfiguration;
+import com.dataliquid.asciidoc.linter.config.common.Severity;
 import com.dataliquid.asciidoc.linter.config.rule.SectionConfig;
 import com.dataliquid.asciidoc.linter.config.rule.TitleConfig;
 import com.dataliquid.asciidoc.linter.report.console.FileContentCache;

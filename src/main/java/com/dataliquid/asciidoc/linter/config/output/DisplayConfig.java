@@ -5,13 +5,13 @@ import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
-import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Output.CONTEXT_LINES;
-import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Output.HIGHLIGHT_STYLE;
-import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Output.MAX_LINE_WIDTH;
-import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Output.SHOW_HEADER;
-import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Output.SHOW_LINE_NUMBERS;
-import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Output.USE_COLORS;
-import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.EMPTY;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Output.CONTEXT_LINES;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Output.HIGHLIGHT_STYLE;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Output.MAX_LINE_WIDTH;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Output.SHOW_HEADER;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Output.SHOW_LINE_NUMBERS;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Output.USE_COLORS;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.EMPTY;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
 /**

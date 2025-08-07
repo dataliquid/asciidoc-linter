@@ -7,7 +7,7 @@ import org.asciidoctor.ast.StructuralNode;
 
 import static com.dataliquid.asciidoc.linter.validator.block.BlockAttributes.*;
 
-import com.dataliquid.asciidoc.linter.config.BlockType;
+import com.dataliquid.asciidoc.linter.config.blocks.BlockType;
 import com.dataliquid.asciidoc.linter.config.blocks.ImageBlock;
 import com.dataliquid.asciidoc.linter.report.console.FileContentCache;
 import com.dataliquid.asciidoc.linter.validator.ErrorType;

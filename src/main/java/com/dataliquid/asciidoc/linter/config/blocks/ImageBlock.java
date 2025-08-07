@@ -3,21 +3,21 @@ package com.dataliquid.asciidoc.linter.config.blocks;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
-import com.dataliquid.asciidoc.linter.config.BlockType;
+import com.dataliquid.asciidoc.linter.config.blocks.BlockType;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
-import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.HEIGHT;
-import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.MAX_LENGTH;
-import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.MAX_VALUE;
-import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.MIN_LENGTH;
-import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.MIN_VALUE;
-import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.PATTERN;
-import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.REQUIRED;
-import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.URL;
-import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.WIDTH;
-import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Image.ALT;
-import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.EMPTY;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.HEIGHT;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.MAX_LENGTH;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.MAX_VALUE;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.MIN_LENGTH;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.MIN_VALUE;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.PATTERN;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.REQUIRED;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.URL;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.WIDTH;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Image.ALT;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.EMPTY;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
 @JsonDeserialize(builder = ImageBlock.Builder.class)

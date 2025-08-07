@@ -1,6 +1,6 @@
 package com.dataliquid.asciidoc.linter.report.console;
 
-import com.dataliquid.asciidoc.linter.config.Severity;
+import com.dataliquid.asciidoc.linter.config.common.Severity;
 
 /**
  * Manages ANSI color codes for console output.

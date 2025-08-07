@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import com.dataliquid.asciidoc.linter.config.Severity;
+import com.dataliquid.asciidoc.linter.config.common.Severity;
 
 public final class ValidationMessage {
     private final Severity severity;

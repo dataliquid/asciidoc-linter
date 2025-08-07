@@ -5,11 +5,11 @@ import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
-import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.ENABLED;
-import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Output.MAX_PER_ERROR;
-import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Output.SHOW_AUTO_FIX_HINT;
-import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Output.SHOW_EXAMPLES;
-import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.EMPTY;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.ENABLED;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Output.MAX_PER_ERROR;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Output.SHOW_AUTO_FIX_HINT;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Output.SHOW_EXAMPLES;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.EMPTY;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
 /**

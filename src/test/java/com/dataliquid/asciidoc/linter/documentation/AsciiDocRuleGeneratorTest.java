@@ -15,10 +15,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import com.dataliquid.asciidoc.linter.config.DocumentConfiguration;
+import com.dataliquid.asciidoc.linter.config.document.DocumentConfiguration;
 import com.dataliquid.asciidoc.linter.config.LinterConfiguration;
-import com.dataliquid.asciidoc.linter.config.MetadataConfiguration;
-import com.dataliquid.asciidoc.linter.config.Severity;
+import com.dataliquid.asciidoc.linter.config.document.MetadataConfiguration;
+import com.dataliquid.asciidoc.linter.config.common.Severity;
 import com.dataliquid.asciidoc.linter.config.blocks.ParagraphBlock;
 import com.dataliquid.asciidoc.linter.config.rule.AttributeConfig;
 import com.dataliquid.asciidoc.linter.config.rule.OccurrenceConfig;

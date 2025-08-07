@@ -4,20 +4,20 @@ import java.util.List;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
-import com.dataliquid.asciidoc.linter.config.BlockType;
-import com.dataliquid.asciidoc.linter.config.Severity;
+import com.dataliquid.asciidoc.linter.config.blocks.BlockType;
+import com.dataliquid.asciidoc.linter.config.common.Severity;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
-import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.ALLOWED;
-import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.CAPTION;
-import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.MAX_LENGTH;
-import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.MIN_LENGTH;
-import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.PATTERN;
-import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.REQUIRED;
-import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.SEVERITY;
-import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Example.COLLAPSIBLE;
-import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.EMPTY;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.ALLOWED;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.CAPTION;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.MAX_LENGTH;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.MIN_LENGTH;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.PATTERN;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.REQUIRED;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.SEVERITY;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Example.COLLAPSIBLE;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.EMPTY;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
 /**

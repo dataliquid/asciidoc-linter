@@ -13,8 +13,8 @@ import org.asciidoctor.ast.StructuralNode;
 
 import static com.dataliquid.asciidoc.linter.validator.RuleIds.Block.*;
 
-import com.dataliquid.asciidoc.linter.config.BlockType;
-import com.dataliquid.asciidoc.linter.config.Severity;
+import com.dataliquid.asciidoc.linter.config.blocks.BlockType;
+import com.dataliquid.asciidoc.linter.config.common.Severity;
 import com.dataliquid.asciidoc.linter.config.blocks.Block;
 import com.dataliquid.asciidoc.linter.config.rule.SectionConfig;
 import com.dataliquid.asciidoc.linter.validator.block.BlockContainer;

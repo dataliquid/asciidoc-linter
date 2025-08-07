@@ -2,17 +2,17 @@ package com.dataliquid.asciidoc.linter.config.blocks;
 
 import java.util.Objects;
 
-import com.dataliquid.asciidoc.linter.config.BlockType;
-import com.dataliquid.asciidoc.linter.config.Severity;
+import com.dataliquid.asciidoc.linter.config.blocks.BlockType;
+import com.dataliquid.asciidoc.linter.config.common.Severity;
 import com.dataliquid.asciidoc.linter.config.rule.LineConfig;
 import com.dataliquid.asciidoc.linter.config.rule.OccurrenceConfig;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
-import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.*;
-import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Paragraph.*;
-import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.EMPTY;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.*;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Paragraph.*;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.EMPTY;
 
 @JsonDeserialize(builder = ParagraphBlock.Builder.class)
 public final class ParagraphBlock extends AbstractBlock {

@@ -6,8 +6,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
-import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Document.DOCUMENT;
-import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.EMPTY;
+import com.dataliquid.asciidoc.linter.config.document.DocumentConfiguration;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Document.DOCUMENT;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.EMPTY;
 
 @JsonDeserialize(builder = LinterConfiguration.Builder.class)
 public final class LinterConfiguration {

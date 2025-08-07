@@ -12,7 +12,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.dataliquid.asciidoc.linter.Linter;
 import com.dataliquid.asciidoc.linter.config.LinterConfiguration;
-import com.dataliquid.asciidoc.linter.config.Severity;
+import com.dataliquid.asciidoc.linter.config.common.Severity;
 import com.dataliquid.asciidoc.linter.config.loader.ConfigurationLoader;
 import com.dataliquid.asciidoc.linter.config.output.OutputConfiguration;
 import com.dataliquid.asciidoc.linter.config.output.OutputConfigurationLoader;

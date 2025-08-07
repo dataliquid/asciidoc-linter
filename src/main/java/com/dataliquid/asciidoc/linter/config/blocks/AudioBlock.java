@@ -3,24 +3,24 @@ package com.dataliquid.asciidoc.linter.config.blocks;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
-import com.dataliquid.asciidoc.linter.config.BlockType;
-import com.dataliquid.asciidoc.linter.config.Severity;
+import com.dataliquid.asciidoc.linter.config.blocks.BlockType;
+import com.dataliquid.asciidoc.linter.config.common.Severity;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
-import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.ALLOWED;
-import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.MAX_LENGTH;
-import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.MIN_LENGTH;
-import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.OPTIONS;
-import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.PATTERN;
-import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.REQUIRED;
-import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.SEVERITY;
-import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.TITLE;
-import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.URL;
-import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Media.AUTOPLAY;
-import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Media.CONTROLS;
-import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Media.LOOP;
-import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.EMPTY;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.ALLOWED;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.MAX_LENGTH;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.MIN_LENGTH;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.OPTIONS;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.PATTERN;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.REQUIRED;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.SEVERITY;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.TITLE;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.URL;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Media.AUTOPLAY;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Media.CONTROLS;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Media.LOOP;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.EMPTY;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
 @JsonDeserialize(builder = AudioBlock.Builder.class)

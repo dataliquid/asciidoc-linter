@@ -1,15 +1,15 @@
 package com.dataliquid.asciidoc.linter.config.blocks;
 
-import com.dataliquid.asciidoc.linter.config.BlockType;
-import com.dataliquid.asciidoc.linter.config.Severity;
+import com.dataliquid.asciidoc.linter.config.blocks.BlockType;
+import com.dataliquid.asciidoc.linter.config.common.Severity;
 import com.dataliquid.asciidoc.linter.config.rule.OccurrenceConfig;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.NAME;
-import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.OCCURRENCE;
-import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.ORDER;
-import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.SEVERITY;
-import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.TYPE;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.NAME;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.OCCURRENCE;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.ORDER;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.SEVERITY;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.TYPE;
 
 public interface Block {
     @JsonProperty(TYPE)

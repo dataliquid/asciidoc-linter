@@ -1,4 +1,4 @@
-package com.dataliquid.asciidoc.linter.config;
+package com.dataliquid.asciidoc.linter.config.common;
 
 /**
  * Central repository for all JSON property names used in configuration classes.

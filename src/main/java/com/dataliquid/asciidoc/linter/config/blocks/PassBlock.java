@@ -6,15 +6,15 @@ import java.util.List;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
-import com.dataliquid.asciidoc.linter.config.BlockType;
-import com.dataliquid.asciidoc.linter.config.Severity;
+import com.dataliquid.asciidoc.linter.config.blocks.BlockType;
+import com.dataliquid.asciidoc.linter.config.common.Severity;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
-import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.*;
-import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Pass.REASON;
-import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.EMPTY;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.*;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Pass.REASON;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.EMPTY;
 
 /**
  * Configuration for pass blocks (passthrough content) in AsciiDoc.

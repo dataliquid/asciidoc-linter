@@ -1,4 +1,4 @@
-package com.dataliquid.asciidoc.linter.config;
+package com.dataliquid.asciidoc.linter.config.document;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10,9 +10,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
-import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Document.METADATA;
-import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Document.SECTIONS;
-import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.EMPTY;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Document.METADATA;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Document.SECTIONS;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.EMPTY;
 
 @JsonDeserialize(builder = DocumentConfiguration.Builder.class)
 public final class DocumentConfiguration {

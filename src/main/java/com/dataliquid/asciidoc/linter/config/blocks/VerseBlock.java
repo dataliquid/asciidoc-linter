@@ -3,18 +3,18 @@ package com.dataliquid.asciidoc.linter.config.blocks;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
-import com.dataliquid.asciidoc.linter.config.BlockType;
+import com.dataliquid.asciidoc.linter.config.blocks.BlockType;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Quote.AUTHOR;
-import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Quote.ATTRIBUTION;
-import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.CONTENT;
-import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.DEFAULT_VALUE;
-import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.MIN_LENGTH;
-import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.MAX_LENGTH;
-import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.PATTERN;
-import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.Common.REQUIRED;
-import static com.dataliquid.asciidoc.linter.config.JsonPropertyNames.EMPTY;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Quote.AUTHOR;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Quote.ATTRIBUTION;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.CONTENT;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.DEFAULT_VALUE;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.MIN_LENGTH;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.MAX_LENGTH;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.PATTERN;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.REQUIRED;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.EMPTY;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
