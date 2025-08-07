@@ -13,6 +13,7 @@ import com.dataliquid.asciidoc.linter.config.blocks.PassBlock;
 import com.dataliquid.asciidoc.linter.report.console.FileContentCache;
 import com.dataliquid.asciidoc.linter.validator.ErrorType;
 import com.dataliquid.asciidoc.linter.validator.PlaceholderContext;
+import com.dataliquid.asciidoc.linter.validator.RuleIds;
 import com.dataliquid.asciidoc.linter.validator.SourceLocation;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
 
@@ -116,7 +117,7 @@ public final class PassBlockValidator extends AbstractBlockValidator<PassBlock> 
         if (config.isRequired() && (passType == null || passType.trim().isEmpty())) {
             messages.add(ValidationMessage.builder()
                 .severity(severity)
-                .ruleId("pass.type.required")
+                .ruleId(RuleIds.Pass.TYPE_REQUIRED)
                 .location(context.createLocation(block, 1, 1))
                 .message("Pass block requires a type")
                 .actualValue("No type specified")
@@ -135,7 +136,7 @@ public final class PassBlockValidator extends AbstractBlockValidator<PassBlock> 
                 TypePosition pos = findTypePosition(block, context, passType);
                 messages.add(ValidationMessage.builder()
                     .severity(severity)
-                    .ruleId("pass.type.allowed")
+                    .ruleId(RuleIds.Pass.TYPE_ALLOWED)
                     .location(SourceLocation.builder()
                         .filename(context.getFilename())
                         .startLine(pos.lineNumber)
@@ -164,7 +165,7 @@ public final class PassBlockValidator extends AbstractBlockValidator<PassBlock> 
         if (config.isRequired() && (content == null || content.trim().isEmpty())) {
             messages.add(ValidationMessage.builder()
                 .severity(severity)
-                .ruleId("pass.content.required")
+                .ruleId(RuleIds.Pass.CONTENT_REQUIRED)
                 .location(context.createLocation(block, 1, 1))
                 .message("Pass block requires content")
                 .actualValue("No content")
@@ -185,7 +186,7 @@ public final class PassBlockValidator extends AbstractBlockValidator<PassBlock> 
                 ContentPosition pos = findContentPosition(block, context);
                 messages.add(ValidationMessage.builder()
                     .severity(severity)
-                    .ruleId("pass.content.maxLength")
+                    .ruleId(RuleIds.Pass.CONTENT_MAX_LENGTH)
                     .location(SourceLocation.builder()
                         .filename(context.getFilename())
                         .startLine(pos.lineNumber)
@@ -206,7 +207,7 @@ public final class PassBlockValidator extends AbstractBlockValidator<PassBlock> 
                 ContentPosition pos = findContentPosition(block, context);
                 messages.add(ValidationMessage.builder()
                     .severity(severity)
-                    .ruleId("pass.content.pattern")
+                    .ruleId(RuleIds.Pass.CONTENT_PATTERN)
                     .location(SourceLocation.builder()
                         .filename(context.getFilename())
                         .startLine(pos.lineNumber)
@@ -235,7 +236,7 @@ public final class PassBlockValidator extends AbstractBlockValidator<PassBlock> 
         if (config.isRequired() && (passReason == null || passReason.trim().isEmpty())) {
             messages.add(ValidationMessage.builder()
                 .severity(severity)
-                .ruleId("pass.reason.required")
+                .ruleId(RuleIds.Pass.REASON_REQUIRED)
                 .location(context.createLocation(block, 1, 1))
                 .message("Pass block requires a reason")
                 .actualValue("No reason provided")
@@ -257,7 +258,7 @@ public final class PassBlockValidator extends AbstractBlockValidator<PassBlock> 
                 ReasonPosition pos = findReasonPosition(block, context, passReason);
                 messages.add(ValidationMessage.builder()
                     .severity(severity)
-                    .ruleId("pass.reason.minLength")
+                    .ruleId(RuleIds.Pass.REASON_MIN_LENGTH)
                     .location(SourceLocation.builder()
                         .filename(context.getFilename())
                         .startLine(pos.lineNumber)
@@ -276,7 +277,7 @@ public final class PassBlockValidator extends AbstractBlockValidator<PassBlock> 
                 ReasonPosition pos = findReasonPosition(block, context, passReason);
                 messages.add(ValidationMessage.builder()
                     .severity(severity)
-                    .ruleId("pass.reason.maxLength")
+                    .ruleId(RuleIds.Pass.REASON_MAX_LENGTH)
                     .location(SourceLocation.builder()
                         .filename(context.getFilename())
                         .startLine(pos.lineNumber)

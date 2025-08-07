@@ -13,6 +13,7 @@ import com.dataliquid.asciidoc.linter.config.blocks.QuoteBlock;
 import com.dataliquid.asciidoc.linter.report.console.FileContentCache;
 import com.dataliquid.asciidoc.linter.validator.ErrorType;
 import com.dataliquid.asciidoc.linter.validator.PlaceholderContext;
+import com.dataliquid.asciidoc.linter.validator.RuleIds;
 import com.dataliquid.asciidoc.linter.validator.SourceLocation;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
 
@@ -67,7 +68,7 @@ public final class QuoteBlockValidator extends AbstractBlockValidator<QuoteBlock
             AttributionPosition pos = findAttributionPosition(node, context);
             results.add(ValidationMessage.builder()
                 .severity(severity)
-                .ruleId("quote.attribution.required")
+                .ruleId(RuleIds.Quote.ATTRIBUTION_REQUIRED)
                 .message("Quote attribution is required but not provided")
                 .location(SourceLocation.builder()
                     .filename(context.getFilename())
@@ -90,7 +91,7 @@ public final class QuoteBlockValidator extends AbstractBlockValidator<QuoteBlock
             if (config.getMinLength() != null && attribution.length() < config.getMinLength()) {
                 results.add(ValidationMessage.builder()
                     .severity(severity)
-                    .ruleId("quote.attribution.minLength")
+                    .ruleId(RuleIds.Quote.ATTRIBUTION_MIN_LENGTH)
                     .message(String.format("Quote attribution is too short (minimum %d characters, found %d)",
                                   config.getMinLength(), attribution.length()))
                     .location(context.createLocation(node))
@@ -101,7 +102,7 @@ public final class QuoteBlockValidator extends AbstractBlockValidator<QuoteBlock
             if (config.getMaxLength() != null && attribution.length() > config.getMaxLength()) {
                 results.add(ValidationMessage.builder()
                     .severity(severity)
-                    .ruleId("quote.attribution.maxLength")
+                    .ruleId(RuleIds.Quote.ATTRIBUTION_MAX_LENGTH)
                     .message(String.format("Quote attribution is too long (maximum %d characters, found %d)",
                                   config.getMaxLength(), attribution.length()))
                     .location(context.createLocation(node))
@@ -113,7 +114,7 @@ public final class QuoteBlockValidator extends AbstractBlockValidator<QuoteBlock
                 AttributionPosition pos = findAttributionPosition(node, context);
                 results.add(ValidationMessage.builder()
                     .severity(severity)
-                    .ruleId("quote.attribution.pattern")
+                    .ruleId(RuleIds.Quote.ATTRIBUTION_PATTERN)
                     .message("Quote attribution does not match required pattern")
                     .actualValue(attribution)
                     .expectedValue("Pattern: " + config.getPattern().pattern())
@@ -139,7 +140,7 @@ public final class QuoteBlockValidator extends AbstractBlockValidator<QuoteBlock
             CitationPosition pos = findCitationPosition(node, context);
             results.add(ValidationMessage.builder()
                 .severity(severity)
-                .ruleId("quote.citation.required")
+                .ruleId(RuleIds.Quote.CITATION_REQUIRED)
                 .message("Quote citation is required but not provided")
                 .location(SourceLocation.builder()
                     .filename(context.getFilename())
@@ -162,7 +163,7 @@ public final class QuoteBlockValidator extends AbstractBlockValidator<QuoteBlock
             if (config.getMinLength() != null && citation.length() < config.getMinLength()) {
                 results.add(ValidationMessage.builder()
                     .severity(severity)
-                    .ruleId("quote.citation.minLength")
+                    .ruleId(RuleIds.Quote.CITATION_MIN_LENGTH)
                     .message(String.format("Quote citation is too short (minimum %d characters, found %d)",
                                   config.getMinLength(), citation.length()))
                     .location(context.createLocation(node))
@@ -173,7 +174,7 @@ public final class QuoteBlockValidator extends AbstractBlockValidator<QuoteBlock
             if (config.getMaxLength() != null && citation.length() > config.getMaxLength()) {
                 results.add(ValidationMessage.builder()
                     .severity(severity)
-                    .ruleId("quote.citation.maxLength")
+                    .ruleId(RuleIds.Quote.CITATION_MAX_LENGTH)
                     .message(String.format("Quote citation is too long (maximum %d characters, found %d)",
                                   config.getMaxLength(), citation.length()))
                     .location(context.createLocation(node))
@@ -185,7 +186,7 @@ public final class QuoteBlockValidator extends AbstractBlockValidator<QuoteBlock
                 CitationPosition pos = findCitationPosition(node, context);
                 results.add(ValidationMessage.builder()
                     .severity(severity)
-                    .ruleId("quote.citation.pattern")
+                    .ruleId(RuleIds.Quote.CITATION_PATTERN)
                     .message("Quote citation does not match required pattern")
                     .actualValue(citation)
                     .expectedValue("Pattern: " + config.getPattern().pattern())
@@ -209,7 +210,7 @@ public final class QuoteBlockValidator extends AbstractBlockValidator<QuoteBlock
         if (config.isRequired() && (content == null || content.trim().isEmpty())) {
             results.add(ValidationMessage.builder()
                 .severity(blockSeverity)
-                .ruleId("quote.content.required")
+                .ruleId(RuleIds.Quote.CONTENT_REQUIRED)
                 .message("Quote block requires content")
                 .location(context.createLocation(node))
                 .build());
@@ -221,7 +222,7 @@ public final class QuoteBlockValidator extends AbstractBlockValidator<QuoteBlock
             if (config.getMinLength() != null && content.length() < config.getMinLength()) {
                 results.add(ValidationMessage.builder()
                     .severity(blockSeverity)
-                    .ruleId("quote.content.minLength")
+                    .ruleId(RuleIds.Quote.CONTENT_MIN_LENGTH)
                     .message(String.format("Quote content is too short (minimum %d characters, found %d)",
                                   config.getMinLength(), content.length()))
                     .location(context.createLocation(node))
@@ -232,7 +233,7 @@ public final class QuoteBlockValidator extends AbstractBlockValidator<QuoteBlock
             if (config.getMaxLength() != null && content.length() > config.getMaxLength()) {
                 results.add(ValidationMessage.builder()
                     .severity(blockSeverity)
-                    .ruleId("quote.content.maxLength")
+                    .ruleId(RuleIds.Quote.CONTENT_MAX_LENGTH)
                     .message(String.format("Quote content is too long (maximum %d characters, found %d)",
                                   config.getMaxLength(), content.length()))
                     .location(context.createLocation(node))
@@ -256,7 +257,7 @@ public final class QuoteBlockValidator extends AbstractBlockValidator<QuoteBlock
         if (config.getMin() != null && lineCount < config.getMin()) {
             results.add(ValidationMessage.builder()
                 .severity(severity)
-                .ruleId("quote.content.lines.min")
+                .ruleId(RuleIds.Quote.CONTENT_LINES_MIN)
                 .message(String.format("Quote content has too few lines (minimum %d, found %d)",
                               config.getMin(), lineCount))
                 .location(context.createLocation(node))
@@ -266,7 +267,7 @@ public final class QuoteBlockValidator extends AbstractBlockValidator<QuoteBlock
         if (config.getMax() != null && lineCount > config.getMax()) {
             results.add(ValidationMessage.builder()
                 .severity(severity)
-                .ruleId("quote.content.lines.max")
+                .ruleId(RuleIds.Quote.CONTENT_LINES_MAX)
                 .message(String.format("Quote content has too many lines (maximum %d, found %d)",
                               config.getMax(), lineCount))
                 .location(context.createLocation(node))

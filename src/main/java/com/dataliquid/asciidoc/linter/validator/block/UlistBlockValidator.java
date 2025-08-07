@@ -10,6 +10,7 @@ import com.dataliquid.asciidoc.linter.config.Severity;
 import com.dataliquid.asciidoc.linter.config.blocks.UlistBlock;
 import com.dataliquid.asciidoc.linter.validator.ErrorType;
 import com.dataliquid.asciidoc.linter.validator.PlaceholderContext;
+import com.dataliquid.asciidoc.linter.validator.RuleIds;
 import com.dataliquid.asciidoc.linter.validator.SourceLocation;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
 import com.dataliquid.asciidoc.linter.report.console.FileContentCache;
@@ -101,7 +102,7 @@ public final class UlistBlockValidator extends AbstractBlockValidator<UlistBlock
             ItemPosition pos = findItemInsertPosition(block, context, items);
             messages.add(ValidationMessage.builder()
                 .severity(severity)
-                .ruleId("ulist.items.min")
+                .ruleId(RuleIds.Ulist.ITEMS_MIN)
                 .location(SourceLocation.builder()
                     .filename(context.getFilename())
                     .startLine(pos.lineNumber)
@@ -124,7 +125,7 @@ public final class UlistBlockValidator extends AbstractBlockValidator<UlistBlock
         if (config.getMax() != null && itemCount > config.getMax()) {
             messages.add(ValidationMessage.builder()
                 .severity(severity)
-                .ruleId("ulist.items.max")
+                .ruleId(RuleIds.Ulist.ITEMS_MAX)
                 .location(context.createLocation(block))
                 .message("Unordered list has too many items")
                 .actualValue(String.valueOf(itemCount))
@@ -148,7 +149,7 @@ public final class UlistBlockValidator extends AbstractBlockValidator<UlistBlock
         if (config.getMax() != null && nestingLevel > config.getMax()) {
             messages.add(ValidationMessage.builder()
                 .severity(severity)
-                .ruleId("ulist.nestingLevel.max")
+                .ruleId(RuleIds.Ulist.NESTING_LEVEL_MAX)
                 .location(context.createLocation(block))
                 .message("Unordered list exceeds maximum nesting level")
                 .actualValue(String.valueOf(nestingLevel))
@@ -170,7 +171,7 @@ public final class UlistBlockValidator extends AbstractBlockValidator<UlistBlock
             MarkerPosition pos = findMarkerPosition(block, context);
             messages.add(ValidationMessage.builder()
                 .severity(blockConfig.getSeverity())
-                .ruleId("ulist.markerStyle")
+                .ruleId(RuleIds.Ulist.MARKER_STYLE)
                 .location(SourceLocation.builder()
                     .filename(context.getFilename())
                     .startLine(pos.lineNumber)
@@ -325,7 +326,7 @@ public final class UlistBlockValidator extends AbstractBlockValidator<UlistBlock
                             MarkerPosition pos = findMarkerPosition(nestedBlock, context);
                             messages.add(ValidationMessage.builder()
                                 .severity(blockConfig.getSeverity())
-                                .ruleId("ulist.markerStyle")
+                                .ruleId(RuleIds.Ulist.MARKER_STYLE)
                                 .location(SourceLocation.builder()
                                     .filename(context.getFilename())
                                     .startLine(pos.lineNumber)

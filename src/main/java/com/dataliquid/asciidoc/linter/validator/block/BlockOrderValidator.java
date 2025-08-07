@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.dataliquid.asciidoc.linter.config.blocks.Block;
 import com.dataliquid.asciidoc.linter.config.rule.OrderConfig;
+import com.dataliquid.asciidoc.linter.validator.RuleIds;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
 
 /**
@@ -67,7 +68,7 @@ public final class BlockOrderValidator {
                     // Block appears out of order
                     messages.add(ValidationMessage.builder()
                         .severity(orderConfig.severity())
-                        .ruleId("block.order.fixed")
+                        .ruleId(RuleIds.Block.ORDER_FIXED)
                         .location(context.createLocation(position.getBlock()))
                         .message("Block '" + blockIdentifier + "' appears out of order")
                         .actualValue("Position " + (position.getIndex() + 1))
@@ -118,7 +119,7 @@ public final class BlockOrderValidator {
         if (firstPos != null && secondPos != null && firstPos > secondPos) {
             messages.add(ValidationMessage.builder()
                 .severity(constraint.severity())
-                .ruleId("block.order.before")
+                .ruleId(RuleIds.Block.ORDER_BEFORE)
                 .location(createSectionLocation(context))
                 .message("Block '" + constraint.first() + "' must appear before '" + 
                         constraint.second() + "'")
@@ -168,7 +169,7 @@ public final class BlockOrderValidator {
         if (firstPos != null && secondPos != null && firstPos < secondPos) {
             messages.add(ValidationMessage.builder()
                 .severity(constraint.severity())
-                .ruleId("block.order.after")
+                .ruleId(RuleIds.Block.ORDER_AFTER)
                 .location(createSectionLocation(context))
                 .message("Block '" + constraint.first() + "' must appear after '" + 
                         constraint.second() + "'")

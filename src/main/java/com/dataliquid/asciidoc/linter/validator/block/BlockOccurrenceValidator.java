@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Objects;
 
 import com.dataliquid.asciidoc.linter.config.blocks.Block;
+import com.dataliquid.asciidoc.linter.validator.RuleIds;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
 
 /**
@@ -63,7 +64,7 @@ public final class BlockOccurrenceValidator {
             
             messages.add(ValidationMessage.builder()
                 .severity(severity)
-                .ruleId("block.occurrence.min")
+                .ruleId(RuleIds.Block.OCCURRENCE_MIN)
                 .location(createSectionLocation(context))
                 .message("Too few occurrences of block: " + blockType)
                 .actualValue(String.valueOf(actualCount))
@@ -80,7 +81,7 @@ public final class BlockOccurrenceValidator {
         if (actualCount > occurrences.max()) {
             messages.add(ValidationMessage.builder()
                 .severity(severity)
-                .ruleId("block.occurrence.max")
+                .ruleId(RuleIds.Block.OCCURRENCE_MAX)
                 .location(createSectionLocation(context))
                 .message("Too many occurrences of block: " + blockType)
                 .actualValue(String.valueOf(actualCount))

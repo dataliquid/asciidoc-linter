@@ -12,6 +12,7 @@ import com.dataliquid.asciidoc.linter.config.blocks.ImageBlock;
 import com.dataliquid.asciidoc.linter.report.console.FileContentCache;
 import com.dataliquid.asciidoc.linter.validator.ErrorType;
 import com.dataliquid.asciidoc.linter.validator.PlaceholderContext;
+import com.dataliquid.asciidoc.linter.validator.RuleIds;
 import com.dataliquid.asciidoc.linter.validator.SourceLocation;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
 import org.apache.logging.log4j.LogManager;
@@ -70,12 +71,12 @@ public final class ImageBlockValidator extends AbstractBlockValidator<ImageBlock
         
         // Validate width
         if (imageConfig.getWidth() != null) {
-            validateDimension(block, "width", imageConfig.getWidth(), context, messages, imageConfig);
+            validateDimension(block, WIDTH, imageConfig.getWidth(), context, messages, imageConfig);
         }
         
         // Validate height
         if (imageConfig.getHeight() != null) {
-            validateDimension(block, "height", imageConfig.getHeight(), context, messages, imageConfig);
+            validateDimension(block, HEIGHT, imageConfig.getHeight(), context, messages, imageConfig);
         }
         
         // Validate alt text
@@ -139,7 +140,7 @@ public final class ImageBlockValidator extends AbstractBlockValidator<ImageBlock
         if (urlConfig.isRequired() && (url == null || url.trim().isEmpty())) {
             messages.add(ValidationMessage.builder()
                 .severity(imageConfig.getSeverity())
-                .ruleId("image.url.required")
+                .ruleId(RuleIds.Image.URL_REQUIRED)
                 .location(SourceLocation.builder()
                     .filename(context.getFilename())
                     .startLine(pos.lineNumber)
@@ -164,7 +165,7 @@ public final class ImageBlockValidator extends AbstractBlockValidator<ImageBlock
             if (!urlConfig.getPattern().matcher(url).matches()) {
                 messages.add(ValidationMessage.builder()
                     .severity(imageConfig.getSeverity())
-                    .ruleId("image.url.pattern")
+                    .ruleId(RuleIds.Image.URL_PATTERN)
                     .location(SourceLocation.builder()
                         .filename(context.getFilename())
                         .startLine(pos.lineNumber)
@@ -193,7 +194,7 @@ public final class ImageBlockValidator extends AbstractBlockValidator<ImageBlock
         if (dimConfig.isRequired() && (valueStr == null || valueStr.trim().isEmpty())) {
             messages.add(ValidationMessage.builder()
                 .severity(imageConfig.getSeverity())
-                .ruleId("image." + dimensionName + ".required")
+                .ruleId(dimensionName.equals(WIDTH) ? RuleIds.Image.WIDTH_REQUIRED : RuleIds.Image.HEIGHT_REQUIRED)
                 .location(SourceLocation.builder()
                     .filename(context.getFilename())
                     .startLine(pos.lineNumber)
@@ -222,7 +223,7 @@ public final class ImageBlockValidator extends AbstractBlockValidator<ImageBlock
                 if (dimConfig.getMinValue() != null && numericValue < dimConfig.getMinValue()) {
                     messages.add(ValidationMessage.builder()
                         .severity(imageConfig.getSeverity())
-                        .ruleId("image." + dimensionName + ".min")
+                        .ruleId(dimensionName.equals(WIDTH) ? RuleIds.Image.WIDTH_MIN : RuleIds.Image.HEIGHT_MIN)
                         .location(SourceLocation.builder()
                             .filename(context.getFilename())
                             .startLine(pos.lineNumber)
@@ -239,7 +240,7 @@ public final class ImageBlockValidator extends AbstractBlockValidator<ImageBlock
                 if (dimConfig.getMaxValue() != null && numericValue > dimConfig.getMaxValue()) {
                     messages.add(ValidationMessage.builder()
                         .severity(imageConfig.getSeverity())
-                        .ruleId("image." + dimensionName + ".max")
+                        .ruleId(dimensionName.equals(WIDTH) ? RuleIds.Image.WIDTH_MAX : RuleIds.Image.HEIGHT_MAX)
                         .location(SourceLocation.builder()
                             .filename(context.getFilename())
                             .startLine(pos.lineNumber)
@@ -282,7 +283,7 @@ public final class ImageBlockValidator extends AbstractBlockValidator<ImageBlock
         if (altConfig.isRequired() && (altText == null || altText.trim().isEmpty())) {
             messages.add(ValidationMessage.builder()
                 .severity(imageConfig.getSeverity())
-                .ruleId("image.alt.required")
+                .ruleId(RuleIds.Image.ALT_REQUIRED)
                 .location(SourceLocation.builder()
                     .filename(context.getFilename())
                     .startLine(pos.lineNumber)
@@ -307,7 +308,7 @@ public final class ImageBlockValidator extends AbstractBlockValidator<ImageBlock
             if (altConfig.getMinLength() != null && altText.length() < altConfig.getMinLength()) {
                 messages.add(ValidationMessage.builder()
                     .severity(imageConfig.getSeverity())
-                    .ruleId("image.alt.minLength")
+                    .ruleId(RuleIds.Image.ALT_MIN_LENGTH)
                     .location(SourceLocation.builder()
                         .filename(context.getFilename())
                         .startLine(pos.lineNumber)
@@ -325,7 +326,7 @@ public final class ImageBlockValidator extends AbstractBlockValidator<ImageBlock
             if (altConfig.getMaxLength() != null && altText.length() > altConfig.getMaxLength()) {
                 messages.add(ValidationMessage.builder()
                     .severity(imageConfig.getSeverity())
-                    .ruleId("image.alt.maxLength")
+                    .ruleId(RuleIds.Image.ALT_MAX_LENGTH)
                     .location(SourceLocation.builder()
                         .filename(context.getFilename())
                         .startLine(pos.lineNumber)
