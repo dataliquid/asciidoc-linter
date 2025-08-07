@@ -39,6 +39,18 @@ public final class RuleIds {
     }
     
     /**
+     * Rule IDs for metadata validation
+     */
+    public static final class Metadata {
+        public static final String REQUIRED = "metadata.required";
+        public static final String PATTERN = "metadata.pattern";
+        public static final String LENGTH = "metadata.length";
+        public static final String LENGTH_MIN = "metadata.length.min";
+        public static final String LENGTH_MAX = "metadata.length.max";
+        public static final String ORDER = "metadata.order";
+    }
+    
+    /**
      * Rule IDs for admonition block validation
      */
     public static final class Admonition {
