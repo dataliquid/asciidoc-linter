@@ -575,17 +575,36 @@ public final class AdmonitionBlockValidator extends AbstractBlockValidator<Admon
                     
                     if (iconPos >= 0 && iconValue != null) {
                         // Find where the icon value starts (after "icon=" or "icon:")
-                        int valueStart = iconPos + (line.charAt(iconPos + 4) == '=' ? 5 : 5); // "icon=" or "icon:"
-                        // Find the end of the value (comma or closing bracket)
+                        int valueStart = iconPos + 5; // "icon=" or "icon:" are both 5 chars
+                        
+                        // Check if the value is quoted
+                        boolean isQuoted = false;
+                        if (valueStart < line.length() && line.charAt(valueStart) == '"') {
+                            isQuoted = true;
+                            valueStart++; // Skip the opening quote
+                        }
+                        
+                        // Find the end of the value
                         int valueEnd = valueStart;
                         for (int i = valueStart; i < line.length(); i++) {
                             char ch = line.charAt(i);
-                            if (ch == ',' || ch == ']') {
-                                break;
+                            if (isQuoted) {
+                                // For quoted values, stop at closing quote
+                                if (ch == '"') {
+                                    valueEnd = i;
+                                    break;
+                                }
+                            } else {
+                                // For unquoted values, stop at comma or closing bracket
+                                if (ch == ',' || ch == ']') {
+                                    valueEnd = i;
+                                    break;
+                                }
                             }
-                            valueEnd = i;
+                            valueEnd = i + 1; // Include current character
                         }
-                        return new IconPosition(valueStart + 1, valueEnd + 1, checkLine);
+                        // Return 1-based positions (columns start at 1, not 0)
+                        return new IconPosition(valueStart + 1, valueEnd, checkLine);
                     }
                     
                     // If no icon= found, default to entire bracket content
