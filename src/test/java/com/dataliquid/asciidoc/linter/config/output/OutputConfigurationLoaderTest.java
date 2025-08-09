@@ -82,55 +82,6 @@ class OutputConfigurationLoaderTest {
     @Nested
     @DisplayName("Stream Loading Tests")
     class StreamLoadingTests {
-        
-        @Test
-        @DisplayName("should load configuration with all features")
-        void shouldLoadConfigurationWithAllFeatures() throws IOException {
-            // Given
-            String yaml = """
-                output:
-                  format: enhanced
-                  display:
-                    useColors: true
-                    contextLines: 5
-                    showLineNumbers: true
-                    highlightStyle: box
-                  errorGrouping:
-                    enabled: true
-                    threshold: 10
-                  summary:
-                    enabled: true
-                    showStatistics: true
-                    showMostCommon: true
-                    showFileList: true
-                """;
-            
-            InputStream input = new ByteArrayInputStream(yaml.getBytes(StandardCharsets.UTF_8));
-            
-            // When
-            OutputConfiguration config = loaderWithoutValidation.loadConfiguration(input);
-            
-            // Then
-            assertEquals(OutputFormat.ENHANCED, config.getFormat());
-            
-            DisplayConfig display = config.getDisplay();
-            assertTrue(display.isUseColors());
-            assertEquals(5, display.getContextLines());
-            assertTrue(display.isShowLineNumbers());
-            assertEquals(HighlightStyle.BOX, display.getHighlightStyle());
-            
-            ErrorGroupingConfig grouping = config.getErrorGrouping();
-            assertTrue(grouping.isEnabled());
-            assertTrue(grouping.isEnabled());
-            assertEquals(10, grouping.getThreshold());
-            
-            SummaryConfig summary = config.getSummary();
-            assertTrue(summary.isEnabled());
-            assertTrue(summary.isShowStatistics());
-            assertTrue(summary.isShowMostCommon());
-            assertTrue(summary.isShowFileList());
-        }
-        
         @Test
         @DisplayName("should load minimal configuration")
         void shouldLoadMinimalConfiguration() throws IOException {

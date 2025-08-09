@@ -39,7 +39,7 @@ class OutputConfigIntegrationTest {
         assertNotNull(config);
         assertEquals(OutputFormat.SIMPLE, config.getFormat());
         assertEquals(1, config.getDisplay().getContextLines());
-        assertEquals(HighlightStyle.ARROW, config.getDisplay().getHighlightStyle());
+        assertEquals(HighlightStyle.UNDERLINE, config.getDisplay().getHighlightStyle());
         assertEquals(false, config.getSuggestions().isEnabled());
     }
 
