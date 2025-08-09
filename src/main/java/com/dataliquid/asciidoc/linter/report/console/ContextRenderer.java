@@ -199,14 +199,44 @@ public class ContextRenderer {
                 contextLines.add(insertIndex, "");
             }
             
-            // Create context with the inserted line marked as error line
+            // Create context with proper line numbering for inserted placeholder
             List<SourceContext.ContextLine> lines = new ArrayList<>();
-            int lineNum = startLine;
+            
             for (int i = 0; i < contextLines.size(); i++) {
                 String content = contextLines.get(i);
-                boolean isErrorLine = (i == insertIndex); // Mark the inserted empty line as error
-                lines.add(new SourceContext.ContextLine(lineNum, content, isErrorLine));
-                lineNum++;
+                
+                if (i < insertIndex) {
+                    // Before the placeholder - normal line numbering
+                    int lineNum = startLine + i;
+                    lines.add(new SourceContext.ContextLine(lineNum, content, false));
+                } else if (i == insertIndex) {
+                    // This is the placeholder line
+                    lines.add(new SourceContext.ContextLine(insertLineNumber, content, true));
+                    
+                    // Add empty line after placeholder if next line is not empty
+                    if (i + 1 < contextLines.size()) {
+                        String nextContent = contextLines.get(i + 1).trim();
+                        if (!nextContent.isEmpty()) {
+                            // Next line has content, add empty line between
+                            lines.add(new SourceContext.ContextLine(insertLineNumber + 1, "", false));
+                        }
+                    }
+                } else {
+                    // After the placeholder
+                    int originalIndex = i - 1; // Account for inserted placeholder
+                    int lineNum = startLine + originalIndex;
+                    
+                    // If we're right after placeholder and current line is empty
+                    if (i == insertIndex + 1 && content.trim().isEmpty()) {
+                        // This empty line gets number insertLineNumber + 1
+                        lineNum = insertLineNumber + 1;
+                    } else {
+                        // Shift by 2 to account for placeholder and empty line
+                        lineNum = startLine + originalIndex + 2;
+                    }
+                    
+                    lines.add(new SourceContext.ContextLine(lineNum, content, false));
+                }
             }
             return new SourceContext(lines, loc);
         }
