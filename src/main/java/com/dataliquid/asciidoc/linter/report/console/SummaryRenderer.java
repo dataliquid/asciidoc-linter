@@ -33,9 +33,9 @@ public class SummaryRenderer {
         }
         
         writer.println();
-        writer.println(colorScheme.separator("═".repeat(65)));
+        writer.println(colorScheme.separator("=".repeat(65)));
         writer.println(colorScheme.header("                    Validation Summary"));
-        writer.println(colorScheme.separator("═".repeat(65)));
+        writer.println(colorScheme.separator("=".repeat(65)));
         
         if (config.isShowStatistics()) {
             renderStatistics(result, writer);
@@ -51,7 +51,7 @@ public class SummaryRenderer {
         
         renderSummaryLine(result, writer);
         
-        writer.println(colorScheme.separator("═".repeat(65)));
+        writer.println(colorScheme.separator("=".repeat(65)));
     }
     
     private void renderStatistics(ValidationResult result, PrintWriter writer) {
