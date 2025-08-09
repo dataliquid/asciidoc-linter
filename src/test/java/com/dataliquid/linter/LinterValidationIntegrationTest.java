@@ -1730,8 +1730,8 @@ class LinterValidationIntegrationTest {
             
             // The location should point to where the missing block should be inserted
             // The placeholder should appear after the paragraph in the subsection
-            // Not at a fixed line 3
-            assertEquals(12, msg.getLocation().getStartLine()); // Points to where block should be added
+            // After our fix, the line is correctly calculated as 13 (after the last line of content)
+            assertEquals(13, msg.getLocation().getStartLine()); // Points to where block should be added
             
             // Let's also run a console report to see where the placeholder appears
             // This would help debug the actual positioning

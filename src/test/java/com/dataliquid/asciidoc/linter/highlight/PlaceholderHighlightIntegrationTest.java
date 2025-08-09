@@ -2656,25 +2656,120 @@ class PlaceholderHighlightIntegrationTest {
                5 | == Main Section
                6 |\s
                7 | «Paragraph content»
-               8 | === Sub Section
-               9 |\s
-              10 | This is a paragraph in the sub section.
+               8 |\s
+               9 | === Sub Section
+              10 |\s
+              11 | This is a paragraph in the sub section.
             
             [ERROR]: Too few occurrences of block: listing [block.occurrence.min]
-              File: %s:10
+              File: %s:11
               Actual: 0
               Expected: At least 1 occurrences
             
-               7 | === Sub Section
                8 |\s
                9 | This is a paragraph in the sub section.
-              10 | «[source]
-              11 | ----
-              12 | Code here
-              13 | ----»
+              10 |\s
+              11 | «[source]
+              12 | ----
+              13 | Code here
+              14 | ----»
             
             
             """, testFile.toString(), testFile.toString(), testFile.toString());
+        
+        assertEquals(expectedOutput, actualOutput);
+    }
+    
+    @Test
+    @DisplayName("should show placeholder at correct line for missing paragraph block with dlist")
+    void shouldShowPlaceholderAtCorrectLineForMissingBlock(@TempDir Path tempDir) throws IOException {
+        // Given - YAML rules requiring paragraph block after dlist
+        String rules = """
+            document:
+              sections:
+                - name: documentTitle
+                  level: 0
+                  min: 1
+                  max: 1
+                  subsections:
+                    - name: contentSection
+                      level: 1
+                      allowedBlocks:
+                        - paragraph:
+                            severity: error
+                            occurrence:
+                              min: 2
+                              severity: error
+                        - dlist:
+                            severity: error
+                            occurrence:
+                              min: 1
+            """;
+        
+        // Given - AsciiDoc content with dlist but missing second paragraph
+        String adocContent = """
+            = Test Document
+            
+            == Content Section
+            
+            This is the first paragraph in the section.
+            
+            `<media-range>`:: Ein MIME-Typ in der Form `type/subtype`. Wildcards wie `text/*` oder `*/*` sind zulässig.
+            `q=<gewicht>`:: Optionaler Qualitätsfaktor zwischen 0 und 1 zur Priorisierung (Standard: 1). Höhere Werte bedeuten stärkere Präferenz.
+            
+            == Next Section
+            
+            Some other content here.
+            """;
+        
+        // When - Validate and format output
+        String actualOutput = validateAndFormat(rules, adocContent, tempDir);
+        System.out.println(actualOutput);
+        
+        // Then - Verify exact console output with placeholder at correct position
+        Path testFile = tempDir.resolve("test.adoc");
+        String expectedOutput = String.format("""
+            Validation Report
+            =================
+            
+            %s:
+            
+            [ERROR]: Too few occurrences of block: paragraph [block.occurrence.min]
+              File: %s:10
+              Actual: 1
+              Expected: At least 2 occurrences
+            
+               7 | `<media-range>`:: Ein MIME-Typ in der Form `type/subtype`. Wildcards wie `text/*` oder `*/*` sind zulässig.
+               8 | `q=<gewicht>`:: Optionaler Qualitätsfaktor zwischen 0 und 1 zur Priorisierung (Standard: 1). Höhere Werte bedeuten stärkere Präferenz.
+               9 |\s
+              10 | «Paragraph content»
+              11 |\s
+              12 | == Next Section
+              13 |\s
+              14 | Some other content here.
+            
+            [ERROR]: Too few occurrences of block: paragraph [block.occurrence.min]
+              File: %s:14
+              Actual: 1
+              Expected: At least 2 occurrences
+            
+              11 |\s
+              12 | Some other content here.
+              13 |\s
+              14 | «Paragraph content»
+            
+            [ERROR]: Too few occurrences of block: dlist [block.occurrence.min]
+              File: %s:14
+              Actual: 0
+              Expected: At least 1 occurrences
+            
+              11 |\s
+              12 | Some other content here.
+              13 |\s
+              14 | «Term:: Description»
+            
+            
+            """, testFile.toString(), testFile.toString(), testFile.toString(), testFile.toString());
         
         assertEquals(expectedOutput, actualOutput);
     }
