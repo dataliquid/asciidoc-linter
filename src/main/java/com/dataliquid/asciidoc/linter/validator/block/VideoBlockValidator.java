@@ -348,7 +348,6 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
                             .description("Enable video player controls")
                             .addExample("video::video.mp4[options=controls]")
                             .addExample("video::video.mp4[opts=controls]")
-                            .autoFixable(true)
                             .build())
                         .build());
             }

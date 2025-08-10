@@ -15,6 +15,7 @@ import com.dataliquid.asciidoc.linter.validator.ErrorType;
 import com.dataliquid.asciidoc.linter.validator.PlaceholderContext;
 import static com.dataliquid.asciidoc.linter.validator.RuleIds.Image.*;
 import com.dataliquid.asciidoc.linter.validator.SourceLocation;
+import com.dataliquid.asciidoc.linter.validator.Suggestion;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -152,6 +153,12 @@ public final class ImageBlockValidator extends AbstractBlockValidator<ImageBlock
                 .placeholderContext(PlaceholderContext.builder()
                     .type(PlaceholderContext.PlaceholderType.SIMPLE_VALUE)
                     .build())
+                .addSuggestion(Suggestion.builder()
+                    .description("Add an image path or URL")
+                    .addExample("image::images/diagram.png[]")
+                    .addExample("image::https://example.com/logo.png[]")
+                    .addExample("image::{imagesdir}/screenshot.jpg[]")
+                    .build())
                 .build());
             return;
         }
@@ -169,6 +176,12 @@ public final class ImageBlockValidator extends AbstractBlockValidator<ImageBlock
                     .message("Image URL does not match required pattern")
                     .actualValue(url)
                     .expectedValue("Pattern: " + urlConfig.getPattern().pattern())
+                    .addSuggestion(Suggestion.builder()
+                        .description("Use a path matching the required pattern")
+                        .addExample("Common image formats: .png, .jpg, .jpeg, .svg, .gif")
+                        .addExample("Relative path: images/filename.png")
+                        .addExample("Absolute URL: https://example.com/image.png")
+                        .build())
                     .build());
             }
         }
@@ -196,11 +209,17 @@ public final class ImageBlockValidator extends AbstractBlockValidator<ImageBlock
                 .actualValue("No " + dimensionName)
                 .expectedValue(dimensionName + " required")
                 .errorType(ErrorType.MISSING_VALUE)
-                .missingValueHint("100")
+                .missingValueHint(dimensionName.equals(WIDTH) ? "640" : "480")
                 .placeholderContext(PlaceholderContext.builder()
                     .type(PlaceholderContext.PlaceholderType.ATTRIBUTE_IN_LIST)
                     .attributeName(dimensionName)
                     .hasExistingAttributes(true)
+                    .build())
+                .addSuggestion(Suggestion.builder()
+                    .description(String.format("Add %s attribute to the image", dimensionName))
+                    .addExample(String.format("image::image.png[%s=640]", dimensionName))
+                    .addExample("Common sizes: 320x240, 640x480, 800x600, 1024x768")
+                    .addExample("Responsive: width=100%, height=auto")
                     .build())
                 .build());
             return;
@@ -221,6 +240,11 @@ public final class ImageBlockValidator extends AbstractBlockValidator<ImageBlock
                         .message("Image " + dimensionName + " is too small")
                         .actualValue(numericValue + "px")
                         .expectedValue("At least " + dimConfig.getMinValue() + "px")
+                        .addSuggestion(Suggestion.builder()
+                            .description(String.format("Increase %s to meet minimum requirement", dimensionName))
+                            .fixedValue(String.valueOf(dimConfig.getMinValue()))
+                            .addExample(String.format("%s=%d", dimensionName, dimConfig.getMinValue()))
+                            .build())
                         .build());
                 }
                 
@@ -235,6 +259,11 @@ public final class ImageBlockValidator extends AbstractBlockValidator<ImageBlock
                         .message("Image " + dimensionName + " is too large")
                         .actualValue(numericValue + "px")
                         .expectedValue("At most " + dimConfig.getMaxValue() + "px")
+                        .addSuggestion(Suggestion.builder()
+                            .description(String.format("Reduce %s to meet maximum limit", dimensionName))
+                            .fixedValue(String.valueOf(dimConfig.getMaxValue()))
+                            .addExample(String.format("%s=%d", dimensionName, dimConfig.getMaxValue()))
+                            .build())
                         .build());
                 }
             }
@@ -276,9 +305,15 @@ public final class ImageBlockValidator extends AbstractBlockValidator<ImageBlock
                 .actualValue("No alt text")
                 .expectedValue("Alt text required")
                 .errorType(ErrorType.MISSING_VALUE)
-                .missingValueHint("Alt text")
+                .missingValueHint("Description of image")
                 .placeholderContext(PlaceholderContext.builder()
                     .type(PlaceholderContext.PlaceholderType.SIMPLE_VALUE)
+                    .build())
+                .addSuggestion(Suggestion.builder()
+                    .description("Add descriptive alt text for accessibility")
+                    .addExample("image::diagram.png[Architecture diagram showing system components]")
+                    .addExample("image::logo.png[Company logo]")
+                    .explanation("Alt text improves accessibility for screen readers and SEO")
                     .build())
                 .build());
             return;
@@ -297,6 +332,12 @@ public final class ImageBlockValidator extends AbstractBlockValidator<ImageBlock
                     .message("Image alt text is too short")
                     .actualValue(altText.length() + " characters")
                     .expectedValue("At least " + altConfig.getMinLength() + " characters")
+                    .addSuggestion(Suggestion.builder()
+                        .description("Provide more descriptive alt text")
+                        .addExample("Instead of 'logo', use 'Company XYZ corporate logo'")
+                        .addExample("Instead of 'diagram', use 'System architecture diagram showing microservices'")
+                        .explanation("Descriptive alt text improves accessibility and understanding")
+                        .build())
                     .build());
             }
             
@@ -312,6 +353,11 @@ public final class ImageBlockValidator extends AbstractBlockValidator<ImageBlock
                     .message("Image alt text is too long")
                     .actualValue(altText.length() + " characters")
                     .expectedValue("At most " + altConfig.getMaxLength() + " characters")
+                    .addSuggestion(Suggestion.builder()
+                        .description("Shorten the alt text while keeping it descriptive")
+                        .addExample(String.format("Keep alt text under %d characters", altConfig.getMaxLength()))
+                        .explanation("Concise alt text is easier to process for screen readers")
+                        .build())
                     .build());
             }
         }

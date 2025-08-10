@@ -17,6 +17,7 @@ import com.dataliquid.asciidoc.linter.validator.PlaceholderContext;
 import static com.dataliquid.asciidoc.linter.validator.RuleIds.Quote.*;
 import com.dataliquid.asciidoc.linter.validator.SourceLocation;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
+import com.dataliquid.asciidoc.linter.validator.Suggestion;
 
 /**
  * Validator for quote blocks.
@@ -78,6 +79,12 @@ public final class QuoteBlockValidator extends AbstractBlockValidator<QuoteBlock
                 .placeholderContext(PlaceholderContext.builder()
                     .type(PlaceholderContext.PlaceholderType.LIST_VALUE)
                     .build())
+                .addSuggestion(Suggestion.builder()
+                    .description("Add quote attribution")
+                    .addExample("[quote, Einstein]")
+                    .addExample("[quote, \"Albert Einstein\", \"Relativity Theory\"]")
+                    .addExample("[quote, Author Name]")
+                    .build())
                 .build());
             return;
         }
@@ -91,6 +98,12 @@ public final class QuoteBlockValidator extends AbstractBlockValidator<QuoteBlock
                     .message(String.format("Quote attribution is too short (minimum %d characters, found %d)",
                                   config.getMinLength(), attribution.length()))
                     .location(context.createLocation(node))
+                    .addSuggestion(Suggestion.builder()
+                        .description("Use longer attribution")
+                        .addExample("Use full name: Albert Einstein")
+                        .addExample("Include title: Dr. John Smith")
+                        .explanation("Attribution needs at least " + config.getMinLength() + " characters")
+                        .build())
                     .build());
             }
             
@@ -102,6 +115,12 @@ public final class QuoteBlockValidator extends AbstractBlockValidator<QuoteBlock
                     .message(String.format("Quote attribution is too long (maximum %d characters, found %d)",
                                   config.getMaxLength(), attribution.length()))
                     .location(context.createLocation(node))
+                    .addSuggestion(Suggestion.builder()
+                        .description("Shorten attribution")
+                        .addExample("Use initials: A. Einstein")
+                        .addExample("Use last name only")
+                        .explanation("Attribution must be at most " + config.getMaxLength() + " characters")
+                        .build())
                     .build());
             }
             
@@ -117,6 +136,12 @@ public final class QuoteBlockValidator extends AbstractBlockValidator<QuoteBlock
                     .location(SourceLocation.builder()
                         .filename(context.getFilename())
                         .fromPosition(pos)
+                        .build())
+                    .addSuggestion(Suggestion.builder()
+                        .description("Follow attribution pattern")
+                        .addExample("Match the required format")
+                        .addExample("Example: Last Name, First Name")
+                        .explanation("Attribution must match pattern: " + config.getPattern().pattern())
                         .build())
                     .build());
             }
@@ -144,6 +169,12 @@ public final class QuoteBlockValidator extends AbstractBlockValidator<QuoteBlock
                 .placeholderContext(PlaceholderContext.builder()
                     .type(PlaceholderContext.PlaceholderType.LIST_VALUE)
                     .build())
+                .addSuggestion(Suggestion.builder()
+                    .description("Add quote citation")
+                    .addExample("[quote, Einstein, \"Special Relativity\"]")
+                    .addExample("[quote, Author, \"Book Title\"]")
+                    .addExample("[quote, Speaker, \"Speech Title\"]")
+                    .build())
                 .build());
             return;
         }
@@ -157,6 +188,12 @@ public final class QuoteBlockValidator extends AbstractBlockValidator<QuoteBlock
                     .message(String.format("Quote citation is too short (minimum %d characters, found %d)",
                                   config.getMinLength(), citation.length()))
                     .location(context.createLocation(node))
+                    .addSuggestion(Suggestion.builder()
+                        .description("Use longer citation")
+                        .addExample("Include full book/article title")
+                        .addExample("Add publication year")
+                        .explanation("Citation needs at least " + config.getMinLength() + " characters")
+                        .build())
                     .build());
             }
             
@@ -168,6 +205,12 @@ public final class QuoteBlockValidator extends AbstractBlockValidator<QuoteBlock
                     .message(String.format("Quote citation is too long (maximum %d characters, found %d)",
                                   config.getMaxLength(), citation.length()))
                     .location(context.createLocation(node))
+                    .addSuggestion(Suggestion.builder()
+                        .description("Shorten citation")
+                        .addExample("Use abbreviated title")
+                        .addExample("Remove unnecessary details")
+                        .explanation("Citation must be at most " + config.getMaxLength() + " characters")
+                        .build())
                     .build());
             }
             
@@ -183,6 +226,12 @@ public final class QuoteBlockValidator extends AbstractBlockValidator<QuoteBlock
                     .location(SourceLocation.builder()
                         .filename(context.getFilename())
                         .fromPosition(pos)
+                        .build())
+                    .addSuggestion(Suggestion.builder()
+                        .description("Follow citation pattern")
+                        .addExample("Use proper citation format")
+                        .addExample("Example: Title, Year")
+                        .explanation("Citation must match pattern: " + config.getPattern().pattern())
                         .build())
                     .build());
             }
@@ -200,6 +249,13 @@ public final class QuoteBlockValidator extends AbstractBlockValidator<QuoteBlock
                 .ruleId(CONTENT_REQUIRED)
                 .message("Quote block requires content")
                 .location(context.createLocation(node))
+                .addSuggestion(Suggestion.builder()
+                    .description("Add quote content")
+                    .addExample("[quote]")
+                    .addExample("____")
+                    .addExample("Your meaningful quote content goes here.")
+                    .addExample("____")
+                    .build())
                 .build());
             return;
         }
@@ -213,6 +269,12 @@ public final class QuoteBlockValidator extends AbstractBlockValidator<QuoteBlock
                     .message(String.format("Quote content is too short (minimum %d characters, found %d)",
                                   config.getMinLength(), content.length()))
                     .location(context.createLocation(node))
+                    .addSuggestion(Suggestion.builder()
+                        .description("Expand quote content")
+                        .addExample("Add more context to the quote")
+                        .addExample("Include complete thoughts")
+                        .explanation("Content needs at least " + config.getMinLength() + " characters")
+                        .build())
                     .build());
             }
             
@@ -224,6 +286,12 @@ public final class QuoteBlockValidator extends AbstractBlockValidator<QuoteBlock
                     .message(String.format("Quote content is too long (maximum %d characters, found %d)",
                                   config.getMaxLength(), content.length()))
                     .location(context.createLocation(node))
+                    .addSuggestion(Suggestion.builder()
+                        .description("Shorten quote content")
+                        .addExample("Use ellipsis for shortened quotes")
+                        .addExample("Focus on key message")
+                        .explanation("Content must be at most " + config.getMaxLength() + " characters")
+                        .build())
                     .build());
             }
             
@@ -248,6 +316,12 @@ public final class QuoteBlockValidator extends AbstractBlockValidator<QuoteBlock
                 .message(String.format("Quote content has too few lines (minimum %d, found %d)",
                               config.getMin(), lineCount))
                 .location(context.createLocation(node))
+                .addSuggestion(Suggestion.builder()
+                    .description("Add more lines to quote")
+                    .addExample("Break long sentences across lines")
+                    .addExample("Add context or explanation")
+                    .explanation("Quote needs at least " + config.getMin() + " lines")
+                    .build())
                 .build());
         }
         
@@ -258,6 +332,12 @@ public final class QuoteBlockValidator extends AbstractBlockValidator<QuoteBlock
                 .message(String.format("Quote content has too many lines (maximum %d, found %d)",
                               config.getMax(), lineCount))
                 .location(context.createLocation(node))
+                .addSuggestion(Suggestion.builder()
+                    .description("Reduce quote lines")
+                    .addExample("Combine related sentences")
+                    .addExample("Remove less essential parts")
+                    .explanation("Quote should have at most " + config.getMax() + " lines")
+                    .build())
                 .build());
         }
     }

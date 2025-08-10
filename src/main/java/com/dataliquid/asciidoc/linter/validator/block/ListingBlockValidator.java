@@ -17,6 +17,7 @@ import com.dataliquid.asciidoc.linter.validator.PlaceholderContext;
 import static com.dataliquid.asciidoc.linter.validator.RuleIds.Listing.*;
 import com.dataliquid.asciidoc.linter.validator.SourceLocation;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
+import com.dataliquid.asciidoc.linter.validator.Suggestion;
 
 /**
  * Validator for listing (code) blocks in AsciiDoc documents.
@@ -137,6 +138,21 @@ public final class ListingBlockValidator extends AbstractBlockValidator<ListingB
                 .placeholderContext(PlaceholderContext.builder()
                     .type(PlaceholderContext.PlaceholderType.LIST_VALUE)
                     .build())
+                .addSuggestion(Suggestion.builder()
+                    .description("Add Java language")
+                    .fixedValue("java")
+                    .addExample("[source,java]")
+                    .build())
+                .addSuggestion(Suggestion.builder()
+                    .description("Add Python language")
+                    .fixedValue("python")
+                    .addExample("[source,python]")
+                    .build())
+                .addSuggestion(Suggestion.builder()
+                    .description("Add JavaScript language")
+                    .fixedValue("javascript")
+                    .addExample("[source,javascript]")
+                    .build())
                 .build());
         }
         
@@ -145,7 +161,7 @@ public final class ListingBlockValidator extends AbstractBlockValidator<ListingB
             if (!config.getAllowed().contains(language)) {
                 // Find column position for invalid language
                 SourcePosition pos = findLanguagePosition(block, context, language);
-                messages.add(ValidationMessage.builder()
+                ValidationMessage.Builder messageBuilder = ValidationMessage.builder()
                     .severity(severity)
                     .ruleId(LANGUAGE_ALLOWED)
                     .location(SourceLocation.builder()
@@ -154,8 +170,19 @@ public final class ListingBlockValidator extends AbstractBlockValidator<ListingB
                         .build())
                     .message("Listing language '" + language + "' is not allowed")
                     .actualValue(language)
-                    .expectedValue("One of: " + String.join(", ", config.getAllowed()))
-                    .build());
+                    .expectedValue("One of: " + String.join(", ", config.getAllowed()));
+                
+                // Add suggestions for each allowed language
+                for (String allowedLang : config.getAllowed()) {
+                    messageBuilder.addSuggestion(Suggestion.builder()
+                        .description("Change to " + allowedLang)
+                        .fixedValue(allowedLang)
+                        .addExample("[source," + allowedLang + "]")
+                        .explanation("Use allowed language: " + allowedLang)
+                        .build());
+                }
+                
+                messages.add(messageBuilder.build());
             }
         }
     }
@@ -177,6 +204,21 @@ public final class ListingBlockValidator extends AbstractBlockValidator<ListingB
                 .message("Listing block must have a title")
                 .actualValue("No title")
                 .expectedValue("Title required")
+                .addSuggestion(Suggestion.builder()
+                    .description("Add code example title")
+                    .fixedValue(".Code Example")
+                    .addExample(".Code Example")
+                    .build())
+                .addSuggestion(Suggestion.builder()
+                    .description("Add implementation title")
+                    .fixedValue(".Implementation")
+                    .addExample(".Implementation")
+                    .build())
+                .addSuggestion(Suggestion.builder()
+                    .description("Add descriptive title")
+                    .fixedValue(".Sample Code")
+                    .addExample(".Sample Code")
+                    .build())
                 .build());
             return;
         }
@@ -194,6 +236,13 @@ public final class ListingBlockValidator extends AbstractBlockValidator<ListingB
                     .message("Listing title does not match required pattern")
                     .actualValue(title)
                     .expectedValue("Pattern: " + config.getPattern().pattern())
+                    .addSuggestion(Suggestion.builder()
+                        .description("Use pattern-compliant title")
+                        .addExample(".Example: Code Implementation")
+                        .addExample(".Listing: Main Function")
+                        .addExample(".Source: API Usage")
+                        .explanation("Title must match pattern: " + config.getPattern().pattern())
+                        .build())
                     .build());
             }
         }

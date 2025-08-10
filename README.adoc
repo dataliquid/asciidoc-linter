@@ -89,8 +89,8 @@ java -jar asciidoc-linter.jar -i "docs/**/*.adoc" -r .linter-rule-config.yaml
 # JSON output for CI/CD
 java -jar asciidoc-linter.jar -i "**/*.adoc" -f json -o report.json
 
-# Generate documentation for your configuration
-java -jar asciidoc-linter.jar -r my-rules.yaml --generate-docs
+# Generate author guidelines for your configuration
+java -jar asciidoc-linter.jar -r my-rules.yaml --generate-guidelines
 ----
 
 === Configuration Example

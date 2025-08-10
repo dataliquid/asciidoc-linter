@@ -14,6 +14,7 @@ import com.dataliquid.asciidoc.linter.validator.PlaceholderContext;
 import static com.dataliquid.asciidoc.linter.validator.RuleIds.Example.*;
 import com.dataliquid.asciidoc.linter.validator.SourceLocation;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
+import com.dataliquid.asciidoc.linter.validator.Suggestion;
 
 /**
  * Validator for EXAMPLE blocks.
@@ -78,6 +79,14 @@ public final class ExampleBlockValidator extends AbstractBlockValidator<ExampleB
                 .placeholderContext(PlaceholderContext.builder()
                     .type(PlaceholderContext.PlaceholderType.INSERT_BEFORE)
                     .build())
+                .addSuggestion(Suggestion.builder()
+                    .description("Add caption to example block")
+                    .fixedValue(".Example Title")
+                    .addExample(".Sample Configuration")
+                    .addExample(".Code Example")
+                    .addExample(".Usage Demonstration")
+                    .explanation("Example blocks should have descriptive captions to explain their purpose")
+                    .build())
                 .build());
             return messages;
         }
@@ -95,6 +104,13 @@ public final class ExampleBlockValidator extends AbstractBlockValidator<ExampleB
                 .severity(resolveSeverity(config.getSeverity(), block.getSeverity()))
                 .location(context.createLocation(node))
                 .ruleId(CAPTION_MIN_LENGTH)
+                .addSuggestion(Suggestion.builder()
+                    .description("Use a longer, more descriptive caption")
+                    .addExample("Sample Configuration File")
+                    .addExample("Complete Code Example")
+                    .addExample("Step-by-Step Demonstration")
+                    .explanation("Example captions should be descriptive enough to meet minimum length requirements")
+                    .build())
                 .build());
         }
         
@@ -105,6 +121,13 @@ public final class ExampleBlockValidator extends AbstractBlockValidator<ExampleB
                 .severity(resolveSeverity(config.getSeverity(), block.getSeverity()))
                 .location(context.createLocation(node))
                 .ruleId(CAPTION_MAX_LENGTH)
+                .addSuggestion(Suggestion.builder()
+                    .description("Shorten the caption")
+                    .addExample("Config Example")
+                    .addExample("Code Sample")
+                    .addExample("Usage Demo")
+                    .explanation("Example captions should be concise and not exceed maximum length limits")
+                    .build())
                 .build());
         }
         
@@ -116,6 +139,13 @@ public final class ExampleBlockValidator extends AbstractBlockValidator<ExampleB
                 .severity(resolveSeverity(config.getSeverity(), block.getSeverity()))
                 .location(context.createLocation(node))
                 .ruleId(CAPTION_PATTERN)
+                .addSuggestion(Suggestion.builder()
+                    .description("Format caption to match required pattern")
+                    .addExample("Example 1: Basic Setup")
+                    .addExample("Example 2: Advanced Configuration")
+                    .addExample("Example 3: Common Use Case")
+                    .explanation("Example captions must follow the specified format pattern")
+                    .build())
                 .build());
         }
         
@@ -152,6 +182,14 @@ public final class ExampleBlockValidator extends AbstractBlockValidator<ExampleB
                 .placeholderContext(PlaceholderContext.builder()
                     .type(PlaceholderContext.PlaceholderType.INSERT_BEFORE)
                     .build())
+                .addSuggestion(Suggestion.builder()
+                    .description("Add collapsible attribute to example block")
+                    .fixedValue("[%collapsible]")
+                    .addExample("[%collapsible]")
+                    .addExample("[example,%collapsible]")
+                    .addExample("[%collapsible%open]")
+                    .explanation("Collapsible examples can be collapsed/expanded by readers for better content organization")
+                    .build())
                 .build());
             return messages;
         }
@@ -183,6 +221,14 @@ public final class ExampleBlockValidator extends AbstractBlockValidator<ExampleB
                     .severity(resolveSeverity(config.getSeverity(), block.getSeverity()))
                     .location(context.createLocation(node))
                     .ruleId(COLLAPSIBLE_ALLOWED)
+                    .addSuggestion(Suggestion.builder()
+                        .description("Use a valid collapsible value")
+                        .fixedValue(config.getAllowed().contains(true) ? "[%collapsible]" : "[%collapsible=false]")
+                        .addExample("[%collapsible] for collapsible")
+                        .addExample("[%collapsible%open] for initially open")
+                        .addExample("Remove attribute for non-collapsible")
+                        .explanation("Collapsible attribute must be one of the allowed values")
+                        .build())
                     .build());
             }
         }

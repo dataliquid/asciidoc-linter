@@ -287,7 +287,6 @@ class VideoBlockValidatorTest {
             assertEquals("autoplay", msg.getActualValue().orElse(null));
             assertEquals("controls", msg.getExpectedValue().orElse(null));
             assertTrue(msg.hasSuggestions());
-            assertTrue(msg.hasAutoFixableSuggestions());
         }
         
         @Test

@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import com.dataliquid.asciidoc.linter.cli.display.AsciiBoxDrawer;
+import com.dataliquid.asciidoc.linter.cli.display.DisplayConstants;
 import com.dataliquid.asciidoc.linter.config.output.DisplayConfig;
 import com.dataliquid.asciidoc.linter.config.output.SummaryConfig;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
@@ -33,9 +35,10 @@ public class SummaryRenderer {
         }
         
         writer.println();
-        writer.println(colorScheme.separator("═".repeat(65)));
-        writer.println(colorScheme.header("                    Validation Summary"));
-        writer.println(colorScheme.separator("═".repeat(65)));
+        AsciiBoxDrawer boxDrawer = new AsciiBoxDrawer(DisplayConstants.DEFAULT_BOX_WIDTH, writer);
+        boxDrawer.drawTop();
+        boxDrawer.drawTitle("Validation Summary");
+        boxDrawer.drawBottom();
         
         if (config.isShowStatistics()) {
             renderStatistics(result, writer);
@@ -51,7 +54,7 @@ public class SummaryRenderer {
         
         renderSummaryLine(result, writer);
         
-        writer.println(colorScheme.separator("═".repeat(65)));
+        boxDrawer.drawTop();
     }
     
     private void renderStatistics(ValidationResult result, PrintWriter writer) {
@@ -114,18 +117,6 @@ public class SummaryRenderer {
             });
         
         writer.println();
-        
-        // Auto-fix hint
-        long autoFixableCount = result.getMessages().stream()
-            .filter(ValidationMessage::hasAutoFixableSuggestions)
-            .count();
-        
-        if (autoFixableCount > 0) {
-            writer.println(colorScheme.suggestionIcon("  💡 ") + 
-                autoFixableCount + " error" + (autoFixableCount == 1 ? " is" : "s are") + 
-                " auto-fixable. Run with --fix");
-            writer.println();
-        }
     }
     
     private void renderFileList(ValidationResult result, PrintWriter writer) {

@@ -27,7 +27,7 @@ properties:
           
           highlightStyle:
             type: string
-            enum: [underline, box, arrow, none]
+            enum: [underline, none]
             default: underline
             description: Style for highlighting errors
           
@@ -75,11 +75,6 @@ properties:
             type: boolean
             default: true
             description: Show examples in suggestions
-          
-          showAutoFixHint:
-            type: boolean
-            default: true
-            description: Show hint about auto-fixable errors
         
         additionalProperties: false
       

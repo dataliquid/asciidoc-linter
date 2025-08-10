@@ -24,16 +24,16 @@ import com.dataliquid.asciidoc.linter.config.rule.AttributeConfig;
 import com.dataliquid.asciidoc.linter.config.rule.OccurrenceConfig;
 import com.dataliquid.asciidoc.linter.config.rule.SectionConfig;
 
-@DisplayName("AsciiDocRuleGenerator")
-class AsciiDocRuleGeneratorTest {
+@DisplayName("AsciiDocAuthorGuidelineGenerator")
+class AsciiDocAuthorGuidelineGeneratorTest {
     
-    private AsciiDocRuleGenerator generator;
+    private AsciiDocAuthorGuidelineGenerator generator;
     private StringWriter stringWriter;
     private PrintWriter printWriter;
     
     @BeforeEach
     void setUp() {
-        generator = new AsciiDocRuleGenerator();
+        generator = new AsciiDocAuthorGuidelineGenerator();
         stringWriter = new StringWriter();
         printWriter = new PrintWriter(stringWriter);
     }
@@ -47,7 +47,7 @@ class AsciiDocRuleGeneratorTest {
     @Test
     @DisplayName("should return correct name")
     void shouldReturnCorrectName() {
-        assertEquals("AsciiDoc Rule Documentation Generator", generator.getName());
+        assertEquals("AsciiDoc Author Guideline Generator", generator.getName());
     }
     
     @Nested
@@ -88,11 +88,10 @@ class AsciiDocRuleGeneratorTest {
             String output = stringWriter.toString();
             
             // Then
-            assertTrue(output.contains("= AsciiDoc Document Guidelines"));
+            assertTrue(output.contains("= AsciiDoc Author Guidelines"));
             assertTrue(output.contains(":toc: left"));
             assertTrue(output.contains("== Introduction"));
             assertTrue(output.contains("== Validation Levels"));
-            assertTrue(output.contains("== Tips for Authors"));
         }
         
         @Test
@@ -218,7 +217,7 @@ class AsciiDocRuleGeneratorTest {
         @DisplayName("should support multiple visualization styles")
         void shouldSupportMultipleVisualizationStyles() {
             // Given
-            AsciiDocRuleGenerator multiStyleGenerator = new AsciiDocRuleGenerator(
+            AsciiDocAuthorGuidelineGenerator multiStyleGenerator = new AsciiDocAuthorGuidelineGenerator(
                 Set.of(VisualizationStyle.TREE, VisualizationStyle.TABLE)
             );
             

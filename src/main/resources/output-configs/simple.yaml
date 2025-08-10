@@ -4,7 +4,7 @@ output:
   
   display:
     contextLines: 1
-    highlightStyle: arrow
+    highlightStyle: underline
     useColors: true
     showLineNumbers: true
     maxLineWidth: 100
@@ -14,7 +14,6 @@ output:
     enabled: false
     maxPerError: 1
     showExamples: false
-    showAutoFixHint: false
   
   errorGrouping:
     enabled: false

@@ -15,6 +15,7 @@ import com.dataliquid.asciidoc.linter.validator.ErrorType;
 import com.dataliquid.asciidoc.linter.validator.PlaceholderContext;
 import static com.dataliquid.asciidoc.linter.validator.RuleIds.Sidebar.*;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
+import com.dataliquid.asciidoc.linter.validator.Suggestion;
 
 /**
  * Validator for sidebar blocks based on YAML schema configuration.
@@ -94,6 +95,13 @@ public final class SidebarBlockValidator extends AbstractBlockValidator<SidebarB
                 .placeholderContext(PlaceholderContext.builder()
                     .type(PlaceholderContext.PlaceholderType.INSERT_BEFORE)
                     .build())
+                .addSuggestion(Suggestion.builder()
+                    .description("Add title to sidebar block")
+                    .addExample(".Important Information")
+                    .addExample(".Additional Notes")
+                    .addExample(".Side Note")
+                    .explanation("Sidebar blocks should have descriptive titles to indicate their purpose")
+                    .build())
                 .build());
             return;
         }
@@ -111,6 +119,13 @@ public final class SidebarBlockValidator extends AbstractBlockValidator<SidebarB
                 .message("Sidebar title too short")
                 .actualValue(title.length() + " characters")
                 .expectedValue("At least " + titleConfig.getMinLength() + " characters")
+                .addSuggestion(Suggestion.builder()
+                    .description("Use a longer, more descriptive title")
+                    .addExample("Additional Information")
+                    .addExample("Important Notes")
+                    .addExample("Related Topics")
+                    .explanation("Sidebar titles should be descriptive enough to meet minimum length requirements")
+                    .build())
                 .build());
         }
         
@@ -122,6 +137,13 @@ public final class SidebarBlockValidator extends AbstractBlockValidator<SidebarB
                 .message("Sidebar title too long")
                 .actualValue(title.length() + " characters")
                 .expectedValue("At most " + titleConfig.getMaxLength() + " characters")
+                .addSuggestion(Suggestion.builder()
+                    .description("Shorten the title")
+                    .addExample("Info")
+                    .addExample("Notes")
+                    .addExample("Tip")
+                    .explanation("Sidebar titles should be concise and not exceed maximum length limits")
+                    .build())
                 .build());
         }
         
@@ -136,6 +158,13 @@ public final class SidebarBlockValidator extends AbstractBlockValidator<SidebarB
                     .message("Sidebar title does not match required pattern")
                     .actualValue(title)
                     .expectedValue("Pattern: " + pattern.pattern())
+                    .addSuggestion(Suggestion.builder()
+                        .description("Format title to match required pattern")
+                        .addExample("Important Note")
+                        .addExample("Quick Reference")
+                        .addExample("Related Information")
+                        .explanation("Sidebar titles must follow the specified format pattern")
+                        .build())
                     .build());
             }
         }
@@ -161,6 +190,13 @@ public final class SidebarBlockValidator extends AbstractBlockValidator<SidebarB
                 .placeholderContext(PlaceholderContext.builder()
                     .type(PlaceholderContext.PlaceholderType.INSERT_BEFORE)
                     .build())
+                .addSuggestion(Suggestion.builder()
+                    .description("Add content to sidebar block")
+                    .addExample("This is additional information related to the main content.")
+                    .addExample("Key points to remember:")
+                    .addExample("For more details, see Chapter 5.")
+                    .explanation("Sidebar blocks must contain relevant supplementary information")
+                    .build())
                 .build());
             return;
         }
@@ -178,6 +214,13 @@ public final class SidebarBlockValidator extends AbstractBlockValidator<SidebarB
                 .message("Sidebar content too short")
                 .actualValue(content.length() + " characters")
                 .expectedValue("At least " + contentConfig.getMinLength() + " characters")
+                .addSuggestion(Suggestion.builder()
+                    .description("Add more detailed content")
+                    .addExample("Expand with additional details or examples")
+                    .addExample("Include relevant background information")
+                    .addExample("Add context or explanatory notes")
+                    .explanation("Sidebar content should be detailed enough to meet minimum length requirements")
+                    .build())
                 .build());
         }
         
@@ -189,6 +232,13 @@ public final class SidebarBlockValidator extends AbstractBlockValidator<SidebarB
                 .message("Sidebar content too long")
                 .actualValue(content.length() + " characters")
                 .expectedValue("At most " + contentConfig.getMaxLength() + " characters")
+                .addSuggestion(Suggestion.builder()
+                    .description("Shorten the content")
+                    .addExample("Use bullet points for conciseness")
+                    .addExample("Remove non-essential details")
+                    .addExample("Split into multiple smaller sidebars")
+                    .explanation("Sidebar content should be concise and not exceed maximum length limits")
+                    .build())
                 .build());
         }
         
@@ -218,6 +268,13 @@ public final class SidebarBlockValidator extends AbstractBlockValidator<SidebarB
                 .message("Sidebar has too few lines")
                 .actualValue(lineCount + " lines")
                 .expectedValue("At least " + linesConfig.getMin() + " lines")
+                .addSuggestion(Suggestion.builder()
+                    .description("Add more lines of content")
+                    .addExample("Add additional paragraphs")
+                    .addExample("Include multiple bullet points")
+                    .addExample("Break content across more lines")
+                    .explanation("Sidebar content should meet the minimum line count requirement")
+                    .build())
                 .build());
         }
         
@@ -230,6 +287,13 @@ public final class SidebarBlockValidator extends AbstractBlockValidator<SidebarB
                 .message("Sidebar has too many lines")
                 .actualValue(lineCount + " lines")
                 .expectedValue("At most " + linesConfig.getMax() + " lines")
+                .addSuggestion(Suggestion.builder()
+                    .description("Reduce the number of lines")
+                    .addExample("Combine shorter lines")
+                    .addExample("Remove redundant information")
+                    .addExample("Use more concise language")
+                    .explanation("Sidebar content should not exceed the maximum line count limit")
+                    .build())
                 .build());
         }
     }
@@ -259,6 +323,14 @@ public final class SidebarBlockValidator extends AbstractBlockValidator<SidebarB
                 .placeholderContext(PlaceholderContext.builder()
                     .type(PlaceholderContext.PlaceholderType.INSERT_BEFORE)
                     .build())
+                .addSuggestion(Suggestion.builder()
+                    .description("Add position attribute to sidebar")
+                    .fixedValue("[position=left]")
+                    .addExample("[sidebar,position=left]")
+                    .addExample("[sidebar,position=right]")
+                    .addExample("[sidebar,position=center]")
+                    .explanation("Sidebar blocks should specify their position for proper layout")
+                    .build())
                 .build());
             return;
         }
@@ -274,6 +346,14 @@ public final class SidebarBlockValidator extends AbstractBlockValidator<SidebarB
                     .message("Invalid sidebar position")
                     .actualValue(position)
                     .expectedValue("One of: " + String.join(", ", positionConfig.getAllowed()))
+                    .addSuggestion(Suggestion.builder()
+                        .description("Use a valid position value")
+                        .fixedValue("[position=" + positionConfig.getAllowed().get(0) + "]")
+                        .addExample("[sidebar,position=left]")
+                        .addExample("[sidebar,position=right]")
+                        .addExample("[sidebar,position=center]")
+                        .explanation("Sidebar position must be one of the allowed values")
+                        .build())
                     .build());
             }
         }

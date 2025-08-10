@@ -88,10 +88,6 @@ public final class ValidationMessage {
         return !suggestions.isEmpty();
     }
     
-    public boolean hasAutoFixableSuggestions() {
-        return suggestions.stream().anyMatch(Suggestion::isAutoFixable);
-    }
-    
     public List<String> getContextLines() {
         return new ArrayList<>(contextLines);
     }

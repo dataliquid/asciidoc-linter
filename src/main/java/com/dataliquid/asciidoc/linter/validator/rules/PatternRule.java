@@ -13,6 +13,7 @@ import com.dataliquid.asciidoc.linter.config.common.Severity;
 import com.dataliquid.asciidoc.linter.validator.SourceLocation;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
 import com.dataliquid.asciidoc.linter.validator.ErrorType;
+import com.dataliquid.asciidoc.linter.validator.Suggestion;
 
 import static com.dataliquid.asciidoc.linter.validator.RuleIds.Metadata.PATTERN;
 
@@ -44,6 +45,12 @@ public final class PatternRule implements AttributeRule {
                     .actualValue(value)
                     .expectedValue("Pattern '" + config.getPatternString() + "'")
                     .errorType(ErrorType.INVALID_PATTERN)
+                    .addSuggestion(Suggestion.builder()
+                        .description("Format attribute value to match pattern")
+                        .addExample(":" + attributeName + ": [value matching pattern]")
+                        .addExample("Check pattern: " + config.getPatternString())
+                        .explanation("Attribute value must match the configured regex pattern for validation")
+                        .build())
                     .build());
             }
         }

@@ -7,12 +7,15 @@ import java.util.List;
 import java.util.Objects;
 
 import com.dataliquid.asciidoc.linter.config.blocks.Block;
+import com.dataliquid.asciidoc.linter.report.console.FileContentCache;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
 
 /**
  * Validates block occurrence rules (min/max occurrences).
  */
 public final class BlockOccurrenceValidator {
+    
+    private final FileContentCache fileCache = new FileContentCache();
     
     /**
      * Validates occurrence rules for all blocks in a section.
@@ -200,33 +203,12 @@ public final class BlockOccurrenceValidator {
             }
             
             if (lastBlock != null && lastBlock.getSourceLocation() != null) {
-                // Position after the last block
-                insertLine = lastBlock.getSourceLocation().getLineNumber();
+                // Use BlockEndCalculator to get the actual end line of the block
+                BlockEndCalculator calculator = new BlockEndCalculator(fileCache);
+                insertLine = calculator.calculateBlockEndLine(lastBlock, context.getFilename());
                 
-                // Try to account for multi-line blocks
-                if (lastBlock.getContext() != null) {
-                    // For delimited blocks, we need to account for closing delimiter
-                    switch (lastBlock.getContext()) {
-                        case "listing":
-                        case "literal":
-                        case "example":
-                        case "sidebar":
-                        case "quote":
-                        case "verse":
-                        case "pass":
-                            // These blocks have closing delimiters, add some lines
-                            insertLine += 3; // Rough estimate
-                            break;
-                        case "table":
-                            // Tables end with |===
-                            insertLine += 2;
-                            break;
-                        default:
-                            // For simple blocks like paragraphs, just add 1
-                            insertLine += 1;
-                            break;
-                    }
-                }
+                // Add 2 lines: one for empty line after block, one for new content
+                insertLine += 2;
             }
         }
         

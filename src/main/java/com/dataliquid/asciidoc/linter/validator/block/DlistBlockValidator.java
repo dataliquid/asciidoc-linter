@@ -19,6 +19,7 @@ import com.dataliquid.asciidoc.linter.validator.PlaceholderContext;
 import static com.dataliquid.asciidoc.linter.validator.RuleIds.Dlist.*;
 import com.dataliquid.asciidoc.linter.validator.SourceLocation;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
+import com.dataliquid.asciidoc.linter.validator.Suggestion;
 
 /**
  * Validator for definition list (dlist) blocks in AsciiDoc documents.
@@ -106,6 +107,19 @@ public final class DlistBlockValidator extends AbstractBlockValidator<DlistBlock
                 .message("Definition list has too few terms")
                 .actualValue(String.valueOf(termCount))
                 .expectedValue("At least " + config.getMin() + " terms")
+                .addSuggestion(Suggestion.builder()
+                    .description("Add term with description")
+                    .addExample("Term1::")
+                    .addExample("  Description for Term1")
+                    .addExample("")
+                    .addExample("Term2::")
+                    .addExample("  Description for Term2")
+                    .build())
+                .addSuggestion(Suggestion.builder()
+                    .description("Add simple definition")
+                    .addExample("API:: Application Programming Interface")
+                    .addExample("URL:: Uniform Resource Locator")
+                    .build())
                 .build());
         }
         
@@ -118,6 +132,16 @@ public final class DlistBlockValidator extends AbstractBlockValidator<DlistBlock
                 .message("Definition list has too many terms")
                 .actualValue(String.valueOf(termCount))
                 .expectedValue("At most " + config.getMax() + " terms")
+                .addSuggestion(Suggestion.builder()
+                    .description("Split into multiple definition lists")
+                    .addExample("Group related terms into separate lists with headings")
+                    .explanation("Consider organizing " + (termCount - config.getMax()) + " excess terms")
+                    .build())
+                .addSuggestion(Suggestion.builder()
+                    .description("Remove less important terms")
+                    .addExample("Keep only the most relevant definitions")
+                    .explanation("Focus on the most essential terms")
+                    .build())
                 .build());
         }
         
@@ -160,6 +184,12 @@ public final class DlistBlockValidator extends AbstractBlockValidator<DlistBlock
                 .message("Definition list term does not match required pattern")
                 .actualValue(term)
                 .expectedValue("Pattern: " + config.getPattern())
+                .addSuggestion(Suggestion.builder()
+                    .description("Follow pattern format")
+                    .addExample("Use consistent term format")
+                    .addExample("Example: ACRONYM, Full Name, CamelCase")
+                    .explanation("Term must match pattern: " + config.getPattern())
+                    .build())
                 .build());
         }
         
@@ -175,6 +205,12 @@ public final class DlistBlockValidator extends AbstractBlockValidator<DlistBlock
                 .message("Definition list term is too short")
                 .actualValue(term + " (length: " + term.length() + ")")
                 .expectedValue("Minimum length: " + config.getMinLength())
+                .addSuggestion(Suggestion.builder()
+                    .description("Use more descriptive term")
+                    .addExample("Expand abbreviation: API → Application Programming Interface")
+                    .addExample("Add context: User → User Account")
+                    .explanation("Term needs at least " + config.getMinLength() + " characters")
+                    .build())
                 .build());
         }
         
@@ -190,6 +226,12 @@ public final class DlistBlockValidator extends AbstractBlockValidator<DlistBlock
                 .message("Definition list term is too long")
                 .actualValue(term + " (length: " + term.length() + ")")
                 .expectedValue("Maximum length: " + config.getMaxLength())
+                .addSuggestion(Suggestion.builder()
+                    .description("Shorten term")
+                    .addExample("Use abbreviation or acronym")
+                    .addExample("Remove unnecessary words")
+                    .explanation("Term must be at most " + config.getMaxLength() + " characters")
+                    .build())
                 .build());
         }
     }
@@ -234,6 +276,18 @@ public final class DlistBlockValidator extends AbstractBlockValidator<DlistBlock
                         .placeholderContext(PlaceholderContext.builder()
                             .type(PlaceholderContext.PlaceholderType.INSERT_BEFORE)
                             .build())
+                        .addSuggestion(Suggestion.builder()
+                            .description("Add simple description")
+                            .fixedValue("Description text")
+                            .addExample(termText + "::")
+                            .addExample("  Brief explanation of " + termText)
+                            .build())
+                        .addSuggestion(Suggestion.builder()
+                            .description("Add detailed description")
+                            .addExample(termText + "::")
+                            .addExample("  Detailed explanation of what " + termText + " means")
+                            .addExample("  and how it is used in this context.")
+                            .build())
                         .build());
                 }
             }
@@ -249,6 +303,13 @@ public final class DlistBlockValidator extends AbstractBlockValidator<DlistBlock
                         .message("Definition list description does not match required pattern")
                         .actualValue(descText.length() > 50 ? descText.substring(0, 50) + "..." : descText)
                         .expectedValue("Pattern: " + config.getPattern())
+                        .addSuggestion(Suggestion.builder()
+                            .description("Follow description pattern")
+                            .addExample("Ensure description format matches requirements")
+                            .addExample("Start with capital letter and end with period")
+                            .addExample("Use complete sentences")
+                            .explanation("Description must match pattern: " + config.getPattern())
+                            .build())
                         .build());
                 }
             }

@@ -9,13 +9,13 @@ import java.io.PrintStream;
 import org.junit.jupiter.api.Test;
 
 /**
- * Tests for LinterCLI output configuration argument parsing.
+ * Tests for MainCLI output configuration argument parsing.
  */
-class LinterCLIOutputConfigTest {
+class MainCLIOutputConfigTest {
 
     @Test
     void testOutputConfigParsing() {
-        LinterCLI cli = new LinterCLI();
+        MainCLI cli = new MainCLI();
         
         // Capture output
         ByteArrayOutputStream errContent = new ByteArrayOutputStream();
@@ -25,6 +25,7 @@ class LinterCLIOutputConfigTest {
         try {
             // Test with predefined config name
             int exitCode = cli.run(new String[]{
+                "lint",
                 "--input", "test.adoc",
                 "--output-config", "simple"
             });
@@ -38,7 +39,7 @@ class LinterCLIOutputConfigTest {
 
     @Test
     void testOutputConfigFileParsing() {
-        LinterCLI cli = new LinterCLI();
+        MainCLI cli = new MainCLI();
         
         ByteArrayOutputStream errContent = new ByteArrayOutputStream();
         PrintStream originalErr = System.err;
@@ -47,6 +48,7 @@ class LinterCLIOutputConfigTest {
         try {
             // Test with custom config file
             int exitCode = cli.run(new String[]{
+                "lint",
                 "--input", "test.adoc",
                 "--output-config-file", "custom-output.yaml"
             });
@@ -60,7 +62,7 @@ class LinterCLIOutputConfigTest {
 
     @Test
     void testBothOutputConfigOptionsError() {
-        LinterCLI cli = new LinterCLI();
+        MainCLI cli = new MainCLI();
         
         ByteArrayOutputStream errContent = new ByteArrayOutputStream();
         PrintStream originalErr = System.err;
@@ -69,6 +71,7 @@ class LinterCLIOutputConfigTest {
         try {
             // Test with both options - should fail
             int exitCode = cli.run(new String[]{
+                "lint",
                 "--input", "test.adoc",
                 "--output-config", "simple",
                 "--output-config-file", "custom.yaml"
@@ -84,7 +87,7 @@ class LinterCLIOutputConfigTest {
 
     @Test
     void testInvalidOutputConfigName() {
-        LinterCLI cli = new LinterCLI();
+        MainCLI cli = new MainCLI();
         
         ByteArrayOutputStream errContent = new ByteArrayOutputStream();
         PrintStream originalErr = System.err;
@@ -93,6 +96,7 @@ class LinterCLIOutputConfigTest {
         try {
             // Test with invalid config name
             int exitCode = cli.run(new String[]{
+                "lint",
                 "--input", "test.adoc",
                 "--output-config", "invalid-name"
             });
@@ -108,14 +112,15 @@ class LinterCLIOutputConfigTest {
 
     @Test
     void testHelpShowsBothOptions() {
-        LinterCLI cli = new LinterCLI();
+        MainCLI cli = new MainCLI();
         
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
         PrintStream originalOut = System.out;
         System.setOut(new PrintStream(outContent));
         
         try {
-            int exitCode = cli.run(new String[]{"--help"});
+            // Test lint command help which shows the output options
+            int exitCode = cli.run(new String[]{"lint", "--help"});
             
             assertEquals(0, exitCode);
             String output = outContent.toString();
