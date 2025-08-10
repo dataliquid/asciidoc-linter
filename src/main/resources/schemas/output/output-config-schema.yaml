@@ -75,11 +75,6 @@ properties:
             type: boolean
             default: true
             description: Show examples in suggestions
-          
-          showAutoFixHint:
-            type: boolean
-            default: true
-            description: Show hint about auto-fixable errors
         
         additionalProperties: false
       

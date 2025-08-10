@@ -174,10 +174,6 @@ public class ConsoleFormatter implements ReportFormatter {
             writer.println();
             writer.println("💡 Common fix: " + 
                 group.getMessages().get(0).getSuggestions().get(0).getDescription());
-            
-            if (group.getMessages().get(0).hasAutoFixableSuggestions()) {
-                writer.println("🔧 Auto-fixable: Use --fix to apply suggested changes");
-            }
         }
     }
     

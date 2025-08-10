@@ -78,10 +78,6 @@ public class ColorScheme {
         return useColors ? ANSI_YELLOW + icon + ANSI_RESET : icon;
     }
     
-    public String autoFixHint(String text) {
-        return useColors ? ANSI_GREEN + text + ANSI_RESET : text;
-    }
-    
     public String separator(String separator) {
         return useColors ? ANSI_GRAY + separator + ANSI_RESET : separator;
     }

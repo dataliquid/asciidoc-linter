@@ -41,13 +41,6 @@ public class SuggestionRenderer {
             
             renderSuggestion(suggestion, count, suggestions.size(), writer);
         }
-        
-        // Auto-fix hint
-        if (config.isShowAutoFixHint() && hasAutoFixable(suggestions)) {
-            writer.println("  " + colorScheme.autoFixHint(
-                "🔧 Auto-fixable: Use --fix to apply suggested changes"
-            ));
-        }
     }
     
     private void renderSuggestion(Suggestion suggestion, int index, int total, PrintWriter writer) {
@@ -82,9 +75,5 @@ public class SuggestionRenderer {
         for (String example : examples) {
             writer.println(indent + "- " + colorScheme.code(example));
         }
-    }
-    
-    private boolean hasAutoFixable(List<Suggestion> suggestions) {
-        return suggestions.stream().anyMatch(Suggestion::isAutoFixable);
     }
 }

@@ -117,18 +117,6 @@ public class SummaryRenderer {
             });
         
         writer.println();
-        
-        // Auto-fix hint
-        long autoFixableCount = result.getMessages().stream()
-            .filter(ValidationMessage::hasAutoFixableSuggestions)
-            .count();
-        
-        if (autoFixableCount > 0) {
-            writer.println(colorScheme.suggestionIcon("  💡 ") + 
-                autoFixableCount + " error" + (autoFixableCount == 1 ? " is" : "s are") + 
-                " auto-fixable. Run with --fix");
-            writer.println();
-        }
     }
     
     private void renderFileList(ValidationResult result, PrintWriter writer) {
