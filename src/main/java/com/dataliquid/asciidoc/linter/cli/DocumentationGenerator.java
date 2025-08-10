@@ -12,7 +12,7 @@ import org.apache.commons.cli.CommandLine;
 
 import com.dataliquid.asciidoc.linter.config.LinterConfiguration;
 import com.dataliquid.asciidoc.linter.config.loader.ConfigurationLoader;
-import com.dataliquid.asciidoc.linter.documentation.AsciiDocRuleGenerator;
+import com.dataliquid.asciidoc.linter.documentation.AsciiDocAuthorGuidelineGenerator;
 import com.dataliquid.asciidoc.linter.documentation.RuleDocumentationGenerator;
 import com.dataliquid.asciidoc.linter.documentation.VisualizationStyle;
 
@@ -43,7 +43,7 @@ public class DocumentationGenerator {
             Set<VisualizationStyle> styles = parseVisualizationStyles(cmd.getOptionValue("viz-style"));
             
             // Create generator
-            RuleDocumentationGenerator generator = new AsciiDocRuleGenerator(styles);
+            RuleDocumentationGenerator generator = new AsciiDocAuthorGuidelineGenerator(styles);
             
             // Determine output
             String outputPath = cmd.getOptionValue("report-output");

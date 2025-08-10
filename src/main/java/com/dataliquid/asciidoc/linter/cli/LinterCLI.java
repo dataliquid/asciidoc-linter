@@ -55,17 +55,17 @@ public class LinterCLI {
             boolean showSplash = !cmd.hasOption("no-splash") 
                 && !cmd.hasOption("help") 
                 && !cmd.hasOption("version")
-                && !cmd.hasOption("generate-docs");
+                && !cmd.hasOption("generate-guidelines");
             
             if (showSplash) {
                 SplashScreen.display();
             }
             
             // Handle documentation generation
-            if (cmd.hasOption("generate-docs")) {
+            if (cmd.hasOption("generate-guidelines")) {
                 // Input is not required for doc generation
                 if (!cmd.hasOption("rule")) {
-                    System.err.println("Error: --rule is required when using --generate-docs");
+                    System.err.println("Error: --rule is required when using --generate-guidelines");
                     return 2;
                 }
                 
