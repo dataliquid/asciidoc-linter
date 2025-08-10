@@ -21,6 +21,7 @@ import com.dataliquid.asciidoc.linter.validator.PlaceholderContext;
 import static com.dataliquid.asciidoc.linter.validator.RuleIds.Table.*;
 import com.dataliquid.asciidoc.linter.validator.SourceLocation;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
+import com.dataliquid.asciidoc.linter.validator.Suggestion;
 
 /**
  * Validator for table blocks in AsciiDoc documents.
@@ -115,6 +116,13 @@ public final class TableBlockValidator extends AbstractBlockValidator<TableBlock
                 .message("Table has too few columns")
                 .actualValue(String.valueOf(columnCount))
                 .expectedValue("At least " + config.getMin() + " columns")
+                .addSuggestion(Suggestion.builder()
+                    .description("Add more columns")
+                    .addExample("|=== ")
+                    .addExample("| Column 1 | Column 2 | Column 3")
+                    .addExample("| Data 1   | Data 2   | Data 3")
+                    .addExample("|===")
+                    .build())
                 .build());
         }
         
@@ -126,6 +134,12 @@ public final class TableBlockValidator extends AbstractBlockValidator<TableBlock
                 .message("Table has too many columns")
                 .actualValue(String.valueOf(columnCount))
                 .expectedValue("At most " + config.getMax() + " columns")
+                .addSuggestion(Suggestion.builder()
+                    .description("Remove excess columns")
+                    .addExample("Combine related columns")
+                    .addExample("Split table into multiple tables")
+                    .explanation("Consider removing " + (columnCount - config.getMax()) + " columns")
+                    .build())
                 .build());
         }
     }
@@ -148,6 +162,11 @@ public final class TableBlockValidator extends AbstractBlockValidator<TableBlock
                 .message("Table has too few rows")
                 .actualValue(String.valueOf(rowCount))
                 .expectedValue("At least " + config.getMin() + " rows")
+                .addSuggestion(Suggestion.builder()
+                    .description("Add more rows")
+                    .addExample("| Additional data | More content |")
+                    .addExample("| Row data       | Row content  |")
+                    .build())
                 .build());
         }
         
@@ -159,6 +178,12 @@ public final class TableBlockValidator extends AbstractBlockValidator<TableBlock
                 .message("Table has too many rows")
                 .actualValue(String.valueOf(rowCount))
                 .expectedValue("At most " + config.getMax() + " rows")
+                .addSuggestion(Suggestion.builder()
+                    .description("Remove excess rows")
+                    .addExample("Keep most important data")
+                    .addExample("Split into multiple tables")
+                    .explanation("Consider removing " + (rowCount - config.getMax()) + " rows")
+                    .build())
                 .build());
         }
     }
@@ -188,6 +213,14 @@ public final class TableBlockValidator extends AbstractBlockValidator<TableBlock
                 .placeholderContext(PlaceholderContext.builder()
                     .type(PlaceholderContext.PlaceholderType.INSERT_BEFORE)
                     .build())
+                .addSuggestion(Suggestion.builder()
+                    .description("Add table header")
+                    .fixedValue("| Header 1 | Header 2 |")
+                    .addExample("|====")
+                    .addExample("| Name | Description |")
+                    .addExample("| Item | Details     |")
+                    .addExample("|====")
+                    .build())
                 .build());
         }
         
@@ -210,6 +243,12 @@ public final class TableBlockValidator extends AbstractBlockValidator<TableBlock
                             .message("Table header does not match required pattern")
                             .actualValue(content)
                             .expectedValue("Pattern: " + config.getPattern())
+                            .addSuggestion(Suggestion.builder()
+                                .description("Follow header pattern")
+                                .addExample("Use consistent header format")
+                                .addExample("Example: Name, Description, Status")
+                                .explanation("Header must match pattern: " + config.getPattern())
+                                .build())
                             .build());
                     }
                 }
@@ -242,6 +281,13 @@ public final class TableBlockValidator extends AbstractBlockValidator<TableBlock
                 .placeholderContext(PlaceholderContext.builder()
                     .type(PlaceholderContext.PlaceholderType.INSERT_BEFORE)
                     .build())
+                .addSuggestion(Suggestion.builder()
+                    .description("Add table caption")
+                    .fixedValue(".Table Title")
+                    .addExample(".User Data Summary")
+                    .addExample(".Configuration Options")
+                    .addExample(".Performance Metrics")
+                    .build())
                 .build());
             return;
         }
@@ -262,6 +308,13 @@ public final class TableBlockValidator extends AbstractBlockValidator<TableBlock
                         .message("Table caption does not match required pattern")
                         .actualValue(caption)
                         .expectedValue("Pattern: " + config.getPattern())
+                        .addSuggestion(Suggestion.builder()
+                            .description("Follow caption pattern")
+                            .addExample("Use descriptive table title")
+                            .addExample(".Table: Data Summary")
+                            .addExample(".Results Overview")
+                            .explanation("Caption must match pattern: " + config.getPattern())
+                            .build())
                         .build());
                 }
             }
@@ -279,6 +332,12 @@ public final class TableBlockValidator extends AbstractBlockValidator<TableBlock
                     .message("Table caption is too short")
                     .actualValue(caption.length() + " characters")
                     .expectedValue("At least " + config.getMinLength() + " characters")
+                    .addSuggestion(Suggestion.builder()
+                        .description("Make caption more descriptive")
+                        .addExample(".Detailed User Information Table")
+                        .addExample(".System Configuration Parameters")
+                        .explanation("Caption needs at least " + config.getMinLength() + " characters")
+                        .build())
                     .build());
             }
             
@@ -294,6 +353,12 @@ public final class TableBlockValidator extends AbstractBlockValidator<TableBlock
                     .message("Table caption is too long")
                     .actualValue(caption.length() + " characters")
                     .expectedValue("At most " + config.getMaxLength() + " characters")
+                    .addSuggestion(Suggestion.builder()
+                        .description("Shorten caption")
+                        .addExample(".User Data")
+                        .addExample(".Config")
+                        .explanation("Caption must be at most " + config.getMaxLength() + " characters")
+                        .build())
                     .build());
             }
         }
@@ -319,6 +384,12 @@ public final class TableBlockValidator extends AbstractBlockValidator<TableBlock
                     .message("Table does not have required style")
                     .actualValue(actualStyle != null ? actualStyle : "default")
                     .expectedValue("Style: " + config.getStyle())
+                    .addSuggestion(Suggestion.builder()
+                        .description("Add table style")
+                        .addExample("[options=\"" + config.getStyle() + "\"]")
+                        .addExample("|====")
+                        .explanation("Apply style: " + config.getStyle())
+                        .build())
                     .build());
             }
         }
@@ -335,6 +406,13 @@ public final class TableBlockValidator extends AbstractBlockValidator<TableBlock
                     .message("Table must have borders")
                     .actualValue("No borders")
                     .expectedValue("Borders required")
+                    .addSuggestion(Suggestion.builder()
+                        .description("Enable table borders")
+                        .addExample("[frame=\"all\"]")
+                        .addExample("|====")
+                        .addExample("[grid=\"all\"]")
+                        .explanation("Add frame or grid attributes for borders")
+                        .build())
                     .build());
             }
         }

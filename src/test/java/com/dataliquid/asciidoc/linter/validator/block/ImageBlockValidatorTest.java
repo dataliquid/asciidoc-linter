@@ -313,7 +313,7 @@ class ImageBlockValidatorTest {
             ValidationMessage msg = messages.get(0);
             assertEquals("image.width.required", msg.getRuleId());
             assertEquals(ErrorType.MISSING_VALUE, msg.getErrorType());
-            assertEquals("100", msg.getMissingValueHint());
+            assertEquals("640", msg.getMissingValueHint());
             
             // Without file content, validator falls back to column 1
             assertEquals(1, msg.getLocation().getStartColumn());
@@ -493,7 +493,7 @@ class ImageBlockValidatorTest {
             ValidationMessage msg = messages.get(0);
             assertEquals("image.alt.required", msg.getRuleId());
             assertEquals(ErrorType.MISSING_VALUE, msg.getErrorType());
-            assertEquals("Alt text", msg.getMissingValueHint());
+            assertEquals("Description of image", msg.getMissingValueHint());
             
             // Without file content, validator falls back to column 1
             assertEquals(1, msg.getLocation().getStartColumn());

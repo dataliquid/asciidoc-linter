@@ -15,6 +15,7 @@ import com.dataliquid.asciidoc.linter.validator.PlaceholderContext;
 import static com.dataliquid.asciidoc.linter.validator.RuleIds.Ulist.*;
 import com.dataliquid.asciidoc.linter.validator.SourceLocation;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
+import com.dataliquid.asciidoc.linter.validator.Suggestion;
 
 /**
  * Validator for unordered list (ulist) blocks in AsciiDoc documents.
@@ -114,6 +115,18 @@ public final class UlistBlockValidator extends AbstractBlockValidator<UlistBlock
                 .placeholderContext(PlaceholderContext.builder()
                     .type(PlaceholderContext.PlaceholderType.INSERT_BEFORE)
                     .build())
+                .addSuggestion(Suggestion.builder()
+                    .description("Add list item with asterisk")
+                    .fixedValue("* ")
+                    .addExample("* First item")
+                    .addExample("* Second item")
+                    .build())
+                .addSuggestion(Suggestion.builder()
+                    .description("Add list item with dash")
+                    .fixedValue("- ")
+                    .addExample("- First item")
+                    .addExample("- Second item")
+                    .build())
                 .build());
         }
         
@@ -126,6 +139,12 @@ public final class UlistBlockValidator extends AbstractBlockValidator<UlistBlock
                 .message("Unordered list has too many items")
                 .actualValue(String.valueOf(itemCount))
                 .expectedValue("At most " + config.getMax() + " items")
+                .addSuggestion(Suggestion.builder()
+                    .description("Remove excess items")
+                    .addExample("Keep only the most important " + config.getMax() + " items")
+                    .addExample("Group related items into sub-lists")
+                    .explanation("Consider consolidating or removing " + (itemCount - config.getMax()) + " items")
+                    .build())
                 .build());
         }
     }
@@ -150,6 +169,17 @@ public final class UlistBlockValidator extends AbstractBlockValidator<UlistBlock
                 .message("Unordered list exceeds maximum nesting level")
                 .actualValue(String.valueOf(nestingLevel))
                 .expectedValue("Maximum nesting level: " + config.getMax())
+                .addSuggestion(Suggestion.builder()
+                    .description("Flatten nested lists")
+                    .addExample("Move nested items to main level")
+                    .addExample("Use numbered sub-sections instead")
+                    .explanation("Reduce nesting to improve readability")
+                    .build())
+                .addSuggestion(Suggestion.builder()
+                    .description("Break into separate lists")
+                    .addExample("Split complex nested structure into multiple lists")
+                    .explanation("Consider using separate lists with headings")
+                    .build())
                 .build());
         }
     }
@@ -179,6 +209,13 @@ public final class UlistBlockValidator extends AbstractBlockValidator<UlistBlock
                 .missingValueHint(expectedMarkerStyle)
                 .placeholderContext(PlaceholderContext.builder()
                     .type(PlaceholderContext.PlaceholderType.SIMPLE_VALUE)
+                    .build())
+                .addSuggestion(Suggestion.builder()
+                    .description("Change to " + expectedMarkerStyle + " marker")
+                    .fixedValue(expectedMarkerStyle)
+                    .addExample(expectedMarkerStyle + " First item")
+                    .addExample(expectedMarkerStyle + " Second item")
+                    .explanation("Use consistent marker style: " + expectedMarkerStyle)
                     .build())
                 .build());
         }
@@ -327,6 +364,12 @@ public final class UlistBlockValidator extends AbstractBlockValidator<UlistBlock
                                 .message("Unordered list marker style '" + nestedMarkerStyle + "' does not match expected style '" + expectedMarkerStyle + "'")
                                 .actualValue(nestedMarkerStyle)
                                 .expectedValue(expectedMarkerStyle)
+                                .addSuggestion(Suggestion.builder()
+                                    .description("Change nested list to " + expectedMarkerStyle + " marker")
+                                    .fixedValue(expectedMarkerStyle)
+                                    .addExample("  " + expectedMarkerStyle + " Nested item")
+                                    .explanation("Maintain consistent marker style in nested lists")
+                                    .build())
                                 .build());
                             
                             // Recursively check nested items

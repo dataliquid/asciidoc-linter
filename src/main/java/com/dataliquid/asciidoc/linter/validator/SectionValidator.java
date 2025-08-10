@@ -20,6 +20,7 @@ import com.dataliquid.asciidoc.linter.config.common.Severity;
 import com.dataliquid.asciidoc.linter.config.rule.SectionConfig;
 import com.dataliquid.asciidoc.linter.config.rule.TitleConfig;
 import com.dataliquid.asciidoc.linter.report.console.FileContentCache;
+import com.dataliquid.asciidoc.linter.validator.Suggestion;
 
 public final class SectionValidator {
     private final DocumentConfiguration configuration;
@@ -122,6 +123,13 @@ public final class SectionValidator {
                     .message("Section title does not match required pattern")
                     .actualValue(title)
                     .expectedValue(expectedPattern != null ? expectedPattern : "One of configured patterns")
+                    .addSuggestion(Suggestion.builder()
+                        .description("Adjust section title to match required pattern")
+                        .addExample("== Introduction")
+                        .addExample("== Getting Started")
+                        .addExample("== Configuration")
+                        .explanation("Section titles must follow the configured naming pattern for consistency")
+                        .build())
                     .build();
                 resultBuilder.addMessage(message);
             } else {
@@ -133,6 +141,13 @@ public final class SectionValidator {
                     .message("Section not allowed at level " + level + ": '" + title + "'")
                     .actualValue(title)
                     .expectedValue("No sections configured for level " + level)
+                    .addSuggestion(Suggestion.builder()
+                        .description("Remove unexpected section or move to appropriate level")
+                        .addExample("Remove this section if not needed")
+                        .addExample("Move section to a different document structure level")
+                        .addExample("Configure this section in your validation rules")
+                        .explanation("This section level is not allowed in the current document structure")
+                        .build())
                     .build();
                 resultBuilder.addMessage(message);
             }
@@ -195,6 +210,13 @@ public final class SectionValidator {
                     .message("Section title does not match required pattern")
                     .actualValue(title)
                     .expectedValue("Pattern: " + titleConfig.pattern())
+                    .addSuggestion(Suggestion.builder()
+                        .description("Format section title to match pattern")
+                        .addExample("Use consistent capitalization")
+                        .addExample("Follow naming conventions")
+                        .addExample("Check pattern: " + titleConfig.pattern())
+                        .explanation("Section titles must match the configured regex pattern")
+                        .build())
                     .build();
                 resultBuilder.addMessage(message);
             }
@@ -215,6 +237,12 @@ public final class SectionValidator {
                 .message("Section level mismatch")
                 .actualValue(String.valueOf(actualLevel))
                 .expectedValue(String.valueOf(expectedLevel))
+                .addSuggestion(Suggestion.builder()
+                    .description("Adjust section heading level")
+                    .fixedValue("=".repeat(expectedLevel + 1) + " " + section.getTitle())
+                    .addExample("=".repeat(expectedLevel + 1) + " Section Title")
+                    .explanation("Section must be at level " + expectedLevel + " (use " + "=".repeat(expectedLevel + 1) + ")")
+                    .build())
                 .build();
             resultBuilder.addMessage(message);
         }
@@ -268,6 +296,12 @@ public final class SectionValidator {
                 .placeholderContext(PlaceholderContext.builder()
                     .type(PlaceholderContext.PlaceholderType.INSERT_BEFORE)
                     .build())
+                .addSuggestion(Suggestion.builder()
+                    .description("Add required section")
+                    .fixedValue(sectionPlaceholder)
+                    .addExample(sectionPlaceholder + "\nContent for " + config.name())
+                    .explanation("This section is required by the document structure configuration")
+                    .build())
                 .build();
             resultBuilder.addMessage(message);
         }
@@ -285,6 +319,12 @@ public final class SectionValidator {
                 .message("Too many occurrences of section: " + config.name())
                 .actualValue(String.valueOf(occurrences))
                 .expectedValue("At most " + config.max())
+                .addSuggestion(Suggestion.builder()
+                    .description("Remove or consolidate duplicate sections")
+                    .addExample("Merge duplicate '" + config.name() + "' sections")
+                    .addExample("Remove unnecessary repetitions")
+                    .explanation("Maximum " + config.max() + " occurrence(s) allowed for this section")
+                    .build())
                 .build();
             resultBuilder.addMessage(message);
         }
@@ -309,6 +349,13 @@ public final class SectionValidator {
                     .message("Document title does not match required pattern")
                     .actualValue(title)
                     .expectedValue("Pattern: " + titleConfig.pattern())
+                    .addSuggestion(Suggestion.builder()
+                        .description("Format document title to match pattern")
+                        .addExample("= Project Documentation")
+                        .addExample("= User Guide")
+                        .addExample("= API Reference")
+                        .explanation("Document title must match the configured pattern: " + titleConfig.pattern())
+                        .build())
                     .build();
                 resultBuilder.addMessage(message);
             }
@@ -347,6 +394,19 @@ public final class SectionValidator {
                 .message("Document title is required")
                 .actualValue("No title")
                 .expectedValue("Document title")
+                .errorType(ErrorType.MISSING_VALUE)
+                .missingValueHint("= Document Title")
+                .placeholderContext(PlaceholderContext.builder()
+                    .type(PlaceholderContext.PlaceholderType.INSERT_BEFORE)
+                    .build())
+                .addSuggestion(Suggestion.builder()
+                    .description("Add document title")
+                    .fixedValue("= Document Title")
+                    .addExample("= User Guide")
+                    .addExample("= API Documentation")
+                    .addExample("= Installation Guide")
+                    .explanation("Every AsciiDoc document should have a title at the beginning")
+                    .build())
                 .build();
             resultBuilder.addMessage(message);
             return;
@@ -404,6 +464,12 @@ public final class SectionValidator {
                     .message("Section order violation")
                     .actualValue(current.name() + " appears after " + next.name())
                     .expectedValue(current.name() + " should appear before " + next.name())
+                    .addSuggestion(Suggestion.builder()
+                        .description("Reorder sections according to configuration")
+                        .addExample("Move '" + current.name() + "' before '" + next.name() + "'")
+                        .addExample("Rearrange sections to match expected order")
+                        .explanation("Sections must appear in the configured order for document consistency")
+                        .build())
                     .build();
                 resultBuilder.addMessage(message);
             }

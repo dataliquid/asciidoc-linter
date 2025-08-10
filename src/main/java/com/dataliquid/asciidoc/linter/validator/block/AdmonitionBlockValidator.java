@@ -16,6 +16,7 @@ import static com.dataliquid.asciidoc.linter.validator.RuleIds.Admonition.*;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
 import com.dataliquid.asciidoc.linter.validator.SourceLocation;
 import com.dataliquid.asciidoc.linter.validator.SourcePosition;
+import com.dataliquid.asciidoc.linter.validator.Suggestion;
 
 /**
  * Validator for admonition blocks in AsciiDoc documents.
@@ -135,6 +136,14 @@ public final class AdmonitionBlockValidator extends AbstractBlockValidator<Admon
                 .message("Admonition block must have a type")
                 .actualValue("No type")
                 .expectedValue("Type required")
+                .addSuggestion(Suggestion.builder()
+                    .description("Add an admonition type")
+                    .addExample("NOTE: For general information")
+                    .addExample("TIP: For helpful tips")
+                    .addExample("IMPORTANT: For important information")
+                    .addExample("WARNING: For warnings")
+                    .addExample("CAUTION: For potential dangers")
+                    .build())
                 .build());
             return;
         }
@@ -153,6 +162,11 @@ public final class AdmonitionBlockValidator extends AbstractBlockValidator<Admon
                     .message("Admonition type '" + admonitionType + "' is not allowed")
                     .actualValue(admonitionType)
                     .expectedValue("One of: " + String.join(", ", config.getAllowed()))
+                    .addSuggestion(Suggestion.builder()
+                        .description("Use one of the allowed admonition types")
+                        .fixedValue(config.getAllowed().get(0))
+                        .addExample(String.join(", ", config.getAllowed()))
+                        .build())
                     .build());
             }
         }
@@ -180,6 +194,12 @@ public final class AdmonitionBlockValidator extends AbstractBlockValidator<Admon
                 .placeholderContext(PlaceholderContext.builder()
                     .type(PlaceholderContext.PlaceholderType.INSERT_BEFORE)
                     .build())
+                .addSuggestion(Suggestion.builder()
+                    .description("Add a title before the admonition")
+                    .addExample(".Security Note\nNOTE: Always use HTTPS for API calls")
+                    .addExample(".Pro Tip\nTIP: Use keyboard shortcuts to save time")
+                    .explanation("Titles help readers quickly identify the content")
+                    .build())
                 .build());
             return;
         }
@@ -198,6 +218,10 @@ public final class AdmonitionBlockValidator extends AbstractBlockValidator<Admon
                     .message("Admonition title does not match required pattern")
                     .actualValue(title)
                     .expectedValue("Pattern: " + config.getPattern().pattern())
+                    .addSuggestion(Suggestion.builder()
+                        .description("Adjust title to match the required pattern")
+                        .addExample("Pattern: " + config.getPattern().pattern())
+                        .build())
                     .build());
             }
             
@@ -214,6 +238,11 @@ public final class AdmonitionBlockValidator extends AbstractBlockValidator<Admon
                     .message("Admonition title is too short")
                     .actualValue(title.length() + " characters")
                     .expectedValue("At least " + config.getMinLength() + " characters")
+                    .addSuggestion(Suggestion.builder()
+                        .description("Provide a more descriptive title")
+                        .addExample("Instead of 'Note', use 'Security Considerations'")
+                        .addExample("Instead of 'Tip', use 'Performance Optimization Tip'")
+                        .build())
                     .build());
             }
             
@@ -230,6 +259,10 @@ public final class AdmonitionBlockValidator extends AbstractBlockValidator<Admon
                     .message("Admonition title is too long")
                     .actualValue(title.length() + " characters")
                     .expectedValue("At most " + config.getMaxLength() + " characters")
+                    .addSuggestion(Suggestion.builder()
+                        .description("Shorten the title while keeping it descriptive")
+                        .addExample(String.format("Keep title under %d characters", config.getMaxLength()))
+                        .build())
                     .build());
             }
         }
@@ -258,6 +291,11 @@ public final class AdmonitionBlockValidator extends AbstractBlockValidator<Admon
                 .placeholderContext(PlaceholderContext.builder()
                     .type(PlaceholderContext.PlaceholderType.INSERT_BEFORE)
                     .build())
+                .addSuggestion(Suggestion.builder()
+                    .description("Add content after the admonition type")
+                    .addExample("NOTE: This is the content of the note")
+                    .addExample("TIP: You can use multiple lines\nfor longer content")
+                    .build())
                 .build());
             return;
         }
@@ -277,6 +315,11 @@ public final class AdmonitionBlockValidator extends AbstractBlockValidator<Admon
                 .message("Admonition content is too short")
                 .actualValue(contentLength + " characters")
                 .expectedValue("At least " + config.getMinLength() + " characters")
+                .addSuggestion(Suggestion.builder()
+                    .description("Provide more detailed information")
+                    .addExample("Add context and details to make the admonition more useful")
+                    .explanation("Detailed admonitions provide better value to readers")
+                    .build())
                 .build());
         }
         
@@ -293,6 +336,10 @@ public final class AdmonitionBlockValidator extends AbstractBlockValidator<Admon
                 .message("Admonition content is too long")
                 .actualValue(contentLength + " characters")
                 .expectedValue("At most " + config.getMaxLength() + " characters")
+                .addSuggestion(Suggestion.builder()
+                    .description("Condense the content or split into multiple admonitions")
+                    .addExample("Consider breaking long admonitions into smaller, focused ones")
+                    .build())
                 .build());
         }
         
@@ -326,6 +373,10 @@ public final class AdmonitionBlockValidator extends AbstractBlockValidator<Admon
                 .message("Admonition block has too few lines")
                 .actualValue(String.valueOf(lineCount))
                 .expectedValue("At least " + config.min() + " lines")
+                .addSuggestion(Suggestion.builder()
+                    .description("Add more lines to the admonition")
+                    .addExample("Split content into multiple lines for better readability")
+                    .build())
                 .build());
         }
         
@@ -338,6 +389,10 @@ public final class AdmonitionBlockValidator extends AbstractBlockValidator<Admon
                 .message("Admonition block has too many lines")
                 .actualValue(String.valueOf(lineCount))
                 .expectedValue("At most " + config.max() + " lines")
+                .addSuggestion(Suggestion.builder()
+                    .description("Reduce the number of lines or split into multiple admonitions")
+                    .addExample("Keep admonitions concise and focused")
+                    .build())
                 .build());
         }
     }
@@ -364,6 +419,11 @@ public final class AdmonitionBlockValidator extends AbstractBlockValidator<Admon
                 .placeholderContext(PlaceholderContext.builder()
                     .type(PlaceholderContext.PlaceholderType.INSERT_BEFORE)
                     .build())
+                .addSuggestion(Suggestion.builder()
+                    .description("Enable icons for admonitions")
+                    .addExample(":icons: font\n\nNOTE: This note will have an icon")
+                    .explanation("Icons make admonitions more visually distinct")
+                    .build())
                 .build());
         }
         
@@ -382,6 +442,10 @@ public final class AdmonitionBlockValidator extends AbstractBlockValidator<Admon
                     .message("Admonition icon does not match required pattern")
                     .actualValue(iconValue)
                     .expectedValue("Pattern: " + config.getPattern().pattern())
+                    .addSuggestion(Suggestion.builder()
+                        .description("Use an icon matching the required pattern")
+                        .addExample("Common icon options: font, image, or custom icon name")
+                        .build())
                     .build());
             }
         }

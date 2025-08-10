@@ -16,6 +16,7 @@ import com.dataliquid.asciidoc.linter.validator.PlaceholderContext;
 import static com.dataliquid.asciidoc.linter.validator.RuleIds.Paragraph.*;
 import com.dataliquid.asciidoc.linter.validator.SourceLocation;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
+import com.dataliquid.asciidoc.linter.validator.Suggestion;
 
 /**
  * Validator for paragraph blocks in AsciiDoc documents.
@@ -122,6 +123,13 @@ public final class ParagraphBlockValidator extends AbstractBlockValidator<Paragr
                 .placeholderContext(PlaceholderContext.builder()
                     .type(PlaceholderContext.PlaceholderType.INSERT_BEFORE)
                     .build())
+                .addSuggestion(Suggestion.builder()
+                    .description("Add more lines to paragraph")
+                    .addExample("This is the first line of content.")
+                    .addExample("This is additional content on a new line.")
+                    .addExample("Add more descriptive text here.")
+                    .explanation("Paragraph needs at least " + lineConfig.min() + " lines")
+                    .build())
                 .build());
         }
         
@@ -133,6 +141,13 @@ public final class ParagraphBlockValidator extends AbstractBlockValidator<Paragr
                 .message("Paragraph has too many lines")
                 .actualValue(String.valueOf(actualLines))
                 .expectedValue("At most " + lineConfig.max() + " lines")
+                .addSuggestion(Suggestion.builder()
+                    .description("Split paragraph into smaller parts")
+                    .addExample("Break into multiple paragraphs")
+                    .addExample("Use bullet points for lists")
+                    .addExample("Remove unnecessary details")
+                    .explanation("Consider splitting content to stay under " + lineConfig.max() + " lines")
+                    .build())
                 .build());
         }
     }
@@ -161,6 +176,13 @@ public final class ParagraphBlockValidator extends AbstractBlockValidator<Paragr
                     .missingValueHint("Add sentence content.")
                     .placeholderContext(PlaceholderContext.builder()
                         .type(PlaceholderContext.PlaceholderType.SIMPLE_VALUE)
+                        .build())
+                    .addSuggestion(Suggestion.builder()
+                        .description("Add sentences to paragraph")
+                        .addExample("This is the first sentence.")
+                        .addExample("This is the second sentence with more detail.")
+                        .addExample("This concludes the paragraph.")
+                        .explanation("Paragraph needs at least " + sentenceConfig.getOccurrence().min() + " sentences")
                         .build())
                     .build());
             }
@@ -230,6 +252,13 @@ public final class ParagraphBlockValidator extends AbstractBlockValidator<Paragr
                 .placeholderContext(PlaceholderContext.builder()
                     .type(PlaceholderContext.PlaceholderType.SIMPLE_VALUE)
                     .build())
+                .addSuggestion(Suggestion.builder()
+                    .description("Add more sentences")
+                    .addExample("Expand with additional details.")
+                    .addExample("Provide supporting information.")
+                    .addExample("Include relevant examples.")
+                    .explanation("Need " + (occurrenceConfig.min() - sentenceCount) + " more sentences")
+                    .build())
                 .build());
         }
         
@@ -241,6 +270,13 @@ public final class ParagraphBlockValidator extends AbstractBlockValidator<Paragr
                 .message("Paragraph has too many sentences")
                 .actualValue(String.valueOf(sentenceCount))
                 .expectedValue("At most " + occurrenceConfig.max() + " sentences")
+                .addSuggestion(Suggestion.builder()
+                    .description("Reduce sentence count")
+                    .addExample("Split into multiple paragraphs")
+                    .addExample("Combine related sentences")
+                    .addExample("Remove redundant information")
+                    .explanation("Remove " + (sentenceCount - occurrenceConfig.max()) + " sentences")
+                    .build())
                 .build());
         }
     }
@@ -266,6 +302,13 @@ public final class ParagraphBlockValidator extends AbstractBlockValidator<Paragr
                     .message("Sentence " + (i + 1) + " has too few words")
                     .actualValue(wordCount + " words")
                     .expectedValue("At least " + wordsConfig.getMin() + " words")
+                    .addSuggestion(Suggestion.builder()
+                        .description("Expand sentence with more detail")
+                        .addExample("Add descriptive adjectives")
+                        .addExample("Include supporting details")
+                        .addExample("Provide specific examples")
+                        .explanation("Sentence needs " + (wordsConfig.getMin() - wordCount) + " more words")
+                        .build())
                     .build());
             }
             
@@ -277,6 +320,13 @@ public final class ParagraphBlockValidator extends AbstractBlockValidator<Paragr
                     .message("Sentence " + (i + 1) + " has too many words")
                     .actualValue(wordCount + " words")
                     .expectedValue("At most " + wordsConfig.getMax() + " words")
+                    .addSuggestion(Suggestion.builder()
+                        .description("Simplify sentence")
+                        .addExample("Remove unnecessary words")
+                        .addExample("Split into two sentences")
+                        .addExample("Use more concise language")
+                        .explanation("Remove " + (wordCount - wordsConfig.getMax()) + " words")
+                        .build())
                     .build());
             }
         }

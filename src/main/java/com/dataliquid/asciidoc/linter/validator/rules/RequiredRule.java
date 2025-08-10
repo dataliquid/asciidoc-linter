@@ -12,6 +12,8 @@ import com.dataliquid.asciidoc.linter.config.common.Severity;
 import com.dataliquid.asciidoc.linter.validator.ErrorType;
 import com.dataliquid.asciidoc.linter.validator.SourceLocation;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
+import com.dataliquid.asciidoc.linter.validator.Suggestion;
+import com.dataliquid.asciidoc.linter.validator.PlaceholderContext;
 
 import static com.dataliquid.asciidoc.linter.validator.RuleIds.Metadata.REQUIRED;
 
@@ -41,6 +43,18 @@ public final class RequiredRule implements AttributeRule {
                 .attributeName(attributeName)
                 .actualValue(null)
                 .expectedValue("Attribute must be present")
+                .errorType(ErrorType.MISSING_VALUE)
+                .missingValueHint(getPlaceholderHint(attributeName))
+                .placeholderContext(PlaceholderContext.builder()
+                    .type(PlaceholderContext.PlaceholderType.INSERT_BEFORE)
+                    .build())
+                .addSuggestion(Suggestion.builder()
+                    .description("Add required attribute")
+                    .fixedValue(":" + attributeName + ": value")
+                    .addExample(":" + attributeName + ": example-value")
+                    .addExample(":" + attributeName + ": ${defaultValue}")
+                    .explanation("This attribute is required and must be defined in the document header")
+                    .build())
                 .build());
         }
         
@@ -70,6 +84,16 @@ public final class RequiredRule implements AttributeRule {
                     .expectedValue("Attribute must be present")
                     .errorType(ErrorType.MISSING_VALUE)
                     .missingValueHint(getPlaceholderHint(attrName))
+                    .placeholderContext(PlaceholderContext.builder()
+                        .type(PlaceholderContext.PlaceholderType.INSERT_BEFORE)
+                        .build())
+                    .addSuggestion(Suggestion.builder()
+                        .description("Add required attribute to document header")
+                        .fixedValue(":" + attrName + ": value")
+                        .addExample(":" + attrName + ": example-value")
+                        .addExample(":" + attrName + ": ${defaultValue}")
+                        .explanation("Required attributes must be defined in the document header")
+                        .build())
                     .build());
             }
         }

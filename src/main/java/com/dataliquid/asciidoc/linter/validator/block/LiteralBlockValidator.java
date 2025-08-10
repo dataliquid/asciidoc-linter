@@ -14,6 +14,7 @@ import static com.dataliquid.asciidoc.linter.validator.RuleIds.Literal.*;
 import com.dataliquid.asciidoc.linter.validator.SourceLocation;
 import com.dataliquid.asciidoc.linter.validator.SourcePosition;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
+import com.dataliquid.asciidoc.linter.validator.Suggestion;
 
 /**
  * Validator for literal blocks in AsciiDoc documents.
@@ -134,6 +135,14 @@ public final class LiteralBlockValidator extends AbstractBlockValidator<LiteralB
                 .placeholderContext(PlaceholderContext.builder()
                     .type(PlaceholderContext.PlaceholderType.INSERT_BEFORE)
                     .build())
+                .addSuggestion(Suggestion.builder()
+                    .description("Add title to literal block")
+                    .fixedValue(".Configuration Example")
+                    .addExample(".Sample Output")
+                    .addExample(".Code Listing")
+                    .addExample(".Log Example")
+                    .explanation("Literal blocks should have descriptive titles to explain their content")
+                    .build())
                 .build());
             return;
         }
@@ -219,6 +228,14 @@ public final class LiteralBlockValidator extends AbstractBlockValidator<LiteralB
                     .placeholderContext(PlaceholderContext.builder()
                         .type(PlaceholderContext.PlaceholderType.SIMPLE_VALUE)
                         .build())
+                    .addSuggestion(Suggestion.builder()
+                        .description("Add proper indentation to literal block content")
+                        .fixedValue(" ".repeat(config.getMinSpaces()))
+                        .addExample("    // 4 spaces indentation")
+                        .addExample("  // 2 spaces indentation")
+                        .addExample("        // 8 spaces indentation")
+                        .explanation("Literal blocks should maintain consistent indentation for readability")
+                        .build())
                     .build());
                 break; // Only report the first line with insufficient indentation
             }
@@ -232,6 +249,14 @@ public final class LiteralBlockValidator extends AbstractBlockValidator<LiteralB
                     .message("Line " + lineNumber + " has excessive indentation")
                     .actualValue(indentSpaces + " spaces")
                     .expectedValue("At most " + config.getMaxSpaces() + " spaces")
+                    .addSuggestion(Suggestion.builder()
+                        .description("Reduce indentation to maximum allowed")
+                        .fixedValue(" ".repeat(config.getMaxSpaces()))
+                        .addExample("Remove extra spaces")
+                        .addExample("Use consistent indentation")
+                        .addExample("Align with other lines")
+                        .explanation("Literal block indentation should not exceed the maximum allowed spaces")
+                        .build())
                     .build());
             }
             
@@ -247,6 +272,14 @@ public final class LiteralBlockValidator extends AbstractBlockValidator<LiteralB
                         .message("Line " + lineNumber + " has inconsistent indentation")
                         .actualValue(indentSpaces + " spaces")
                         .expectedValue(firstIndentation + " spaces (consistent with first non-empty line)")
+                        .addSuggestion(Suggestion.builder()
+                            .description("Make indentation consistent across all lines")
+                            .fixedValue(" ".repeat(firstIndentation))
+                            .addExample("Align with first line indentation")
+                            .addExample("Use same number of spaces as other lines")
+                            .addExample("Check for mixed tabs and spaces")
+                            .explanation("Literal blocks should have consistent indentation throughout")
+                            .build())
                         .build());
                 }
             }

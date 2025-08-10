@@ -11,6 +11,7 @@ import com.dataliquid.asciidoc.linter.config.common.Severity;
 import com.dataliquid.asciidoc.linter.validator.SourceLocation;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
 import com.dataliquid.asciidoc.linter.validator.ErrorType;
+import com.dataliquid.asciidoc.linter.validator.Suggestion;
 
 import static com.dataliquid.asciidoc.linter.validator.RuleIds.Metadata.LENGTH;
 import static com.dataliquid.asciidoc.linter.validator.RuleIds.Metadata.LENGTH_MIN;
@@ -46,6 +47,12 @@ public final class LengthRule implements AttributeRule {
                     .actualValue(value + " (" + length + " characters)")
                     .expectedValue("Minimum " + config.getMinLength() + " characters")
                     .errorType(ErrorType.OUT_OF_RANGE)
+                    .addSuggestion(Suggestion.builder()
+                        .description("Provide a longer value for the attribute")
+                        .addExample("Add more descriptive content")
+                        .addExample("Expand the value to at least " + config.getMinLength() + " characters")
+                        .explanation("Attribute value must be at least " + config.getMinLength() + " characters long")
+                        .build())
                     .build());
             }
             
@@ -59,6 +66,13 @@ public final class LengthRule implements AttributeRule {
                     .actualValue(value + " (" + length + " characters)")
                     .expectedValue("Maximum " + config.getMaxLength() + " characters")
                     .errorType(ErrorType.OUT_OF_RANGE)
+                    .addSuggestion(Suggestion.builder()
+                        .description("Shorten the attribute value")
+                        .addExample("Reduce to " + config.getMaxLength() + " characters or less")
+                        .addExample("Use more concise wording")
+                        .addExample("Remove unnecessary details")
+                        .explanation("Attribute value must not exceed " + config.getMaxLength() + " characters")
+                        .build())
                     .build());
             }
         }
