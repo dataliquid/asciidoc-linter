@@ -140,8 +140,9 @@ class UnderlineHighlightIntegrationTest {
         // Then - Verify exact console output with underline
         Path testFile = tempDir.resolve("test.adoc");
         String expectedOutput = String.format("""
-            Validation Report
-            =================
+            +----------------------------------------------------------------------------------------------------------------------+
+            |                                                  Validation Report                                                   |
+            +----------------------------------------------------------------------------------------------------------------------+
             
             %s:
             
@@ -197,8 +198,9 @@ class UnderlineHighlightIntegrationTest {
         // Then - Verify exact console output with underline
         Path testFile = tempDir.resolve("test.adoc");
         String expectedOutput = String.format("""
-            Validation Report
-            =================
+            +----------------------------------------------------------------------------------------------------------------------+
+            |                                                  Validation Report                                                   |
+            +----------------------------------------------------------------------------------------------------------------------+
             
             %s:
             
@@ -270,8 +272,9 @@ class UnderlineHighlightIntegrationTest {
         // Then - Verify exact console output with underline
         Path testFile = tempDir.resolve("test.adoc");
         String expectedOutput = String.format("""
-            Validation Report
-            =================
+            +----------------------------------------------------------------------------------------------------------------------+
+            |                                                  Validation Report                                                   |
+            +----------------------------------------------------------------------------------------------------------------------+
             
             %s:
             
@@ -344,8 +347,9 @@ class UnderlineHighlightIntegrationTest {
             // Then - Verify exact console output with underline
             Path testFile = tempDir.resolve("test.adoc");
             String expectedOutput = String.format("""
-                Validation Report
-                =================
+                +----------------------------------------------------------------------------------------------------------------------+
+                |                                                  Validation Report                                                   |
+                +----------------------------------------------------------------------------------------------------------------------+
                 
                 %s:
                 
@@ -414,8 +418,9 @@ class UnderlineHighlightIntegrationTest {
             // Then - Verify exact console output with underline
             Path testFile = tempDir.resolve("test.adoc");
             String expectedOutput = String.format("""
-                Validation Report
-                =================
+                +----------------------------------------------------------------------------------------------------------------------+
+                |                                                  Validation Report                                                   |
+                +----------------------------------------------------------------------------------------------------------------------+
                 
                 %s:
                 
@@ -482,8 +487,9 @@ class UnderlineHighlightIntegrationTest {
             // Then - Verify exact console output with underline
             Path testFile = tempDir.resolve("test.adoc");
             String expectedOutput = String.format("""
-                Validation Report
-                =================
+                +----------------------------------------------------------------------------------------------------------------------+
+                |                                                  Validation Report                                                   |
+                +----------------------------------------------------------------------------------------------------------------------+
                 
                 %s:
                 
@@ -555,8 +561,9 @@ class UnderlineHighlightIntegrationTest {
             // Then - Verify exact console output with underline
             Path testFile = tempDir.resolve("test.adoc");
             String expectedOutput = String.format("""
-                Validation Report
-                =================
+                +----------------------------------------------------------------------------------------------------------------------+
+                |                                                  Validation Report                                                   |
+                +----------------------------------------------------------------------------------------------------------------------+
                 
                 %s:
                 
@@ -625,8 +632,9 @@ class UnderlineHighlightIntegrationTest {
             // Then - Verify exact console output with underline
             Path testFile = tempDir.resolve("test.adoc");
             String expectedOutput = String.format("""
-                Validation Report
-                =================
+                +----------------------------------------------------------------------------------------------------------------------+
+                |                                                  Validation Report                                                   |
+                +----------------------------------------------------------------------------------------------------------------------+
                 
                 %s:
                 
@@ -698,8 +706,9 @@ class UnderlineHighlightIntegrationTest {
             // Then - Verify exact console output with underline
             Path testFile = tempDir.resolve("test.adoc");
             String expectedOutput = String.format("""
-                Validation Report
-                =================
+                +----------------------------------------------------------------------------------------------------------------------+
+                |                                                  Validation Report                                                   |
+                +----------------------------------------------------------------------------------------------------------------------+
                 
                 %s:
                 
@@ -770,8 +779,9 @@ class UnderlineHighlightIntegrationTest {
             // Then - Verify exact console output with underline
             Path testFile = tempDir.resolve("test.adoc");
             String expectedOutput = String.format("""
-                Validation Report
-                =================
+                +----------------------------------------------------------------------------------------------------------------------+
+                |                                                  Validation Report                                                   |
+                +----------------------------------------------------------------------------------------------------------------------+
                 
                 %s:
                 
@@ -857,8 +867,9 @@ class UnderlineHighlightIntegrationTest {
             // Then - Verify exact console output with underline
             Path testFile = tempDir.resolve("test.adoc");
             String expectedOutput = String.format("""
-                Validation Report
-                =================
+                +----------------------------------------------------------------------------------------------------------------------+
+                |                                                  Validation Report                                                   |
+                +----------------------------------------------------------------------------------------------------------------------+
                 
                 %s:
                 
@@ -962,8 +973,9 @@ class UnderlineHighlightIntegrationTest {
             // Then - Verify exact console output with underline
             Path testFile = tempDir.resolve("test.adoc");
             String expectedOutput = String.format("""
-                Validation Report
-                =================
+                +----------------------------------------------------------------------------------------------------------------------+
+                |                                                  Validation Report                                                   |
+                +----------------------------------------------------------------------------------------------------------------------+
                 
                 %s:
                 
@@ -1049,8 +1061,9 @@ class UnderlineHighlightIntegrationTest {
             // Then - Verify exact console output with underline
             Path testFile = tempDir.resolve("test.adoc");
             String expectedOutput = String.format("""
-                Validation Report
-                =================
+                +----------------------------------------------------------------------------------------------------------------------+
+                |                                                  Validation Report                                                   |
+                +----------------------------------------------------------------------------------------------------------------------+
                 
                 %s:
                 
@@ -1136,8 +1149,9 @@ class UnderlineHighlightIntegrationTest {
             // Then - Verify exact console output with underline
             Path testFile = tempDir.resolve("test.adoc");
             String expectedOutput = String.format("""
-                Validation Report
-                =================
+                +----------------------------------------------------------------------------------------------------------------------+
+                |                                                  Validation Report                                                   |
+                +----------------------------------------------------------------------------------------------------------------------+
                 
                 %s:
                 
@@ -1230,8 +1244,9 @@ class UnderlineHighlightIntegrationTest {
             // Then - Verify exact console output with underline
             Path testFile = tempDir.resolve("test.adoc");
             String expectedOutput = String.format("""
-                Validation Report
-                =================
+                +----------------------------------------------------------------------------------------------------------------------+
+                |                                                  Validation Report                                                   |
+                +----------------------------------------------------------------------------------------------------------------------+
                 
                 %s:
                 
@@ -1291,8 +1306,9 @@ class UnderlineHighlightIntegrationTest {
             // Then - Verify exact console output with underline
             Path testFile = tempDir.resolve("test.adoc");
             String expectedOutput = String.format("""
-                Validation Report
-                =================
+                +----------------------------------------------------------------------------------------------------------------------+
+                |                                                  Validation Report                                                   |
+                +----------------------------------------------------------------------------------------------------------------------+
                 
                 %s:
                 
@@ -1357,8 +1373,9 @@ class UnderlineHighlightIntegrationTest {
             // Then - Verify exact console output with underline
             Path testFile = tempDir.resolve("test.adoc");
             String expectedOutput = String.format("""
-                Validation Report
-                =================
+                +----------------------------------------------------------------------------------------------------------------------+
+                |                                                  Validation Report                                                   |
+                +----------------------------------------------------------------------------------------------------------------------+
                 
                 %s:
                 
@@ -1432,8 +1449,9 @@ class UnderlineHighlightIntegrationTest {
             // Then - Verify exact console output with underline
             Path testFile = tempDir.resolve("test.adoc");
             String expectedOutput = String.format("""
-                Validation Report
-                =================
+                +----------------------------------------------------------------------------------------------------------------------+
+                |                                                  Validation Report                                                   |
+                +----------------------------------------------------------------------------------------------------------------------+
                 
                 %s:
                 
@@ -1493,8 +1511,9 @@ class UnderlineHighlightIntegrationTest {
             // Then - Verify exact console output with underline
             Path testFile = tempDir.resolve("test.adoc");
             String expectedOutput = String.format("""
-                Validation Report
-                =================
+                +----------------------------------------------------------------------------------------------------------------------+
+                |                                                  Validation Report                                                   |
+                +----------------------------------------------------------------------------------------------------------------------+
                 
                 %s:
                 
@@ -1554,8 +1573,9 @@ class UnderlineHighlightIntegrationTest {
             // Then - Verify exact console output with underline
             Path testFile = tempDir.resolve("test.adoc");
             String expectedOutput = String.format("""
-                Validation Report
-                =================
+                +----------------------------------------------------------------------------------------------------------------------+
+                |                                                  Validation Report                                                   |
+                +----------------------------------------------------------------------------------------------------------------------+
                 
                 %s:
                 
@@ -1626,8 +1646,9 @@ class UnderlineHighlightIntegrationTest {
             // Then - Verify exact console output with underline
             Path testFile = tempDir.resolve("test.adoc");
             String expectedOutput = String.format("""
-                Validation Report
-                =================
+                +----------------------------------------------------------------------------------------------------------------------+
+                |                                                  Validation Report                                                   |
+                +----------------------------------------------------------------------------------------------------------------------+
                 
                 %s:
                 
@@ -1701,8 +1722,9 @@ class UnderlineHighlightIntegrationTest {
             // Then - Verify exact console output with underline
             Path testFile = tempDir.resolve("test.adoc");
             String expectedOutput = String.format("""
-                Validation Report
-                =================
+                +----------------------------------------------------------------------------------------------------------------------+
+                |                                                  Validation Report                                                   |
+                +----------------------------------------------------------------------------------------------------------------------+
                 
                 %s:
                 
@@ -1768,8 +1790,9 @@ class UnderlineHighlightIntegrationTest {
             // Then - Verify exact console output with underline
             Path testFile = tempDir.resolve("test.adoc");
             String expectedOutput = String.format("""
-                Validation Report
-                =================
+                +----------------------------------------------------------------------------------------------------------------------+
+                |                                                  Validation Report                                                   |
+                +----------------------------------------------------------------------------------------------------------------------+
                 
                 %s:
                 
@@ -1847,8 +1870,9 @@ class UnderlineHighlightIntegrationTest {
             // Then - Verify exact console output with underline
             Path testFile = tempDir.resolve("test.adoc");
             String expectedOutput = String.format("""
-                Validation Report
-                =================
+                +----------------------------------------------------------------------------------------------------------------------+
+                |                                                  Validation Report                                                   |
+                +----------------------------------------------------------------------------------------------------------------------+
                 
                 %s:
                 
@@ -1927,8 +1951,9 @@ class UnderlineHighlightIntegrationTest {
             // Then - Verify exact console output with underline
             Path testFile = tempDir.resolve("test.adoc");
             String expectedOutput = String.format("""
-                Validation Report
-                =================
+                +----------------------------------------------------------------------------------------------------------------------+
+                |                                                  Validation Report                                                   |
+                +----------------------------------------------------------------------------------------------------------------------+
                 
                 %s:
                 
@@ -2012,8 +2037,9 @@ class UnderlineHighlightIntegrationTest {
             // Then - Verify exact console output with underline
             Path testFile = tempDir.resolve("test.adoc");
             String expectedOutput = String.format("""
-                Validation Report
-                =================
+                +----------------------------------------------------------------------------------------------------------------------+
+                |                                                  Validation Report                                                   |
+                +----------------------------------------------------------------------------------------------------------------------+
                 
                 %s:
                 
@@ -2092,8 +2118,9 @@ class UnderlineHighlightIntegrationTest {
             // Then - Verify exact console output with underline
             Path testFile = tempDir.resolve("test.adoc");
             String expectedOutput = String.format("""
-                Validation Report
-                =================
+                +----------------------------------------------------------------------------------------------------------------------+
+                |                                                  Validation Report                                                   |
+                +----------------------------------------------------------------------------------------------------------------------+
                 
                 %s:
                 
@@ -2189,8 +2216,9 @@ class UnderlineHighlightIntegrationTest {
             // Then - Verify exact console output with underline
             Path testFile = tempDir.resolve("test.adoc");
             String expectedOutput = String.format("""
-                Validation Report
-                =================
+                +----------------------------------------------------------------------------------------------------------------------+
+                |                                                  Validation Report                                                   |
+                +----------------------------------------------------------------------------------------------------------------------+
                 
                 %s:
                 
@@ -2257,8 +2285,9 @@ class UnderlineHighlightIntegrationTest {
             // Then - Verify exact console output with underline
             Path testFile = tempDir.resolve("test.adoc");
             String expectedOutput = String.format("""
-                Validation Report
-                =================
+                +----------------------------------------------------------------------------------------------------------------------+
+                |                                                  Validation Report                                                   |
+                +----------------------------------------------------------------------------------------------------------------------+
                 
                 %s:
                 
@@ -2313,8 +2342,9 @@ class UnderlineHighlightIntegrationTest {
             // Then - Verify exact console output with underline
             Path testFile = tempDir.resolve("test.adoc");
             String expectedOutput = String.format("""
-                Validation Report
-                =================
+                +----------------------------------------------------------------------------------------------------------------------+
+                |                                                  Validation Report                                                   |
+                +----------------------------------------------------------------------------------------------------------------------+
                 
                 %s:
                 
@@ -2390,8 +2420,9 @@ class UnderlineHighlightIntegrationTest {
             // Then - Verify exact console output with underline
             Path testFile = tempDir.resolve("test.adoc");
             String expectedOutput = String.format("""
-                Validation Report
-                =================
+                +----------------------------------------------------------------------------------------------------------------------+
+                |                                                  Validation Report                                                   |
+                +----------------------------------------------------------------------------------------------------------------------+
                 
                 %s:
                 
@@ -2494,8 +2525,9 @@ class UnderlineHighlightIntegrationTest {
             // Then - Verify exact console output with underline
             Path testFile = tempDir.resolve("test.adoc");
             String expectedOutput = String.format("""
-                Validation Report
-                =================
+                +----------------------------------------------------------------------------------------------------------------------+
+                |                                                  Validation Report                                                   |
+                +----------------------------------------------------------------------------------------------------------------------+
                 
                 %s:
                 
@@ -2566,8 +2598,9 @@ class UnderlineHighlightIntegrationTest {
             // Then - Verify exact console output with underline
             Path testFile = tempDir.resolve("test.adoc");
             String expectedOutput = String.format("""
-                Validation Report
-                =================
+                +----------------------------------------------------------------------------------------------------------------------+
+                |                                                  Validation Report                                                   |
+                +----------------------------------------------------------------------------------------------------------------------+
                 
                 %s:
                 
@@ -2638,8 +2671,9 @@ class UnderlineHighlightIntegrationTest {
             // Then - Verify exact console output with underline
             Path testFile = tempDir.resolve("test.adoc");
             String expectedOutput = String.format("""
-                Validation Report
-                =================
+                +----------------------------------------------------------------------------------------------------------------------+
+                |                                                  Validation Report                                                   |
+                +----------------------------------------------------------------------------------------------------------------------+
                 
                 %s:
                 
@@ -2710,8 +2744,9 @@ class UnderlineHighlightIntegrationTest {
             // Then - Verify exact console output with underline
             Path testFile = tempDir.resolve("test.adoc");
             String expectedOutput = String.format("""
-                Validation Report
-                =================
+                +----------------------------------------------------------------------------------------------------------------------+
+                |                                                  Validation Report                                                   |
+                +----------------------------------------------------------------------------------------------------------------------+
                 
                 %s:
                 
@@ -2779,8 +2814,9 @@ class UnderlineHighlightIntegrationTest {
             // Then - Verify exact console output with underline
             Path testFile = tempDir.resolve("test.adoc");
             String expectedOutput = String.format("""
-                Validation Report
-                =================
+                +----------------------------------------------------------------------------------------------------------------------+
+                |                                                  Validation Report                                                   |
+                +----------------------------------------------------------------------------------------------------------------------+
                 
                 %s:
                 
@@ -2847,8 +2883,9 @@ class UnderlineHighlightIntegrationTest {
             // Then - Verify exact console output with underline
             Path testFile = tempDir.resolve("test.adoc");
             String expectedOutput = String.format("""
-                Validation Report
-                =================
+                +----------------------------------------------------------------------------------------------------------------------+
+                |                                                  Validation Report                                                   |
+                +----------------------------------------------------------------------------------------------------------------------+
                 
                 %s:
                 
@@ -2924,8 +2961,9 @@ class UnderlineHighlightIntegrationTest {
             // Then - Verify exact console output with underline
             Path testFile = tempDir.resolve("test.adoc");
             String expectedOutput = String.format("""
-                Validation Report
-                =================
+                +----------------------------------------------------------------------------------------------------------------------+
+                |                                                  Validation Report                                                   |
+                +----------------------------------------------------------------------------------------------------------------------+
                 
                 %s:
                 
@@ -3020,8 +3058,9 @@ class UnderlineHighlightIntegrationTest {
             // Then - Verify exact console output with underline
             Path testFile = tempDir.resolve("test.adoc");
             String expectedOutput = String.format("""
-                Validation Report
-                =================
+                +----------------------------------------------------------------------------------------------------------------------+
+                |                                                  Validation Report                                                   |
+                +----------------------------------------------------------------------------------------------------------------------+
                 
                 %s:
                 
@@ -3112,8 +3151,9 @@ class UnderlineHighlightIntegrationTest {
             // Then - Verify exact console output with underline
             Path testFile = tempDir.resolve("test.adoc");
             String expectedOutput = String.format("""
-                Validation Report
-                =================
+                +----------------------------------------------------------------------------------------------------------------------+
+                |                                                  Validation Report                                                   |
+                +----------------------------------------------------------------------------------------------------------------------+
                 
                 %s:
                 
@@ -3183,8 +3223,9 @@ class UnderlineHighlightIntegrationTest {
             // Then - Verify exact console output with underline
             Path testFile = tempDir.resolve("test.adoc");
             String expectedOutput = String.format("""
-                Validation Report
-                =================
+                +----------------------------------------------------------------------------------------------------------------------+
+                |                                                  Validation Report                                                   |
+                +----------------------------------------------------------------------------------------------------------------------+
                 
                 %s:
                 
@@ -3234,8 +3275,9 @@ class UnderlineHighlightIntegrationTest {
             // Then - Verify exact console output with underline
             Path testFile = tempDir.resolve("test.adoc");
             String expectedOutput = String.format("""
-                Validation Report
-                =================
+                +----------------------------------------------------------------------------------------------------------------------+
+                |                                                  Validation Report                                                   |
+                +----------------------------------------------------------------------------------------------------------------------+
                 
                 %s:
                 
@@ -3285,8 +3327,9 @@ class UnderlineHighlightIntegrationTest {
             // Then - Verify exact console output with underline
             Path testFile = tempDir.resolve("test.adoc");
             String expectedOutput = String.format("""
-                Validation Report
-                =================
+                +----------------------------------------------------------------------------------------------------------------------+
+                |                                                  Validation Report                                                   |
+                +----------------------------------------------------------------------------------------------------------------------+
                 
                 %s:
                 
@@ -3336,8 +3379,9 @@ class UnderlineHighlightIntegrationTest {
             // Then - Verify exact console output with underline at correct position
             Path testFile = tempDir.resolve("test.adoc");
             String expectedOutput = String.format("""
-                Validation Report
-                =================
+                +----------------------------------------------------------------------------------------------------------------------+
+                |                                                  Validation Report                                                   |
+                +----------------------------------------------------------------------------------------------------------------------+
                 
                 %s:
                 
@@ -3392,8 +3436,9 @@ class UnderlineHighlightIntegrationTest {
             // Then - Verify exact console output with underlines for both violations
             Path testFile = tempDir.resolve("test.adoc");
             String expectedOutput = String.format("""
-                Validation Report
-                =================
+                +----------------------------------------------------------------------------------------------------------------------+
+                |                                                  Validation Report                                                   |
+                +----------------------------------------------------------------------------------------------------------------------+
                 
                 %s:
                 

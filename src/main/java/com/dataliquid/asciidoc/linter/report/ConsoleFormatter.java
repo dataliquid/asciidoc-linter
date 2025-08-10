@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import com.dataliquid.asciidoc.linter.cli.display.AsciiBoxDrawer;
+import com.dataliquid.asciidoc.linter.cli.display.DisplayConstants;
 import com.dataliquid.asciidoc.linter.config.output.OutputConfiguration;
 import com.dataliquid.asciidoc.linter.config.output.OutputFormat;
 import com.dataliquid.asciidoc.linter.report.console.GroupingEngine;
@@ -68,8 +70,10 @@ public class ConsoleFormatter implements ReportFormatter {
     
     private void renderHeader(PrintWriter writer) {
         if (config.getFormat() != OutputFormat.COMPACT) {
-            writer.println("Validation Report");
-            writer.println("=================");
+            AsciiBoxDrawer boxDrawer = new AsciiBoxDrawer(DisplayConstants.DEFAULT_BOX_WIDTH, writer);
+            boxDrawer.drawTop();
+            boxDrawer.drawTitle("Validation Report");
+            boxDrawer.drawBottom();
             writer.println();
         }
     }

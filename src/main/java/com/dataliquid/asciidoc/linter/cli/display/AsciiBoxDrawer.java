@@ -1,7 +1,8 @@
 package com.dataliquid.asciidoc.linter.cli.display;
 
-import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Utility class for drawing ASCII box borders and content.
@@ -10,7 +11,7 @@ import java.util.List;
 public class AsciiBoxDrawer {
     
     private final int width;
-    private final PrintStream out;
+    private final PrintWriter printWriter;
     
     /**
      * Creates a new AsciiBoxDrawer with the specified width.
@@ -18,28 +19,35 @@ public class AsciiBoxDrawer {
      * @param width the total width of the box including borders
      */
     public AsciiBoxDrawer(int width) {
-        this(width, System.out);
+        this(width, new PrintWriter(System.out, true));
     }
     
     /**
-     * Creates a new AsciiBoxDrawer with the specified width and output stream.
+     * Creates a new AsciiBoxDrawer with the specified width and print writer.
      * 
      * @param width the total width of the box including borders
-     * @param out the output stream to write to
+     * @param writer the print writer to write to
      */
-    public AsciiBoxDrawer(int width, PrintStream out) {
+    public AsciiBoxDrawer(int width, PrintWriter writer) {
         if (width < 4) {
             throw new IllegalArgumentException("Box width must be at least 4");
         }
         this.width = width;
-        this.out = out;
+        this.printWriter = Objects.requireNonNull(writer, "PrintWriter must not be null");
+    }
+    
+    /**
+     * Outputs a line to the appropriate output.
+     */
+    private void println(String line) {
+        printWriter.println(line);
     }
     
     /**
      * Draws the top border of the box.
      */
     public void drawTop() {
-        out.println("+" + "-".repeat(width - 2) + "+");
+        println("+" + "-".repeat(width - 2) + "+");
     }
     
     /**
@@ -75,7 +83,7 @@ public class AsciiBoxDrawer {
         int leftPadding = totalPadding / 2;
         int rightPadding = totalPadding - leftPadding;
         
-        out.println("|" + " ".repeat(leftPadding) + title + " ".repeat(rightPadding) + "|");
+        println("|" + " ".repeat(leftPadding) + title + " ".repeat(rightPadding) + "|");
     }
     
     /**
@@ -93,7 +101,7 @@ public class AsciiBoxDrawer {
             content = content.substring(0, contentWidth);
         }
         
-        out.println("| " + content + " ".repeat(contentWidth - content.length()) + " |");
+        println("| " + content + " ".repeat(contentWidth - content.length()) + " |");
     }
     
     /**
@@ -114,7 +122,7 @@ public class AsciiBoxDrawer {
             value = value.substring(0, valueWidth);
         }
         
-        out.println("| " + paddedLabel + value + " ".repeat(valueWidth - value.length()) + " |");
+        println("| " + paddedLabel + value + " ".repeat(valueWidth - value.length()) + " |");
     }
     
     /**
