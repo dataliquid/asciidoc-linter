@@ -86,8 +86,8 @@ public class CLIOptions {
         
         // Generate documentation
         options.addOption(Option.builder()
-            .longOpt("generate-docs")
-            .desc("Generate human-readable documentation from configuration")
+            .longOpt("generate-guidelines")
+            .desc("Generate author guidelines showing all validation requirements")
             .build());
         
         // Visualization style for documentation
