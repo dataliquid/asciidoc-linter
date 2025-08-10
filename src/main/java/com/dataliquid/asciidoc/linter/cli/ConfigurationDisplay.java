@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.dataliquid.asciidoc.linter.cli.display.AsciiBoxDrawer;
+import com.dataliquid.asciidoc.linter.cli.display.DisplayConstants;
 import com.dataliquid.asciidoc.linter.cli.display.TextWrapper;
 
 /**
@@ -12,9 +13,8 @@ import com.dataliquid.asciidoc.linter.cli.display.TextWrapper;
  */
 public class ConfigurationDisplay {
     
-    private static final int BOX_WIDTH = 80;
-    private static final int LABEL_WIDTH = 20;
-    
+    private final int boxWidth;
+    private final int labelWidth;
     private final AsciiBoxDrawer boxDrawer;
     private final TextWrapper textWrapper;
     
@@ -22,7 +22,19 @@ public class ConfigurationDisplay {
      * Creates a new ConfigurationDisplay with default settings.
      */
     public ConfigurationDisplay() {
-        this.boxDrawer = new AsciiBoxDrawer(BOX_WIDTH);
+        this(DisplayConstants.DEFAULT_BOX_WIDTH, DisplayConstants.DEFAULT_LABEL_WIDTH);
+    }
+    
+    /**
+     * Creates a new ConfigurationDisplay with custom dimensions.
+     * 
+     * @param boxWidth the width of the display box
+     * @param labelWidth the width allocated for labels
+     */
+    public ConfigurationDisplay(int boxWidth, int labelWidth) {
+        this.boxWidth = boxWidth;
+        this.labelWidth = labelWidth;
+        this.boxDrawer = new AsciiBoxDrawer(boxWidth);
         this.textWrapper = new TextWrapper();
     }
     
@@ -97,9 +109,9 @@ public class ConfigurationDisplay {
      * @param value the configuration value
      */
     private void drawConfigLine(String label, String value) {
-        int valueWidth = BOX_WIDTH - 4 - LABEL_WIDTH; // 4 for borders and padding
+        int valueWidth = boxWidth - 4 - labelWidth; // 4 for borders and padding
         List<String> wrappedLines = textWrapper.wrap(value, valueWidth);
-        boxDrawer.drawLabeledLines(label, wrappedLines, LABEL_WIDTH);
+        boxDrawer.drawLabeledLines(label, wrappedLines, labelWidth);
     }
     
     /**

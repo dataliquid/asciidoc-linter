@@ -150,8 +150,9 @@ class PlaceholderHighlightIntegrationTest {
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
         String expectedOutput = String.format("""
-            Validation Report
-            =================
+            +----------------------------------------------------------------------------------------------------------------------+
+            |                                                  Validation Report                                                   |
+            +----------------------------------------------------------------------------------------------------------------------+
             
             %s:
             
@@ -203,8 +204,9 @@ class PlaceholderHighlightIntegrationTest {
         Path testFile = tempDir.resolve("test.adoc");
         
         String expectedOutput = String.format("""
-            Validation Report
-            =================
+            +----------------------------------------------------------------------------------------------------------------------+
+            |                                                  Validation Report                                                   |
+            +----------------------------------------------------------------------------------------------------------------------+
             
             %s:
             
@@ -249,8 +251,9 @@ class PlaceholderHighlightIntegrationTest {
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
         String expectedOutput = String.format("""
-            Validation Report
-            =================
+            +----------------------------------------------------------------------------------------------------------------------+
+            |                                                  Validation Report                                                   |
+            +----------------------------------------------------------------------------------------------------------------------+
             
             %s:
             
@@ -297,8 +300,9 @@ class PlaceholderHighlightIntegrationTest {
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
         String expectedOutput = String.format("""
-            Validation Report
-            =================
+            +----------------------------------------------------------------------------------------------------------------------+
+            |                                                  Validation Report                                                   |
+            +----------------------------------------------------------------------------------------------------------------------+
             
             %s:
             
@@ -345,8 +349,9 @@ class PlaceholderHighlightIntegrationTest {
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
         String expectedOutput = String.format("""
-            Validation Report
-            =================
+            +----------------------------------------------------------------------------------------------------------------------+
+            |                                                  Validation Report                                                   |
+            +----------------------------------------------------------------------------------------------------------------------+
             
             %s:
             
@@ -394,8 +399,9 @@ class PlaceholderHighlightIntegrationTest {
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
         String expectedOutput = String.format("""
-            Validation Report
-            =================
+            +----------------------------------------------------------------------------------------------------------------------+
+            |                                                  Validation Report                                                   |
+            +----------------------------------------------------------------------------------------------------------------------+
             
             %s:
             
@@ -445,8 +451,9 @@ class PlaceholderHighlightIntegrationTest {
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
         String expectedOutput = String.format("""
-            Validation Report
-            =================
+            +----------------------------------------------------------------------------------------------------------------------+
+            |                                                  Validation Report                                                   |
+            +----------------------------------------------------------------------------------------------------------------------+
             
             %s:
             
@@ -496,8 +503,9 @@ class PlaceholderHighlightIntegrationTest {
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
         String expectedOutput = String.format("""
-            Validation Report
-            =================
+            +----------------------------------------------------------------------------------------------------------------------+
+            |                                                  Validation Report                                                   |
+            +----------------------------------------------------------------------------------------------------------------------+
             
             %s:
             
@@ -546,8 +554,9 @@ class PlaceholderHighlightIntegrationTest {
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
         String expectedOutput = String.format("""
-            Validation Report
-            =================
+            +----------------------------------------------------------------------------------------------------------------------+
+            |                                                  Validation Report                                                   |
+            +----------------------------------------------------------------------------------------------------------------------+
             
             %s:
             
@@ -592,8 +601,9 @@ class PlaceholderHighlightIntegrationTest {
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
         String expectedOutput = String.format("""
-            Validation Report
-            =================
+            +----------------------------------------------------------------------------------------------------------------------+
+            |                                                  Validation Report                                                   |
+            +----------------------------------------------------------------------------------------------------------------------+
             
             %s:
             
@@ -638,8 +648,9 @@ class PlaceholderHighlightIntegrationTest {
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
         String expectedOutput = String.format("""
-            Validation Report
-            =================
+            +----------------------------------------------------------------------------------------------------------------------+
+            |                                                  Validation Report                                                   |
+            +----------------------------------------------------------------------------------------------------------------------+
             
             %s:
             
@@ -684,8 +695,9 @@ class PlaceholderHighlightIntegrationTest {
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
         String expectedOutput = String.format("""
-            Validation Report
-            =================
+            +----------------------------------------------------------------------------------------------------------------------+
+            |                                                  Validation Report                                                   |
+            +----------------------------------------------------------------------------------------------------------------------+
             
             %s:
             
@@ -731,8 +743,9 @@ class PlaceholderHighlightIntegrationTest {
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
         String expectedOutput = String.format("""
-            Validation Report
-            =================
+            +----------------------------------------------------------------------------------------------------------------------+
+            |                                                  Validation Report                                                   |
+            +----------------------------------------------------------------------------------------------------------------------+
             
             %s:
             
@@ -778,8 +791,9 @@ class PlaceholderHighlightIntegrationTest {
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
         String expectedOutput = String.format("""
-            Validation Report
-            =================
+            +----------------------------------------------------------------------------------------------------------------------+
+            |                                                  Validation Report                                                   |
+            +----------------------------------------------------------------------------------------------------------------------+
             
             %s:
             
@@ -825,8 +839,9 @@ class PlaceholderHighlightIntegrationTest {
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
         String expectedOutput = String.format("""
-            Validation Report
-            =================
+            +----------------------------------------------------------------------------------------------------------------------+
+            |                                                  Validation Report                                                   |
+            +----------------------------------------------------------------------------------------------------------------------+
             
             %s:
             
@@ -871,8 +886,9 @@ class PlaceholderHighlightIntegrationTest {
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
         String expectedOutput = String.format("""
-            Validation Report
-            =================
+            +----------------------------------------------------------------------------------------------------------------------+
+            |                                                  Validation Report                                                   |
+            +----------------------------------------------------------------------------------------------------------------------+
             
             %s:
             
@@ -919,8 +935,9 @@ class PlaceholderHighlightIntegrationTest {
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
         String expectedOutput = String.format("""
-            Validation Report
-            =================
+            +----------------------------------------------------------------------------------------------------------------------+
+            |                                                  Validation Report                                                   |
+            +----------------------------------------------------------------------------------------------------------------------+
             
             %s:
             
@@ -966,8 +983,9 @@ class PlaceholderHighlightIntegrationTest {
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
         String expectedOutput = String.format("""
-            Validation Report
-            =================
+            +----------------------------------------------------------------------------------------------------------------------+
+            |                                                  Validation Report                                                   |
+            +----------------------------------------------------------------------------------------------------------------------+
             
             %s:
             
@@ -1013,8 +1031,9 @@ class PlaceholderHighlightIntegrationTest {
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
         String expectedOutput = String.format("""
-            Validation Report
-            =================
+            +----------------------------------------------------------------------------------------------------------------------+
+            |                                                  Validation Report                                                   |
+            +----------------------------------------------------------------------------------------------------------------------+
             
             %s:
             
@@ -1063,8 +1082,9 @@ class PlaceholderHighlightIntegrationTest {
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
         String expectedOutput = String.format("""
-            Validation Report
-            =================
+            +----------------------------------------------------------------------------------------------------------------------+
+            |                                                  Validation Report                                                   |
+            +----------------------------------------------------------------------------------------------------------------------+
             
             %s:
             
@@ -1117,8 +1137,9 @@ class PlaceholderHighlightIntegrationTest {
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
         String expectedOutput = String.format("""
-            Validation Report
-            =================
+            +----------------------------------------------------------------------------------------------------------------------+
+            |                                                  Validation Report                                                   |
+            +----------------------------------------------------------------------------------------------------------------------+
             
             %s:
             
@@ -1170,8 +1191,9 @@ class PlaceholderHighlightIntegrationTest {
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
         String expectedOutput = String.format("""
-            Validation Report
-            =================
+            +----------------------------------------------------------------------------------------------------------------------+
+            |                                                  Validation Report                                                   |
+            +----------------------------------------------------------------------------------------------------------------------+
             
             %s:
             
@@ -1222,8 +1244,9 @@ class PlaceholderHighlightIntegrationTest {
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
         String expectedOutput = String.format("""
-            Validation Report
-            =================
+            +----------------------------------------------------------------------------------------------------------------------+
+            |                                                  Validation Report                                                   |
+            +----------------------------------------------------------------------------------------------------------------------+
             
             %s:
             
@@ -1274,8 +1297,9 @@ class PlaceholderHighlightIntegrationTest {
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
         String expectedOutput = String.format("""
-            Validation Report
-            =================
+            +----------------------------------------------------------------------------------------------------------------------+
+            |                                                  Validation Report                                                   |
+            +----------------------------------------------------------------------------------------------------------------------+
             
             %s:
             
@@ -1323,8 +1347,9 @@ class PlaceholderHighlightIntegrationTest {
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
         String expectedOutput = String.format("""
-            Validation Report
-            =================
+            +----------------------------------------------------------------------------------------------------------------------+
+            |                                                  Validation Report                                                   |
+            +----------------------------------------------------------------------------------------------------------------------+
             
             %s:
             
@@ -1385,8 +1410,9 @@ class PlaceholderHighlightIntegrationTest {
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
         String expectedOutput = String.format("""
-            Validation Report
-            =================
+            +----------------------------------------------------------------------------------------------------------------------+
+            |                                                  Validation Report                                                   |
+            +----------------------------------------------------------------------------------------------------------------------+
             
             %s:
             
@@ -1444,8 +1470,9 @@ class PlaceholderHighlightIntegrationTest {
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
         String expectedOutput = String.format("""
-            Validation Report
-            =================
+            +----------------------------------------------------------------------------------------------------------------------+
+            |                                                  Validation Report                                                   |
+            +----------------------------------------------------------------------------------------------------------------------+
             
             %s:
             
@@ -1497,8 +1524,9 @@ class PlaceholderHighlightIntegrationTest {
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
         String expectedOutput = String.format("""
-            Validation Report
-            =================
+            +----------------------------------------------------------------------------------------------------------------------+
+            |                                                  Validation Report                                                   |
+            +----------------------------------------------------------------------------------------------------------------------+
             
             %s:
             
@@ -1549,8 +1577,9 @@ class PlaceholderHighlightIntegrationTest {
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
         String expectedOutput = String.format("""
-            Validation Report
-            =================
+            +----------------------------------------------------------------------------------------------------------------------+
+            |                                                  Validation Report                                                   |
+            +----------------------------------------------------------------------------------------------------------------------+
             
             %s:
             
@@ -1601,8 +1630,9 @@ class PlaceholderHighlightIntegrationTest {
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
         String expectedOutput = String.format("""
-            Validation Report
-            =================
+            +----------------------------------------------------------------------------------------------------------------------+
+            |                                                  Validation Report                                                   |
+            +----------------------------------------------------------------------------------------------------------------------+
             
             %s:
             
@@ -1654,8 +1684,9 @@ class PlaceholderHighlightIntegrationTest {
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
         String expectedOutput = String.format("""
-            Validation Report
-            =================
+            +----------------------------------------------------------------------------------------------------------------------+
+            |                                                  Validation Report                                                   |
+            +----------------------------------------------------------------------------------------------------------------------+
             
             %s:
             
@@ -1708,8 +1739,9 @@ class PlaceholderHighlightIntegrationTest {
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
         String expectedOutput = String.format("""
-            Validation Report
-            =================
+            +----------------------------------------------------------------------------------------------------------------------+
+            |                                                  Validation Report                                                   |
+            +----------------------------------------------------------------------------------------------------------------------+
             
             %s:
             
@@ -1761,8 +1793,9 @@ class PlaceholderHighlightIntegrationTest {
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
         String expectedOutput = String.format("""
-            Validation Report
-            =================
+            +----------------------------------------------------------------------------------------------------------------------+
+            |                                                  Validation Report                                                   |
+            +----------------------------------------------------------------------------------------------------------------------+
             
             %s:
             
@@ -1813,8 +1846,9 @@ class PlaceholderHighlightIntegrationTest {
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
         String expectedOutput = String.format("""
-            Validation Report
-            =================
+            +----------------------------------------------------------------------------------------------------------------------+
+            |                                                  Validation Report                                                   |
+            +----------------------------------------------------------------------------------------------------------------------+
             
             %s:
             
@@ -1864,8 +1898,9 @@ class PlaceholderHighlightIntegrationTest {
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
         String expectedOutput = String.format("""
-            Validation Report
-            =================
+            +----------------------------------------------------------------------------------------------------------------------+
+            |                                                  Validation Report                                                   |
+            +----------------------------------------------------------------------------------------------------------------------+
             
             %s:
             
@@ -1916,8 +1951,9 @@ class PlaceholderHighlightIntegrationTest {
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
         String expectedOutput = String.format("""
-            Validation Report
-            =================
+            +----------------------------------------------------------------------------------------------------------------------+
+            |                                                  Validation Report                                                   |
+            +----------------------------------------------------------------------------------------------------------------------+
             
             %s:
             
@@ -1971,8 +2007,9 @@ class PlaceholderHighlightIntegrationTest {
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
         String expectedOutput = String.format("""
-            Validation Report
-            =================
+            +----------------------------------------------------------------------------------------------------------------------+
+            |                                                  Validation Report                                                   |
+            +----------------------------------------------------------------------------------------------------------------------+
             
             %s:
             
@@ -2027,8 +2064,9 @@ class PlaceholderHighlightIntegrationTest {
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
         String expectedOutput = String.format("""
-            Validation Report
-            =================
+            +----------------------------------------------------------------------------------------------------------------------+
+            |                                                  Validation Report                                                   |
+            +----------------------------------------------------------------------------------------------------------------------+
             
             %s:
             
@@ -2081,8 +2119,9 @@ class PlaceholderHighlightIntegrationTest {
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
         String expectedOutput = String.format("""
-            Validation Report
-            =================
+            +----------------------------------------------------------------------------------------------------------------------+
+            |                                                  Validation Report                                                   |
+            +----------------------------------------------------------------------------------------------------------------------+
             
             %s:
             
@@ -2135,8 +2174,9 @@ class PlaceholderHighlightIntegrationTest {
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
         String expectedOutput = String.format("""
-            Validation Report
-            =================
+            +----------------------------------------------------------------------------------------------------------------------+
+            |                                                  Validation Report                                                   |
+            +----------------------------------------------------------------------------------------------------------------------+
             
             %s:
             
@@ -2187,8 +2227,9 @@ class PlaceholderHighlightIntegrationTest {
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
         String expectedOutput = String.format("""
-            Validation Report
-            =================
+            +----------------------------------------------------------------------------------------------------------------------+
+            |                                                  Validation Report                                                   |
+            +----------------------------------------------------------------------------------------------------------------------+
             
             %s:
             
@@ -2239,8 +2280,9 @@ class PlaceholderHighlightIntegrationTest {
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
         String expectedOutput = String.format("""
-            Validation Report
-            =================
+            +----------------------------------------------------------------------------------------------------------------------+
+            |                                                  Validation Report                                                   |
+            +----------------------------------------------------------------------------------------------------------------------+
             
             %s:
             
@@ -2291,8 +2333,9 @@ class PlaceholderHighlightIntegrationTest {
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
         String expectedOutput = String.format("""
-            Validation Report
-            =================
+            +----------------------------------------------------------------------------------------------------------------------+
+            |                                                  Validation Report                                                   |
+            +----------------------------------------------------------------------------------------------------------------------+
             
             %s:
             
@@ -2342,8 +2385,9 @@ class PlaceholderHighlightIntegrationTest {
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
         String expectedOutput = String.format("""
-            Validation Report
-            =================
+            +----------------------------------------------------------------------------------------------------------------------+
+            |                                                  Validation Report                                                   |
+            +----------------------------------------------------------------------------------------------------------------------+
             
             %s:
             
@@ -2395,8 +2439,9 @@ class PlaceholderHighlightIntegrationTest {
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
         String expectedOutput = String.format("""
-            Validation Report
-            =================
+            +----------------------------------------------------------------------------------------------------------------------+
+            |                                                  Validation Report                                                   |
+            +----------------------------------------------------------------------------------------------------------------------+
             
             %s:
             
@@ -2447,8 +2492,9 @@ class PlaceholderHighlightIntegrationTest {
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
         String expectedOutput = String.format("""
-            Validation Report
-            =================
+            +----------------------------------------------------------------------------------------------------------------------+
+            |                                                  Validation Report                                                   |
+            +----------------------------------------------------------------------------------------------------------------------+
             
             %s:
             
@@ -2502,8 +2548,9 @@ class PlaceholderHighlightIntegrationTest {
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
         String expectedOutput = String.format("""
-            Validation Report
-            =================
+            +----------------------------------------------------------------------------------------------------------------------+
+            |                                                  Validation Report                                                   |
+            +----------------------------------------------------------------------------------------------------------------------+
             
             %s:
             
@@ -2551,8 +2598,9 @@ class PlaceholderHighlightIntegrationTest {
         
         // Then - Verify multi-line table placeholder with full output comparison
         String expectedOutput = String.format("""
-            Validation Report
-            =================
+            +----------------------------------------------------------------------------------------------------------------------+
+            |                                                  Validation Report                                                   |
+            +----------------------------------------------------------------------------------------------------------------------+
             
             %s:
             
@@ -2642,8 +2690,9 @@ class PlaceholderHighlightIntegrationTest {
         // Then - Verify the placeholder appears after the subsection paragraph
         Path testFile = tempDir.resolve("test.adoc");
         String expectedOutput = String.format("""
-            Validation Report
-            =================
+            +----------------------------------------------------------------------------------------------------------------------+
+            |                                                  Validation Report                                                   |
+            +----------------------------------------------------------------------------------------------------------------------+
             
             %s:
             
@@ -2729,8 +2778,9 @@ class PlaceholderHighlightIntegrationTest {
         // Then - Verify exact console output with placeholder at correct position
         Path testFile = tempDir.resolve("test.adoc");
         String expectedOutput = String.format("""
-            Validation Report
-            =================
+            +----------------------------------------------------------------------------------------------------------------------+
+            |                                                  Validation Report                                                   |
+            +----------------------------------------------------------------------------------------------------------------------+
             
             %s:
             
@@ -2801,8 +2851,9 @@ class PlaceholderHighlightIntegrationTest {
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
         String expectedOutput = String.format("""
-            Validation Report
-            =================
+            +----------------------------------------------------------------------------------------------------------------------+
+            |                                                  Validation Report                                                   |
+            +----------------------------------------------------------------------------------------------------------------------+
             
             %s:
             
@@ -2848,8 +2899,9 @@ class PlaceholderHighlightIntegrationTest {
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
         String expectedOutput = String.format("""
-            Validation Report
-            =================
+            +----------------------------------------------------------------------------------------------------------------------+
+            |                                                  Validation Report                                                   |
+            +----------------------------------------------------------------------------------------------------------------------+
             
             %s:
             
@@ -2899,8 +2951,9 @@ class PlaceholderHighlightIntegrationTest {
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
         String expectedOutput = String.format("""
-            Validation Report
-            =================
+            +----------------------------------------------------------------------------------------------------------------------+
+            |                                                  Validation Report                                                   |
+            +----------------------------------------------------------------------------------------------------------------------+
             
             %s:
             
@@ -2944,8 +2997,9 @@ class PlaceholderHighlightIntegrationTest {
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
         String expectedOutput = String.format("""
-            Validation Report
-            =================
+            +----------------------------------------------------------------------------------------------------------------------+
+            |                                                  Validation Report                                                   |
+            +----------------------------------------------------------------------------------------------------------------------+
             
             %s:
             
@@ -2993,8 +3047,9 @@ class PlaceholderHighlightIntegrationTest {
         // Then - Verify exact console output with placeholders
         Path testFile = tempDir.resolve("test.adoc");
         String expectedOutput = String.format("""
-            Validation Report
-            =================
+            +----------------------------------------------------------------------------------------------------------------------+
+            |                                                  Validation Report                                                   |
+            +----------------------------------------------------------------------------------------------------------------------+
             
             %s:
             
