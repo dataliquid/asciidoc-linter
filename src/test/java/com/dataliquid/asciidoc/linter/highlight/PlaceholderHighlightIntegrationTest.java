@@ -264,7 +264,7 @@ class PlaceholderHighlightIntegrationTest {
             
                1 | = Test Document
                2 |\s
-               3 | image::example.png[«Alt text»]
+               3 | image::example.png[«Description of image»]
             
             
             """, testFile.toString(), testFile.toString());
@@ -313,7 +313,7 @@ class PlaceholderHighlightIntegrationTest {
             
                1 | = Test Document
                2 |\s
-               3 | image::example.png[alt="Example image",width=«100»]
+               3 | image::example.png[alt="Example image",width=«640»]
             
             
             """, testFile.toString(), testFile.toString());
@@ -362,7 +362,7 @@ class PlaceholderHighlightIntegrationTest {
             
                1 | = Test Document
                2 |\s
-               3 | image::example.png[alt="Example image",width=200,height=«100»]
+               3 | image::example.png[alt="Example image",width=200,height=«480»]
             
             
             """, testFile.toString(), testFile.toString());

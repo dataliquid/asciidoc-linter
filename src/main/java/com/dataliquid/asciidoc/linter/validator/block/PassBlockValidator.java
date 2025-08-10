@@ -17,6 +17,7 @@ import com.dataliquid.asciidoc.linter.validator.PlaceholderContext;
 import static com.dataliquid.asciidoc.linter.validator.RuleIds.Pass.*;
 import com.dataliquid.asciidoc.linter.validator.SourceLocation;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
+import com.dataliquid.asciidoc.linter.validator.Suggestion;
 
 /**
  * Validator for pass (passthrough) blocks in AsciiDoc documents.
@@ -126,6 +127,14 @@ public final class PassBlockValidator extends AbstractBlockValidator<PassBlock> 
                 .placeholderContext(PlaceholderContext.builder()
                     .type(PlaceholderContext.PlaceholderType.INSERT_BEFORE)
                     .build())
+                .addSuggestion(Suggestion.builder()
+                    .description("Add type attribute to pass block")
+                    .fixedValue("[pass,type=html]")
+                    .addExample("[pass,type=html]")
+                    .addExample("[pass,type=xml]")
+                    .addExample("[pass,type=svg]")
+                    .explanation("Pass blocks should specify the content type for proper processing")
+                    .build())
                 .build());
         }
         
@@ -143,6 +152,14 @@ public final class PassBlockValidator extends AbstractBlockValidator<PassBlock> 
                     .message("Pass block type '" + passType + "' is not allowed")
                     .actualValue(passType)
                     .expectedValue("One of: " + String.join(", ", config.getAllowed()))
+                    .addSuggestion(Suggestion.builder()
+                        .description("Use a valid pass block type")
+                        .fixedValue("[pass,type=" + config.getAllowed().get(0) + "]")
+                        .addExample("[pass,type=html] for HTML content")
+                        .addExample("[pass,type=xml] for XML content")
+                        .addExample("[pass,type=svg] for SVG graphics")
+                        .explanation("Pass block type must be one of the allowed content types")
+                        .build())
                     .build());
             }
         }
@@ -171,6 +188,13 @@ public final class PassBlockValidator extends AbstractBlockValidator<PassBlock> 
                 .placeholderContext(PlaceholderContext.builder()
                     .type(PlaceholderContext.PlaceholderType.INSERT_BEFORE)
                     .build())
+                .addSuggestion(Suggestion.builder()
+                    .description("Add content to pass block")
+                    .addExample("<div>HTML content</div>")
+                    .addExample("<?xml version=\"1.0\"?>")
+                    .addExample("<svg>SVG content</svg>")
+                    .explanation("Pass blocks must contain the raw content to be passed through")
+                    .build())
                 .build());
             return;
         }
@@ -190,6 +214,13 @@ public final class PassBlockValidator extends AbstractBlockValidator<PassBlock> 
                     .message("Pass block content is too long")
                     .actualValue(contentLength + " characters")
                     .expectedValue("Maximum " + config.getMaxLength() + " characters")
+                    .addSuggestion(Suggestion.builder()
+                        .description("Shorten pass block content")
+                        .addExample("Remove non-essential markup")
+                        .addExample("Split into multiple pass blocks")
+                        .addExample("Use external files for large content")
+                        .explanation("Pass block content should not exceed the maximum length limit")
+                        .build())
                     .build());
             }
         }
@@ -208,6 +239,13 @@ public final class PassBlockValidator extends AbstractBlockValidator<PassBlock> 
                     .message("Pass block content does not match required pattern")
                     .actualValue("Content does not match pattern")
                     .expectedValue("Pattern: " + config.getPattern().pattern())
+                    .addSuggestion(Suggestion.builder()
+                        .description("Format pass block content to match pattern")
+                        .addExample("Ensure proper markup syntax")
+                        .addExample("Check for valid HTML/XML structure")
+                        .addExample("Validate content format")
+                        .explanation("Pass block content must follow the specified format pattern")
+                        .build())
                     .build());
             }
         }
@@ -236,6 +274,14 @@ public final class PassBlockValidator extends AbstractBlockValidator<PassBlock> 
                 .placeholderContext(PlaceholderContext.builder()
                     .type(PlaceholderContext.PlaceholderType.INSERT_BEFORE)
                     .build())
+                .addSuggestion(Suggestion.builder()
+                    .description("Add reason for using pass block")
+                    .fixedValue("[pass,reason=\"Custom HTML widget\"]")
+                    .addExample("[pass,reason=\"Custom HTML widget\"]")
+                    .addExample("[pass,reason=\"Third-party integration\"]")
+                    .addExample("[pass,reason=\"Legacy markup support\"]")
+                    .explanation("Pass blocks should explain why raw passthrough is necessary")
+                    .build())
                 .build());
             return;
         }
@@ -256,6 +302,13 @@ public final class PassBlockValidator extends AbstractBlockValidator<PassBlock> 
                     .message("Pass block reason is too short")
                     .actualValue(reasonLength + " characters")
                     .expectedValue("At least " + config.getMinLength() + " characters")
+                    .addSuggestion(Suggestion.builder()
+                        .description("Provide a more detailed reason")
+                        .addExample("Custom HTML widget for interactive content")
+                        .addExample("Third-party JavaScript integration required")
+                        .addExample("Legacy markup that cannot be converted")
+                        .explanation("Pass block reasons should be detailed enough to meet minimum length requirements")
+                        .build())
                     .build());
             }
             
@@ -272,6 +325,13 @@ public final class PassBlockValidator extends AbstractBlockValidator<PassBlock> 
                     .message("Pass block reason is too long")
                     .actualValue(reasonLength + " characters")
                     .expectedValue("At most " + config.getMaxLength() + " characters")
+                    .addSuggestion(Suggestion.builder()
+                        .description("Shorten the reason description")
+                        .addExample("Custom widget")
+                        .addExample("Third-party integration")
+                        .addExample("Legacy markup")
+                        .explanation("Pass block reasons should be concise and not exceed maximum length limits")
+                        .build())
                     .build());
             }
         }
