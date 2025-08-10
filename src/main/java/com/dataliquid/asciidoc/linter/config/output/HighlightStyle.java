@@ -13,16 +13,6 @@ public enum HighlightStyle {
     UNDERLINE("underline"),
     
     /**
-     * Box style with borders around error.
-     */
-    BOX("box"),
-    
-    /**
-     * Arrow style pointing to error.
-     */
-    ARROW("arrow"),
-    
-    /**
      * No highlighting.
      */
     NONE("none");

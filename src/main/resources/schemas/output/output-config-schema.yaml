@@ -27,7 +27,7 @@ properties:
           
           highlightStyle:
             type: string
-            enum: [underline, box, arrow, none]
+            enum: [underline, none]
             default: underline
             description: Style for highlighting errors
           
