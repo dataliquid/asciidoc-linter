@@ -14,24 +14,100 @@ import org.apache.commons.cli.ParseException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.dataliquid.asciidoc.linter.cli.command.Command;
+import com.dataliquid.asciidoc.linter.cli.command.CommandRegistry;
 import com.dataliquid.asciidoc.linter.cli.display.SplashScreen;
 import com.dataliquid.asciidoc.linter.config.common.Severity;
 import com.dataliquid.asciidoc.linter.config.output.OutputFormat;
 
 /**
- * Main CLI entry point for the AsciiDoc linter.
+ * Main CLI entry point for the AsciiDoc tools.
  */
-public class LinterCLI {
+public class MainCLI {
     
-    private static final Logger logger = LogManager.getLogger(LinterCLI.class);
+    private static final Logger logger = LogManager.getLogger(MainCLI.class);
+    private final CommandRegistry commandRegistry;
+    
+    public MainCLI() {
+        this.commandRegistry = new CommandRegistry();
+    }
     
     public static void main(String[] args) {
-        LinterCLI cli = new LinterCLI();
+        MainCLI cli = new MainCLI();
         int exitCode = cli.run(args);
         System.exit(exitCode);
     }
     
     public int run(String[] args) {
+        // Handle no arguments
+        if (args.length == 0) {
+            printMainHelp();
+            return 0;
+        }
+        
+        // Check for global options first
+        if (args[0].equals("--help") || args[0].equals("-h")) {
+            printMainHelp();
+            return 0;
+        }
+        
+        if (args[0].equals("--version") || args[0].equals("-v")) {
+            printVersion();
+            return 0;
+        }
+        
+        // Check if first argument is a command
+        String potentialCommand = args[0];
+        
+        // Handle legacy mode (backwards compatibility)
+        if (potentialCommand.startsWith("-") || !commandRegistry.hasCommand(potentialCommand)) {
+            return runLegacyMode(args);
+        }
+        
+        // New command mode
+        Command command = commandRegistry.getCommand(potentialCommand);
+        if (command == null) {
+            System.err.println("Unknown command: " + potentialCommand);
+            printMainHelp();
+            return 2;
+        }
+        
+        // Parse command-specific arguments
+        String[] commandArgs = Arrays.copyOfRange(args, 1, args.length);
+        
+        // Check for splash screen suppression in global args
+        boolean showSplash = !containsNoSplash(args) && !potentialCommand.equals("guidelines");
+        if (showSplash) {
+            SplashScreen.display();
+        }
+        
+        try {
+            CommandLineParser parser = new DefaultParser();
+            CommandLine cmd = parser.parse(command.getOptions(), commandArgs);
+            return command.execute(cmd);
+        } catch (ParseException e) {
+            logger.error("Error: {}", e.getMessage());
+            System.err.println("Error: " + e.getMessage());
+            System.err.println();
+            command.printHelp();
+            return 2;
+        } catch (Exception e) {
+            logger.error("Error executing command: {}", e.getMessage(), e);
+            System.err.println("Error: " + e.getMessage());
+            return 2;
+        }
+    }
+    
+    /**
+     * Runs the CLI in legacy mode for backwards compatibility.
+     * This mode uses the old parameter structure without subcommands.
+     */
+    private int runLegacyMode(String[] args) {
+        System.err.println("WARNING: Using legacy CLI mode. Consider using the new command structure:");
+        System.err.println("  asciidoc-linter lint -i '**/*.adoc'");
+        System.err.println("  asciidoc-linter guidelines -r rules.yaml");
+        System.err.println();
+        
         CLIOptions cliOptions = new CLIOptions();
         Options options = cliOptions.getOptions();
         
@@ -41,7 +117,7 @@ public class LinterCLI {
             
             // Handle help
             if (cmd.hasOption("help")) {
-                printHelp(options);
+                printLegacyHelp(options);
                 return 0;
             }
             
@@ -76,7 +152,7 @@ public class LinterCLI {
             // For normal validation, input is required
             if (!cmd.hasOption("input")) {
                 System.err.println("Error: --input is required for validation");
-                printHelp(options);
+                printLegacyHelp(options);
                 return 2;
             }
             
@@ -97,13 +173,22 @@ public class LinterCLI {
             logger.error("Error: {}", e.getMessage());
             System.err.println("Error: " + e.getMessage());
             System.err.println();
-            printHelp(options);
+            printLegacyHelp(options);
             return 2;
         } catch (IllegalArgumentException e) {
             logger.error("Error: {}", e.getMessage());
             System.err.println("Error: " + e.getMessage());
             return 2;
         }
+    }
+    
+    private boolean containsNoSplash(String[] args) {
+        for (String arg : args) {
+            if (arg.equals("--no-splash")) {
+                return true;
+            }
+        }
+        return false;
     }
     
     private CLIConfig parseConfiguration(CommandLine cmd) {
@@ -175,7 +260,31 @@ public class LinterCLI {
         return builder.build();
     }
     
-    private void printHelp(Options options) {
+    private void printMainHelp() {
+        HelpFormatter formatter = new HelpFormatter();
+        formatter.setWidth(100);
+        
+        VersionInfo versionInfo = VersionInfo.getInstance();
+        String programName = versionInfo.getArtifactId();
+        
+        System.out.println("\n" + programName + " - AsciiDoc Linter");
+        System.out.println("Version: " + versionInfo.getFullVersion());
+        System.out.println("\nUsage: " + programName + " [global-options] <command> [command-options]");
+        System.out.println("\nGlobal Options:");
+        System.out.println("  -h, --help       Show this help message");
+        System.out.println("  -v, --version    Show version information");
+        System.out.println("  --no-splash      Suppress splash screen");
+        
+        commandRegistry.printCommandSummary();
+        
+        System.out.println("\nExamples:");
+        System.out.println("  " + programName + " lint -i \"**/*.adoc\"");
+        System.out.println("  " + programName + " guidelines -r rules.yaml -o guide.adoc");
+        System.out.println("\nLegacy mode (deprecated):");
+        System.out.println("  " + programName + " -i \"**/*.adoc\" --generate-guidelines");
+    }
+    
+    private void printLegacyHelp(Options options) {
         HelpFormatter formatter = new HelpFormatter();
         formatter.setWidth(100);
         
