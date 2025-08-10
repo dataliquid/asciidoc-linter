@@ -14,7 +14,6 @@ output:
     enabled: true
     maxPerError: 3
     showExamples: true
-    showAutoFixHint: true
   
   errorGrouping:
     enabled: true

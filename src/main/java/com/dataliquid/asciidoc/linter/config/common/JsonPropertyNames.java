@@ -184,7 +184,6 @@ public final class JsonPropertyNames {
         public static final String SHOW_HEADER = "showHeader";
         public static final String MAX_PER_ERROR = "maxPerError";
         public static final String SHOW_EXAMPLES = "showExamples";
-        public static final String SHOW_AUTO_FIX_HINT = "showAutoFixHint";
         public static final String SHOW_STATISTICS = "showStatistics";
         public static final String SHOW_MOST_COMMON = "showMostCommon";
         public static final String SHOW_FILE_LIST = "showFileList";

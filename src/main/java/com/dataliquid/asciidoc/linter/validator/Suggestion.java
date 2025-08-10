@@ -13,7 +13,6 @@ public final class Suggestion {
     private final String explanation;
     private final boolean preferred;
     private final List<String> examples;
-    private final boolean autoFixable;
     
     private Suggestion(Builder builder) {
         this.description = Objects.requireNonNull(builder.description, "[" + getClass().getName() + "] description must not be null");
@@ -21,7 +20,6 @@ public final class Suggestion {
         this.explanation = builder.explanation;
         this.preferred = builder.preferred;
         this.examples = new ArrayList<>(builder.examples);
-        this.autoFixable = builder.autoFixable;
     }
     
     public String getDescription() {
@@ -52,17 +50,12 @@ public final class Suggestion {
         return !examples.isEmpty();
     }
     
-    public boolean isAutoFixable() {
-        return autoFixable;
-    }
-    
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Suggestion that = (Suggestion) o;
         return preferred == that.preferred &&
-                autoFixable == that.autoFixable &&
                 Objects.equals(description, that.description) &&
                 Objects.equals(fixedValue, that.fixedValue) &&
                 Objects.equals(explanation, that.explanation) &&
@@ -71,7 +64,7 @@ public final class Suggestion {
     
     @Override
     public int hashCode() {
-        return Objects.hash(description, fixedValue, explanation, preferred, examples, autoFixable);
+        return Objects.hash(description, fixedValue, explanation, preferred, examples);
     }
     
     public static Builder builder() {
@@ -84,7 +77,6 @@ public final class Suggestion {
         private String explanation;
         private boolean preferred;
         private final List<String> examples = new ArrayList<>();
-        private boolean autoFixable;
         
         private Builder() {
         }
@@ -119,11 +111,6 @@ public final class Suggestion {
             if (examples != null) {
                 this.examples.addAll(examples);
             }
-            return this;
-        }
-        
-        public Builder autoFixable(boolean autoFixable) {
-            this.autoFixable = autoFixable;
             return this;
         }
         

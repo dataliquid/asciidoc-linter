@@ -34,7 +34,6 @@ class EnhancedValidationMessageTest {
                 Suggestion.builder()
                     .description("Fix suggestion 1")
                     .addExample("Example code")
-                    .autoFixable(true)
                     .build()
             );
             
@@ -70,7 +69,6 @@ class EnhancedValidationMessageTest {
             assertEquals(suggestions, message.getSuggestions());
             assertEquals(contextLines, message.getContextLines());
             assertTrue(message.hasSuggestions());
-            assertTrue(message.hasAutoFixableSuggestions());
         }
         
         @Test
@@ -95,7 +93,6 @@ class EnhancedValidationMessageTest {
             assertTrue(message.getSuggestions().isEmpty());
             assertTrue(message.getContextLines().isEmpty());
             assertFalse(message.hasSuggestions());
-            assertFalse(message.hasAutoFixableSuggestions());
         }
     }
     
@@ -103,69 +100,6 @@ class EnhancedValidationMessageTest {
     @DisplayName("Suggestion Tests")
     class SuggestionTests {
         
-        @Test
-        @DisplayName("should detect auto-fixable suggestions")
-        void shouldDetectAutoFixableSuggestions() {
-            // Given
-            List<Suggestion> suggestions = Arrays.asList(
-                Suggestion.builder()
-                    .description("Manual fix")
-                    .autoFixable(false)
-                    .build(),
-                Suggestion.builder()
-                    .description("Auto fix")
-                    .autoFixable(true)
-                    .build()
-            );
-            
-            // When
-            ValidationMessage message = ValidationMessage.builder()
-                .severity(Severity.ERROR)
-                .ruleId("test.rule")
-                .message("Test error")
-                .location(SourceLocation.builder()
-                    .filename("test.adoc")
-                    .line(10)
-                    .build())
-                .suggestions(suggestions)
-                .build();
-            
-            // Then
-            assertTrue(message.hasSuggestions());
-            assertTrue(message.hasAutoFixableSuggestions());
-        }
-        
-        @Test
-        @DisplayName("should handle only manual suggestions")
-        void shouldHandleOnlyManualSuggestions() {
-            // Given
-            List<Suggestion> suggestions = Arrays.asList(
-                Suggestion.builder()
-                    .description("Manual fix 1")
-                    .autoFixable(false)
-                    .build(),
-                Suggestion.builder()
-                    .description("Manual fix 2")
-                    .autoFixable(false)
-                    .build()
-            );
-            
-            // When
-            ValidationMessage message = ValidationMessage.builder()
-                .severity(Severity.ERROR)
-                .ruleId("test.rule")
-                .message("Test error")
-                .location(SourceLocation.builder()
-                    .filename("test.adoc")
-                    .line(10)
-                    .build())
-                .suggestions(suggestions)
-                .build();
-            
-            // Then
-            assertTrue(message.hasSuggestions());
-            assertFalse(message.hasAutoFixableSuggestions());
-        }
     }
     
     @Nested

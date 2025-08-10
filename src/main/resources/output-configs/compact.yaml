@@ -14,7 +14,6 @@ output:
     enabled: false
     maxPerError: 1
     showExamples: false
-    showAutoFixHint: false
   
   errorGrouping:
     enabled: false
