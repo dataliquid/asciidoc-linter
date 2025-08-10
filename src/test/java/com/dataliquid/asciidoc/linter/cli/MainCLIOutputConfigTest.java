@@ -25,6 +25,7 @@ class MainCLIOutputConfigTest {
         try {
             // Test with predefined config name
             int exitCode = cli.run(new String[]{
+                "lint",
                 "--input", "test.adoc",
                 "--output-config", "simple"
             });
@@ -47,6 +48,7 @@ class MainCLIOutputConfigTest {
         try {
             // Test with custom config file
             int exitCode = cli.run(new String[]{
+                "lint",
                 "--input", "test.adoc",
                 "--output-config-file", "custom-output.yaml"
             });
@@ -69,6 +71,7 @@ class MainCLIOutputConfigTest {
         try {
             // Test with both options - should fail
             int exitCode = cli.run(new String[]{
+                "lint",
                 "--input", "test.adoc",
                 "--output-config", "simple",
                 "--output-config-file", "custom.yaml"
@@ -93,6 +96,7 @@ class MainCLIOutputConfigTest {
         try {
             // Test with invalid config name
             int exitCode = cli.run(new String[]{
+                "lint",
                 "--input", "test.adoc",
                 "--output-config", "invalid-name"
             });
