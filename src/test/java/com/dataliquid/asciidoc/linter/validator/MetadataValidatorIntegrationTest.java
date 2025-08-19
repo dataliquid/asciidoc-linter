@@ -69,8 +69,14 @@ class MetadataValidatorIntegrationTest {
     }
     
     @AfterEach
-    void tearDown() {
+    void tearDown() throws IOException {
         asciidoctor.close();
+        if (tempDir != null && Files.exists(tempDir)) {
+            Files.walk(tempDir)
+                .sorted(java.util.Comparator.reverseOrder())
+                .map(Path::toFile)
+                .forEach(java.io.File::delete);
+        }
     }
 
     @Test
