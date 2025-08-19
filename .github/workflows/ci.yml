@@ -25,3 +25,5 @@ jobs:
     
     - name: Build with Maven
       run: mvn clean install -B -Dgpg.skip=true -Djacoco.skip=true
+      env:
+        MAVEN_OPTS: -Xmx2048m -Xms512m
