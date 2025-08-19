@@ -58,8 +58,9 @@ class RuleSchemaValidatorTest {
                   sections:
                     - name: introduction
                       level: 1
-                      min: 1
-                      max: 1
+                      occurrence:
+                        min: 1
+                        max: 1
                       allowedBlocks:
                         - paragraph:
                             severity: warn

@@ -32,8 +32,9 @@ class SectionSchemaValidationTest {
               sections:
                 - name: comprehensive
                   level: 1
-                  min: 1
-                  max: 1
+                  occurrence:
+                    min: 1
+                    max: 1
                   allowedBlocks:
                     - paragraph:
                         severity: warn
@@ -104,8 +105,9 @@ class SectionSchemaValidationTest {
               sections:
                 - name: main
                   level: 1
-                  min: 1
-                  max: 5
+                  occurrence:
+                    min: 1
+                    max: 5
                   allowedBlocks:
                     - paragraph:
                         severity: error
@@ -118,8 +120,9 @@ class SectionSchemaValidationTest {
                   subsections:
                     - name: details
                       level: 2
-                      min: 0
-                      max: 3
+                      occurrence:
+                        min: 0
+                        max: 3
                       allowedBlocks:
                         - literal:
                             severity: warn
@@ -128,8 +131,9 @@ class SectionSchemaValidationTest {
                         - sidebar:
                             severity: info
                     - level: 2
-                      min: 0
-                      max: 5
+                      occurrence:
+                        min: 0
+                        max: 5
                       allowedBlocks:
                         - audio:
                             severity: info
@@ -155,8 +159,9 @@ class SectionSchemaValidationTest {
               sections:
                 - name: documentTitle
                   level: 0
-                  min: 1
-                  max: 1
+                  occurrence:
+                    min: 1
+                    max: 1
                   title:
                     pattern: "^[A-Z].*"
                     severity: error
@@ -180,8 +185,9 @@ class SectionSchemaValidationTest {
               sections:
                 - name: documentTitle
                   level: 0
-                  min: 1
-                  max: 2
+                  occurrence:
+                    min: 1
+                    max: 2
                   title:
                     pattern: "^[A-Z].*"
                     severity: error
@@ -204,8 +210,9 @@ class SectionSchemaValidationTest {
               sections:
                 - name: mainSection
                   level: 1
-                  min: 1
-                  max: 5
+                  occurrence:
+                    min: 1
+                    max: 5
                   title:
                     pattern: "^Chapter.*"
                     severity: error

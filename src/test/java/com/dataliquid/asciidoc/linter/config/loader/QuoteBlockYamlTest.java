@@ -38,8 +38,9 @@ class QuoteBlockYamlTest {
                   sections:
                     - name: "test-section"
                       level: 1
-                      min: 1
-                      max: 1
+                      occurrence:
+                        min: 1
+                        max: 1
                       allowedBlocks:
                         - quote:
                             name: "important-quote"
@@ -133,8 +134,9 @@ class QuoteBlockYamlTest {
                   sections:
                     - name: "test-section"
                       level: 1
-                      min: 1
-                      max: 1
+                      occurrence:
+                        min: 1
+                        max: 1
                       allowedBlocks:
                         - quote:
                             severity: info

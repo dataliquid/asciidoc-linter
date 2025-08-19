@@ -2263,8 +2263,9 @@ class UnderlineHighlightIntegrationTest {
                 document:
                   sections:
                     - level: 0
-                      min: 1
-                      max: 1
+                      occurrence:
+                        min: 1
+                        max: 1
                       title:
                         pattern: "^[A-Z][A-Z0-9\\\\s]+$"
                         severity: error
@@ -2320,8 +2321,9 @@ class UnderlineHighlightIntegrationTest {
                         - name: headerTypeRule
                           order: 1
                           level: 1
-                          min: 1
-                          max: 1
+                          occurrence:
+                            min: 1
+                            max: 1
                           title:
                             pattern: "^Typ$"
                             severity: error

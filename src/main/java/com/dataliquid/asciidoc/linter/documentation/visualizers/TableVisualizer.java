@@ -112,7 +112,7 @@ public class TableVisualizer implements HierarchyVisualizer {
             requirements += ", Position " + section.order();
         }
         
-        Severity severity = section.min() > 0 ? 
+        Severity severity = (section.occurrence() != null && section.occurrence().min() > 0) ? 
                           Severity.ERROR : Severity.INFO;
         
         rows.add(new TableRow("└ " + section.name(), level, severity, "Section", requirements));

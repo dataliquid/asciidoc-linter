@@ -817,8 +817,9 @@ class LinterValidationIntegrationTest {
                     document:
                       sections:
                         - level: 0
-                          min: 1
-                          max: 1
+                          occurrence:
+                            min: 1
+                            max: 1
                           title:
                             pattern: "^[A-Z].*"
                             severity: error
@@ -850,8 +851,9 @@ class LinterValidationIntegrationTest {
                       sections:
                         - name: intro
                           level: 1
-                          min: 1
-                          max: 1
+                          occurrence:
+                            min: 1
+                            max: 1
                           allowedBlocks:
                             - paragraph:
                                 severity: error
@@ -893,8 +895,9 @@ class LinterValidationIntegrationTest {
                       sections:
                         - name: documentTitle
                           level: 0
-                          min: 1
-                          max: 1
+                          occurrence:
+                            min: 1
+                            max: 1
                           title:
                             pattern: "^[A-Z].*"
                             severity: error
@@ -907,8 +910,9 @@ class LinterValidationIntegrationTest {
                                   severity: error
                         - name: einleitung
                           level: 1
-                          min: 1
-                          max: 1
+                          occurrence:
+                            min: 1
+                            max: 1
                           title:
                             pattern: "^Einleitung$"
                             severity: error
@@ -921,8 +925,9 @@ class LinterValidationIntegrationTest {
                                   severity: error
                         - name: tutorial
                           level: 1
-                          min: 1
-                          max: 1
+                          occurrence:
+                            min: 1
+                            max: 1
                           title:
                             pattern: "^Tutorial$"
                             severity: error
@@ -934,8 +939,9 @@ class LinterValidationIntegrationTest {
                                   severity: error
                           subsections:
                             - level: 2
-                              min: 0
-                              max: 10
+                              occurrence:
+                                min: 0
+                                max: 10
                               title:
                                 pattern: "^Step \\\\d+$"
                                 severity: error
@@ -998,8 +1004,9 @@ class LinterValidationIntegrationTest {
                       sections:
                         - name: einleitung
                           level: 1
-                          min: 1
-                          max: 1
+                          occurrence:
+                            min: 1
+                            max: 1
                           allowedBlocks:
                             - paragraph:
                                 severity: error
@@ -1041,8 +1048,9 @@ class LinterValidationIntegrationTest {
                       sections:
                         - name: documentTitle
                           level: 0
-                          min: 1
-                          max: 1
+                          occurrence:
+                            min: 1
+                            max: 1
                           title:
                             pattern: "^[A-Z].*"
                             severity: error
@@ -1081,8 +1089,9 @@ class LinterValidationIntegrationTest {
                       sections:
                         - name: documentTitle
                           level: 0
-                          min: 1
-                          max: 1
+                          occurrence:
+                            min: 1
+                            max: 1
                           title:
                             pattern: "^[A-Z].*"
                             severity: error
@@ -1121,8 +1130,9 @@ class LinterValidationIntegrationTest {
                       sections:
                         - name: documentTitle
                           level: 0
-                          min: 1
-                          max: 1
+                          occurrence:
+                            min: 1
+                            max: 1
                           allowedBlocks:
                             - paragraph:
                                 severity: error
@@ -1132,7 +1142,8 @@ class LinterValidationIntegrationTest {
                                   severity: error
                         - name: section1
                           level: 1
-                          min: 0
+                          occurrence:
+                            min: 0
                           allowedBlocks:
                             - paragraph:
                                 severity: error
@@ -1168,8 +1179,9 @@ class LinterValidationIntegrationTest {
                       sections:
                         - name: documentTitle
                           level: 0
-                          min: 1
-                          max: 1
+                          occurrence:
+                            min: 1
+                            max: 1
                           title:
                             pattern: "^[A-Z].*"
                             severity: error
@@ -1212,8 +1224,9 @@ class LinterValidationIntegrationTest {
                       sections:
                         - name: documentTitle
                           level: 0
-                          min: 1
-                          max: 1
+                          occurrence:
+                            min: 1
+                            max: 1
                           title:
                             pattern: "^[A-Z].*"
                             severity: error
@@ -1265,8 +1278,9 @@ class LinterValidationIntegrationTest {
                       sections:
                         - name: documentTitle
                           level: 0
-                          min: 1
-                          max: 1
+                          occurrence:
+                            min: 1
+                            max: 1
                           allowedBlocks:
                             - paragraph:
                                 name: Introduction paragraph
@@ -1315,8 +1329,9 @@ class LinterValidationIntegrationTest {
                         # Document title (level 0) with subsections structure
                         - name: documentTitle
                           level: 0
-                          min: 1
-                          max: 1
+                          occurrence:
+                            min: 1
+                            max: 1
                           title:
                             pattern: "^[A-Z].*"
                             severity: error
@@ -1660,8 +1675,9 @@ class LinterValidationIntegrationTest {
                   sections:
                     - name: documentTitle
                       level: 0
-                      min: 1
-                      max: 1
+                      occurrence:
+                        min: 1
+                        max: 1
                       title:
                         pattern: "^[A-Z].*"
                         severity: error
@@ -1977,8 +1993,9 @@ class LinterValidationIntegrationTest {
                   sections:
                     - name: documentTitle
                       level: 0
-                      min: 1
-                      max: 1
+                      occurrence:
+                        min: 1
+                        max: 1
                       title:
                         pattern: "^[A-Z].*"
                         severity: error
@@ -2023,8 +2040,9 @@ class LinterValidationIntegrationTest {
                   sections:
                     - name: documentTitle
                       level: 0
-                      min: 1
-                      max: 1
+                      occurrence:
+                        min: 1
+                        max: 1
                       title:
                         pattern: "^[A-Z].*"
                         severity: error
@@ -2036,8 +2054,9 @@ class LinterValidationIntegrationTest {
                               severity: error
                     - name: intro
                       level: 1
-                      min: 1
-                      max: 1
+                      occurrence:
+                        min: 1
+                        max: 1
                       title:
                         pattern: "^Introduction$"
                         severity: error
@@ -2093,8 +2112,9 @@ class LinterValidationIntegrationTest {
                   sections:
                     - name: documentTitle
                       level: 0
-                      min: 1
-                      max: 1
+                      occurrence:
+                        min: 1
+                        max: 1
                       allowedBlocks:
                         - paragraph:
                             severity: error
@@ -2126,8 +2146,9 @@ class LinterValidationIntegrationTest {
                   sections:
                     - name: documentTitle
                       level: 0
-                      min: 1
-                      max: 1
+                      occurrence:
+                        min: 1
+                        max: 1
                       title:
                         pattern: "^[A-Z].*"
                         severity: error
@@ -2166,8 +2187,9 @@ class LinterValidationIntegrationTest {
                   sections:
                     - name: documentTitle
                       level: 0
-                      min: 1
-                      max: 1
+                      occurrence:
+                        min: 1
+                        max: 1
                       title:
                         pattern: "^[A-Z].*"
                         severity: error

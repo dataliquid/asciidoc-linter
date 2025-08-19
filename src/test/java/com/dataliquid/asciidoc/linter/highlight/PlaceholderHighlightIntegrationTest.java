@@ -1279,8 +1279,9 @@ class PlaceholderHighlightIntegrationTest {
                     - name: headerTypeRule
                       order: 1
                       level: 1
-                      min: 1
-                      max: 1
+                      occurrence:
+                        min: 1
+                        max: 1
             """;
         
         // Given - AsciiDoc content missing the required section
@@ -1329,8 +1330,9 @@ class PlaceholderHighlightIntegrationTest {
                 # Document title (Level 0) - HTTP Header Name
                 - name: headerTitleRule
                   level: 0
-                  min: 1
-                  max: 1
+                  occurrence:
+                    min: 1
+                    max: 1
                   title:
                     pattern: "^[A-Za-z][A-Za-z0-9-]*$"
                     severity: error
@@ -1387,8 +1389,9 @@ class PlaceholderHighlightIntegrationTest {
                               subsections:
                                 - name: implementation
                                   level: 4
-                                  min: 1
-                                  max: 1
+                                  occurrence:
+                                    min: 1
+                                    max: 1
             """;
         
         // Given - AsciiDoc content with nested sections but missing the required level 4 section
@@ -2524,8 +2527,9 @@ class PlaceholderHighlightIntegrationTest {
               sections:
                 - name: headerTitleRule
                   level: 0
-                  min: 1
-                  max: 1
+                  occurrence:
+                    min: 1
+                    max: 1
                   title:
                     pattern: "^[A-Za-z][A-Za-z0-9-]*$"
                     severity: error
@@ -2577,8 +2581,9 @@ class PlaceholderHighlightIntegrationTest {
               sections:
                 - name: documentTitle
                   level: 0
-                  min: 1
-                  max: 1
+                  occurrence:
+                    min: 1
+                    max: 1
                   allowedBlocks:
                     - table:
                         severity: error
@@ -2630,8 +2635,9 @@ class PlaceholderHighlightIntegrationTest {
               sections:
                 - name: documentTitle
                   level: 0
-                  min: 1
-                  max: 1
+                  occurrence:
+                    min: 1
+                    max: 1
                   title:
                     pattern: "^[A-Z].*"
                     severity: error
@@ -2738,8 +2744,9 @@ class PlaceholderHighlightIntegrationTest {
               sections:
                 - name: documentTitle
                   level: 0
-                  min: 1
-                  max: 1
+                  occurrence:
+                    min: 1
+                    max: 1
                   subsections:
                     - name: contentSection
                       level: 1
