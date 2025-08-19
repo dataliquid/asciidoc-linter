@@ -1992,6 +1992,153 @@ class UnderlineHighlightIntegrationTest {
     }
     
     @Nested
+    @DisplayName("Paragraph Validation Tests")
+    class ParagraphValidationTests {
+        
+        @Test
+        @DisplayName("should show underline for paragraph with too many sentences")
+        void shouldShowUnderlineForParagraphWithTooManySentences(@TempDir Path tempDir) throws IOException {
+            // Given - YAML rules with maximum sentence count for paragraphs
+            String rules = """
+                document:
+                  sections:
+                    - level: 0
+                      allowedBlocks:
+                        - paragraph:
+                            severity: warn
+                            sentence:
+                              occurrence:
+                                max: 2
+                                severity: warn
+                """;
+            
+            // Given - AsciiDoc content with paragraphs having too many sentences
+            String adocContent = """
+                = Test Document
+                
+                This paragraph has only one sentence.
+                
+                This has two sentences. Here is the second.
+                
+                This paragraph contains three sentences. Here is the second one. And this is the third sentence.
+                
+                Another paragraph with four sentences here. This is the second sentence. Here is the third one. And finally the fourth.
+                """;
+            
+            // When - Validate and format output
+            String actualOutput = validateAndFormat(rules, adocContent, tempDir);
+            
+            // Then - Verify exact console output with underline
+            Path testFile = tempDir.resolve("test.adoc");
+            String expectedOutput = String.format("""
+                +----------------------------------------------------------------------------------------------------------------------+
+                |                                                  Validation Report                                                   |
+                +----------------------------------------------------------------------------------------------------------------------+
+                
+                %s:
+                
+                [WARN]: Paragraph has too many sentences [paragraph.sentence.occurrence.max]
+                  File: %s:7:1-96
+                  Actual: 3
+                  Expected: At most 2 sentences
+                
+                   4 |\s
+                   5 | This has two sentences. Here is the second.
+                   6 |\s
+                   7 | This paragraph contains three sentences. Here is the second one. And this is the third sentence.
+                     | ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                   8 |\s
+                   9 | Another paragraph with four sentences here. This is the second sentence. Here is the third one. And finally the fourth.
+                
+                [WARN]: Paragraph has too many sentences [paragraph.sentence.occurrence.max]
+                  File: %s:9:1-119
+                  Actual: 4
+                  Expected: At most 2 sentences
+                
+                   6 |\s
+                   7 | This paragraph contains three sentences. Here is the second one. And this is the third sentence.
+                   8 |\s
+                   9 | Another paragraph with four sentences here. This is the second sentence. Here is the third one. And finally the fourth.
+                     | ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                
+                
+                """, testFile.toString(), testFile.toString(), testFile.toString());
+            
+            assertEquals(expectedOutput, actualOutput);
+        }
+        
+        @Test
+        @DisplayName("should show underline for sentence with too many words")
+        void shouldShowUnderlineForSentenceWithTooManyWords(@TempDir Path tempDir) throws IOException {
+            // Given - YAML rules with maximum words per sentence
+            String rules = """
+                document:
+                  sections:
+                    - level: 0
+                      allowedBlocks:
+                        - paragraph:
+                            severity: error
+                            sentence:
+                              words:
+                                max: 10
+                                severity: warn
+                """;
+            
+            // Given - AsciiDoc content with sentences having too many words
+            String adocContent = """
+                = Test Document
+                
+                This sentence is fine with exactly ten words in it.
+                
+                This sentence has way too many words and definitely exceeds the maximum limit that we have configured for validation purposes.
+                
+                Short sentence here. But this one also has too many words for the configured maximum limit.
+                """;
+            
+            // When - Validate and format output
+            String actualOutput = validateAndFormat(rules, adocContent, tempDir);
+            
+            // Then - Verify exact console output with underline
+            Path testFile = tempDir.resolve("test.adoc");
+            String expectedOutput = String.format("""
+                +----------------------------------------------------------------------------------------------------------------------+
+                |                                                  Validation Report                                                   |
+                +----------------------------------------------------------------------------------------------------------------------+
+                
+                %s:
+                
+                [WARN]: Sentence 1 has too many words [paragraph.sentence.words.max]
+                  File: %s:5:1-126
+                  Actual: 20 words
+                  Expected: At most 10 words
+                
+                   2 |\s
+                   3 | This sentence is fine with exactly ten words in it.
+                   4 |\s
+                   5 | This sentence has way too many words and definitely exceeds the maximum limit that we have configured for validation purposes.
+                     | ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                   6 |\s
+                   7 | Short sentence here. But this one also has too many words for the configured maximum limit.
+                
+                [WARN]: Sentence 2 has too many words [paragraph.sentence.words.max]
+                  File: %s:7:22-91
+                  Actual: 13 words
+                  Expected: At most 10 words
+                
+                   4 |\s
+                   5 | This sentence has way too many words and definitely exceeds the maximum limit that we have configured for validation purposes.
+                   6 |\s
+                   7 | Short sentence here. But this one also has too many words for the configured maximum limit.
+                     |                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                
+                
+                """, testFile.toString(), testFile.toString(), testFile.toString());
+            
+            assertEquals(expectedOutput, actualOutput);
+        }
+    }
+    
+    @Nested
     @DisplayName("Quote Block Validation Tests")
     class QuoteValidationTests {
         
