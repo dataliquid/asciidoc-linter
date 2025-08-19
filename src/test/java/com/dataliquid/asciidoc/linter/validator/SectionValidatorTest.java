@@ -9,6 +9,7 @@ import java.util.Arrays;
 import org.asciidoctor.Asciidoctor;
 import org.asciidoctor.Options;
 import org.asciidoctor.ast.Document;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -27,6 +28,11 @@ class SectionValidatorTest {
     @BeforeEach
     void setUp() {
         asciidoctor = Asciidoctor.Factory.create();
+    }
+    
+    @AfterEach
+    void tearDown() {
+        asciidoctor.close();
     }
     
     @Nested

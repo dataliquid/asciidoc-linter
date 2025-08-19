@@ -13,6 +13,7 @@ import java.util.Arrays;
 import org.asciidoctor.Asciidoctor;
 import org.asciidoctor.Options;
 import org.asciidoctor.ast.Document;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -65,6 +66,11 @@ class MetadataValidatorIntegrationTest {
             .build();
         
         validator = MetadataValidator.fromConfiguration(config).build();
+    }
+    
+    @AfterEach
+    void tearDown() {
+        asciidoctor.close();
     }
 
     @Test
