@@ -5,7 +5,6 @@ import java.util.Arrays;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.ParseException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -97,9 +96,6 @@ public class MainCLI {
     }
     
     private void printMainHelp() {
-        HelpFormatter formatter = new HelpFormatter();
-        formatter.setWidth(100);
-        
         VersionInfo versionInfo = VersionInfo.getInstance();
         String programName = versionInfo.getArtifactId();
         

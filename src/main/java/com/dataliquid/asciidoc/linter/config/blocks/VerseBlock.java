@@ -3,7 +3,6 @@ package com.dataliquid.asciidoc.linter.config.blocks;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
-import com.dataliquid.asciidoc.linter.config.blocks.BlockType;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Quote.AUTHOR;

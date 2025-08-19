@@ -2,7 +2,6 @@ package com.dataliquid.asciidoc.linter.config.blocks;
 
 import java.util.Objects;
 
-import com.dataliquid.asciidoc.linter.config.blocks.BlockType;
 import com.dataliquid.asciidoc.linter.config.common.Severity;
 import com.dataliquid.asciidoc.linter.config.rule.LineConfig;
 import com.dataliquid.asciidoc.linter.config.rule.OccurrenceConfig;
