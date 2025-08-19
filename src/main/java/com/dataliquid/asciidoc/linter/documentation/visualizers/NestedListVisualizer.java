@@ -81,7 +81,7 @@ public class NestedListVisualizer implements HierarchyVisualizer {
     }
     
     private void visualizeSection(SectionConfig section, String indent, PrintWriter writer) {
-        String required = section.min() > 0 ? 
+        String required = (section.occurrence() != null && section.occurrence().min() > 0) ? 
             getSeverityIcon(Severity.ERROR) : getSeverityIcon(Severity.INFO);
         
         writer.println(indent + " " + required + " **" + section.name() + "** - " + 

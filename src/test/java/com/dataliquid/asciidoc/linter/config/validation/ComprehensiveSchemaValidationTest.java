@@ -55,8 +55,9 @@ class ComprehensiveSchemaValidationTest {
                   sections:
                     - name: "comprehensive"
                       level: 1
-                      min: 1
-                      max: 1
+                      occurrence:
+                        min: 1
+                        max: 1
                       allowedBlocks:
                         - paragraph:
                             severity: error
@@ -419,8 +420,9 @@ class ComprehensiveSchemaValidationTest {
                   sections:
                     - name: "introduction"
                       level: 1
-                      min: 1
-                      max: 1
+                      occurrence:
+                        min: 1
+                        max: 1
                       allowedBlocks:
                         - paragraph:
                             severity: error
@@ -430,8 +432,9 @@ class ComprehensiveSchemaValidationTest {
                       subsections:
                         - name: "overview"
                           level: 2
-                          min: 0
-                          max: 1
+                          occurrence:
+                            min: 0
+                            max: 1
                           allowedBlocks:
                             - paragraph:
                                 severity: warn
@@ -441,8 +444,9 @@ class ComprehensiveSchemaValidationTest {
                                   required: true
                     - name: "main"
                       level: 1
-                      min: 1
-                      max: 5
+                      occurrence:
+                        min: 1
+                        max: 5
                       allowedBlocks:
                         - paragraph:
                             severity: error
@@ -454,8 +458,9 @@ class ComprehensiveSchemaValidationTest {
                             severity: info
                       subsections:
                         - level: 2
-                          min: 0
-                          max: 10
+                          occurrence:
+                            min: 0
+                            max: 10
                           allowedBlocks:
                             - paragraph:
                                 severity: warn

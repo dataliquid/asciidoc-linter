@@ -407,15 +407,17 @@ class LinterTest {
                   sections:
                     - name: documentTitle
                       level: 0
-                      min: 1
-                      max: 1
+                      occurrence:
+                        min: 1
+                        max: 1
                       title:
                         pattern: "^[A-Z].*"
                         severity: error
                     - name: introduction
                       level: 1
-                      min: 1
-                      max: 1
+                      occurrence:
+                        min: 1
+                        max: 1
                       title:
                         pattern: "^Introduction$"
                         severity: error
@@ -424,7 +426,8 @@ class LinterTest {
                             severity: warn
                     - name: mainContent
                       level: 1
-                      min: 1
+                      occurrence:
+                        min: 1
                       title:
                         pattern: "^Main.*"
                         severity: error

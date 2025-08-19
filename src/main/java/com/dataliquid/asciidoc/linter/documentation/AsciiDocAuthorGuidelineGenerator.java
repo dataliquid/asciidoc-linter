@@ -234,20 +234,22 @@ public class AsciiDocAuthorGuidelineGenerator implements RuleDocumentationGenera
     }
     
     private void generateSectionNote(SectionConfig section, PrintWriter writer) {
-        String severity = section.min() > 0 ? "CAUTION" : "NOTE";
+        int min = section.occurrence() != null ? section.occurrence().min() : 0;
+        int max = section.occurrence() != null ? section.occurrence().max() : Integer.MAX_VALUE;
+        String severity = min > 0 ? "CAUTION" : "NOTE";
         
         writer.println("[" + severity + "]");
         writer.println("====");
         writer.println("**Position**: " + (section.order() != null ? 
             "Position " + section.order() : "Any"));
         writer.println("**Level**: " + section.level());
-        writer.println("**Required**: " + (section.min() > 0 ? "Yes" : "No"));
+        writer.println("**Required**: " + (min > 0 ? "Yes" : "No"));
         
         writer.print("**Count**: ");
-        if (section.max() > 0) {
-            writer.println(section.min() + "-" + section.max());
+        if (max > 0 && max != Integer.MAX_VALUE) {
+            writer.println(min + "-" + max);
         } else {
-            writer.println("At least " + section.min());
+            writer.println("At least " + min);
         }
         
         // Add title pattern if present
