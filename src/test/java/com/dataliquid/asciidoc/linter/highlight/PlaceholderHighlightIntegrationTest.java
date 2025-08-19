@@ -371,6 +371,321 @@ class PlaceholderHighlightIntegrationTest {
     }
     
     @Test
+    @DisplayName("should show placeholder for paragraph with too few sentences")
+    void shouldShowPlaceholderForParagraphWithTooFewSentences(@TempDir Path tempDir) throws IOException {
+        // Given - YAML rules requiring minimum 3 sentences for paragraphs
+        String rules = """
+            document:
+              sections:
+                - level: 0
+                  allowedBlocks:
+                    - paragraph:
+                        severity: error
+                        sentence:
+                          occurrence:
+                            min: 3
+                            severity: error
+            """;
+        
+        // Given - AsciiDoc content with paragraph having only 2 sentences
+        String adocContent = """
+            = Test Document
+            
+            This is the first sentence. This is the second sentence.
+            """;
+        
+        // When - Validate and format output
+        String actualOutput = validateAndFormat(rules, adocContent, tempDir);
+        
+        // Then - Verify exact console output with placeholder
+        Path testFile = tempDir.resolve("test.adoc");
+        String expectedOutput = String.format("""
+            +----------------------------------------------------------------------------------------------------------------------+
+            |                                                  Validation Report                                                   |
+            +----------------------------------------------------------------------------------------------------------------------+
+            
+            %s:
+            
+            [ERROR]: Paragraph has too few sentences [paragraph.sentence.occurrence.min]
+              File: %s:3:57
+              Actual: 2
+              Expected: At least 3 sentences
+            
+               1 | = Test Document
+               2 |\s
+               3 | This is the first sentence. This is the second sentence. «Add more sentences.»
+            
+            
+            """, testFile.toString(), testFile.toString());
+        
+        assertEquals(expectedOutput, actualOutput);
+    }
+    
+    @Test
+    @DisplayName("should show placeholder for paragraph with only one sentence when three required")
+    void shouldShowPlaceholderForParagraphWithOneSentenceWhenThreeRequired(@TempDir Path tempDir) throws IOException {
+        // Given - YAML rules requiring minimum 3 sentences for paragraphs
+        String rules = """
+            document:
+              sections:
+                - level: 0
+                  allowedBlocks:
+                    - paragraph:
+                        severity: warn
+                        sentence:
+                          occurrence:
+                            min: 3
+                            severity: warn
+            """;
+        
+        // Given - AsciiDoc content with paragraph having only 1 sentence
+        String adocContent = """
+            = Test Document
+            
+            This is only one sentence.
+            """;
+        
+        // When - Validate and format output
+        String actualOutput = validateAndFormat(rules, adocContent, tempDir);
+        
+        // Then - Verify exact console output with placeholder
+        Path testFile = tempDir.resolve("test.adoc");
+        String expectedOutput = String.format("""
+            +----------------------------------------------------------------------------------------------------------------------+
+            |                                                  Validation Report                                                   |
+            +----------------------------------------------------------------------------------------------------------------------+
+            
+            %s:
+            
+            [WARN]: Paragraph has too few sentences [paragraph.sentence.occurrence.min]
+              File: %s:3:27
+              Actual: 1
+              Expected: At least 3 sentences
+            
+               1 | = Test Document
+               2 |\s
+               3 | This is only one sentence. «Add more sentences.»
+            
+            
+            """, testFile.toString(), testFile.toString());
+        
+        assertEquals(expectedOutput, actualOutput);
+    }
+    
+    @Test
+    @DisplayName("should show placeholder for sentence with too few words")
+    void shouldShowPlaceholderForSentenceWithTooFewWords(@TempDir Path tempDir) throws IOException {
+        // Given - YAML rules requiring minimum 5 words per sentence
+        String rules = """
+            document:
+              sections:
+                - level: 0
+                  allowedBlocks:
+                    - paragraph:
+                        severity: error
+                        sentence:
+                          words:
+                            min: 5
+                            severity: error
+            """;
+        
+        // Given - AsciiDoc content with sentence having only 3 words
+        String adocContent = """
+            = Test Document
+            
+            This is short.
+            """;
+        
+        // When - Validate and format output
+        String actualOutput = validateAndFormat(rules, adocContent, tempDir);
+        
+        // Then - Verify exact console output with placeholder before punctuation
+        Path testFile = tempDir.resolve("test.adoc");
+        String expectedOutput = String.format("""
+            +----------------------------------------------------------------------------------------------------------------------+
+            |                                                  Validation Report                                                   |
+            +----------------------------------------------------------------------------------------------------------------------+
+            
+            %s:
+            
+            [ERROR]: Sentence 1 has too few words [paragraph.sentence.words.min]
+              File: %s:3:14
+              Actual: 3 words
+              Expected: At least 5 words
+            
+               1 | = Test Document
+               2 |\s
+               3 | This is short «add more words».
+            
+            
+            """, testFile.toString(), testFile.toString());
+        
+        assertEquals(expectedOutput, actualOutput);
+    }
+    
+    @Test
+    @DisplayName("should show placeholder for sentence with question mark")
+    void shouldShowPlaceholderForSentenceWithQuestionMark(@TempDir Path tempDir) throws IOException {
+        // Given - YAML rules requiring minimum 4 words per sentence
+        String rules = """
+            document:
+              sections:
+                - level: 0
+                  allowedBlocks:
+                    - paragraph:
+                        severity: warn
+                        sentence:
+                          words:
+                            min: 4
+                            severity: warn
+            """;
+        
+        // Given - AsciiDoc content with question having only 3 words
+        String adocContent = """
+            = Test Document
+            
+            How are you?
+            """;
+        
+        // When - Validate and format output
+        String actualOutput = validateAndFormat(rules, adocContent, tempDir);
+        
+        // Then - Verify exact console output with placeholder before question mark
+        Path testFile = tempDir.resolve("test.adoc");
+        String expectedOutput = String.format("""
+            +----------------------------------------------------------------------------------------------------------------------+
+            |                                                  Validation Report                                                   |
+            +----------------------------------------------------------------------------------------------------------------------+
+            
+            %s:
+            
+            [WARN]: Sentence 1 has too few words [paragraph.sentence.words.min]
+              File: %s:3:12
+              Actual: 3 words
+              Expected: At least 4 words
+            
+               1 | = Test Document
+               2 |\s
+               3 | How are you «add more words»?
+            
+            
+            """, testFile.toString(), testFile.toString());
+        
+        assertEquals(expectedOutput, actualOutput);
+    }
+    
+    @Test
+    @DisplayName("should show placeholder for sentence with exclamation mark")
+    void shouldShowPlaceholderForSentenceWithExclamationMark(@TempDir Path tempDir) throws IOException {
+        // Given - YAML rules requiring minimum 3 words per sentence
+        String rules = """
+            document:
+              sections:
+                - level: 0
+                  allowedBlocks:
+                    - paragraph:
+                        severity: error
+                        sentence:
+                          words:
+                            min: 3
+                            severity: error
+            """;
+        
+        // Given - AsciiDoc content with exclamation having only 2 words
+        String adocContent = """
+            = Test Document
+            
+            Too short!
+            """;
+        
+        // When - Validate and format output
+        String actualOutput = validateAndFormat(rules, adocContent, tempDir);
+        
+        // Then - Verify exact console output with placeholder before exclamation mark
+        Path testFile = tempDir.resolve("test.adoc");
+        String expectedOutput = String.format("""
+            +----------------------------------------------------------------------------------------------------------------------+
+            |                                                  Validation Report                                                   |
+            +----------------------------------------------------------------------------------------------------------------------+
+            
+            %s:
+            
+            [ERROR]: Sentence 1 has too few words [paragraph.sentence.words.min]
+              File: %s:3:10
+              Actual: 2 words
+              Expected: At least 3 words
+            
+               1 | = Test Document
+               2 |\s
+               3 | Too short «add more words»!
+            
+            
+            """, testFile.toString(), testFile.toString());
+        
+        assertEquals(expectedOutput, actualOutput);
+    }
+    
+    @Test
+    @DisplayName("should show placeholder for multiple sentences with too few words")
+    void shouldShowPlaceholderForMultipleSentencesWithTooFewWords(@TempDir Path tempDir) throws IOException {
+        // Given - YAML rules requiring minimum 5 words per sentence
+        String rules = """
+            document:
+              sections:
+                - level: 0
+                  allowedBlocks:
+                    - paragraph:
+                        severity: warn
+                        sentence:
+                          words:
+                            min: 5
+                            severity: warn
+            """;
+        
+        // Given - AsciiDoc content with multiple short sentences
+        String adocContent = """
+            = Test Document
+            
+            Too short. This sentence has exactly five words. Also short!
+            """;
+        
+        // When - Validate and format output
+        String actualOutput = validateAndFormat(rules, adocContent, tempDir);
+        
+        // Then - Verify exact console output with placeholders for each short sentence
+        Path testFile = tempDir.resolve("test.adoc");
+        String expectedOutput = String.format("""
+            +----------------------------------------------------------------------------------------------------------------------+
+            |                                                  Validation Report                                                   |
+            +----------------------------------------------------------------------------------------------------------------------+
+            
+            %s:
+            
+            [WARN]: Sentence 1 has too few words [paragraph.sentence.words.min]
+              File: %s:3:10
+              Actual: 2 words
+              Expected: At least 5 words
+            
+               1 | = Test Document
+               2 |\s
+               3 | Too short «add more words». This sentence has exactly five words. Also short!
+            
+            [WARN]: Sentence 3 has too few words [paragraph.sentence.words.min]
+              File: %s:3:60
+              Actual: 2 words
+              Expected: At least 5 words
+            
+               1 | = Test Document
+               2 |\s
+               3 | Too short. This sentence has exactly five words. Also short «add more words»!
+            
+            
+            """, testFile.toString(), testFile.toString(), testFile.toString());
+        
+        assertEquals(expectedOutput, actualOutput);
+    }
+    
+    @Test
     @DisplayName("should show placeholder for paragraph with too few lines")
     void shouldShowPlaceholderForParagraphWithTooFewLines(@TempDir Path tempDir) throws IOException {
         // Given - YAML rules requiring minimum 2 lines for paragraphs
