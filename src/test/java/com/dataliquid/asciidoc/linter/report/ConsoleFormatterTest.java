@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -38,6 +39,13 @@ class ConsoleFormatterTest {
         formatter = new ConsoleFormatter(config);
         stringWriter = new StringWriter();
         printWriter = new PrintWriter(stringWriter);
+    }
+    
+    @AfterEach
+    void tearDown() {
+        printWriter.close();
+        stringWriter = null;
+        printWriter = null;
     }
     
     @Nested

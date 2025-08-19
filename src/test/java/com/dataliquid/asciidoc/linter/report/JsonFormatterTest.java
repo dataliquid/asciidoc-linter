@@ -8,6 +8,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.List;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -31,6 +32,13 @@ class JsonFormatterTest {
         formatter = JsonFormatter.pretty();
         stringWriter = new StringWriter();
         printWriter = new PrintWriter(stringWriter);
+    }
+    
+    @AfterEach
+    void tearDown() {
+        printWriter.close();
+        stringWriter = null;
+        printWriter = null;
     }
     
     @Nested

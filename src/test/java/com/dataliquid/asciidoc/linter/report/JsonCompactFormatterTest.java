@@ -10,6 +10,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Arrays;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -44,6 +45,13 @@ class JsonCompactFormatterTest {
         objectMapper = new ObjectMapper();
         stringWriter = new StringWriter();
         printWriter = new PrintWriter(stringWriter);
+    }
+    
+    @AfterEach
+    void tearDown() {
+        printWriter.close();
+        stringWriter = null;
+        printWriter = null;
     }
     
     @Test

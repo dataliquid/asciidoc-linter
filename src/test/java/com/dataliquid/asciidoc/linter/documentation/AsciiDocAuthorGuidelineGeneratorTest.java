@@ -10,6 +10,7 @@ import java.io.StringWriter;
 import java.util.List;
 import java.util.Set;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -36,6 +37,13 @@ class AsciiDocAuthorGuidelineGeneratorTest {
         generator = new AsciiDocAuthorGuidelineGenerator();
         stringWriter = new StringWriter();
         printWriter = new PrintWriter(stringWriter);
+    }
+    
+    @AfterEach
+    void tearDown() {
+        printWriter.close();
+        stringWriter = null;
+        printWriter = null;
     }
     
     @Test
