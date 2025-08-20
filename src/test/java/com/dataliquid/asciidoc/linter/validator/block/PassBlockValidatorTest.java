@@ -1,4 +1,5 @@
 package com.dataliquid.asciidoc.linter.validator.block;
+import com.dataliquid.asciidoc.linter.config.blocks.BlockType;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -17,7 +18,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import com.dataliquid.asciidoc.linter.config.blocks.BlockType;
 import com.dataliquid.asciidoc.linter.config.common.Severity;
 import com.dataliquid.asciidoc.linter.config.blocks.PassBlock;
 import com.dataliquid.asciidoc.linter.config.blocks.PassBlock.ContentConfig;

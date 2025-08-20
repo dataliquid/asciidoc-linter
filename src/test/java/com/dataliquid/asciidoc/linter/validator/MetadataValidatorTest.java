@@ -12,6 +12,7 @@ import java.util.Arrays;
 import org.asciidoctor.Asciidoctor;
 import org.asciidoctor.Options;
 import org.asciidoctor.ast.Document;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,9 +25,11 @@ import com.dataliquid.asciidoc.linter.config.rule.AttributeConfig;
 class MetadataValidatorTest {
 
     private MetadataConfiguration testConfig;
+    private Asciidoctor asciidoctor;
 
     @BeforeEach
     void setUp() {
+        asciidoctor = Asciidoctor.Factory.create();
         testConfig = MetadataConfiguration.builder()
             .attributes(Arrays.asList(
                 AttributeConfig.builder()
@@ -36,6 +39,11 @@ class MetadataValidatorTest {
                     .build()
             ))
             .build();
+    }
+    
+    @AfterEach
+    void tearDown() {
+        asciidoctor.close();
     }
 
     @Test
@@ -55,7 +63,6 @@ class MetadataValidatorTest {
     @DisplayName("should validate document with valid metadata")
     void shouldPassValidationWhenDocumentHasValidMetadata() {
         // Given
-        Asciidoctor asciidoctor = Asciidoctor.Factory.create();
         String content = """
             = Test Document
             :author: Test Author
@@ -77,7 +84,6 @@ class MetadataValidatorTest {
     @DisplayName("should detect missing author")
     void shouldReportErrorWhenAuthorIsMissing() throws IOException {
         // Given
-        Asciidoctor asciidoctor = Asciidoctor.Factory.create();
         String content = """
             = Document Title
             
@@ -104,7 +110,6 @@ class MetadataValidatorTest {
     @DisplayName("should properly extract line numbers")
     void shouldIncludeLineNumbersWhenReportingValidationMessages() {
         // Given
-        Asciidoctor asciidoctor = Asciidoctor.Factory.create();
         String content = """
             = Test Title
             :author: John Doe

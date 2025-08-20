@@ -1,6 +1,5 @@
 package com.dataliquid.asciidoc.linter.config.blocks;
 
-import com.dataliquid.asciidoc.linter.config.blocks.BlockType;
 import com.dataliquid.asciidoc.linter.config.common.Severity;
 import com.dataliquid.asciidoc.linter.config.rule.OccurrenceConfig;
 import com.fasterxml.jackson.annotation.JsonProperty;

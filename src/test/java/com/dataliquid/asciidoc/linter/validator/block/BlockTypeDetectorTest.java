@@ -1,4 +1,5 @@
 package com.dataliquid.asciidoc.linter.validator.block;
+import com.dataliquid.asciidoc.linter.config.blocks.BlockType;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -13,7 +14,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import com.dataliquid.asciidoc.linter.config.blocks.BlockType;
 
 @DisplayName("BlockTypeDetector")
 class BlockTypeDetectorTest {

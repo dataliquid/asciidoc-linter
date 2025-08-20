@@ -13,6 +13,7 @@ import java.util.Arrays;
 import org.asciidoctor.Asciidoctor;
 import org.asciidoctor.Options;
 import org.asciidoctor.ast.Document;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -65,6 +66,17 @@ class MetadataValidatorIntegrationTest {
             .build();
         
         validator = MetadataValidator.fromConfiguration(config).build();
+    }
+    
+    @AfterEach
+    void tearDown() throws IOException {
+        asciidoctor.close();
+        if (tempDir != null && Files.exists(tempDir)) {
+            Files.walk(tempDir)
+                .sorted(java.util.Comparator.reverseOrder())
+                .map(Path::toFile)
+                .forEach(java.io.File::delete);
+        }
     }
 
     @Test

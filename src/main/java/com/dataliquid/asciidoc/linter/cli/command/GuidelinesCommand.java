@@ -9,7 +9,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.help.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.logging.log4j.LogManager;
@@ -49,34 +49,38 @@ public class GuidelinesCommand implements Command {
         Options options = new Options();
         
         // Configuration file (required for execution, but not for help)
-        options.addOption(Option.builder("r")
+        Option ruleOption = Option.builder("r")
             .longOpt("rule")
             .hasArg()
             .argName("file")
             .desc("YAML rule configuration file (required)")
-            .build());
+            .get();
+        options.addOption(ruleOption);
         
         // Output file
-        options.addOption(Option.builder("o")
+        Option outputOption = Option.builder("o")
             .longOpt("output")
             .hasArg()
             .argName("file")
             .desc("Output file for generated guidelines (default: stdout)")
-            .build());
+            .get();
+        options.addOption(outputOption);
         
         // Visualization style
-        options.addOption(Option.builder("s")
+        Option styleOption = Option.builder("s")
             .longOpt("style")
             .hasArg()
             .argName("styles")
             .desc("Comma-separated visualization styles: tree, nested, breadcrumb, table (default: tree)")
-            .build());
+            .get();
+        options.addOption(styleOption);
         
         // Help
-        options.addOption(Option.builder("h")
+        Option helpOption = Option.builder("h")
             .longOpt("help")
             .desc("Show help for guidelines command")
-            .build());
+            .get();
+        options.addOption(helpOption);
         
         return options;
     }
@@ -130,8 +134,7 @@ public class GuidelinesCommand implements Command {
     
     @Override
     public void printHelp() {
-        HelpFormatter formatter = new HelpFormatter();
-        formatter.setWidth(100);
+        HelpFormatter formatter = HelpFormatter.builder().get();
         
         VersionInfo versionInfo = VersionInfo.getInstance();
         String programName = versionInfo.getArtifactId();
@@ -147,8 +150,13 @@ public class GuidelinesCommand implements Command {
             "  breadcrumb - Breadcrumb navigation\n" +
             "  table      - Tabular format\n";
         
-        formatter.printHelp(programName + " guidelines -r <file> [options]", 
-            header, getOptions(), footer, false);
+        try {
+            formatter.printHelp(programName + " guidelines -r <file> [options]", 
+                header, getOptions(), footer, false);
+        } catch (IOException e) {
+            // Fallback to stderr if IOException occurs
+            System.err.println("Error printing help: " + e.getMessage());
+        }
     }
     
     private LinterConfiguration loadConfiguration(String configPath) throws IOException {

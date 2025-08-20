@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.help.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.logging.log4j.LogManager;
@@ -46,7 +46,7 @@ public class LintCommand implements Command {
             .hasArg()
             .argName("patterns")
             .desc("Comma-separated Ant file patterns (e.g., '**/*.adoc,docs/**/*.asciidoc')")
-            .build());
+            .get());
         
         // Configuration file
         options.addOption(Option.builder("r")
@@ -54,7 +54,7 @@ public class LintCommand implements Command {
             .hasArg()
             .argName("file")
             .desc("YAML rule configuration file (default: .linter-rule-config.yaml)")
-            .build());
+            .get());
         
         // Report format
         options.addOption(Option.builder("f")
@@ -62,7 +62,7 @@ public class LintCommand implements Command {
             .hasArg()
             .argName("format")
             .desc("Report format: console, json, json-compact (default: console)")
-            .build());
+            .get());
         
         // Report output
         options.addOption(Option.builder("o")
@@ -70,7 +70,7 @@ public class LintCommand implements Command {
             .hasArg()
             .argName("file/directory")
             .desc("Report output file or directory (default: stdout)")
-            .build());
+            .get());
         
         // Fail level
         options.addOption(Option.builder("l")
@@ -78,7 +78,7 @@ public class LintCommand implements Command {
             .hasArg()
             .argName("level")
             .desc("Exit code 1 on: error, warn, info (default: error)")
-            .build());
+            .get());
         
         // Output configuration (predefined)
         options.addOption(Option.builder()
@@ -86,7 +86,7 @@ public class LintCommand implements Command {
             .hasArg()
             .argName("name")
             .desc("Predefined output configuration: enhanced, simple, compact (default: enhanced)")
-            .build());
+            .get());
         
         // Output configuration (custom file)
         options.addOption(Option.builder()
@@ -94,13 +94,13 @@ public class LintCommand implements Command {
             .hasArg()
             .argName("file")
             .desc("Custom YAML output configuration file for console formatting")
-            .build());
+            .get());
         
         // Help
         options.addOption(Option.builder("h")
             .longOpt("help")
             .desc("Show help for lint command")
-            .build());
+            .get());
         
         return options;
     }
@@ -144,8 +144,7 @@ public class LintCommand implements Command {
     
     @Override
     public void printHelp() {
-        HelpFormatter formatter = new HelpFormatter();
-        formatter.setWidth(100);
+        HelpFormatter formatter = HelpFormatter.builder().get();
         
         VersionInfo versionInfo = VersionInfo.getInstance();
         String programName = versionInfo.getArtifactId();
@@ -166,8 +165,13 @@ public class LintCommand implements Command {
             "  1 - Violations at or above fail level found\n" +
             "  2 - Invalid arguments or runtime error\n";
         
-        formatter.printHelp(programName + " lint -i <patterns> [options]", 
-            header, getOptions(), footer, false);
+        try {
+            formatter.printHelp(programName + " lint -i <patterns> [options]", 
+                header, getOptions(), footer, false);
+        } catch (java.io.IOException e) {
+            // Fallback to stderr if IOException occurs
+            System.err.println("Error printing help: " + e.getMessage());
+        }
     }
     
     private CLIConfig parseConfiguration(CommandLine cmd) {
