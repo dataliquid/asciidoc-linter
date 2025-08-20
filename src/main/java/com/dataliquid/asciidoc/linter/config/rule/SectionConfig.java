@@ -21,8 +21,7 @@ public final class SectionConfig {
     private final String name;
     private final Integer order;
     private final int level;
-    private final int min;
-    private final int max;
+    private final OccurrenceConfig occurrence;
     private final TitleConfig title;
     private final List<Block> allowedBlocks;
     private final List<SectionConfig> subsections;
@@ -31,8 +30,7 @@ public final class SectionConfig {
         this.name = builder.name;
         this.order = builder.order;
         this.level = builder.level;
-        this.min = builder.min;
-        this.max = builder.max;
+        this.occurrence = builder.occurrence;
         this.title = builder.title;
         this.allowedBlocks = Collections.unmodifiableList(new ArrayList<>(builder.allowedBlocks));
         this.subsections = Collections.unmodifiableList(new ArrayList<>(builder.subsections));
@@ -47,11 +45,8 @@ public final class SectionConfig {
     @JsonProperty(LEVEL)
     public int level() { return level; }
     
-    @JsonProperty(MIN)
-    public int min() { return min; }
-    
-    @JsonProperty(MAX)
-    public int max() { return max; }
+    @JsonProperty(OCCURRENCE)
+    public OccurrenceConfig occurrence() { return occurrence; }
     
     @JsonProperty(TITLE)
     public TitleConfig title() { return title; }
@@ -71,8 +66,7 @@ public final class SectionConfig {
         private String name;
         private Integer order;
         private int level;
-        private int min = 0;
-        private int max = Integer.MAX_VALUE;
+        private OccurrenceConfig occurrence;
         private TitleConfig title;
         private List<Block> allowedBlocks = new ArrayList<>();
         private List<SectionConfig> subsections = new ArrayList<>();
@@ -95,15 +89,9 @@ public final class SectionConfig {
             return this;
         }
 
-        @JsonProperty(MIN)
-        public Builder min(int min) {
-            this.min = min;
-            return this;
-        }
-
-        @JsonProperty(MAX)
-        public Builder max(int max) {
-            this.max = max;
+        @JsonProperty(OCCURRENCE)
+        public Builder occurrence(OccurrenceConfig occurrence) {
+            this.occurrence = occurrence;
             return this;
         }
 
@@ -147,8 +135,7 @@ public final class SectionConfig {
         if (o == null || getClass() != o.getClass()) return false;
         SectionConfig that = (SectionConfig) o;
         return level == that.level &&
-               min == that.min &&
-               max == that.max &&
+               Objects.equals(occurrence, that.occurrence) &&
                Objects.equals(name, that.name) &&
                Objects.equals(order, that.order) &&
                Objects.equals(title, that.title) &&
@@ -158,6 +145,6 @@ public final class SectionConfig {
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, order, level, min, max, title, allowedBlocks, subsections);
+        return Objects.hash(name, order, level, occurrence, title, allowedBlocks, subsections);
     }
 }

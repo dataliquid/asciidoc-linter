@@ -156,8 +156,10 @@ class AsciiDocAuthorGuidelineGeneratorTest {
                 .name("introduction")
                 .level(1)
                 .order(1)
-                .min(1)
-                .max(1)
+                .occurrence(OccurrenceConfig.builder()
+                    .min(1)
+                    .max(1)
+                    .build())
                 .allowedBlocks(List.of(paragraph))
                 .build();
             

@@ -159,7 +159,15 @@ public class HighlightRenderer {
                     // Don't add placeholder to existing content lines
                     return line;
                 }
-            } 
+            }
+            // For paragraph.sentence.occurrence.min, append placeholder at end of line with space
+            else if ("paragraph.sentence.occurrence.min".equals(message.getRuleId())) {
+                return insertPlaceholderWithSpace(line, message);
+            }
+            // For paragraph.sentence.words.min, insert placeholder before punctuation
+            else if ("paragraph.sentence.words.min".equals(message.getRuleId())) {
+                return insertPlaceholderBeforePunctuation(line, message);
+            }
             // For video.caption.required, only insert placeholder on empty lines
             else if ("video.caption.required".equals(message.getRuleId())) {
                 if (line.isEmpty()) {
@@ -220,6 +228,70 @@ public class HighlightRenderer {
         
         // For invalid values: keep original (will be underlined)
         return line;
+    }
+    
+    private String insertPlaceholderWithSpace(String line, ValidationMessage message) {
+        // Special handling for sentence placeholders - always add space before
+        int col = message.getLocation().getStartColumn();
+        
+        // Generate placeholder with leading space
+        String placeholderText = PLACEHOLDER_START + message.getMissingValueHint() + PLACEHOLDER_END;
+        String placeholder = " " + colorScheme.error(placeholderText);
+        
+        if (col <= 0 || col > line.length() + 1) {
+            // Append at end if column is invalid
+            return line + placeholder;
+        }
+        
+        // Insert at specific position (col is 1-based)
+        if (col > line.length()) {
+            // Insert at end of line
+            return line + placeholder;
+        }
+        
+        String before = line.substring(0, col - 1);
+        String after = line.substring(col - 1);
+        
+        return before + placeholder + after;
+    }
+    
+    private String insertPlaceholderBeforePunctuation(String line, ValidationMessage message) {
+        // Special handling for inserting placeholder before punctuation marks
+        int col = message.getLocation().getStartColumn();
+        
+        // Generate placeholder with leading space
+        String placeholderText = PLACEHOLDER_START + message.getMissingValueHint() + PLACEHOLDER_END;
+        String placeholder = " " + colorScheme.error(placeholderText);
+        
+        if (col <= 0 || col > line.length() + 1) {
+            // Invalid column, try to find punctuation at end of line
+            if (line.matches(".*[.!?]+$")) {
+                // Find where punctuation starts
+                int punctStart = line.length() - 1;
+                while (punctStart > 0 && ".!?".indexOf(line.charAt(punctStart)) != -1) {
+                    punctStart--;
+                }
+                punctStart++; // Move to first punctuation character
+                
+                String before = line.substring(0, punctStart);
+                String after = line.substring(punctStart);
+                return before + placeholder + after;
+            }
+            // No punctuation found, append at end
+            return line + placeholder;
+        }
+        
+        // Insert at specific position (col is 1-based)
+        if (col > line.length()) {
+            // Position beyond line end, append
+            return line + placeholder;
+        }
+        
+        // Insert before punctuation at specified position
+        String before = line.substring(0, col - 1);
+        String after = line.substring(col - 1);
+        
+        return before + placeholder + after;
     }
     
     private String insertPlaceholder(String line, ValidationMessage message) {

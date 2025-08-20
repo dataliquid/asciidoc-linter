@@ -266,7 +266,7 @@ public final class SectionValidator {
         String key = createOccurrenceKey(config);
         int occurrences = sectionOccurrences.getOrDefault(key, 0);
         
-        if (occurrences < config.min()) {
+        if (config.occurrence() != null && occurrences < config.occurrence().min()) {
             SourceLocation location = SourceLocation.builder()
                 .filename(filename)
                 .startLine(1)
@@ -290,7 +290,7 @@ public final class SectionValidator {
                 .location(location)
                 .message("Missing required section '" + config.name() + "' at level " + config.level() + context)
                 .actualValue(String.valueOf(occurrences) + " occurrences")
-                .expectedValue("At least " + config.min() + " occurrence(s)")
+                .expectedValue("At least " + config.occurrence().min() + " occurrence(s)")
                 .errorType(ErrorType.MISSING_VALUE)
                 .missingValueHint(sectionPlaceholder)
                 .placeholderContext(PlaceholderContext.builder()
@@ -306,7 +306,7 @@ public final class SectionValidator {
             resultBuilder.addMessage(message);
         }
         
-        if (occurrences > config.max()) {
+        if (config.occurrence() != null && occurrences > config.occurrence().max()) {
             SourceLocation location = SourceLocation.builder()
                 .filename(filename)
                 .line(1)
@@ -318,12 +318,12 @@ public final class SectionValidator {
                 .location(location)
                 .message("Too many occurrences of section: " + config.name())
                 .actualValue(String.valueOf(occurrences))
-                .expectedValue("At most " + config.max())
+                .expectedValue("At most " + config.occurrence().max())
                 .addSuggestion(Suggestion.builder()
                     .description("Remove or consolidate duplicate sections")
                     .addExample("Merge duplicate '" + config.name() + "' sections")
                     .addExample("Remove unnecessary repetitions")
-                    .explanation("Maximum " + config.max() + " occurrence(s) allowed for this section")
+                    .explanation("Maximum " + config.occurrence().max() + " occurrence(s) allowed for this section")
                     .build())
                 .build();
             resultBuilder.addMessage(message);
@@ -377,7 +377,7 @@ public final class SectionValidator {
         SourceLocation location = createDocumentTitleLocation(filename, documentTitle);
         
         // Check if title is required
-        if (titleConfig.min() > 0 && (documentTitle == null || documentTitle.trim().isEmpty())) {
+        if (titleConfig.occurrence() != null && titleConfig.occurrence().min() > 0 && (documentTitle == null || documentTitle.trim().isEmpty())) {
             // If the config has a name, skip this validation - the min-occurrences check will handle it
             // and provide a better error message with placeholder
             if (titleConfig.name() != null) {

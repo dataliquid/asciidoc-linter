@@ -99,7 +99,7 @@ public class BreadcrumbVisualizer implements HierarchyVisualizer {
         String sectionPath = parentPath + " > " + section.name();
         String description = getSectionDescription(section) + 
                            " (Level " + section.level() + ")";
-        Severity severity = section.min() > 0 ? 
+        Severity severity = (section.occurrence() != null && section.occurrence().min() > 0) ? 
                           Severity.ERROR : Severity.INFO;
         
         paths.add(new RulePath(sectionPath, severity, description));

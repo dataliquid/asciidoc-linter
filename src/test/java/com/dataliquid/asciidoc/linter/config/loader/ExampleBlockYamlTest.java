@@ -38,8 +38,9 @@ class ExampleBlockYamlTest {
             document:
               sections:
                 - name: test-section
-                  min: 1
-                  max: 1
+                  occurrence:
+                    min: 1
+                    max: 1
                   allowedBlocks:
                     - example:
                         name: minimal-example
@@ -72,8 +73,9 @@ class ExampleBlockYamlTest {
             document:
               sections:
                 - name: test-section
-                  min: 1
-                  max: 1
+                  occurrence:
+                    min: 1
+                    max: 1
                   allowedBlocks:
                     - example:
                         name: example-with-caption
@@ -117,8 +119,9 @@ class ExampleBlockYamlTest {
             document:
               sections:
                 - name: test-section
-                  min: 1
-                  max: 1
+                  occurrence:
+                    min: 1
+                    max: 1
                   allowedBlocks:
                     - example:
                         name: example-with-collapsible
@@ -157,8 +160,9 @@ class ExampleBlockYamlTest {
             document:
               sections:
                 - name: test-section
-                  min: 1
-                  max: 1
+                  occurrence:
+                    min: 1
+                    max: 1
                   allowedBlocks:
                     - example:
                         name: full-example

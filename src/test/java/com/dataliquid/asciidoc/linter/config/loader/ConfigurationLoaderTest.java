@@ -67,8 +67,9 @@ class ConfigurationLoaderTest {
                     - name: introduction
                       order: 1
                       level: 1
-                      min: 1
-                      max: 1
+                      occurrence:
+                        min: 1
+                        max: 1
                       title:
                         pattern: "^(Introduction|Einführung)$"
                       allowedBlocks:
@@ -117,8 +118,9 @@ class ConfigurationLoaderTest {
             assertEquals("introduction", introSection.name());
             assertEquals(1, introSection.order());
             assertEquals(1, introSection.level());
-            assertEquals(1, introSection.min());
-            assertEquals(1, introSection.max());
+            assertNotNull(introSection.occurrence());
+            assertEquals(1, introSection.occurrence().min());
+            assertEquals(1, introSection.occurrence().max());
             
             // Then - Title pattern
             assertNotNull(introSection.title());
@@ -251,17 +253,20 @@ class ConfigurationLoaderTest {
                   sections:
                     - name: main
                       level: 1
-                      min: 1
-                      max: 1
+                      occurrence:
+                        min: 1
+                        max: 1
                       subsections:
                         - name: sub1
                           level: 2
-                          min: 0
-                          max: 2
+                          occurrence:
+                            min: 0
+                            max: 2
                           subsections:
                             - level: 3
-                              min: 0
-                              max: 5
+                              occurrence:
+                                min: 0
+                                max: 5
                 """;
             
             // When
@@ -280,7 +285,8 @@ class ConfigurationLoaderTest {
             // Then - Sub-sub section
             var subSubSection = subSection.subsections().get(0);
             assertEquals(3, subSubSection.level());
-            assertEquals(5, subSubSection.max());
+            assertNotNull(subSubSection.occurrence());
+            assertEquals(5, subSubSection.occurrence().max());
         }
         
     }
@@ -301,45 +307,51 @@ class ConfigurationLoaderTest {
                     - name: introduction
                       order: 1
                       level: 1
-                      min: 1
-                      max: 1
+                      occurrence:
+                        min: 1
+                        max: 1
                       title:
                         pattern: "^(Introduction|Einführung)$"
                       subsections:
                         - name: motivation
                           order: 1
                           level: 2
-                          min: 0
-                          max: 1
+                          occurrence:
+                            min: 0
+                            max: 1
                           title:
                             pattern: "^Motivation$"
                         - name: goals
                           order: 2
                           level: 2
-                          min: 0
-                          max: 1
+                          occurrence:
+                            min: 0
+                            max: 1
                           title:
                             pattern: "^(Goals|Ziele)$"
                     - name: mainContent
                       order: 2
                       level: 1
-                      min: 1
-                      max: 5
+                      occurrence:
+                        min: 1
+                        max: 5
                       title:
                         pattern: "^Chapter.*"
                       subsections:
                         - name: details
                           order: 1
                           level: 2
-                          min: 1
-                          max: 3
+                          occurrence:
+                            min: 1
+                            max: 3
                           title:
                             pattern: "^Details.*"
                         - name: examples
                           order: 2
                           level: 2
-                          min: 0
-                          max: 10
+                          occurrence:
+                            min: 0
+                            max: 10
                           title:
                             pattern: "^Example.*"
                 """;
@@ -360,8 +372,9 @@ class ConfigurationLoaderTest {
             assertEquals("introduction", introSection.name());
             assertEquals(1, introSection.order());
             assertEquals(1, introSection.level());
-            assertEquals(1, introSection.min());
-            assertEquals(1, introSection.max());
+            assertNotNull(introSection.occurrence());
+            assertEquals(1, introSection.occurrence().min());
+            assertEquals(1, introSection.occurrence().max());
             assertNotNull(introSection.title());
             assertEquals("^(Introduction|Einführung)$", introSection.title().pattern());
             
@@ -373,16 +386,18 @@ class ConfigurationLoaderTest {
             assertEquals("motivation", motivationSection.name());
             assertEquals(1, motivationSection.order());
             assertEquals(2, motivationSection.level());
-            assertEquals(0, motivationSection.min());
-            assertEquals(1, motivationSection.max());
+            assertNotNull(motivationSection.occurrence());
+            assertEquals(0, motivationSection.occurrence().min());
+            assertEquals(1, motivationSection.occurrence().max());
             assertEquals("^Motivation$", motivationSection.title().pattern());
             
             var goalsSection = introSubsections.get(1);
             assertEquals("goals", goalsSection.name());
             assertEquals(2, goalsSection.order());
             assertEquals(2, goalsSection.level());
-            assertEquals(0, goalsSection.min());
-            assertEquals(1, goalsSection.max());
+            assertNotNull(goalsSection.occurrence());
+            assertEquals(0, goalsSection.occurrence().min());
+            assertEquals(1, goalsSection.occurrence().max());
             assertEquals("^(Goals|Ziele)$", goalsSection.title().pattern());
             
             // Then - Second section (mainContent)
@@ -390,8 +405,9 @@ class ConfigurationLoaderTest {
             assertEquals("mainContent", mainSection.name());
             assertEquals(2, mainSection.order());
             assertEquals(1, mainSection.level());
-            assertEquals(1, mainSection.min());
-            assertEquals(5, mainSection.max());
+            assertNotNull(mainSection.occurrence());
+            assertEquals(1, mainSection.occurrence().min());
+            assertEquals(5, mainSection.occurrence().max());
             assertNotNull(mainSection.title());
             assertEquals("^Chapter.*", mainSection.title().pattern());
             
@@ -403,16 +419,18 @@ class ConfigurationLoaderTest {
             assertEquals("details", detailsSection.name());
             assertEquals(1, detailsSection.order());
             assertEquals(2, detailsSection.level());
-            assertEquals(1, detailsSection.min());
-            assertEquals(3, detailsSection.max());
+            assertNotNull(detailsSection.occurrence());
+            assertEquals(1, detailsSection.occurrence().min());
+            assertEquals(3, detailsSection.occurrence().max());
             assertEquals("^Details.*", detailsSection.title().pattern());
             
             var examplesSection = mainSubsections.get(1);
             assertEquals("examples", examplesSection.name());
             assertEquals(2, examplesSection.order());
             assertEquals(2, examplesSection.level());
-            assertEquals(0, examplesSection.min());
-            assertEquals(10, examplesSection.max());
+            assertNotNull(examplesSection.occurrence());
+            assertEquals(0, examplesSection.occurrence().min());
+            assertEquals(10, examplesSection.occurrence().max());
             assertEquals("^Example.*", examplesSection.title().pattern());
         }
     }
@@ -494,8 +512,9 @@ class ConfigurationLoaderTest {
                   sections:
                     - name: main-section
                       level: 1
-                      min: 1
-                      max: 1
+                      occurrence:
+                        min: 1
+                        max: 1
                       allowedBlocks:
                         - image:
                             name: section-image
@@ -521,8 +540,9 @@ class ConfigurationLoaderTest {
                       subsections:
                         - name: sub-section
                           level: 2
-                          min: 1
-                          max: 2
+                          occurrence:
+                            min: 1
+                            max: 2
                           allowedBlocks:
                             - image:
                                 name: subsection-image
@@ -616,8 +636,9 @@ class ConfigurationLoaderTest {
                   sections:
                     - name: code-section
                       level: 1
-                      min: 1
-                      max: 1
+                      occurrence:
+                        min: 1
+                        max: 1
                       allowedBlocks:
                         - listing:
                             name: main-code
@@ -643,8 +664,9 @@ class ConfigurationLoaderTest {
                       subsections:
                         - name: examples
                           level: 2
-                          min: 1
-                          max: 3
+                          occurrence:
+                            min: 1
+                            max: 3
                           allowedBlocks:
                             - listing:
                                 name: example-code
@@ -749,8 +771,9 @@ class ConfigurationLoaderTest {
                   sections:
                     - name: intro-section
                       level: 1
-                      min: 1
-                      max: 1
+                      occurrence:
+                        min: 1
+                        max: 1
                       allowedBlocks:
                         - paragraph:
                             name: intro-paragraph
@@ -765,8 +788,9 @@ class ConfigurationLoaderTest {
                       subsections:
                         - name: details
                           level: 2
-                          min: 0
-                          max: 3
+                          occurrence:
+                            min: 0
+                            max: 3
                           allowedBlocks:
                             - paragraph:
                                 name: detail-paragraph
@@ -837,8 +861,9 @@ class ConfigurationLoaderTest {
                   sections:
                     - name: data-section
                       level: 1
-                      min: 1
-                      max: 1
+                      occurrence:
+                        min: 1
+                        max: 1
                       allowedBlocks:
                         - table:
                             name: main-table
@@ -871,8 +896,9 @@ class ConfigurationLoaderTest {
                       subsections:
                         - name: summary
                           level: 2
-                          min: 0
-                          max: 2
+                          occurrence:
+                            min: 0
+                            max: 2
                           allowedBlocks:
                             - table:
                                 name: summary-table
@@ -990,8 +1016,9 @@ class ConfigurationLoaderTest {
                   sections:
                     - name: main-section
                       level: 1
-                      min: 1
-                      max: 1
+                      occurrence:
+                        min: 1
+                        max: 1
                       allowedBlocks:
                         - pass:
                             name: html-widget
@@ -1074,8 +1101,9 @@ class ConfigurationLoaderTest {
                   sections:
                     - name: section
                       level: 1
-                      min: 1
-                      max: 1
+                      occurrence:
+                        min: 1
+                        max: 1
                       allowedBlocks:
                         - pass:
                             severity: warn
@@ -1116,8 +1144,9 @@ class ConfigurationLoaderTest {
                   sections:
                     - name: quotes-section
                       level: 1
-                      min: 1
-                      max: 1
+                      occurrence:
+                        min: 1
+                        max: 1
                       allowedBlocks:
                         - verse:
                             name: main-verse
@@ -1145,8 +1174,9 @@ class ConfigurationLoaderTest {
                       subsections:
                         - name: poetry
                           level: 2
-                          min: 0
-                          max: 5
+                          occurrence:
+                            min: 0
+                            max: 5
                           allowedBlocks:
                             - verse:
                                 name: poetry-verse
@@ -1239,8 +1269,9 @@ class ConfigurationLoaderTest {
                   sections:
                     - name: conclusion
                       level: 1
-                      min: 1
-                      max: 1
+                      occurrence:
+                        min: 1
+                        max: 1
                       allowedBlocks:
                         - paragraph:
                             name: conclusion-paragraph
@@ -1316,8 +1347,9 @@ class ConfigurationLoaderTest {
                   sections:
                     - name: notes-section
                       level: 1
-                      min: 1
-                      max: 1
+                      occurrence:
+                        min: 1
+                        max: 1
                       allowedBlocks:
                         - admonition:
                             name: content-notes
@@ -1417,8 +1449,9 @@ class ConfigurationLoaderTest {
                   sections:
                     - name: configuration-section
                       level: 1
-                      min: 1
-                      max: 1
+                      occurrence:
+                        min: 1
+                        max: 1
                       allowedBlocks:
                         - literal:
                             name: config-literal
@@ -1503,8 +1536,9 @@ class ConfigurationLoaderTest {
                   sections:
                     - name: section
                       level: 1
-                      min: 1
-                      max: 1
+                      occurrence:
+                        min: 1
+                        max: 1
                       allowedBlocks:
                         - literal:
                             severity: info
@@ -1541,8 +1575,9 @@ class ConfigurationLoaderTest {
                   sections:
                     - name: examples-section
                       level: 1
-                      min: 1
-                      max: 1
+                      occurrence:
+                        min: 1
+                        max: 1
                       allowedBlocks:
                         - literal:
                             name: main-literal
@@ -1567,8 +1602,9 @@ class ConfigurationLoaderTest {
                       subsections:
                         - name: code-examples
                           level: 2
-                          min: 0
-                          max: 3
+                          occurrence:
+                            min: 0
+                            max: 3
                           allowedBlocks:
                             - literal:
                                 name: code-literal
@@ -1666,8 +1702,9 @@ class ConfigurationLoaderTest {
                   sections:
                     - name: media-section
                       level: 1
-                      min: 1
-                      max: 1
+                      occurrence:
+                        min: 1
+                        max: 1
                       allowedBlocks:
                         - audio:
                             name: main-audio
@@ -1697,8 +1734,9 @@ class ConfigurationLoaderTest {
                       subsections:
                         - name: examples
                           level: 2
-                          min: 0
-                          max: 2
+                          occurrence:
+                            min: 0
+                            max: 2
                           allowedBlocks:
                             - audio:
                                 name: example-audio
