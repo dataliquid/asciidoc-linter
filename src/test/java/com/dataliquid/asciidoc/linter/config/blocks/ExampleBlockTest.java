@@ -41,15 +41,30 @@ class ExampleBlockTest {
         @DisplayName("should build with full configuration")
         void shouldBuildWithFullConfiguration() {
             // Given
-            ExampleBlock.CaptionConfig caption = ExampleBlock.CaptionConfig.builder().required(true)
-                    .pattern("^Example \\d+:.*").minLength(10).maxLength(100).severity(Severity.ERROR).build();
+            ExampleBlock.CaptionConfig caption = ExampleBlock.CaptionConfig
+                    .builder()
+                    .required(true)
+                    .pattern("^Example \\d+:.*")
+                    .minLength(10)
+                    .maxLength(100)
+                    .severity(Severity.ERROR)
+                    .build();
 
-            ExampleBlock.CollapsibleConfig collapsible = ExampleBlock.CollapsibleConfig.builder().required(false)
-                    .allowed(Arrays.asList(true, false)).severity(Severity.INFO).build();
+            ExampleBlock.CollapsibleConfig collapsible = ExampleBlock.CollapsibleConfig
+                    .builder()
+                    .required(false)
+                    .allowed(Arrays.asList(true, false))
+                    .severity(Severity.INFO)
+                    .build();
 
             // When
-            ExampleBlock block = ExampleBlock.builder().name("example-full").severity(Severity.WARN).caption(caption)
-                    .collapsible(collapsible).build();
+            ExampleBlock block = ExampleBlock
+                    .builder()
+                    .name("example-full")
+                    .severity(Severity.WARN)
+                    .caption(caption)
+                    .collapsible(collapsible)
+                    .build();
 
             // Then
             assertNotNull(block);
@@ -68,9 +83,14 @@ class ExampleBlockTest {
         @DisplayName("should build with all properties")
         void shouldBuildWithAllProperties() {
             // Given/When
-            ExampleBlock.CaptionConfig config = ExampleBlock.CaptionConfig.builder().required(true)
-                    .pattern("^(Example|Beispiel)\\s+\\d+\\.\\d*:.*").minLength(15).maxLength(100)
-                    .severity(Severity.ERROR).build();
+            ExampleBlock.CaptionConfig config = ExampleBlock.CaptionConfig
+                    .builder()
+                    .required(true)
+                    .pattern("^(Example|Beispiel)\\s+\\d+\\.\\d*:.*")
+                    .minLength(15)
+                    .maxLength(100)
+                    .severity(Severity.ERROR)
+                    .build();
 
             // Then
             assertTrue(config.isRequired());
@@ -85,7 +105,10 @@ class ExampleBlockTest {
         @DisplayName("should handle null pattern")
         void shouldHandleNullPattern() {
             // Given/When
-            ExampleBlock.CaptionConfig config = ExampleBlock.CaptionConfig.builder().required(false).pattern(null)
+            ExampleBlock.CaptionConfig config = ExampleBlock.CaptionConfig
+                    .builder()
+                    .required(false)
+                    .pattern(null)
                     .build();
 
             // Then
@@ -96,14 +119,32 @@ class ExampleBlockTest {
         @DisplayName("should have correct equals and hashCode")
         void shouldHaveCorrectEqualsAndHashCode() {
             // Given
-            ExampleBlock.CaptionConfig config1 = ExampleBlock.CaptionConfig.builder().required(true)
-                    .pattern("^Example.*").minLength(10).maxLength(50).severity(Severity.WARN).build();
+            ExampleBlock.CaptionConfig config1 = ExampleBlock.CaptionConfig
+                    .builder()
+                    .required(true)
+                    .pattern("^Example.*")
+                    .minLength(10)
+                    .maxLength(50)
+                    .severity(Severity.WARN)
+                    .build();
 
-            ExampleBlock.CaptionConfig config2 = ExampleBlock.CaptionConfig.builder().required(true)
-                    .pattern("^Example.*").minLength(10).maxLength(50).severity(Severity.WARN).build();
+            ExampleBlock.CaptionConfig config2 = ExampleBlock.CaptionConfig
+                    .builder()
+                    .required(true)
+                    .pattern("^Example.*")
+                    .minLength(10)
+                    .maxLength(50)
+                    .severity(Severity.WARN)
+                    .build();
 
-            ExampleBlock.CaptionConfig config3 = ExampleBlock.CaptionConfig.builder().required(false)
-                    .pattern("^Example.*").minLength(10).maxLength(50).severity(Severity.WARN).build();
+            ExampleBlock.CaptionConfig config3 = ExampleBlock.CaptionConfig
+                    .builder()
+                    .required(false)
+                    .pattern("^Example.*")
+                    .minLength(10)
+                    .maxLength(50)
+                    .severity(Severity.WARN)
+                    .build();
 
             // Then
             assertEquals(config1, config2);
@@ -115,8 +156,14 @@ class ExampleBlockTest {
         @DisplayName("should have meaningful toString")
         void shouldHaveMeaningfulToString() {
             // Given
-            ExampleBlock.CaptionConfig config = ExampleBlock.CaptionConfig.builder().required(true)
-                    .pattern("^Example.*").minLength(10).maxLength(50).severity(Severity.ERROR).build();
+            ExampleBlock.CaptionConfig config = ExampleBlock.CaptionConfig
+                    .builder()
+                    .required(true)
+                    .pattern("^Example.*")
+                    .minLength(10)
+                    .maxLength(50)
+                    .severity(Severity.ERROR)
+                    .build();
 
             // When
             String result = config.toString();
@@ -141,8 +188,12 @@ class ExampleBlockTest {
             List<Boolean> allowed = Arrays.asList(true, false);
 
             // When
-            ExampleBlock.CollapsibleConfig config = ExampleBlock.CollapsibleConfig.builder().required(false)
-                    .allowed(allowed).severity(Severity.INFO).build();
+            ExampleBlock.CollapsibleConfig config = ExampleBlock.CollapsibleConfig
+                    .builder()
+                    .required(false)
+                    .allowed(allowed)
+                    .severity(Severity.INFO)
+                    .build();
 
             // Then
             assertFalse(config.isRequired());
@@ -156,14 +207,26 @@ class ExampleBlockTest {
             // Given
             List<Boolean> allowed = Arrays.asList(true, false);
 
-            ExampleBlock.CollapsibleConfig config1 = ExampleBlock.CollapsibleConfig.builder().required(false)
-                    .allowed(allowed).severity(Severity.INFO).build();
+            ExampleBlock.CollapsibleConfig config1 = ExampleBlock.CollapsibleConfig
+                    .builder()
+                    .required(false)
+                    .allowed(allowed)
+                    .severity(Severity.INFO)
+                    .build();
 
-            ExampleBlock.CollapsibleConfig config2 = ExampleBlock.CollapsibleConfig.builder().required(false)
-                    .allowed(allowed).severity(Severity.INFO).build();
+            ExampleBlock.CollapsibleConfig config2 = ExampleBlock.CollapsibleConfig
+                    .builder()
+                    .required(false)
+                    .allowed(allowed)
+                    .severity(Severity.INFO)
+                    .build();
 
-            ExampleBlock.CollapsibleConfig config3 = ExampleBlock.CollapsibleConfig.builder().required(true)
-                    .allowed(allowed).severity(Severity.INFO).build();
+            ExampleBlock.CollapsibleConfig config3 = ExampleBlock.CollapsibleConfig
+                    .builder()
+                    .required(true)
+                    .allowed(allowed)
+                    .severity(Severity.INFO)
+                    .build();
 
             // Then
             assertEquals(config1, config2);
@@ -176,8 +239,12 @@ class ExampleBlockTest {
         void shouldHaveMeaningfulToString() {
             // Given
             List<Boolean> allowed = Arrays.asList(true, false);
-            ExampleBlock.CollapsibleConfig config = ExampleBlock.CollapsibleConfig.builder().required(false)
-                    .allowed(allowed).severity(Severity.INFO).build();
+            ExampleBlock.CollapsibleConfig config = ExampleBlock.CollapsibleConfig
+                    .builder()
+                    .required(false)
+                    .allowed(allowed)
+                    .severity(Severity.INFO)
+                    .build();
 
             // When
             String result = config.toString();
@@ -193,7 +260,10 @@ class ExampleBlockTest {
     @DisplayName("should have correct equals and hashCode")
     void shouldHaveCorrectEqualsAndHashCode() {
         // Given
-        ExampleBlock.CaptionConfig caption = ExampleBlock.CaptionConfig.builder().required(true).pattern("^Example.*")
+        ExampleBlock.CaptionConfig caption = ExampleBlock.CaptionConfig
+                .builder()
+                .required(true)
+                .pattern("^Example.*")
                 .build();
 
         ExampleBlock block1 = ExampleBlock.builder().name("example-1").severity(Severity.WARN).caption(caption).build();
@@ -212,14 +282,27 @@ class ExampleBlockTest {
     @DisplayName("should have meaningful toString")
     void shouldHaveMeaningfulToString() {
         // Given
-        ExampleBlock.CaptionConfig caption = ExampleBlock.CaptionConfig.builder().required(true).pattern("^Example.*")
-                .severity(Severity.ERROR).build();
+        ExampleBlock.CaptionConfig caption = ExampleBlock.CaptionConfig
+                .builder()
+                .required(true)
+                .pattern("^Example.*")
+                .severity(Severity.ERROR)
+                .build();
 
-        ExampleBlock.CollapsibleConfig collapsible = ExampleBlock.CollapsibleConfig.builder().required(false)
-                .allowed(Arrays.asList(true, false)).severity(Severity.INFO).build();
+        ExampleBlock.CollapsibleConfig collapsible = ExampleBlock.CollapsibleConfig
+                .builder()
+                .required(false)
+                .allowed(Arrays.asList(true, false))
+                .severity(Severity.INFO)
+                .build();
 
-        ExampleBlock block = ExampleBlock.builder().name("example-test").severity(Severity.WARN).caption(caption)
-                .collapsible(collapsible).build();
+        ExampleBlock block = ExampleBlock
+                .builder()
+                .name("example-test")
+                .severity(Severity.WARN)
+                .caption(caption)
+                .collapsible(collapsible)
+                .build();
 
         // When
         String result = block.toString();

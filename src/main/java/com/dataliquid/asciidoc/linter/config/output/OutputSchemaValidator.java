@@ -45,11 +45,15 @@ public class OutputSchemaValidator {
             String baseClasspathUrl = getClass().getResource("/schemas/").toString();
 
             // Configure JsonSchemaFactory for JSON Schema 2020-12
-            JsonSchemaFactory factory = JsonSchemaFactory.builder()
-                    .defaultMetaSchemaIri(JsonMetaSchema.getV202012().getIri()).schemaMappers(schemaMappers -> {
+            JsonSchemaFactory factory = JsonSchemaFactory
+                    .builder()
+                    .defaultMetaSchemaIri(JsonMetaSchema.getV202012().getIri())
+                    .schemaMappers(schemaMappers -> {
                         // Map HTTPS references to actual classpath URLs
                         schemaMappers.mapPrefix("https://dataliquid.com/asciidoc/linter/schemas/", baseClasspathUrl);
-                    }).metaSchema(JsonMetaSchema.getV202012()).build();
+                    })
+                    .metaSchema(JsonMetaSchema.getV202012())
+                    .build();
 
             // Configure validators
             SchemaValidatorsConfig config = SchemaValidatorsConfig.builder().pathType(PathType.JSON_POINTER).build();
@@ -74,8 +78,12 @@ public class OutputSchemaValidator {
             if (!errors.isEmpty()) {
                 StringBuilder errorMessage = new StringBuilder("Output configuration validation failed:\n");
                 for (ValidationMessage error : errors) {
-                    errorMessage.append("  - ").append(error.getInstanceLocation()).append(": ")
-                            .append(error.getMessage()).append("\n");
+                    errorMessage
+                            .append("  - ")
+                            .append(error.getInstanceLocation())
+                            .append(": ")
+                            .append(error.getMessage())
+                            .append("\n");
                 }
                 throw new OutputConfigurationException(errorMessage.toString());
             }

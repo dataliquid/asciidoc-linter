@@ -16,8 +16,9 @@ public final class MessageGroups {
     public MessageGroups(List<MessageGroup> groups, List<ValidationMessage> ungroupedMessages) {
         this.groups = new ArrayList<>(
                 Objects.requireNonNull(groups, "[" + getClass().getName() + "] groups must not be null"));
-        this.ungroupedMessages = new ArrayList<>(Objects.requireNonNull(ungroupedMessages,
-                "[" + getClass().getName() + "] ungroupedMessages must not be null"));
+        this.ungroupedMessages = new ArrayList<>(Objects
+                .requireNonNull(ungroupedMessages,
+                        "[" + getClass().getName() + "] ungroupedMessages must not be null"));
     }
 
     public List<MessageGroup> getGroups() {

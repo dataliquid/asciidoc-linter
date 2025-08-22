@@ -14,8 +14,9 @@ import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.EMP
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
 /**
- * Root configuration for console output formatting. This configuration is loaded from a separate YAML file and controls
- * how validation results are displayed to the user.
+ * Root configuration for console output formatting. This configuration is
+ * loaded from a separate YAML file and controls how validation results are
+ * displayed to the user.
  */
 @JsonDeserialize(builder = OutputConfiguration.Builder.class)
 public final class OutputConfiguration {
@@ -29,14 +30,14 @@ public final class OutputConfiguration {
 
     private OutputConfiguration(Builder builder) {
         this.format = Objects.requireNonNull(builder.format, "[" + getClass().getName() + "] format must not be null");
-        this.display = Objects.requireNonNull(builder.display,
-                "[" + getClass().getName() + "] display must not be null");
-        this.suggestions = Objects.requireNonNull(builder.suggestions,
-                "[" + getClass().getName() + "] suggestions must not be null");
-        this.errorGrouping = Objects.requireNonNull(builder.errorGrouping,
-                "[" + getClass().getName() + "] errorGrouping must not be null");
-        this.summary = Objects.requireNonNull(builder.summary,
-                "[" + getClass().getName() + "] summary must not be null");
+        this.display = Objects
+                .requireNonNull(builder.display, "[" + getClass().getName() + "] display must not be null");
+        this.suggestions = Objects
+                .requireNonNull(builder.suggestions, "[" + getClass().getName() + "] suggestions must not be null");
+        this.errorGrouping = Objects
+                .requireNonNull(builder.errorGrouping, "[" + getClass().getName() + "] errorGrouping must not be null");
+        this.summary = Objects
+                .requireNonNull(builder.summary, "[" + getClass().getName() + "] summary must not be null");
     }
 
     public OutputFormat getFormat() {
@@ -87,11 +88,13 @@ public final class OutputConfiguration {
      * Creates a compact output configuration for CI/CD environments.
      */
     public static OutputConfiguration compactConfig() {
-        return builder().format(OutputFormat.COMPACT)
+        return builder()
+                .format(OutputFormat.COMPACT)
                 .display(DisplayConfig.builder().contextLines(0).useColors(false).showHeader(false).build())
                 .suggestions(SuggestionsConfig.builder().enabled(false).build())
                 .errorGrouping(ErrorGroupingConfig.builder().enabled(false).build())
-                .summary(SummaryConfig.builder().enabled(false).build()).build();
+                .summary(SummaryConfig.builder().enabled(false).build())
+                .build();
     }
 
     public static Builder builder() {

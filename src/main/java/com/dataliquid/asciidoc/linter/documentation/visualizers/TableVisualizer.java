@@ -109,8 +109,7 @@ public class TableVisualizer implements HierarchyVisualizer {
             requirements += ", Position " + section.order();
         }
 
-        Severity severity = (section.occurrence() != null && section.occurrence().min() > 0)
-                ? Severity.ERROR
+        Severity severity = (section.occurrence() != null && section.occurrence().min() > 0) ? Severity.ERROR
                 : Severity.INFO;
 
         rows.add(new TableRow("└ " + section.name(), level, severity, "Section", requirements));
@@ -142,7 +141,8 @@ public class TableVisualizer implements HierarchyVisualizer {
         rows.add(new TableRow(prefix + block.getType().toValue(), level, block.getSeverity(), "Block", requirements));
 
         // Add block-specific rules
-        // TODO: Add specific rules based on block type with severity override indicators
+        // TODO: Add specific rules based on block type with severity override
+        // indicators
     }
 
     private String getIndentedRule(String rule, int level) {

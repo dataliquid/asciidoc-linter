@@ -31,11 +31,17 @@ class ReportWriterTest {
     void setUp() {
         writer = new ReportWriter();
 
-        sampleResult = ValidationResult.builder()
-                .addMessage(ValidationMessage.builder().severity(Severity.ERROR).ruleId("test-rule")
+        sampleResult = ValidationResult
+                .builder()
+                .addMessage(ValidationMessage
+                        .builder()
+                        .severity(Severity.ERROR)
+                        .ruleId("test-rule")
                         .location(SourceLocation.builder().filename("test.adoc").startLine(10).build())
-                        .message("Test error").build())
-                .complete().build();
+                        .message("Test error")
+                        .build())
+                .complete()
+                .build();
     }
 
     @Nested
@@ -188,11 +194,17 @@ class ReportWriterTest {
         @Test
         @DisplayName("should return 0 for no errors")
         void shouldReturnZeroForNoErrors() {
-            ValidationResult result = ValidationResult.builder()
-                    .addMessage(ValidationMessage.builder().severity(Severity.WARN).ruleId("test-rule")
+            ValidationResult result = ValidationResult
+                    .builder()
+                    .addMessage(ValidationMessage
+                            .builder()
+                            .severity(Severity.WARN)
+                            .ruleId("test-rule")
                             .location(SourceLocation.builder().filename("test.adoc").startLine(1).build())
-                            .message("Warning").build())
-                    .complete().build();
+                            .message("Warning")
+                            .build())
+                    .complete()
+                    .build();
 
             assertEquals(0, ReportWriter.calculateExitCode(result));
         }

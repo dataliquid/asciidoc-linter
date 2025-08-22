@@ -63,7 +63,9 @@ class AsciiDocAuthorGuidelineGeneratorTest {
         @Test
         @DisplayName("should require non-null writer")
         void shouldRequireNonNullWriter() {
-            LinterConfiguration config = LinterConfiguration.builder().document(DocumentConfiguration.builder().build())
+            LinterConfiguration config = LinterConfiguration
+                    .builder()
+                    .document(DocumentConfiguration.builder().build())
                     .build();
 
             assertThrows(NullPointerException.class, () -> generator.generate(config, null));
@@ -73,7 +75,9 @@ class AsciiDocAuthorGuidelineGeneratorTest {
         @DisplayName("should generate basic documentation structure")
         void shouldGenerateBasicDocumentationStructure() {
             // Given
-            LinterConfiguration config = LinterConfiguration.builder().document(DocumentConfiguration.builder().build())
+            LinterConfiguration config = LinterConfiguration
+                    .builder()
+                    .document(DocumentConfiguration.builder().build())
                     .build();
 
             // When
@@ -92,13 +96,26 @@ class AsciiDocAuthorGuidelineGeneratorTest {
         @DisplayName("should generate metadata documentation")
         void shouldGenerateMetadataDocumentation() {
             // Given
-            AttributeConfig titleAttr = AttributeConfig.builder().name("title").required(true).minLength(10)
-                    .maxLength(100).severity(Severity.ERROR).build();
+            AttributeConfig titleAttr = AttributeConfig
+                    .builder()
+                    .name("title")
+                    .required(true)
+                    .minLength(10)
+                    .maxLength(100)
+                    .severity(Severity.ERROR)
+                    .build();
 
-            AttributeConfig authorAttr = AttributeConfig.builder().name("author").required(false).pattern("^[A-Z].*")
-                    .severity(Severity.WARN).build();
+            AttributeConfig authorAttr = AttributeConfig
+                    .builder()
+                    .name("author")
+                    .required(false)
+                    .pattern("^[A-Z].*")
+                    .severity(Severity.WARN)
+                    .build();
 
-            MetadataConfiguration metadata = MetadataConfiguration.builder().attributes(List.of(titleAttr, authorAttr))
+            MetadataConfiguration metadata = MetadataConfiguration
+                    .builder()
+                    .attributes(List.of(titleAttr, authorAttr))
                     .build();
 
             DocumentConfiguration document = DocumentConfiguration.builder().metadata(metadata).build();
@@ -124,11 +141,19 @@ class AsciiDocAuthorGuidelineGeneratorTest {
         @DisplayName("should generate section documentation")
         void shouldGenerateSectionDocumentation() {
             // Given
-            ParagraphBlock paragraph = ParagraphBlock.builder().severity(Severity.WARN)
-                    .occurrence(OccurrenceConfig.builder().min(1).max(3).build()).build();
+            ParagraphBlock paragraph = ParagraphBlock
+                    .builder()
+                    .severity(Severity.WARN)
+                    .occurrence(OccurrenceConfig.builder().min(1).max(3).build())
+                    .build();
 
-            SectionConfig section = SectionConfig.builder().name("introduction").level(1).order(1)
-                    .occurrence(OccurrenceConfig.builder().min(1).max(1).build()).allowedBlocks(List.of(paragraph))
+            SectionConfig section = SectionConfig
+                    .builder()
+                    .name("introduction")
+                    .level(1)
+                    .order(1)
+                    .occurrence(OccurrenceConfig.builder().min(1).max(1).build())
+                    .allowedBlocks(List.of(paragraph))
                     .build();
 
             DocumentConfiguration document = DocumentConfiguration.builder().sections(List.of(section)).build();

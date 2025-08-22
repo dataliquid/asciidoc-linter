@@ -15,7 +15,8 @@ import com.dataliquid.asciidoc.linter.config.blocks.Block;
 import com.dataliquid.asciidoc.linter.validator.SourceLocation;
 
 /**
- * Context for block validation containing section or document information and tracking data.
+ * Context for block validation containing section or document information and
+ * tracking data.
  */
 public final class BlockValidationContext {
     private final StructuralNode container; // Can be Section or Document
@@ -76,8 +77,14 @@ public final class BlockValidationContext {
             line = block.getSourceLocation().getLineNumber();
         }
 
-        return SourceLocation.builder().filename(filename).startLine(line).endLine(line).startColumn(startColumn)
-                .endColumn(endColumn).build();
+        return SourceLocation
+                .builder()
+                .filename(filename)
+                .startLine(line)
+                .endLine(line)
+                .startColumn(startColumn)
+                .endColumn(endColumn)
+                .build();
     }
 
     /**

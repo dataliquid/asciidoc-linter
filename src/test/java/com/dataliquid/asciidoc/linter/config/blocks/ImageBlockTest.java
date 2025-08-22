@@ -27,21 +27,42 @@ class ImageBlockTest {
         @DisplayName("should build ImageBlock with all attributes")
         void shouldBuildImageBlockWithAllAttributes() {
             // Given
-            ImageBlock.UrlConfig urlRule = ImageBlock.UrlConfig.builder()
-                    .pattern("^https?://.*\\.(jpg|jpeg|png|gif|svg)$").required(true).build();
+            ImageBlock.UrlConfig urlRule = ImageBlock.UrlConfig
+                    .builder()
+                    .pattern("^https?://.*\\.(jpg|jpeg|png|gif|svg)$")
+                    .required(true)
+                    .build();
 
-            ImageBlock.DimensionConfig heightRule = ImageBlock.DimensionConfig.builder().minValue(100).maxValue(2000)
-                    .required(false).build();
+            ImageBlock.DimensionConfig heightRule = ImageBlock.DimensionConfig
+                    .builder()
+                    .minValue(100)
+                    .maxValue(2000)
+                    .required(false)
+                    .build();
 
-            ImageBlock.DimensionConfig widthRule = ImageBlock.DimensionConfig.builder().minValue(100).maxValue(3000)
-                    .required(false).build();
+            ImageBlock.DimensionConfig widthRule = ImageBlock.DimensionConfig
+                    .builder()
+                    .minValue(100)
+                    .maxValue(3000)
+                    .required(false)
+                    .build();
 
-            ImageBlock.AltTextConfig altRule = ImageBlock.AltTextConfig.builder().required(true).minLength(10)
-                    .maxLength(200).build();
+            ImageBlock.AltTextConfig altRule = ImageBlock.AltTextConfig
+                    .builder()
+                    .required(true)
+                    .minLength(10)
+                    .maxLength(200)
+                    .build();
 
             // When
-            ImageBlock image = ImageBlock.builder().severity(Severity.ERROR).url(urlRule).height(heightRule)
-                    .width(widthRule).alt(altRule).build();
+            ImageBlock image = ImageBlock
+                    .builder()
+                    .severity(Severity.ERROR)
+                    .url(urlRule)
+                    .height(heightRule)
+                    .width(widthRule)
+                    .alt(altRule)
+                    .build();
 
             // Then
             assertEquals(Severity.ERROR, image.getSeverity());
@@ -125,8 +146,12 @@ class ImageBlockTest {
         @DisplayName("should create DimensionConfig with min and max values")
         void shouldCreateDimensionConfigWithMinAndMaxValues() {
             // Given & When
-            ImageBlock.DimensionConfig dimension = ImageBlock.DimensionConfig.builder().minValue(50).maxValue(1000)
-                    .required(true).build();
+            ImageBlock.DimensionConfig dimension = ImageBlock.DimensionConfig
+                    .builder()
+                    .minValue(50)
+                    .maxValue(1000)
+                    .required(true)
+                    .build();
 
             // Then
             assertEquals(50, dimension.getMinValue());
@@ -155,8 +180,12 @@ class ImageBlockTest {
         @DisplayName("should create AltTextConfig with length constraints")
         void shouldCreateAltTextConfigWithLengthConstraints() {
             // Given & When
-            ImageBlock.AltTextConfig altText = ImageBlock.AltTextConfig.builder().required(true).minLength(5)
-                    .maxLength(150).build();
+            ImageBlock.AltTextConfig altText = ImageBlock.AltTextConfig
+                    .builder()
+                    .required(true)
+                    .minLength(5)
+                    .maxLength(150)
+                    .build();
 
             // Then
             assertTrue(altText.isRequired());
@@ -215,16 +244,32 @@ class ImageBlockTest {
 
             ImageBlock.UrlConfig url2 = ImageBlock.UrlConfig.builder().pattern("test").required(true).build();
 
-            ImageBlock.DimensionConfig dim1 = ImageBlock.DimensionConfig.builder().minValue(100).maxValue(200)
-                    .required(false).build();
-
-            ImageBlock.DimensionConfig dim2 = ImageBlock.DimensionConfig.builder().minValue(100).maxValue(200)
-                    .required(false).build();
-
-            ImageBlock.AltTextConfig alt1 = ImageBlock.AltTextConfig.builder().required(true).minLength(5).maxLength(50)
+            ImageBlock.DimensionConfig dim1 = ImageBlock.DimensionConfig
+                    .builder()
+                    .minValue(100)
+                    .maxValue(200)
+                    .required(false)
                     .build();
 
-            ImageBlock.AltTextConfig alt2 = ImageBlock.AltTextConfig.builder().required(true).minLength(5).maxLength(50)
+            ImageBlock.DimensionConfig dim2 = ImageBlock.DimensionConfig
+                    .builder()
+                    .minValue(100)
+                    .maxValue(200)
+                    .required(false)
+                    .build();
+
+            ImageBlock.AltTextConfig alt1 = ImageBlock.AltTextConfig
+                    .builder()
+                    .required(true)
+                    .minLength(5)
+                    .maxLength(50)
+                    .build();
+
+            ImageBlock.AltTextConfig alt2 = ImageBlock.AltTextConfig
+                    .builder()
+                    .required(true)
+                    .minLength(5)
+                    .maxLength(50)
                     .build();
 
             // Then

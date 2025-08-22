@@ -20,9 +20,9 @@ public final class BlockValidatorFactory {
     /**
      * Gets a validator for the specified block type.
      *
-     * @param type
-     *            the block type
-     * @return the validator, or null if no validator exists for the type
+     * @param  type the block type
+     *
+     * @return      the validator, or null if no validator exists for the type
      */
     public BlockTypeValidator getValidator(BlockType type) {
         return validators.get(type);
@@ -31,9 +31,9 @@ public final class BlockValidatorFactory {
     /**
      * Checks if a validator exists for the specified block type.
      *
-     * @param type
-     *            the block type
-     * @return true if a validator exists, false otherwise
+     * @param  type the block type
+     *
+     * @return      true if a validator exists, false otherwise
      */
     public boolean hasValidator(BlockType type) {
         return validators.containsKey(type);

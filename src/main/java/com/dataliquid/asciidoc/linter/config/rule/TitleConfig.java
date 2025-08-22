@@ -48,8 +48,8 @@ public final class TitleConfig {
 
         @JsonProperty(SEVERITY)
         public Builder severity(Severity severity) {
-            this.severity = Objects.requireNonNull(severity,
-                    "[" + getClass().getName() + "] severity must not be null");
+            this.severity = Objects
+                    .requireNonNull(severity, "[" + getClass().getName() + "] severity must not be null");
             return this;
         }
 

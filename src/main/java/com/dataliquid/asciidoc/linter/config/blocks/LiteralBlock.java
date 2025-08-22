@@ -23,9 +23,8 @@ import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.EMP
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
 /**
- * Configuration for literal blocks in AsciiDoc. Literal blocks are delimited by .... and display preformatted text
- * without syntax highlighting.
- *
+ * Configuration for literal blocks in AsciiDoc. Literal blocks are delimited by
+ * .... and display preformatted text without syntax highlighting.
  * <p>
  * Example usage:
  *
@@ -37,7 +36,6 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
  *   timeout: 30s
  * ....
  * </pre>
- *
  * <p>
  * Validation is based on the YAML schema configuration for literal blocks.
  */

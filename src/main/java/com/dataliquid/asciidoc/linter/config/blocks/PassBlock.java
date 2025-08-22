@@ -17,16 +17,14 @@ import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Pas
 import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.EMPTY;
 
 /**
- * Configuration for pass blocks (passthrough content) in AsciiDoc. Pass blocks are delimited by ++++ and pass content
- * through without processing.
- *
+ * Configuration for pass blocks (passthrough content) in AsciiDoc. Pass blocks
+ * are delimited by ++++ and pass content through without processing.
  * <p>
  * This validator supports custom attributes that are not native to AsciiDoc:
  * <ul>
  * <li>{@code pass-type}: Specifies the content type (html, xml, svg)</li>
  * <li>{@code pass-reason}: Provides reason for using raw passthrough</li>
  * </ul>
- *
  * <p>
  * Example usage:
  *
@@ -38,7 +36,6 @@ import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.EMP
  * &lt;/div&gt;
  * ++++
  * </pre>
- *
  * <p>
  * Validation is based on the YAML schema configuration for pass blocks.
  */
@@ -90,8 +87,7 @@ public final class PassBlock extends AbstractBlock {
 
         private TypeConfig(TypeConfigBuilder builder) {
             this.required = builder.required;
-            this.allowed = builder.allowed != null
-                    ? Collections.unmodifiableList(new ArrayList<>(builder.allowed))
+            this.allowed = builder.allowed != null ? Collections.unmodifiableList(new ArrayList<>(builder.allowed))
                     : Collections.emptyList();
             this.severity = builder.severity;
         }
@@ -235,8 +231,9 @@ public final class PassBlock extends AbstractBlock {
             if (!(o instanceof ContentConfig that))
                 return false;
             return required == that.required && Objects.equals(maxLength, that.maxLength)
-                    && Objects.equals(pattern == null ? null : pattern.pattern(),
-                            that.pattern == null ? null : that.pattern.pattern())
+                    && Objects
+                            .equals(pattern == null ? null : pattern.pattern(),
+                                    that.pattern == null ? null : that.pattern.pattern())
                     && severity == that.severity;
         }
 

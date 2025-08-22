@@ -5,7 +5,8 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Registry for all available CLI commands. Manages command registration and lookup.
+ * Registry for all available CLI commands. Manages command registration and
+ * lookup.
  */
 public class CommandRegistry {
 
@@ -27,8 +28,7 @@ public class CommandRegistry {
     /**
      * Registers a command.
      *
-     * @param command
-     *            the command to register
+     * @param command the command to register
      */
     public void register(Command command) {
         commands.put(command.getName(), command);
@@ -37,9 +37,9 @@ public class CommandRegistry {
     /**
      * Gets a command by name.
      *
-     * @param name
-     *            the command name
-     * @return the command, or null if not found
+     * @param  name the command name
+     *
+     * @return      the command, or null if not found
      */
     public Command getCommand(String name) {
         return commands.get(name);
@@ -48,9 +48,9 @@ public class CommandRegistry {
     /**
      * Checks if a command exists.
      *
-     * @param name
-     *            the command name
-     * @return true if the command exists
+     * @param  name the command name
+     *
+     * @return      true if the command exists
      */
     public boolean hasCommand(String name) {
         return commands.containsKey(name);

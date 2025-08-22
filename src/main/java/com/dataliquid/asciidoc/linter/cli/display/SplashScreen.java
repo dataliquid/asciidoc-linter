@@ -9,10 +9,10 @@ import com.dataliquid.asciidoc.linter.cli.VersionInfo;
  */
 public class SplashScreen {
 
-    private static final String[] ASCII_ART = {"     _    ____   ____ ___ ___ ____             ",
+    private static final String[] ASCII_ART = { "     _    ____   ____ ___ ___ ____             ",
             "    / \\  / ___| / ___|_ _|_ _|  _ \\  ___   ___ ", "   / _ \\ \\___ \\| |    | | | || | | |/ _ \\ / __|",
             "  / ___ \\ ___) | |___ | | | || |_| | (_) | (__ ", " /_/   \\_\\____/ \\____|___|___|____/ \\___/ \\___|",
-            "                                                "};
+            "                                                " };
 
     /**
      * Displays the splash screen on the console.

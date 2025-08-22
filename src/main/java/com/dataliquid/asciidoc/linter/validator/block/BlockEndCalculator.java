@@ -5,8 +5,8 @@ import org.asciidoctor.ast.StructuralNode;
 import com.dataliquid.asciidoc.linter.report.console.FileContentCache;
 
 /**
- * Utility class to calculate the actual end line of blocks by analyzing source files. Provides generic support for all
- * AsciiDoc block types.
+ * Utility class to calculate the actual end line of blocks by analyzing source
+ * files. Provides generic support for all AsciiDoc block types.
  */
 public class BlockEndCalculator {
     private final FileContentCache fileCache;
@@ -16,13 +16,13 @@ public class BlockEndCalculator {
     }
 
     /**
-     * Calculates the actual end line of a block by analyzing the source file. Works generically for ALL block types.
+     * Calculates the actual end line of a block by analyzing the source file. Works
+     * generically for ALL block types.
      *
-     * @param block
-     *            the block to analyze
-     * @param filename
-     *            the source file name
-     * @return the 1-based line number where the block ends
+     * @param  block    the block to analyze
+     * @param  filename the source file name
+     *
+     * @return          the 1-based line number where the block ends
      */
     public int calculateBlockEndLine(StructuralNode block, String filename) {
         if (block.getSourceLocation() == null) {
@@ -40,56 +40,57 @@ public class BlockEndCalculator {
         String context = block.getContext();
 
         switch (context) {
-            // List blocks
-            case "dlist" :
-                return findDlistEnd(fileLines, startLine);
-            case "ulist" :
-            case "olist" :
-            case "colist" :
-                return findListEnd(fileLines, startLine, context);
+        // List blocks
+        case "dlist":
+            return findDlistEnd(fileLines, startLine);
+        case "ulist":
+        case "olist":
+        case "colist":
+            return findListEnd(fileLines, startLine, context);
 
-            // Delimited blocks
-            case "listing" :
-            case "literal" :
-            case "example" :
-            case "sidebar" :
-            case "quote" :
-            case "verse" :
-            case "pass" :
-            case "open" :
-            case "comment" :
-            case "admonition" :
-                return findDelimitedBlockEnd(fileLines, startLine, context);
+        // Delimited blocks
+        case "listing":
+        case "literal":
+        case "example":
+        case "sidebar":
+        case "quote":
+        case "verse":
+        case "pass":
+        case "open":
+        case "comment":
+        case "admonition":
+            return findDelimitedBlockEnd(fileLines, startLine, context);
 
-            // Table blocks
-            case "table" :
-                return findTableEnd(fileLines, startLine);
+        // Table blocks
+        case "table":
+            return findTableEnd(fileLines, startLine);
 
-            // Content blocks
-            case "paragraph" :
-                return findParagraphEnd(fileLines, startLine);
+        // Content blocks
+        case "paragraph":
+            return findParagraphEnd(fileLines, startLine);
 
-            // Media blocks (single line)
-            case "image" :
-            case "video" :
-            case "audio" :
-                return startLine;
+        // Media blocks (single line)
+        case "image":
+        case "video":
+        case "audio":
+            return startLine;
 
-            // Other blocks
-            case "stem" :
-            case "toc" :
-            case "preamble" :
-            case "abstract" :
-                return findSpecialBlockEnd(fileLines, startLine, context);
+        // Other blocks
+        case "stem":
+        case "toc":
+        case "preamble":
+        case "abstract":
+            return findSpecialBlockEnd(fileLines, startLine, context);
 
-            default :
-                // Generic fallback
-                return findGenericBlockEnd(fileLines, startLine);
+        default:
+            // Generic fallback
+            return findGenericBlockEnd(fileLines, startLine);
         }
     }
 
     /**
-     * Finds the end of a description list (dlist). Continues while finding :: patterns, stops at empty line or section.
+     * Finds the end of a description list (dlist). Continues while finding ::
+     * patterns, stops at empty line or section.
      */
     private int findDlistEnd(List<String> lines, int startLine) {
         int line = startLine - 1; // Convert to 0-based index
@@ -141,7 +142,8 @@ public class BlockEndCalculator {
     }
 
     /**
-     * Finds the end of delimited blocks (listing, literal, example, etc.). Searches for matching closing delimiter.
+     * Finds the end of delimited blocks (listing, literal, example, etc.). Searches
+     * for matching closing delimiter.
      */
     private int findDelimitedBlockEnd(List<String> lines, int startLine, String context) {
         String delimiter = getDelimiterForType(context);
@@ -177,29 +179,29 @@ public class BlockEndCalculator {
      */
     private String getDelimiterForType(String type) {
         switch (type) {
-            case "listing" :
-                return "----";
-            case "literal" :
-                return "....";
-            case "example" :
-                return "====";
-            case "sidebar" :
-                return "****";
-            case "quote" :
-            case "verse" :
-                return "____";
-            case "pass" :
-                return "++++";
-            case "open" :
-                return "--";
-            case "comment" :
-                return "////";
-            case "admonition" :
-                return "====";
-            case "stem" :
-                return "++++";
-            default :
-                return "----";
+        case "listing":
+            return "----";
+        case "literal":
+            return "....";
+        case "example":
+            return "====";
+        case "sidebar":
+            return "****";
+        case "quote":
+        case "verse":
+            return "____";
+        case "pass":
+            return "++++";
+        case "open":
+            return "--";
+        case "comment":
+            return "////";
+        case "admonition":
+            return "====";
+        case "stem":
+            return "++++";
+        default:
+            return "----";
         }
     }
 
@@ -249,7 +251,8 @@ public class BlockEndCalculator {
     }
 
     /**
-     * Finds the end of lists (ulist, olist). Continues while list markers match pattern.
+     * Finds the end of lists (ulist, olist). Continues while list markers match
+     * pattern.
      */
     private int findListEnd(List<String> lines, int startLine, String listType) {
         int line = startLine - 1;
@@ -329,14 +332,14 @@ public class BlockEndCalculator {
 
     private String getListMarkerPattern(String listType) {
         switch (listType) {
-            case "ulist" :
-                return "[*\\-•‣⁃]";
-            case "olist" :
-                return "[0-9]+\\.|\\.|[a-zA-Z]\\.|[ivxIVX]+\\.";
-            case "colist" :
-                return "<[0-9]+>";
-            default :
-                return "";
+        case "ulist":
+            return "[*\\-•‣⁃]";
+        case "olist":
+            return "[0-9]+\\.|\\.|[a-zA-Z]\\.|[ivxIVX]+\\.";
+        case "colist":
+            return "<[0-9]+>";
+        default:
+            return "";
         }
     }
 
@@ -367,14 +370,14 @@ public class BlockEndCalculator {
     private int findSpecialBlockEnd(List<String> lines, int startLine, String context) {
         // Handle special blocks like stem, toc, etc.
         switch (context) {
-            case "stem" :
-                return findDelimitedBlockEnd(lines, startLine, context);
-            case "toc" :
-            case "preamble" :
-            case "abstract" :
-                return findParagraphEnd(lines, startLine);
-            default :
-                return findGenericBlockEnd(lines, startLine);
+        case "stem":
+            return findDelimitedBlockEnd(lines, startLine, context);
+        case "toc":
+        case "preamble":
+        case "abstract":
+            return findParagraphEnd(lines, startLine);
+        default:
+            return findGenericBlockEnd(lines, startLine);
         }
     }
 }

@@ -23,21 +23,21 @@ public class CLIConfig {
     private final Severity failLevel;
 
     private CLIConfig(Builder builder) {
-        this.inputPatterns = Objects.requireNonNull(builder.inputPatterns,
-                "[" + getClass().getName() + "] inputPatterns must not be null");
+        this.inputPatterns = Objects
+                .requireNonNull(builder.inputPatterns, "[" + getClass().getName() + "] inputPatterns must not be null");
         if (this.inputPatterns.isEmpty()) {
             throw new IllegalArgumentException("inputPatterns must not be empty");
         }
-        this.baseDirectory = Objects.requireNonNull(builder.baseDirectory,
-                "[" + getClass().getName() + "] baseDirectory must not be null");
+        this.baseDirectory = Objects
+                .requireNonNull(builder.baseDirectory, "[" + getClass().getName() + "] baseDirectory must not be null");
         this.configFile = builder.configFile;
         this.outputConfigFormat = builder.outputConfigFormat;
         this.outputConfigFile = builder.outputConfigFile;
-        this.reportFormat = Objects.requireNonNull(builder.reportFormat,
-                "[" + getClass().getName() + "] reportFormat must not be null");
+        this.reportFormat = Objects
+                .requireNonNull(builder.reportFormat, "[" + getClass().getName() + "] reportFormat must not be null");
         this.reportOutput = builder.reportOutput;
-        this.failLevel = Objects.requireNonNull(builder.failLevel,
-                "[" + getClass().getName() + "] failLevel must not be null");
+        this.failLevel = Objects
+                .requireNonNull(builder.failLevel, "[" + getClass().getName() + "] failLevel must not be null");
     }
 
     public List<String> getInputPatterns() {

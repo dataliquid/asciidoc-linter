@@ -36,11 +36,19 @@ class EnhancedValidationMessageTest {
             List<String> contextLines = Arrays.asList("Line before", "Error line", "Line after");
 
             // When
-            ValidationMessage message = ValidationMessage.builder().severity(Severity.ERROR).ruleId("test.rule")
+            ValidationMessage message = ValidationMessage
+                    .builder()
+                    .severity(Severity.ERROR)
+                    .ruleId("test.rule")
                     .message("Test error")
                     .location(SourceLocation.builder().filename("test.adoc").line(10).startColumn(5).build())
-                    .errorType(ErrorType.MISSING_VALUE).actualValue("actual").expectedValue("expected")
-                    .missingValueHint("id").suggestions(suggestions).contextLines(contextLines).build();
+                    .errorType(ErrorType.MISSING_VALUE)
+                    .actualValue("actual")
+                    .expectedValue("expected")
+                    .missingValueHint("id")
+                    .suggestions(suggestions)
+                    .contextLines(contextLines)
+                    .build();
 
             // Then
             assertEquals(ErrorType.MISSING_VALUE, message.getErrorType());
@@ -56,8 +64,12 @@ class EnhancedValidationMessageTest {
         @DisplayName("should handle null enhanced fields")
         void shouldHandleNullEnhancedFields() {
             // When
-            ValidationMessage message = ValidationMessage.builder().severity(Severity.ERROR).ruleId("test.rule")
-                    .message("Test error").location(SourceLocation.builder().filename("test.adoc").line(10).build())
+            ValidationMessage message = ValidationMessage
+                    .builder()
+                    .severity(Severity.ERROR)
+                    .ruleId("test.rule")
+                    .message("Test error")
+                    .location(SourceLocation.builder().filename("test.adoc").line(10).build())
                     .build();
 
             // Then
@@ -86,9 +98,14 @@ class EnhancedValidationMessageTest {
         void shouldSupportAllErrorTypes() {
             for (ErrorType type : ErrorType.values()) {
                 // When
-                ValidationMessage message = ValidationMessage.builder().severity(Severity.ERROR).ruleId("test.rule")
-                        .message("Test error").location(SourceLocation.builder().filename("test.adoc").line(10).build())
-                        .errorType(type).build();
+                ValidationMessage message = ValidationMessage
+                        .builder()
+                        .severity(Severity.ERROR)
+                        .ruleId("test.rule")
+                        .message("Test error")
+                        .location(SourceLocation.builder().filename("test.adoc").line(10).build())
+                        .errorType(type)
+                        .build();
 
                 // Then
                 assertEquals(type, message.getErrorType());
@@ -108,9 +125,15 @@ class EnhancedValidationMessageTest {
             List<String> mutableContext = Arrays.asList("Line 1", "Line 2");
 
             // When
-            ValidationMessage message = ValidationMessage.builder().severity(Severity.ERROR).ruleId("test.rule")
-                    .message("Test error").location(SourceLocation.builder().filename("test.adoc").line(10).build())
-                    .suggestions(mutableSuggestions).contextLines(mutableContext).build();
+            ValidationMessage message = ValidationMessage
+                    .builder()
+                    .severity(Severity.ERROR)
+                    .ruleId("test.rule")
+                    .message("Test error")
+                    .location(SourceLocation.builder().filename("test.adoc").line(10).build())
+                    .suggestions(mutableSuggestions)
+                    .contextLines(mutableContext)
+                    .build();
 
             // Then - returned lists should be defensive copies (mutable but separate)
             List<Suggestion> suggestions = message.getSuggestions();
@@ -126,9 +149,15 @@ class EnhancedValidationMessageTest {
         @DisplayName("should handle null lists in builder")
         void shouldHandleNullListsInBuilder() {
             // When
-            ValidationMessage message = ValidationMessage.builder().severity(Severity.ERROR).ruleId("test.rule")
-                    .message("Test error").location(SourceLocation.builder().filename("test.adoc").line(10).build())
-                    .suggestions(null).contextLines(null).build();
+            ValidationMessage message = ValidationMessage
+                    .builder()
+                    .severity(Severity.ERROR)
+                    .ruleId("test.rule")
+                    .message("Test error")
+                    .location(SourceLocation.builder().filename("test.adoc").line(10).build())
+                    .suggestions(null)
+                    .contextLines(null)
+                    .build();
 
             // Then
             assertNotNull(message.getSuggestions());
@@ -146,18 +175,35 @@ class EnhancedValidationMessageTest {
         @DisplayName("should consider enhanced fields in equals")
         void shouldConsiderEnhancedFieldsInEquals() {
             // Given
-            ValidationMessage message1 = ValidationMessage.builder().severity(Severity.ERROR).ruleId("test.rule")
-                    .message("Test error").location(SourceLocation.builder().filename("test.adoc").line(10).build())
-                    .errorType(ErrorType.MISSING_VALUE).actualValue("actual").build();
+            ValidationMessage message1 = ValidationMessage
+                    .builder()
+                    .severity(Severity.ERROR)
+                    .ruleId("test.rule")
+                    .message("Test error")
+                    .location(SourceLocation.builder().filename("test.adoc").line(10).build())
+                    .errorType(ErrorType.MISSING_VALUE)
+                    .actualValue("actual")
+                    .build();
 
-            ValidationMessage message2 = ValidationMessage.builder().severity(Severity.ERROR).ruleId("test.rule")
-                    .message("Test error").location(SourceLocation.builder().filename("test.adoc").line(10).build())
-                    .errorType(ErrorType.MISSING_VALUE).actualValue("actual").build();
+            ValidationMessage message2 = ValidationMessage
+                    .builder()
+                    .severity(Severity.ERROR)
+                    .ruleId("test.rule")
+                    .message("Test error")
+                    .location(SourceLocation.builder().filename("test.adoc").line(10).build())
+                    .errorType(ErrorType.MISSING_VALUE)
+                    .actualValue("actual")
+                    .build();
 
-            ValidationMessage message3 = ValidationMessage.builder().severity(Severity.ERROR).ruleId("test.rule")
-                    .message("Test error").location(SourceLocation.builder().filename("test.adoc").line(10).build())
+            ValidationMessage message3 = ValidationMessage
+                    .builder()
+                    .severity(Severity.ERROR)
+                    .ruleId("test.rule")
+                    .message("Test error")
+                    .location(SourceLocation.builder().filename("test.adoc").line(10).build())
                     .errorType(ErrorType.INVALID_PATTERN) // Different
-                    .actualValue("actual").build();
+                    .actualValue("actual")
+                    .build();
 
             // Then
             assertEquals(message1, message2);

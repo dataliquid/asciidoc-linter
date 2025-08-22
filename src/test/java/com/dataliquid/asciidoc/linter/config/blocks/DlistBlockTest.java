@@ -25,21 +25,47 @@ class DlistBlockTest {
         @DisplayName("should build DlistBlock with all attributes")
         void shouldBuildDlistBlockWithAllAttributes() {
             // Given
-            DlistBlock.TermsConfig termsConfig = DlistBlock.TermsConfig.builder().min(1).max(20).pattern("^[A-Z].*")
-                    .minLength(3).maxLength(50).severity(Severity.ERROR).build();
+            DlistBlock.TermsConfig termsConfig = DlistBlock.TermsConfig
+                    .builder()
+                    .min(1)
+                    .max(20)
+                    .pattern("^[A-Z].*")
+                    .minLength(3)
+                    .maxLength(50)
+                    .severity(Severity.ERROR)
+                    .build();
 
-            DlistBlock.DescriptionsConfig descriptionsConfig = DlistBlock.DescriptionsConfig.builder().required(true)
-                    .min(1).max(5).pattern(".*\\.$").severity(Severity.WARN).build();
+            DlistBlock.DescriptionsConfig descriptionsConfig = DlistBlock.DescriptionsConfig
+                    .builder()
+                    .required(true)
+                    .min(1)
+                    .max(5)
+                    .pattern(".*\\.$")
+                    .severity(Severity.WARN)
+                    .build();
 
-            DlistBlock.NestingLevelConfig nestingConfig = DlistBlock.NestingLevelConfig.builder().max(3)
-                    .severity(Severity.INFO).build();
+            DlistBlock.NestingLevelConfig nestingConfig = DlistBlock.NestingLevelConfig
+                    .builder()
+                    .max(3)
+                    .severity(Severity.INFO)
+                    .build();
 
-            DlistBlock.DelimiterStyleConfig delimiterConfig = DlistBlock.DelimiterStyleConfig.builder()
-                    .allowedDelimiters(new String[]{"::", ":::"}).consistent(true).severity(Severity.WARN).build();
+            DlistBlock.DelimiterStyleConfig delimiterConfig = DlistBlock.DelimiterStyleConfig
+                    .builder()
+                    .allowedDelimiters(new String[] { "::", ":::" })
+                    .consistent(true)
+                    .severity(Severity.WARN)
+                    .build();
 
             // When
-            DlistBlock dlist = DlistBlock.builder().name("glossary-list").severity(Severity.ERROR).terms(termsConfig)
-                    .descriptions(descriptionsConfig).nestingLevel(nestingConfig).delimiterStyle(delimiterConfig)
+            DlistBlock dlist = DlistBlock
+                    .builder()
+                    .name("glossary-list")
+                    .severity(Severity.ERROR)
+                    .terms(termsConfig)
+                    .descriptions(descriptionsConfig)
+                    .nestingLevel(nestingConfig)
+                    .delimiterStyle(delimiterConfig)
                     .build();
 
             // Then
@@ -66,7 +92,7 @@ class DlistBlockTest {
             assertEquals(Severity.INFO, dlist.getNestingLevel().getSeverity());
 
             assertNotNull(dlist.getDelimiterStyle());
-            assertArrayEquals(new String[]{"::", ":::"}, dlist.getDelimiterStyle().getAllowedDelimiters());
+            assertArrayEquals(new String[] { "::", ":::" }, dlist.getDelimiterStyle().getAllowedDelimiters());
             assertTrue(dlist.getDelimiterStyle().getConsistent());
             assertEquals(Severity.WARN, dlist.getDelimiterStyle().getSeverity());
         }
@@ -104,8 +130,15 @@ class DlistBlockTest {
         @DisplayName("should create TermsConfig with all properties")
         void shouldCreateTermsConfigWithAllProperties() {
             // When
-            DlistBlock.TermsConfig termsConfig = DlistBlock.TermsConfig.builder().min(2).max(10).pattern("^[A-Z].*")
-                    .minLength(5).maxLength(100).severity(Severity.ERROR).build();
+            DlistBlock.TermsConfig termsConfig = DlistBlock.TermsConfig
+                    .builder()
+                    .min(2)
+                    .max(10)
+                    .pattern("^[A-Z].*")
+                    .minLength(5)
+                    .maxLength(100)
+                    .severity(Severity.ERROR)
+                    .build();
 
             // Then
             assertEquals(2, termsConfig.getMin());
@@ -140,8 +173,14 @@ class DlistBlockTest {
         @DisplayName("should create DescriptionsConfig with all properties")
         void shouldCreateDescriptionsConfigWithAllProperties() {
             // When
-            DlistBlock.DescriptionsConfig descriptionsConfig = DlistBlock.DescriptionsConfig.builder().required(true)
-                    .min(1).max(3).pattern("^\\w+").severity(Severity.WARN).build();
+            DlistBlock.DescriptionsConfig descriptionsConfig = DlistBlock.DescriptionsConfig
+                    .builder()
+                    .required(true)
+                    .min(1)
+                    .max(3)
+                    .pattern("^\\w+")
+                    .severity(Severity.WARN)
+                    .build();
 
             // Then
             assertTrue(descriptionsConfig.getRequired());
@@ -155,7 +194,9 @@ class DlistBlockTest {
         @DisplayName("should create DescriptionsConfig with only required flag")
         void shouldCreateDescriptionsConfigWithOnlyRequired() {
             // When
-            DlistBlock.DescriptionsConfig descriptionsConfig = DlistBlock.DescriptionsConfig.builder().required(false)
+            DlistBlock.DescriptionsConfig descriptionsConfig = DlistBlock.DescriptionsConfig
+                    .builder()
+                    .required(false)
                     .build();
 
             // Then
@@ -175,12 +216,15 @@ class DlistBlockTest {
         @DisplayName("should create DelimiterStyleConfig with all properties")
         void shouldCreateDelimiterStyleConfigWithAllProperties() {
             // When
-            DlistBlock.DelimiterStyleConfig delimiterConfig = DlistBlock.DelimiterStyleConfig.builder()
-                    .allowedDelimiters(new String[]{"::", ":::", "::::"}).consistent(true).severity(Severity.INFO)
+            DlistBlock.DelimiterStyleConfig delimiterConfig = DlistBlock.DelimiterStyleConfig
+                    .builder()
+                    .allowedDelimiters(new String[] { "::", ":::", "::::" })
+                    .consistent(true)
+                    .severity(Severity.INFO)
                     .build();
 
             // Then
-            assertArrayEquals(new String[]{"::", ":::", "::::"}, delimiterConfig.getAllowedDelimiters());
+            assertArrayEquals(new String[] { "::", ":::", "::::" }, delimiterConfig.getAllowedDelimiters());
             assertTrue(delimiterConfig.getConsistent());
             assertEquals(Severity.INFO, delimiterConfig.getSeverity());
         }
@@ -189,11 +233,14 @@ class DlistBlockTest {
         @DisplayName("should create DelimiterStyleConfig with single delimiter")
         void shouldCreateDelimiterStyleConfigWithSingleDelimiter() {
             // When
-            DlistBlock.DelimiterStyleConfig delimiterConfig = DlistBlock.DelimiterStyleConfig.builder()
-                    .allowedDelimiters(new String[]{"::"}).consistent(false).build();
+            DlistBlock.DelimiterStyleConfig delimiterConfig = DlistBlock.DelimiterStyleConfig
+                    .builder()
+                    .allowedDelimiters(new String[] { "::" })
+                    .consistent(false)
+                    .build();
 
             // Then
-            assertArrayEquals(new String[]{"::"}, delimiterConfig.getAllowedDelimiters());
+            assertArrayEquals(new String[] { "::" }, delimiterConfig.getAllowedDelimiters());
             assertEquals(false, delimiterConfig.getConsistent());
             assertNull(delimiterConfig.getSeverity());
         }
@@ -207,17 +254,33 @@ class DlistBlockTest {
         @DisplayName("should correctly implement equals and hashCode for DlistBlock")
         void shouldCorrectlyImplementEqualsAndHashCodeForDlistBlock() {
             // Given
-            DlistBlock.TermsConfig terms1 = DlistBlock.TermsConfig.builder().min(1).max(10).pattern("^[A-Z]")
-                    .severity(Severity.ERROR).build();
+            DlistBlock.TermsConfig terms1 = DlistBlock.TermsConfig
+                    .builder()
+                    .min(1)
+                    .max(10)
+                    .pattern("^[A-Z]")
+                    .severity(Severity.ERROR)
+                    .build();
 
-            DlistBlock.TermsConfig terms2 = DlistBlock.TermsConfig.builder().min(1).max(10).pattern("^[A-Z]")
-                    .severity(Severity.ERROR).build();
+            DlistBlock.TermsConfig terms2 = DlistBlock.TermsConfig
+                    .builder()
+                    .min(1)
+                    .max(10)
+                    .pattern("^[A-Z]")
+                    .severity(Severity.ERROR)
+                    .build();
 
-            DlistBlock.DescriptionsConfig desc1 = DlistBlock.DescriptionsConfig.builder().required(true)
-                    .severity(Severity.WARN).build();
+            DlistBlock.DescriptionsConfig desc1 = DlistBlock.DescriptionsConfig
+                    .builder()
+                    .required(true)
+                    .severity(Severity.WARN)
+                    .build();
 
-            DlistBlock.DescriptionsConfig desc2 = DlistBlock.DescriptionsConfig.builder().required(true)
-                    .severity(Severity.WARN).build();
+            DlistBlock.DescriptionsConfig desc2 = DlistBlock.DescriptionsConfig
+                    .builder()
+                    .required(true)
+                    .severity(Severity.WARN)
+                    .build();
 
             // When
             DlistBlock dlist1 = DlistBlock.builder().severity(Severity.ERROR).terms(terms1).descriptions(desc1).build();
@@ -237,23 +300,47 @@ class DlistBlockTest {
         @DisplayName("should test inner class equals and hashCode")
         void shouldTestInnerClassEqualsAndHashCode() {
             // Given
-            DlistBlock.TermsConfig terms1 = DlistBlock.TermsConfig.builder().min(2).pattern("\\w+").minLength(3)
-                    .severity(Severity.ERROR).build();
+            DlistBlock.TermsConfig terms1 = DlistBlock.TermsConfig
+                    .builder()
+                    .min(2)
+                    .pattern("\\w+")
+                    .minLength(3)
+                    .severity(Severity.ERROR)
+                    .build();
 
-            DlistBlock.TermsConfig terms2 = DlistBlock.TermsConfig.builder().min(2).pattern("\\w+").minLength(3)
-                    .severity(Severity.ERROR).build();
+            DlistBlock.TermsConfig terms2 = DlistBlock.TermsConfig
+                    .builder()
+                    .min(2)
+                    .pattern("\\w+")
+                    .minLength(3)
+                    .severity(Severity.ERROR)
+                    .build();
 
-            DlistBlock.NestingLevelConfig nesting1 = DlistBlock.NestingLevelConfig.builder().max(2)
-                    .severity(Severity.INFO).build();
+            DlistBlock.NestingLevelConfig nesting1 = DlistBlock.NestingLevelConfig
+                    .builder()
+                    .max(2)
+                    .severity(Severity.INFO)
+                    .build();
 
-            DlistBlock.NestingLevelConfig nesting2 = DlistBlock.NestingLevelConfig.builder().max(2)
-                    .severity(Severity.INFO).build();
+            DlistBlock.NestingLevelConfig nesting2 = DlistBlock.NestingLevelConfig
+                    .builder()
+                    .max(2)
+                    .severity(Severity.INFO)
+                    .build();
 
-            DlistBlock.DelimiterStyleConfig delimiter1 = DlistBlock.DelimiterStyleConfig.builder()
-                    .allowedDelimiters(new String[]{"::"}).consistent(true).severity(Severity.WARN).build();
+            DlistBlock.DelimiterStyleConfig delimiter1 = DlistBlock.DelimiterStyleConfig
+                    .builder()
+                    .allowedDelimiters(new String[] { "::" })
+                    .consistent(true)
+                    .severity(Severity.WARN)
+                    .build();
 
-            DlistBlock.DelimiterStyleConfig delimiter2 = DlistBlock.DelimiterStyleConfig.builder()
-                    .allowedDelimiters(new String[]{"::"}).consistent(true).severity(Severity.WARN).build();
+            DlistBlock.DelimiterStyleConfig delimiter2 = DlistBlock.DelimiterStyleConfig
+                    .builder()
+                    .allowedDelimiters(new String[] { "::" })
+                    .consistent(true)
+                    .severity(Severity.WARN)
+                    .build();
 
             // Then
             assertEquals(terms1, terms2);
@@ -270,11 +357,15 @@ class DlistBlockTest {
         @DisplayName("should handle different delimiter arrays")
         void shouldHandleDifferentDelimiterArrays() {
             // Given
-            DlistBlock.DelimiterStyleConfig delimiter1 = DlistBlock.DelimiterStyleConfig.builder()
-                    .allowedDelimiters(new String[]{"::", ":::"}).build();
+            DlistBlock.DelimiterStyleConfig delimiter1 = DlistBlock.DelimiterStyleConfig
+                    .builder()
+                    .allowedDelimiters(new String[] { "::", ":::" })
+                    .build();
 
-            DlistBlock.DelimiterStyleConfig delimiter2 = DlistBlock.DelimiterStyleConfig.builder()
-                    .allowedDelimiters(new String[]{"::", "::::"}).build();
+            DlistBlock.DelimiterStyleConfig delimiter2 = DlistBlock.DelimiterStyleConfig
+                    .builder()
+                    .allowedDelimiters(new String[] { "::", "::::" })
+                    .build();
 
             // Then
             assertNotEquals(delimiter1, delimiter2);

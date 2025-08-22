@@ -65,8 +65,8 @@ class FileDiscoveryServicePerformanceTest {
     void shouldHandleMultiplePatternsEfficiently() throws IOException {
         createTestFileStructure();
 
-        List<String> patterns = List.of("**/*.adoc", "docs/**/*.adoc", "src/*/docs/*.adoc", "**/*example*.adoc",
-                "test?.adoc");
+        List<String> patterns = List
+                .of("**/*.adoc", "docs/**/*.adoc", "src/*/docs/*.adoc", "**/*example*.adoc", "test?.adoc");
 
         // Warm up cache
         for (String pattern : patterns) {

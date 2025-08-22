@@ -23,26 +23,27 @@ import com.dataliquid.asciidoc.linter.validator.Suggestion;
 
 /**
  * Validator for definition list (dlist) blocks in AsciiDoc documents.
- *
  * <p>
- * This validator validates definition list blocks based on the YAML schema structure defined in
- * {@code src/main/resources/schemas/blocks/dlist-block.yaml}. The YAML configuration is parsed into {@link DlistBlock}
- * objects which define the validation rules.
+ * This validator validates definition list blocks based on the YAML schema
+ * structure defined in
+ * {@code src/main/resources/schemas/blocks/dlist-block.yaml}. The YAML
+ * configuration is parsed into {@link DlistBlock} objects which define the
+ * validation rules.
  * </p>
- *
  * <p>
  * Supported validation rules from YAML schema:
  * </p>
  * <ul>
  * <li><b>terms</b>: Validates term count, pattern, and length</li>
- * <li><b>descriptions</b>: Validates description presence, count, and pattern</li>
+ * <li><b>descriptions</b>: Validates description presence, count, and
+ * pattern</li>
  * <li><b>nestingLevel</b>: Validates maximum nesting depth</li>
- * <li><b>delimiterStyle</b>: Validates delimiter consistency and allowed styles</li>
+ * <li><b>delimiterStyle</b>: Validates delimiter consistency and allowed
+ * styles</li>
  * </ul>
- *
  * <p>
- * Each nested configuration can optionally define its own severity level. If not specified, the block-level severity is
- * used as fallback.
+ * Each nested configuration can optionally define its own severity level. If
+ * not specified, the block-level severity is used as fallback.
  * </p>
  *
  * @see DlistBlock
@@ -101,31 +102,58 @@ public final class DlistBlockValidator extends AbstractBlockValidator<DlistBlock
 
         // Validate min terms
         if (config.getMin() != null && termCount < config.getMin()) {
-            messages.add(ValidationMessage.builder().severity(severity).ruleId(TERMS_MIN)
-                    .location(context.createLocation(block)).message("Definition list has too few terms")
-                    .actualValue(String.valueOf(termCount)).expectedValue("At least " + config.getMin() + " terms")
-                    .addSuggestion(Suggestion.builder().description("Add term with description").addExample("Term1::")
-                            .addExample("  Description for Term1").addExample("").addExample("Term2::")
-                            .addExample("  Description for Term2").build())
-                    .addSuggestion(Suggestion.builder().description("Add simple definition")
-                            .addExample("API:: Application Programming Interface")
-                            .addExample("URL:: Uniform Resource Locator").build())
-                    .build());
+            messages
+                    .add(ValidationMessage
+                            .builder()
+                            .severity(severity)
+                            .ruleId(TERMS_MIN)
+                            .location(context.createLocation(block))
+                            .message("Definition list has too few terms")
+                            .actualValue(String.valueOf(termCount))
+                            .expectedValue("At least " + config.getMin() + " terms")
+                            .addSuggestion(Suggestion
+                                    .builder()
+                                    .description("Add term with description")
+                                    .addExample("Term1::")
+                                    .addExample("  Description for Term1")
+                                    .addExample("")
+                                    .addExample("Term2::")
+                                    .addExample("  Description for Term2")
+                                    .build())
+                            .addSuggestion(Suggestion
+                                    .builder()
+                                    .description("Add simple definition")
+                                    .addExample("API:: Application Programming Interface")
+                                    .addExample("URL:: Uniform Resource Locator")
+                                    .build())
+                            .build());
         }
 
         // Validate max terms
         if (config.getMax() != null && termCount > config.getMax()) {
-            messages.add(ValidationMessage.builder().severity(severity).ruleId(TERMS_MAX)
-                    .location(context.createLocation(block)).message("Definition list has too many terms")
-                    .actualValue(String.valueOf(termCount)).expectedValue("At most " + config.getMax() + " terms")
-                    .addSuggestion(Suggestion.builder().description("Split into multiple definition lists")
-                            .addExample("Group related terms into separate lists with headings")
-                            .explanation("Consider organizing " + (termCount - config.getMax()) + " excess terms")
-                            .build())
-                    .addSuggestion(Suggestion.builder().description("Remove less important terms")
-                            .addExample("Keep only the most relevant definitions")
-                            .explanation("Focus on the most essential terms").build())
-                    .build());
+            messages
+                    .add(ValidationMessage
+                            .builder()
+                            .severity(severity)
+                            .ruleId(TERMS_MAX)
+                            .location(context.createLocation(block))
+                            .message("Definition list has too many terms")
+                            .actualValue(String.valueOf(termCount))
+                            .expectedValue("At most " + config.getMax() + " terms")
+                            .addSuggestion(Suggestion
+                                    .builder()
+                                    .description("Split into multiple definition lists")
+                                    .addExample("Group related terms into separate lists with headings")
+                                    .explanation(
+                                            "Consider organizing " + (termCount - config.getMax()) + " excess terms")
+                                    .build())
+                            .addSuggestion(Suggestion
+                                    .builder()
+                                    .description("Remove less important terms")
+                                    .addExample("Keep only the most relevant definitions")
+                                    .explanation("Focus on the most essential terms")
+                                    .build())
+                            .build());
         }
 
         // Validate each term
@@ -151,40 +179,68 @@ public final class DlistBlockValidator extends AbstractBlockValidator<DlistBlock
 
         // Validate pattern
         if (pattern != null && !pattern.matcher(term).matches()) {
-            messages.add(ValidationMessage.builder().severity(severity).ruleId(TERMS_PATTERN)
-                    .location(SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
-                    .message("Definition list term does not match required pattern").actualValue(term)
-                    .expectedValue("Pattern: " + config.getPattern())
-                    .addSuggestion(Suggestion.builder().description("Follow pattern format")
-                            .addExample("Use consistent term format")
-                            .addExample("Example: ACRONYM, Full Name, CamelCase")
-                            .explanation("Term must match pattern: " + config.getPattern()).build())
-                    .build());
+            messages
+                    .add(ValidationMessage
+                            .builder()
+                            .severity(severity)
+                            .ruleId(TERMS_PATTERN)
+                            .location(
+                                    SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
+                            .message("Definition list term does not match required pattern")
+                            .actualValue(term)
+                            .expectedValue("Pattern: " + config.getPattern())
+                            .addSuggestion(Suggestion
+                                    .builder()
+                                    .description("Follow pattern format")
+                                    .addExample("Use consistent term format")
+                                    .addExample("Example: ACRONYM, Full Name, CamelCase")
+                                    .explanation("Term must match pattern: " + config.getPattern())
+                                    .build())
+                            .build());
         }
 
         // Validate min length
         if (config.getMinLength() != null && term.length() < config.getMinLength()) {
-            messages.add(ValidationMessage.builder().severity(severity).ruleId(TERMS_MIN_LENGTH)
-                    .location(SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
-                    .message("Definition list term is too short").actualValue(term + " (length: " + term.length() + ")")
-                    .expectedValue("Minimum length: " + config.getMinLength())
-                    .addSuggestion(Suggestion.builder().description("Use more descriptive term")
-                            .addExample("Expand abbreviation: API → Application Programming Interface")
-                            .addExample("Add context: User → User Account")
-                            .explanation("Term needs at least " + config.getMinLength() + " characters").build())
-                    .build());
+            messages
+                    .add(ValidationMessage
+                            .builder()
+                            .severity(severity)
+                            .ruleId(TERMS_MIN_LENGTH)
+                            .location(
+                                    SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
+                            .message("Definition list term is too short")
+                            .actualValue(term + " (length: " + term.length() + ")")
+                            .expectedValue("Minimum length: " + config.getMinLength())
+                            .addSuggestion(Suggestion
+                                    .builder()
+                                    .description("Use more descriptive term")
+                                    .addExample("Expand abbreviation: API → Application Programming Interface")
+                                    .addExample("Add context: User → User Account")
+                                    .explanation("Term needs at least " + config.getMinLength() + " characters")
+                                    .build())
+                            .build());
         }
 
         // Validate max length
         if (config.getMaxLength() != null && term.length() > config.getMaxLength()) {
-            messages.add(ValidationMessage.builder().severity(severity).ruleId(TERMS_MAX_LENGTH)
-                    .location(SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
-                    .message("Definition list term is too long").actualValue(term + " (length: " + term.length() + ")")
-                    .expectedValue("Maximum length: " + config.getMaxLength())
-                    .addSuggestion(Suggestion.builder().description("Shorten term")
-                            .addExample("Use abbreviation or acronym").addExample("Remove unnecessary words")
-                            .explanation("Term must be at most " + config.getMaxLength() + " characters").build())
-                    .build());
+            messages
+                    .add(ValidationMessage
+                            .builder()
+                            .severity(severity)
+                            .ruleId(TERMS_MAX_LENGTH)
+                            .location(
+                                    SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
+                            .message("Definition list term is too long")
+                            .actualValue(term + " (length: " + term.length() + ")")
+                            .expectedValue("Maximum length: " + config.getMaxLength())
+                            .addSuggestion(Suggestion
+                                    .builder()
+                                    .description("Shorten term")
+                                    .addExample("Use abbreviation or acronym")
+                                    .addExample("Remove unnecessary words")
+                                    .explanation("Term must be at most " + config.getMaxLength() + " characters")
+                                    .build())
+                            .build());
         }
     }
 
@@ -210,22 +266,40 @@ public final class DlistBlockValidator extends AbstractBlockValidator<DlistBlock
                     String termText = firstTerm.getText();
                     SourcePosition pos = findSourcePosition(block, firstTerm, context, termText);
 
-                    messages.add(ValidationMessage.builder().severity(severity).ruleId(DESCRIPTIONS_REQUIRED)
-                            .location(
-                                    SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
-                            .message("Definition list term missing required description").actualValue("No description")
-                            .expectedValue("Description required").errorType(ErrorType.MISSING_VALUE)
-                            .missingValueHint("Description")
-                            .placeholderContext(PlaceholderContext.builder()
-                                    .type(PlaceholderContext.PlaceholderType.INSERT_BEFORE).build())
-                            .addSuggestion(Suggestion.builder().description("Add simple description")
-                                    .fixedValue("Description text").addExample(termText + "::")
-                                    .addExample("  Brief explanation of " + termText).build())
-                            .addSuggestion(Suggestion.builder().description("Add detailed description")
-                                    .addExample(termText + "::")
-                                    .addExample("  Detailed explanation of what " + termText + " means")
-                                    .addExample("  and how it is used in this context.").build())
-                            .build());
+                    messages
+                            .add(ValidationMessage
+                                    .builder()
+                                    .severity(severity)
+                                    .ruleId(DESCRIPTIONS_REQUIRED)
+                                    .location(SourceLocation
+                                            .builder()
+                                            .filename(context.getFilename())
+                                            .fromPosition(pos)
+                                            .build())
+                                    .message("Definition list term missing required description")
+                                    .actualValue("No description")
+                                    .expectedValue("Description required")
+                                    .errorType(ErrorType.MISSING_VALUE)
+                                    .missingValueHint("Description")
+                                    .placeholderContext(PlaceholderContext
+                                            .builder()
+                                            .type(PlaceholderContext.PlaceholderType.INSERT_BEFORE)
+                                            .build())
+                                    .addSuggestion(Suggestion
+                                            .builder()
+                                            .description("Add simple description")
+                                            .fixedValue("Description text")
+                                            .addExample(termText + "::")
+                                            .addExample("  Brief explanation of " + termText)
+                                            .build())
+                                    .addSuggestion(Suggestion
+                                            .builder()
+                                            .description("Add detailed description")
+                                            .addExample(termText + "::")
+                                            .addExample("  Detailed explanation of what " + termText + " means")
+                                            .addExample("  and how it is used in this context.")
+                                            .build())
+                                    .build());
                 }
             }
 
@@ -233,17 +307,24 @@ public final class DlistBlockValidator extends AbstractBlockValidator<DlistBlock
             if (description != null && description.getText() != null && pattern != null) {
                 String descText = description.getText();
                 if (!pattern.matcher(descText).find()) {
-                    messages.add(ValidationMessage.builder().severity(severity).ruleId(DESCRIPTIONS_PATTERN)
-                            .location(context.createLocation(block))
-                            .message("Definition list description does not match required pattern")
-                            .actualValue(descText.length() > 50 ? descText.substring(0, 50) + "..." : descText)
-                            .expectedValue("Pattern: " + config.getPattern())
-                            .addSuggestion(Suggestion.builder().description("Follow description pattern")
-                                    .addExample("Ensure description format matches requirements")
-                                    .addExample("Start with capital letter and end with period")
-                                    .addExample("Use complete sentences")
-                                    .explanation("Description must match pattern: " + config.getPattern()).build())
-                            .build());
+                    messages
+                            .add(ValidationMessage
+                                    .builder()
+                                    .severity(severity)
+                                    .ruleId(DESCRIPTIONS_PATTERN)
+                                    .location(context.createLocation(block))
+                                    .message("Definition list description does not match required pattern")
+                                    .actualValue(descText.length() > 50 ? descText.substring(0, 50) + "..." : descText)
+                                    .expectedValue("Pattern: " + config.getPattern())
+                                    .addSuggestion(Suggestion
+                                            .builder()
+                                            .description("Follow description pattern")
+                                            .addExample("Ensure description format matches requirements")
+                                            .addExample("Start with capital letter and end with period")
+                                            .addExample("Use complete sentences")
+                                            .explanation("Description must match pattern: " + config.getPattern())
+                                            .build())
+                                    .build());
                 }
             }
         }

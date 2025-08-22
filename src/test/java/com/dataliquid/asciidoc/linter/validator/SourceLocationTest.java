@@ -29,8 +29,15 @@ class SourceLocationTest {
             String sourceLine = "= Test Document";
 
             // When
-            SourceLocation location = SourceLocation.builder().filename(filename).startLine(startLine)
-                    .startColumn(startColumn).endLine(endLine).endColumn(endColumn).sourceLine(sourceLine).build();
+            SourceLocation location = SourceLocation
+                    .builder()
+                    .filename(filename)
+                    .startLine(startLine)
+                    .startColumn(startColumn)
+                    .endLine(endLine)
+                    .endColumn(endColumn)
+                    .sourceLine(sourceLine)
+                    .build();
 
             // Then
             assertEquals(filename, location.getFilename());
@@ -51,8 +58,12 @@ class SourceLocationTest {
             int endColumn = 20;
 
             // When
-            SourceLocation location = SourceLocation.builder().filename(filename).line(line)
-                    .columns(startColumn, endColumn).build();
+            SourceLocation location = SourceLocation
+                    .builder()
+                    .filename(filename)
+                    .line(line)
+                    .columns(startColumn, endColumn)
+                    .build();
 
             // Then
             assertEquals(line, location.getStartLine());
@@ -94,8 +105,13 @@ class SourceLocationTest {
         @DisplayName("should format single line with single column")
         void shouldFormatSingleLineWithSingleColumn() {
             // Given
-            SourceLocation location = SourceLocation.builder().filename("test.adoc").line(10).startColumn(5)
-                    .endColumn(5).build();
+            SourceLocation location = SourceLocation
+                    .builder()
+                    .filename("test.adoc")
+                    .line(10)
+                    .startColumn(5)
+                    .endColumn(5)
+                    .build();
 
             // When
             String formatted = location.formatLocation();
@@ -123,8 +139,13 @@ class SourceLocationTest {
         @DisplayName("should format line only location")
         void shouldFormatLineOnlyLocation() {
             // Given
-            SourceLocation location = SourceLocation.builder().filename("test.adoc").line(10).startColumn(0)
-                    .endColumn(0).build();
+            SourceLocation location = SourceLocation
+                    .builder()
+                    .filename("test.adoc")
+                    .line(10)
+                    .startColumn(0)
+                    .endColumn(0)
+                    .build();
 
             // When
             String formatted = location.formatLocation();

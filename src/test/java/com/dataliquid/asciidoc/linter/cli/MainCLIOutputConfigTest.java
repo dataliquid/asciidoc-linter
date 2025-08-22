@@ -24,7 +24,7 @@ class MainCLIOutputConfigTest {
 
         try {
             // Test with predefined config name
-            int exitCode = cli.run(new String[]{"lint", "--input", "test.adoc", "--output-config", "simple"});
+            int exitCode = cli.run(new String[] { "lint", "--input", "test.adoc", "--output-config", "simple" });
 
             // Should fail because test.adoc doesn't exist, but parsing should succeed
             assertEquals(2, exitCode);
@@ -44,7 +44,7 @@ class MainCLIOutputConfigTest {
         try {
             // Test with custom config file
             int exitCode = cli
-                    .run(new String[]{"lint", "--input", "test.adoc", "--output-config-file", "custom-output.yaml"});
+                    .run(new String[] { "lint", "--input", "test.adoc", "--output-config-file", "custom-output.yaml" });
 
             // Should fail because files don't exist, but parsing should succeed
             assertEquals(2, exitCode);
@@ -63,8 +63,9 @@ class MainCLIOutputConfigTest {
 
         try {
             // Test with both options - should fail
-            int exitCode = cli.run(new String[]{"lint", "--input", "test.adoc", "--output-config", "simple",
-                    "--output-config-file", "custom.yaml"});
+            int exitCode = cli
+                    .run(new String[] { "lint", "--input", "test.adoc", "--output-config", "simple",
+                            "--output-config-file", "custom.yaml" });
 
             assertEquals(2, exitCode);
             String error = errContent.toString();
@@ -84,7 +85,7 @@ class MainCLIOutputConfigTest {
 
         try {
             // Test with invalid config name
-            int exitCode = cli.run(new String[]{"lint", "--input", "test.adoc", "--output-config", "invalid-name"});
+            int exitCode = cli.run(new String[] { "lint", "--input", "test.adoc", "--output-config", "invalid-name" });
 
             assertEquals(2, exitCode);
             String error = errContent.toString();
@@ -105,7 +106,7 @@ class MainCLIOutputConfigTest {
 
         try {
             // Test lint command help which shows the output options
-            int exitCode = cli.run(new String[]{"lint", "--help"});
+            int exitCode = cli.run(new String[] { "lint", "--help" });
 
             assertEquals(0, exitCode);
             String output = outContent.toString();

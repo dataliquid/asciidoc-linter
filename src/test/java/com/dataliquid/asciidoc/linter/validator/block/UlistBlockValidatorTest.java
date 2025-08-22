@@ -24,12 +24,11 @@ import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
 
 /**
  * Unit tests for {@link UlistBlockValidator}.
- *
  * <p>
- * This test class validates the behavior of the unordered list block validator, which processes ulist blocks in
- * AsciiDoc documents. The tests cover all validation rules including item count, nesting level, and marker style.
+ * This test class validates the behavior of the unordered list block validator,
+ * which processes ulist blocks in AsciiDoc documents. The tests cover all
+ * validation rules including item count, nesting level, and marker style.
  * </p>
- *
  * <p>
  * Test structure follows a nested class pattern for better organization:
  * </p>
@@ -115,8 +114,11 @@ class UlistBlockValidatorTest {
             List<StructuralNode> items = Arrays.asList(mock(ListItem.class));
             when(mockBlock.getBlocks()).thenReturn(items);
 
-            UlistBlock config = UlistBlock.builder().severity(Severity.ERROR)
-                    .items(UlistBlock.ItemsConfig.builder().min(2).severity(Severity.WARN).build()).build();
+            UlistBlock config = UlistBlock
+                    .builder()
+                    .severity(Severity.ERROR)
+                    .items(UlistBlock.ItemsConfig.builder().min(2).severity(Severity.WARN).build())
+                    .build();
 
             // When
             List<ValidationMessage> messages = validator.validate(mockBlock, config, context);
@@ -135,12 +137,15 @@ class UlistBlockValidatorTest {
         @DisplayName("should validate maximum item count")
         void shouldValidateMaximumItemCount() {
             // Given
-            List<StructuralNode> items = Arrays.asList(mock(ListItem.class), mock(ListItem.class), mock(ListItem.class),
-                    mock(ListItem.class));
+            List<StructuralNode> items = Arrays
+                    .asList(mock(ListItem.class), mock(ListItem.class), mock(ListItem.class), mock(ListItem.class));
             when(mockBlock.getBlocks()).thenReturn(items);
 
-            UlistBlock config = UlistBlock.builder().severity(Severity.ERROR)
-                    .items(UlistBlock.ItemsConfig.builder().max(3).build()).build();
+            UlistBlock config = UlistBlock
+                    .builder()
+                    .severity(Severity.ERROR)
+                    .items(UlistBlock.ItemsConfig.builder().max(3).build())
+                    .build();
 
             // When
             List<ValidationMessage> messages = validator.validate(mockBlock, config, context);
@@ -159,12 +164,15 @@ class UlistBlockValidatorTest {
         @DisplayName("should pass when item count is within range")
         void shouldPassWhenItemCountIsWithinRange() {
             // Given
-            List<StructuralNode> items = Arrays.asList(mock(ListItem.class), mock(ListItem.class),
-                    mock(ListItem.class));
+            List<StructuralNode> items = Arrays
+                    .asList(mock(ListItem.class), mock(ListItem.class), mock(ListItem.class));
             when(mockBlock.getBlocks()).thenReturn(items);
 
-            UlistBlock config = UlistBlock.builder().severity(Severity.ERROR)
-                    .items(UlistBlock.ItemsConfig.builder().min(2).max(5).build()).build();
+            UlistBlock config = UlistBlock
+                    .builder()
+                    .severity(Severity.ERROR)
+                    .items(UlistBlock.ItemsConfig.builder().min(2).max(5).build())
+                    .build();
 
             // When
             List<ValidationMessage> messages = validator.validate(mockBlock, config, context);
@@ -193,7 +201,9 @@ class UlistBlockValidatorTest {
 
             when(mockBlock.getParent()).thenReturn(parent);
 
-            UlistBlock config = UlistBlock.builder().severity(Severity.ERROR)
+            UlistBlock config = UlistBlock
+                    .builder()
+                    .severity(Severity.ERROR)
                     .nestingLevel(UlistBlock.NestingLevelConfig.builder().max(1).severity(Severity.WARN).build())
                     .build();
 
@@ -220,8 +230,11 @@ class UlistBlockValidatorTest {
 
             when(mockBlock.getParent()).thenReturn(parent);
 
-            UlistBlock config = UlistBlock.builder().severity(Severity.ERROR)
-                    .nestingLevel(UlistBlock.NestingLevelConfig.builder().max(2).build()).build();
+            UlistBlock config = UlistBlock
+                    .builder()
+                    .severity(Severity.ERROR)
+                    .nestingLevel(UlistBlock.NestingLevelConfig.builder().max(2).build())
+                    .build();
 
             // When
             List<ValidationMessage> messages = validator.validate(mockBlock, config, context);
@@ -319,10 +332,13 @@ class UlistBlockValidatorTest {
             when(parent.getParent()).thenReturn(null);
             when(mockBlock.getParent()).thenReturn(parent);
 
-            UlistBlock config = UlistBlock.builder().severity(Severity.ERROR)
+            UlistBlock config = UlistBlock
+                    .builder()
+                    .severity(Severity.ERROR)
                     .items(UlistBlock.ItemsConfig.builder().min(2).severity(Severity.WARN).build())
                     .nestingLevel(UlistBlock.NestingLevelConfig.builder().max(0).severity(Severity.INFO).build())
-                    .markerStyle("*").build();
+                    .markerStyle("*")
+                    .build();
 
             // When
             List<ValidationMessage> messages = validator.validate(mockBlock, config, context);
@@ -331,13 +347,19 @@ class UlistBlockValidatorTest {
             assertEquals(2, messages.size());
 
             // Check items violation
-            ValidationMessage itemsMessage = messages.stream().filter(m -> m.getRuleId().equals("ulist.items.min"))
-                    .findFirst().orElseThrow();
+            ValidationMessage itemsMessage = messages
+                    .stream()
+                    .filter(m -> m.getRuleId().equals("ulist.items.min"))
+                    .findFirst()
+                    .orElseThrow();
             assertEquals(Severity.WARN, itemsMessage.getSeverity());
 
             // Check nesting violation
-            ValidationMessage nestingMessage = messages.stream()
-                    .filter(m -> m.getRuleId().equals("ulist.nestingLevel.max")).findFirst().orElseThrow();
+            ValidationMessage nestingMessage = messages
+                    .stream()
+                    .filter(m -> m.getRuleId().equals("ulist.nestingLevel.max"))
+                    .findFirst()
+                    .orElseThrow();
             assertEquals(Severity.INFO, nestingMessage.getSeverity());
 
             // Marker style validation seems to be not working or disabled
@@ -349,8 +371,11 @@ class UlistBlockValidatorTest {
             // Given
             when(mockBlock.getBlocks()).thenReturn(null);
 
-            UlistBlock config = UlistBlock.builder().severity(Severity.ERROR)
-                    .items(UlistBlock.ItemsConfig.builder().min(1).build()).build();
+            UlistBlock config = UlistBlock
+                    .builder()
+                    .severity(Severity.ERROR)
+                    .items(UlistBlock.ItemsConfig.builder().min(1).build())
+                    .build();
 
             // When
             List<ValidationMessage> messages = validator.validate(mockBlock, config, context);

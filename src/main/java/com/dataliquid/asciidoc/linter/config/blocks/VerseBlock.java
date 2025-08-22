@@ -151,14 +151,15 @@ public final class VerseBlock extends AbstractBlock {
                 return false;
             return required == that.required && Objects.equals(defaultValue, that.defaultValue)
                     && Objects.equals(minLength, that.minLength) && Objects.equals(maxLength, that.maxLength)
-                    && Objects.equals(pattern == null ? null : pattern.pattern(),
-                            that.pattern == null ? null : that.pattern.pattern());
+                    && Objects
+                            .equals(pattern == null ? null : pattern.pattern(),
+                                    that.pattern == null ? null : that.pattern.pattern());
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(defaultValue, minLength, maxLength, pattern == null ? null : pattern.pattern(),
-                    required);
+            return Objects
+                    .hash(defaultValue, minLength, maxLength, pattern == null ? null : pattern.pattern(), required);
         }
     }
 
@@ -258,14 +259,15 @@ public final class VerseBlock extends AbstractBlock {
                 return false;
             return required == that.required && Objects.equals(defaultValue, that.defaultValue)
                     && Objects.equals(minLength, that.minLength) && Objects.equals(maxLength, that.maxLength)
-                    && Objects.equals(pattern == null ? null : pattern.pattern(),
-                            that.pattern == null ? null : that.pattern.pattern());
+                    && Objects
+                            .equals(pattern == null ? null : pattern.pattern(),
+                                    that.pattern == null ? null : that.pattern.pattern());
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(defaultValue, minLength, maxLength, pattern == null ? null : pattern.pattern(),
-                    required);
+            return Objects
+                    .hash(defaultValue, minLength, maxLength, pattern == null ? null : pattern.pattern(), required);
         }
     }
 
@@ -352,8 +354,9 @@ public final class VerseBlock extends AbstractBlock {
                 return false;
             return required == that.required && Objects.equals(minLength, that.minLength)
                     && Objects.equals(maxLength, that.maxLength)
-                    && Objects.equals(pattern == null ? null : pattern.pattern(),
-                            that.pattern == null ? null : that.pattern.pattern());
+                    && Objects
+                            .equals(pattern == null ? null : pattern.pattern(),
+                                    that.pattern == null ? null : that.pattern.pattern());
         }
 
         @Override

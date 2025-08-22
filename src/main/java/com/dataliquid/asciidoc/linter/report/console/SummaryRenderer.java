@@ -81,8 +81,11 @@ public class SummaryRenderer {
     }
 
     private void renderMostCommonIssues(ValidationResult result, PrintWriter writer) {
-        Map<String, Long> issueFrequency = result.getMessages().stream().collect(
-                Collectors.groupingBy(ValidationMessage::getRuleId, LinkedHashMap::new, Collectors.counting()));
+        Map<String, Long> issueFrequency = result
+                .getMessages()
+                .stream()
+                .collect(
+                        Collectors.groupingBy(ValidationMessage::getRuleId, LinkedHashMap::new, Collectors.counting()));
 
         if (issueFrequency.isEmpty()) {
             return;
@@ -91,14 +94,23 @@ public class SummaryRenderer {
         writer.println("  Most common issues:");
 
         // Get top 5 issues
-        issueFrequency.entrySet().stream().sorted(Map.Entry.<String, Long>comparingByValue().reversed()).limit(5)
+        issueFrequency
+                .entrySet()
+                .stream()
+                .sorted(Map.Entry.<String, Long>comparingByValue().reversed())
+                .limit(5)
                 .forEach(entry -> {
                     String ruleId = entry.getKey();
                     long count = entry.getValue();
 
                     // Try to get a description from the first message with this rule
-                    String description = result.getMessages().stream().filter(msg -> msg.getRuleId().equals(ruleId))
-                            .findFirst().map(msg -> extractShortDescription(msg.getMessage())).orElse(ruleId);
+                    String description = result
+                            .getMessages()
+                            .stream()
+                            .filter(msg -> msg.getRuleId().equals(ruleId))
+                            .findFirst()
+                            .map(msg -> extractShortDescription(msg.getMessage()))
+                            .orElse(ruleId);
 
                     writer.printf("  - %s (%d occurrence%s)%n", description, count, count == 1 ? "" : "s");
                 });
@@ -118,10 +130,12 @@ public class SummaryRenderer {
             String filename = entry.getKey();
             List<ValidationMessage> messages = entry.getValue();
 
-            long errorCount = messages.stream()
+            long errorCount = messages
+                    .stream()
                     .filter(msg -> msg.getSeverity() == com.dataliquid.asciidoc.linter.config.common.Severity.ERROR)
                     .count();
-            long warnCount = messages.stream()
+            long warnCount = messages
+                    .stream()
                     .filter(msg -> msg.getSeverity() == com.dataliquid.asciidoc.linter.config.common.Severity.WARN)
                     .count();
 
@@ -145,8 +159,9 @@ public class SummaryRenderer {
         int warnings = result.getWarningCount();
         int infos = result.getInfoCount();
 
-        String summary = String.format("Summary: %d error%s, %d warning%s, %d info message%s", errors,
-                errors == 1 ? "" : "s", warnings, warnings == 1 ? "" : "s", infos, infos == 1 ? "" : "s");
+        String summary = String
+                .format("Summary: %d error%s, %d warning%s, %d info message%s", errors, errors == 1 ? "" : "s",
+                        warnings, warnings == 1 ? "" : "s", infos, infos == 1 ? "" : "s");
 
         // Color based on severity
         if (errors > 0) {
@@ -168,9 +183,13 @@ public class SummaryRenderer {
     }
 
     private int getFilesWithErrorCount(ValidationResult result) {
-        return (int) result.getMessages().stream()
+        return (int) result
+                .getMessages()
+                .stream()
                 .filter(msg -> msg.getSeverity() == com.dataliquid.asciidoc.linter.config.common.Severity.ERROR)
-                .map(msg -> msg.getLocation().getFilename()).distinct().count();
+                .map(msg -> msg.getLocation().getFilename())
+                .distinct()
+                .count();
     }
 
     private String extractShortDescription(String message) {

@@ -21,22 +21,22 @@ import com.dataliquid.asciidoc.linter.validator.Suggestion;
 
 /**
  * Validator for pass (passthrough) blocks in AsciiDoc documents.
- *
  * <p>
- * This validator validates pass blocks based on the YAML schema structure defined in
- * {@code src/main/resources/schemas/blocks/pass-block.yaml}. The YAML configuration is parsed into {@link PassBlock}
- * objects which define the validation rules.
+ * This validator validates pass blocks based on the YAML schema structure
+ * defined in {@code src/main/resources/schemas/blocks/pass-block.yaml}. The
+ * YAML configuration is parsed into {@link PassBlock} objects which define the
+ * validation rules.
  * </p>
- *
  * <p>
- * Pass blocks use ++++ delimiters and pass content through without processing. This validator uses custom attributes
- * that are not native to AsciiDoc:
+ * Pass blocks use ++++ delimiters and pass content through without processing.
+ * This validator uses custom attributes that are not native to AsciiDoc:
  * </p>
  * <ul>
- * <li><b>pass-type</b>: Custom attribute specifying content type (html, xml, svg)</li>
- * <li><b>pass-reason</b>: Custom attribute providing reason for using raw passthrough</li>
+ * <li><b>pass-type</b>: Custom attribute specifying content type (html, xml,
+ * svg)</li>
+ * <li><b>pass-reason</b>: Custom attribute providing reason for using raw
+ * passthrough</li>
  * </ul>
- *
  * <p>
  * Example usage in AsciiDoc:
  * </p>
@@ -49,19 +49,18 @@ import com.dataliquid.asciidoc.linter.validator.Suggestion;
  * &lt;/div&gt;
  * ++++
  * </pre>
- *
  * <p>
  * Supported validation rules from YAML schema:
  * </p>
  * <ul>
- * <li><b>type</b>: Validates content type specification (required, allowed values)</li>
+ * <li><b>type</b>: Validates content type specification (required, allowed
+ * values)</li>
  * <li><b>content</b>: Validates content (required, maxLength, pattern)</li>
  * <li><b>reason</b>: Validates reason (required, minLength, maxLength)</li>
  * </ul>
- *
  * <p>
- * Each nested configuration can optionally define its own severity level. If not specified, the block-level severity is
- * used as fallback.
+ * Each nested configuration can optionally define its own severity level. If
+ * not specified, the block-level severity is used as fallback.
  * </p>
  *
  * @see PassBlock
@@ -120,34 +119,60 @@ public final class PassBlockValidator extends AbstractBlockValidator<PassBlock> 
 
         // Check if type is required
         if (config.isRequired() && (passType == null || passType.trim().isEmpty())) {
-            messages.add(ValidationMessage.builder().severity(severity).ruleId(TYPE_REQUIRED)
-                    .location(context.createLocation(block, 1, 1)).message("Pass block requires a type")
-                    .actualValue("No type specified").expectedValue("Type required (type attribute)")
-                    .errorType(ErrorType.MISSING_VALUE).missingValueHint("[pass,type=html]")
-                    .placeholderContext(
-                            PlaceholderContext.builder().type(PlaceholderContext.PlaceholderType.INSERT_BEFORE).build())
-                    .addSuggestion(Suggestion.builder().description("Add type attribute to pass block")
-                            .fixedValue("[pass,type=html]").addExample("[pass,type=html]").addExample("[pass,type=xml]")
-                            .addExample("[pass,type=svg]")
-                            .explanation("Pass blocks should specify the content type for proper processing").build())
-                    .build());
+            messages
+                    .add(ValidationMessage
+                            .builder()
+                            .severity(severity)
+                            .ruleId(TYPE_REQUIRED)
+                            .location(context.createLocation(block, 1, 1))
+                            .message("Pass block requires a type")
+                            .actualValue("No type specified")
+                            .expectedValue("Type required (type attribute)")
+                            .errorType(ErrorType.MISSING_VALUE)
+                            .missingValueHint("[pass,type=html]")
+                            .placeholderContext(PlaceholderContext
+                                    .builder()
+                                    .type(PlaceholderContext.PlaceholderType.INSERT_BEFORE)
+                                    .build())
+                            .addSuggestion(Suggestion
+                                    .builder()
+                                    .description("Add type attribute to pass block")
+                                    .fixedValue("[pass,type=html]")
+                                    .addExample("[pass,type=html]")
+                                    .addExample("[pass,type=xml]")
+                                    .addExample("[pass,type=svg]")
+                                    .explanation("Pass blocks should specify the content type for proper processing")
+                                    .build())
+                            .build());
         }
 
         // Validate allowed types if specified
         if (passType != null && config.getAllowed() != null && !config.getAllowed().isEmpty()) {
             if (!config.getAllowed().contains(passType)) {
                 SourcePosition pos = findPassTypePosition(block, context, passType);
-                messages.add(ValidationMessage.builder().severity(severity).ruleId(TYPE_ALLOWED)
-                        .location(SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
-                        .message("Pass block type '" + passType + "' is not allowed").actualValue(passType)
-                        .expectedValue("One of: " + String.join(", ", config.getAllowed()))
-                        .addSuggestion(Suggestion.builder().description("Use a valid pass block type")
-                                .fixedValue("[pass,type=" + config.getAllowed().get(0) + "]")
-                                .addExample("[pass,type=html] for HTML content")
-                                .addExample("[pass,type=xml] for XML content")
-                                .addExample("[pass,type=svg] for SVG graphics")
-                                .explanation("Pass block type must be one of the allowed content types").build())
-                        .build());
+                messages
+                        .add(ValidationMessage
+                                .builder()
+                                .severity(severity)
+                                .ruleId(TYPE_ALLOWED)
+                                .location(SourceLocation
+                                        .builder()
+                                        .filename(context.getFilename())
+                                        .fromPosition(pos)
+                                        .build())
+                                .message("Pass block type '" + passType + "' is not allowed")
+                                .actualValue(passType)
+                                .expectedValue("One of: " + String.join(", ", config.getAllowed()))
+                                .addSuggestion(Suggestion
+                                        .builder()
+                                        .description("Use a valid pass block type")
+                                        .fixedValue("[pass,type=" + config.getAllowed().get(0) + "]")
+                                        .addExample("[pass,type=html] for HTML content")
+                                        .addExample("[pass,type=xml] for XML content")
+                                        .addExample("[pass,type=svg] for SVG graphics")
+                                        .explanation("Pass block type must be one of the allowed content types")
+                                        .build())
+                                .build());
             }
         }
     }
@@ -160,17 +185,30 @@ public final class PassBlockValidator extends AbstractBlockValidator<PassBlock> 
 
         // Check if content is required
         if (config.isRequired() && (content == null || content.trim().isEmpty())) {
-            messages.add(ValidationMessage.builder().severity(severity).ruleId(CONTENT_REQUIRED)
-                    .location(context.createLocation(block, 1, 1)).message("Pass block requires content")
-                    .actualValue("No content").expectedValue("Content required").errorType(ErrorType.MISSING_VALUE)
-                    .missingValueHint("Content")
-                    .placeholderContext(
-                            PlaceholderContext.builder().type(PlaceholderContext.PlaceholderType.INSERT_BEFORE).build())
-                    .addSuggestion(Suggestion.builder().description("Add content to pass block")
-                            .addExample("<div>HTML content</div>").addExample("<?xml version=\"1.0\"?>")
-                            .addExample("<svg>SVG content</svg>")
-                            .explanation("Pass blocks must contain the raw content to be passed through").build())
-                    .build());
+            messages
+                    .add(ValidationMessage
+                            .builder()
+                            .severity(severity)
+                            .ruleId(CONTENT_REQUIRED)
+                            .location(context.createLocation(block, 1, 1))
+                            .message("Pass block requires content")
+                            .actualValue("No content")
+                            .expectedValue("Content required")
+                            .errorType(ErrorType.MISSING_VALUE)
+                            .missingValueHint("Content")
+                            .placeholderContext(PlaceholderContext
+                                    .builder()
+                                    .type(PlaceholderContext.PlaceholderType.INSERT_BEFORE)
+                                    .build())
+                            .addSuggestion(Suggestion
+                                    .builder()
+                                    .description("Add content to pass block")
+                                    .addExample("<div>HTML content</div>")
+                                    .addExample("<?xml version=\"1.0\"?>")
+                                    .addExample("<svg>SVG content</svg>")
+                                    .explanation("Pass blocks must contain the raw content to be passed through")
+                                    .build())
+                            .build());
             return;
         }
 
@@ -179,15 +217,28 @@ public final class PassBlockValidator extends AbstractBlockValidator<PassBlock> 
             int contentLength = content.length();
             if (contentLength > config.getMaxLength()) {
                 SourcePosition pos = findSourcePosition(block, context);
-                messages.add(ValidationMessage.builder().severity(severity).ruleId(CONTENT_MAX_LENGTH)
-                        .location(SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
-                        .message("Pass block content is too long").actualValue(contentLength + " characters")
-                        .expectedValue("Maximum " + config.getMaxLength() + " characters")
-                        .addSuggestion(Suggestion.builder().description("Shorten pass block content")
-                                .addExample("Remove non-essential markup").addExample("Split into multiple pass blocks")
-                                .addExample("Use external files for large content")
-                                .explanation("Pass block content should not exceed the maximum length limit").build())
-                        .build());
+                messages
+                        .add(ValidationMessage
+                                .builder()
+                                .severity(severity)
+                                .ruleId(CONTENT_MAX_LENGTH)
+                                .location(SourceLocation
+                                        .builder()
+                                        .filename(context.getFilename())
+                                        .fromPosition(pos)
+                                        .build())
+                                .message("Pass block content is too long")
+                                .actualValue(contentLength + " characters")
+                                .expectedValue("Maximum " + config.getMaxLength() + " characters")
+                                .addSuggestion(Suggestion
+                                        .builder()
+                                        .description("Shorten pass block content")
+                                        .addExample("Remove non-essential markup")
+                                        .addExample("Split into multiple pass blocks")
+                                        .addExample("Use external files for large content")
+                                        .explanation("Pass block content should not exceed the maximum length limit")
+                                        .build())
+                                .build());
             }
         }
 
@@ -195,16 +246,28 @@ public final class PassBlockValidator extends AbstractBlockValidator<PassBlock> 
         if (content != null && config.getPattern() != null) {
             if (!config.getPattern().matcher(content).matches()) {
                 SourcePosition pos = findSourcePosition(block, context);
-                messages.add(ValidationMessage.builder().severity(severity).ruleId(CONTENT_PATTERN)
-                        .location(SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
-                        .message("Pass block content does not match required pattern")
-                        .actualValue("Content does not match pattern")
-                        .expectedValue("Pattern: " + config.getPattern().pattern())
-                        .addSuggestion(Suggestion.builder().description("Format pass block content to match pattern")
-                                .addExample("Ensure proper markup syntax")
-                                .addExample("Check for valid HTML/XML structure").addExample("Validate content format")
-                                .explanation("Pass block content must follow the specified format pattern").build())
-                        .build());
+                messages
+                        .add(ValidationMessage
+                                .builder()
+                                .severity(severity)
+                                .ruleId(CONTENT_PATTERN)
+                                .location(SourceLocation
+                                        .builder()
+                                        .filename(context.getFilename())
+                                        .fromPosition(pos)
+                                        .build())
+                                .message("Pass block content does not match required pattern")
+                                .actualValue("Content does not match pattern")
+                                .expectedValue("Pattern: " + config.getPattern().pattern())
+                                .addSuggestion(Suggestion
+                                        .builder()
+                                        .description("Format pass block content to match pattern")
+                                        .addExample("Ensure proper markup syntax")
+                                        .addExample("Check for valid HTML/XML structure")
+                                        .addExample("Validate content format")
+                                        .explanation("Pass block content must follow the specified format pattern")
+                                        .build())
+                                .build());
             }
         }
     }
@@ -217,19 +280,31 @@ public final class PassBlockValidator extends AbstractBlockValidator<PassBlock> 
 
         // Check if reason is required
         if (config.isRequired() && (passReason == null || passReason.trim().isEmpty())) {
-            messages.add(ValidationMessage.builder().severity(severity).ruleId(REASON_REQUIRED)
-                    .location(context.createLocation(block, 1, 1)).message("Pass block requires a reason")
-                    .actualValue("No reason provided").expectedValue("Reason required (reason attribute)")
-                    .errorType(ErrorType.MISSING_VALUE).missingValueHint("[pass,reason=\"explanation\"]")
-                    .placeholderContext(
-                            PlaceholderContext.builder().type(PlaceholderContext.PlaceholderType.INSERT_BEFORE).build())
-                    .addSuggestion(Suggestion.builder().description("Add reason for using pass block")
-                            .fixedValue("[pass,reason=\"Custom HTML widget\"]")
-                            .addExample("[pass,reason=\"Custom HTML widget\"]")
-                            .addExample("[pass,reason=\"Third-party integration\"]")
-                            .addExample("[pass,reason=\"Legacy markup support\"]")
-                            .explanation("Pass blocks should explain why raw passthrough is necessary").build())
-                    .build());
+            messages
+                    .add(ValidationMessage
+                            .builder()
+                            .severity(severity)
+                            .ruleId(REASON_REQUIRED)
+                            .location(context.createLocation(block, 1, 1))
+                            .message("Pass block requires a reason")
+                            .actualValue("No reason provided")
+                            .expectedValue("Reason required (reason attribute)")
+                            .errorType(ErrorType.MISSING_VALUE)
+                            .missingValueHint("[pass,reason=\"explanation\"]")
+                            .placeholderContext(PlaceholderContext
+                                    .builder()
+                                    .type(PlaceholderContext.PlaceholderType.INSERT_BEFORE)
+                                    .build())
+                            .addSuggestion(Suggestion
+                                    .builder()
+                                    .description("Add reason for using pass block")
+                                    .fixedValue("[pass,reason=\"Custom HTML widget\"]")
+                                    .addExample("[pass,reason=\"Custom HTML widget\"]")
+                                    .addExample("[pass,reason=\"Third-party integration\"]")
+                                    .addExample("[pass,reason=\"Legacy markup support\"]")
+                                    .explanation("Pass blocks should explain why raw passthrough is necessary")
+                                    .build())
+                            .build());
             return;
         }
 
@@ -239,34 +314,57 @@ public final class PassBlockValidator extends AbstractBlockValidator<PassBlock> 
             // Validate min length
             if (config.getMinLength() != null && reasonLength < config.getMinLength()) {
                 SourcePosition pos = findReasonPosition(block, context, passReason);
-                messages.add(ValidationMessage.builder().severity(severity).ruleId(REASON_MIN_LENGTH)
-                        .location(SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
-                        .message("Pass block reason is too short").actualValue(reasonLength + " characters")
-                        .expectedValue("At least " + config.getMinLength() + " characters")
-                        .addSuggestion(Suggestion.builder().description("Provide a more detailed reason")
-                                .addExample("Custom HTML widget for interactive content")
-                                .addExample("Third-party JavaScript integration required")
-                                .addExample("Legacy markup that cannot be converted")
-                                .explanation(
-                                        "Pass block reasons should be detailed enough to meet minimum length requirements")
-                                .build())
-                        .build());
+                messages
+                        .add(ValidationMessage
+                                .builder()
+                                .severity(severity)
+                                .ruleId(REASON_MIN_LENGTH)
+                                .location(SourceLocation
+                                        .builder()
+                                        .filename(context.getFilename())
+                                        .fromPosition(pos)
+                                        .build())
+                                .message("Pass block reason is too short")
+                                .actualValue(reasonLength + " characters")
+                                .expectedValue("At least " + config.getMinLength() + " characters")
+                                .addSuggestion(Suggestion
+                                        .builder()
+                                        .description("Provide a more detailed reason")
+                                        .addExample("Custom HTML widget for interactive content")
+                                        .addExample("Third-party JavaScript integration required")
+                                        .addExample("Legacy markup that cannot be converted")
+                                        .explanation(
+                                                "Pass block reasons should be detailed enough to meet minimum length requirements")
+                                        .build())
+                                .build());
             }
 
             // Validate max length
             if (config.getMaxLength() != null && reasonLength > config.getMaxLength()) {
                 SourcePosition pos = findReasonPosition(block, context, passReason);
-                messages.add(ValidationMessage.builder().severity(severity).ruleId(REASON_MAX_LENGTH)
-                        .location(SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
-                        .message("Pass block reason is too long").actualValue(reasonLength + " characters")
-                        .expectedValue("At most " + config.getMaxLength() + " characters")
-                        .addSuggestion(Suggestion.builder().description("Shorten the reason description")
-                                .addExample("Custom widget").addExample("Third-party integration")
-                                .addExample("Legacy markup")
-                                .explanation(
-                                        "Pass block reasons should be concise and not exceed maximum length limits")
-                                .build())
-                        .build());
+                messages
+                        .add(ValidationMessage
+                                .builder()
+                                .severity(severity)
+                                .ruleId(REASON_MAX_LENGTH)
+                                .location(SourceLocation
+                                        .builder()
+                                        .filename(context.getFilename())
+                                        .fromPosition(pos)
+                                        .build())
+                                .message("Pass block reason is too long")
+                                .actualValue(reasonLength + " characters")
+                                .expectedValue("At most " + config.getMaxLength() + " characters")
+                                .addSuggestion(Suggestion
+                                        .builder()
+                                        .description("Shorten the reason description")
+                                        .addExample("Custom widget")
+                                        .addExample("Third-party integration")
+                                        .addExample("Legacy markup")
+                                        .explanation(
+                                                "Pass block reasons should be concise and not exceed maximum length limits")
+                                        .build())
+                                .build());
             }
         }
     }

@@ -1,8 +1,9 @@
 package com.dataliquid.asciidoc.linter.validator.block;
 
 /**
- * Central repository for all AsciiDoc block attribute names. This class provides constants for attribute names used
- * across all block validators to ensure consistency and maintainability.
+ * Central repository for all AsciiDoc block attribute names. This class
+ * provides constants for attribute names used across all block validators to
+ * ensure consistency and maintainability.
  */
 public final class BlockAttributes {
 

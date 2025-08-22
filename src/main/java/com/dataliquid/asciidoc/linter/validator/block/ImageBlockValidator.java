@@ -22,26 +22,27 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * Validator for image blocks in AsciiDoc documents.
- *
  * <p>
- * This validator validates image blocks based on the YAML schema structure defined in
- * {@code src/main/resources/schemas/blocks/image-block.yaml}. The YAML configuration is parsed into {@link ImageBlock}
- * objects which define the validation rules.
+ * This validator validates image blocks based on the YAML schema structure
+ * defined in {@code src/main/resources/schemas/blocks/image-block.yaml}. The
+ * YAML configuration is parsed into {@link ImageBlock} objects which define the
+ * validation rules.
  * </p>
- *
  * <p>
  * Supported validation rules from YAML schema:
  * </p>
  * <ul>
  * <li><b>url</b>: Validates image URL/path (required, pattern matching)</li>
- * <li><b>width</b>: Validates image width constraints (required, min/max values)</li>
- * <li><b>height</b>: Validates image height constraints (required, min/max values)</li>
- * <li><b>alt</b>: Validates alternative text (required, length constraints)</li>
+ * <li><b>width</b>: Validates image width constraints (required, min/max
+ * values)</li>
+ * <li><b>height</b>: Validates image height constraints (required, min/max
+ * values)</li>
+ * <li><b>alt</b>: Validates alternative text (required, length
+ * constraints)</li>
  * </ul>
- *
  * <p>
- * Note: Image block nested configurations do not support individual severity levels. All validations use the
- * block-level severity.
+ * Note: Image block nested configurations do not support individual severity
+ * levels. All validations use the block-level severity.
  * </p>
  *
  * @see ImageBlock
@@ -117,7 +118,8 @@ public final class ImageBlockValidator extends AbstractBlockValidator<ImageBlock
             if (target != null) {
                 String targetStr = target.toString();
                 // Remove file extension and convert to expected alt text format
-                String generatedAlt = targetStr.replaceFirst("\\.[^.]+$", "") // Remove extension
+                String generatedAlt = targetStr
+                        .replaceFirst("\\.[^.]+$", "") // Remove extension
                         .replace("-", " ") // Replace hyphens with spaces
                         .replace("_", " "); // Replace underscores with spaces
 
@@ -139,32 +141,57 @@ public final class ImageBlockValidator extends AbstractBlockValidator<ImageBlock
 
         // Check if URL is required
         if (urlConfig.isRequired() && (url == null || url.trim().isEmpty())) {
-            messages.add(ValidationMessage.builder().severity(imageConfig.getSeverity()).ruleId(URL_REQUIRED)
-                    .location(SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
-                    .message("Image must have a URL").actualValue("No URL").expectedValue("URL required")
-                    .errorType(ErrorType.MISSING_VALUE).missingValueHint("filename.png")
-                    .placeholderContext(
-                            PlaceholderContext.builder().type(PlaceholderContext.PlaceholderType.SIMPLE_VALUE).build())
-                    .addSuggestion(Suggestion.builder().description("Add an image path or URL")
-                            .addExample("image::images/diagram.png[]")
-                            .addExample("image::https://example.com/logo.png[]")
-                            .addExample("image::{imagesdir}/screenshot.jpg[]").build())
-                    .build());
+            messages
+                    .add(ValidationMessage
+                            .builder()
+                            .severity(imageConfig.getSeverity())
+                            .ruleId(URL_REQUIRED)
+                            .location(
+                                    SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
+                            .message("Image must have a URL")
+                            .actualValue("No URL")
+                            .expectedValue("URL required")
+                            .errorType(ErrorType.MISSING_VALUE)
+                            .missingValueHint("filename.png")
+                            .placeholderContext(PlaceholderContext
+                                    .builder()
+                                    .type(PlaceholderContext.PlaceholderType.SIMPLE_VALUE)
+                                    .build())
+                            .addSuggestion(Suggestion
+                                    .builder()
+                                    .description("Add an image path or URL")
+                                    .addExample("image::images/diagram.png[]")
+                                    .addExample("image::https://example.com/logo.png[]")
+                                    .addExample("image::{imagesdir}/screenshot.jpg[]")
+                                    .build())
+                            .build());
             return;
         }
 
         if (url != null && !url.trim().isEmpty() && urlConfig.getPattern() != null) {
             // Validate URL pattern
             if (!urlConfig.getPattern().matcher(url).matches()) {
-                messages.add(ValidationMessage.builder().severity(imageConfig.getSeverity()).ruleId(URL_PATTERN)
-                        .location(SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
-                        .message("Image URL does not match required pattern").actualValue(url)
-                        .expectedValue("Pattern: " + urlConfig.getPattern().pattern())
-                        .addSuggestion(Suggestion.builder().description("Use a path matching the required pattern")
-                                .addExample("Common image formats: .png, .jpg, .jpeg, .svg, .gif")
-                                .addExample("Relative path: images/filename.png")
-                                .addExample("Absolute URL: https://example.com/image.png").build())
-                        .build());
+                messages
+                        .add(ValidationMessage
+                                .builder()
+                                .severity(imageConfig.getSeverity())
+                                .ruleId(URL_PATTERN)
+                                .location(SourceLocation
+                                        .builder()
+                                        .filename(context.getFilename())
+                                        .fromPosition(pos)
+                                        .build())
+                                .message("Image URL does not match required pattern")
+                                .actualValue(url)
+                                .expectedValue("Pattern: " + urlConfig.getPattern().pattern())
+                                .addSuggestion(Suggestion
+                                        .builder()
+                                        .description("Use a path matching the required pattern")
+                                        .addExample("Common image formats: .png, .jpg, .jpeg, .svg, .gif")
+                                        .addExample("Relative path: images/filename.png")
+                                        .addExample("Absolute URL: https://example.com/image.png")
+                                        .build())
+                                .build());
             }
         }
     }
@@ -177,21 +204,32 @@ public final class ImageBlockValidator extends AbstractBlockValidator<ImageBlock
         SourcePosition pos = findSourcePosition(block, context, dimensionName, valueStr);
 
         if (dimConfig.isRequired() && (valueStr == null || valueStr.trim().isEmpty())) {
-            messages.add(ValidationMessage.builder().severity(imageConfig.getSeverity())
-                    .ruleId(dimensionName.equals(WIDTH) ? WIDTH_REQUIRED : HEIGHT_REQUIRED)
-                    .location(SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
-                    .message("Image must have " + dimensionName + " specified").actualValue("No " + dimensionName)
-                    .expectedValue(dimensionName + " required").errorType(ErrorType.MISSING_VALUE)
-                    .missingValueHint(dimensionName.equals(WIDTH) ? "640" : "480")
-                    .placeholderContext(
-                            PlaceholderContext.builder().type(PlaceholderContext.PlaceholderType.ATTRIBUTE_IN_LIST)
-                                    .attributeName(dimensionName).hasExistingAttributes(true).build())
-                    .addSuggestion(Suggestion.builder()
-                            .description(String.format("Add %s attribute to the image", dimensionName))
-                            .addExample(String.format("image::image.png[%s=640]", dimensionName))
-                            .addExample("Common sizes: 320x240, 640x480, 800x600, 1024x768")
-                            .addExample("Responsive: width=100%, height=auto").build())
-                    .build());
+            messages
+                    .add(ValidationMessage
+                            .builder()
+                            .severity(imageConfig.getSeverity())
+                            .ruleId(dimensionName.equals(WIDTH) ? WIDTH_REQUIRED : HEIGHT_REQUIRED)
+                            .location(
+                                    SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
+                            .message("Image must have " + dimensionName + " specified")
+                            .actualValue("No " + dimensionName)
+                            .expectedValue(dimensionName + " required")
+                            .errorType(ErrorType.MISSING_VALUE)
+                            .missingValueHint(dimensionName.equals(WIDTH) ? "640" : "480")
+                            .placeholderContext(PlaceholderContext
+                                    .builder()
+                                    .type(PlaceholderContext.PlaceholderType.ATTRIBUTE_IN_LIST)
+                                    .attributeName(dimensionName)
+                                    .hasExistingAttributes(true)
+                                    .build())
+                            .addSuggestion(Suggestion
+                                    .builder()
+                                    .description(String.format("Add %s attribute to the image", dimensionName))
+                                    .addExample(String.format("image::image.png[%s=640]", dimensionName))
+                                    .addExample("Common sizes: 320x240, 640x480, 800x600, 1024x768")
+                                    .addExample("Responsive: width=100%, height=auto")
+                                    .build())
+                            .build());
             return;
         }
 
@@ -200,32 +238,51 @@ public final class ImageBlockValidator extends AbstractBlockValidator<ImageBlock
             if (numericValue != null) {
                 // Validate min/max
                 if (dimConfig.getMinValue() != null && numericValue < dimConfig.getMinValue()) {
-                    messages.add(ValidationMessage.builder().severity(imageConfig.getSeverity())
-                            .ruleId(dimensionName.equals(WIDTH) ? WIDTH_MIN : HEIGHT_MIN)
-                            .location(
-                                    SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
-                            .message("Image " + dimensionName + " is too small").actualValue(numericValue + "px")
-                            .expectedValue("At least " + dimConfig.getMinValue() + "px")
-                            .addSuggestion(Suggestion.builder()
-                                    .description(
-                                            String.format("Increase %s to meet minimum requirement", dimensionName))
-                                    .fixedValue(String.valueOf(dimConfig.getMinValue()))
-                                    .addExample(String.format("%s=%d", dimensionName, dimConfig.getMinValue())).build())
-                            .build());
+                    messages
+                            .add(ValidationMessage
+                                    .builder()
+                                    .severity(imageConfig.getSeverity())
+                                    .ruleId(dimensionName.equals(WIDTH) ? WIDTH_MIN : HEIGHT_MIN)
+                                    .location(SourceLocation
+                                            .builder()
+                                            .filename(context.getFilename())
+                                            .fromPosition(pos)
+                                            .build())
+                                    .message("Image " + dimensionName + " is too small")
+                                    .actualValue(numericValue + "px")
+                                    .expectedValue("At least " + dimConfig.getMinValue() + "px")
+                                    .addSuggestion(Suggestion
+                                            .builder()
+                                            .description(String
+                                                    .format("Increase %s to meet minimum requirement", dimensionName))
+                                            .fixedValue(String.valueOf(dimConfig.getMinValue()))
+                                            .addExample(String.format("%s=%d", dimensionName, dimConfig.getMinValue()))
+                                            .build())
+                                    .build());
                 }
 
                 if (dimConfig.getMaxValue() != null && numericValue > dimConfig.getMaxValue()) {
-                    messages.add(ValidationMessage.builder().severity(imageConfig.getSeverity())
-                            .ruleId(dimensionName.equals(WIDTH) ? WIDTH_MAX : HEIGHT_MAX)
-                            .location(
-                                    SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
-                            .message("Image " + dimensionName + " is too large").actualValue(numericValue + "px")
-                            .expectedValue("At most " + dimConfig.getMaxValue() + "px")
-                            .addSuggestion(Suggestion.builder()
-                                    .description(String.format("Reduce %s to meet maximum limit", dimensionName))
-                                    .fixedValue(String.valueOf(dimConfig.getMaxValue()))
-                                    .addExample(String.format("%s=%d", dimensionName, dimConfig.getMaxValue())).build())
-                            .build());
+                    messages
+                            .add(ValidationMessage
+                                    .builder()
+                                    .severity(imageConfig.getSeverity())
+                                    .ruleId(dimensionName.equals(WIDTH) ? WIDTH_MAX : HEIGHT_MAX)
+                                    .location(SourceLocation
+                                            .builder()
+                                            .filename(context.getFilename())
+                                            .fromPosition(pos)
+                                            .build())
+                                    .message("Image " + dimensionName + " is too large")
+                                    .actualValue(numericValue + "px")
+                                    .expectedValue("At most " + dimConfig.getMaxValue() + "px")
+                                    .addSuggestion(Suggestion
+                                            .builder()
+                                            .description(
+                                                    String.format("Reduce %s to meet maximum limit", dimensionName))
+                                            .fixedValue(String.valueOf(dimConfig.getMaxValue()))
+                                            .addExample(String.format("%s=%d", dimensionName, dimConfig.getMaxValue()))
+                                            .build())
+                                    .build());
                 }
             }
         }
@@ -253,47 +310,83 @@ public final class ImageBlockValidator extends AbstractBlockValidator<ImageBlock
         SourcePosition pos = findAltTextPosition(block, context, altText);
 
         if (altConfig.isRequired() && (altText == null || altText.trim().isEmpty())) {
-            messages.add(ValidationMessage.builder().severity(imageConfig.getSeverity()).ruleId(ALT_REQUIRED)
-                    .location(SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
-                    .message("Image must have alt text").actualValue("No alt text").expectedValue("Alt text required")
-                    .errorType(ErrorType.MISSING_VALUE).missingValueHint("Description of image")
-                    .placeholderContext(
-                            PlaceholderContext.builder().type(PlaceholderContext.PlaceholderType.SIMPLE_VALUE).build())
-                    .addSuggestion(Suggestion.builder().description("Add descriptive alt text for accessibility")
-                            .addExample("image::diagram.png[Architecture diagram showing system components]")
-                            .addExample("image::logo.png[Company logo]")
-                            .explanation("Alt text improves accessibility for screen readers and SEO").build())
-                    .build());
+            messages
+                    .add(ValidationMessage
+                            .builder()
+                            .severity(imageConfig.getSeverity())
+                            .ruleId(ALT_REQUIRED)
+                            .location(
+                                    SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
+                            .message("Image must have alt text")
+                            .actualValue("No alt text")
+                            .expectedValue("Alt text required")
+                            .errorType(ErrorType.MISSING_VALUE)
+                            .missingValueHint("Description of image")
+                            .placeholderContext(PlaceholderContext
+                                    .builder()
+                                    .type(PlaceholderContext.PlaceholderType.SIMPLE_VALUE)
+                                    .build())
+                            .addSuggestion(Suggestion
+                                    .builder()
+                                    .description("Add descriptive alt text for accessibility")
+                                    .addExample("image::diagram.png[Architecture diagram showing system components]")
+                                    .addExample("image::logo.png[Company logo]")
+                                    .explanation("Alt text improves accessibility for screen readers and SEO")
+                                    .build())
+                            .build());
             return;
         }
 
         if (altText != null && !altText.trim().isEmpty()) {
             // Validate min length
             if (altConfig.getMinLength() != null && altText.length() < altConfig.getMinLength()) {
-                messages.add(ValidationMessage.builder().severity(imageConfig.getSeverity()).ruleId(ALT_MIN_LENGTH)
-                        .location(SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
-                        .message("Image alt text is too short").actualValue(altText.length() + " characters")
-                        .expectedValue("At least " + altConfig.getMinLength() + " characters")
-                        .addSuggestion(Suggestion.builder().description("Provide more descriptive alt text")
-                                .addExample("Instead of 'logo', use 'Company XYZ corporate logo'")
-                                .addExample(
-                                        "Instead of 'diagram', use 'System architecture diagram showing microservices'")
-                                .explanation("Descriptive alt text improves accessibility and understanding").build())
-                        .build());
+                messages
+                        .add(ValidationMessage
+                                .builder()
+                                .severity(imageConfig.getSeverity())
+                                .ruleId(ALT_MIN_LENGTH)
+                                .location(SourceLocation
+                                        .builder()
+                                        .filename(context.getFilename())
+                                        .fromPosition(pos)
+                                        .build())
+                                .message("Image alt text is too short")
+                                .actualValue(altText.length() + " characters")
+                                .expectedValue("At least " + altConfig.getMinLength() + " characters")
+                                .addSuggestion(Suggestion
+                                        .builder()
+                                        .description("Provide more descriptive alt text")
+                                        .addExample("Instead of 'logo', use 'Company XYZ corporate logo'")
+                                        .addExample(
+                                                "Instead of 'diagram', use 'System architecture diagram showing microservices'")
+                                        .explanation("Descriptive alt text improves accessibility and understanding")
+                                        .build())
+                                .build());
             }
 
             // Validate max length
             if (altConfig.getMaxLength() != null && altText.length() > altConfig.getMaxLength()) {
-                messages.add(ValidationMessage.builder().severity(imageConfig.getSeverity()).ruleId(ALT_MAX_LENGTH)
-                        .location(SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
-                        .message("Image alt text is too long").actualValue(altText.length() + " characters")
-                        .expectedValue("At most " + altConfig.getMaxLength() + " characters")
-                        .addSuggestion(Suggestion.builder()
-                                .description("Shorten the alt text while keeping it descriptive")
-                                .addExample(
-                                        String.format("Keep alt text under %d characters", altConfig.getMaxLength()))
-                                .explanation("Concise alt text is easier to process for screen readers").build())
-                        .build());
+                messages
+                        .add(ValidationMessage
+                                .builder()
+                                .severity(imageConfig.getSeverity())
+                                .ruleId(ALT_MAX_LENGTH)
+                                .location(SourceLocation
+                                        .builder()
+                                        .filename(context.getFilename())
+                                        .fromPosition(pos)
+                                        .build())
+                                .message("Image alt text is too long")
+                                .actualValue(altText.length() + " characters")
+                                .expectedValue("At most " + altConfig.getMaxLength() + " characters")
+                                .addSuggestion(Suggestion
+                                        .builder()
+                                        .description("Shorten the alt text while keeping it descriptive")
+                                        .addExample(String
+                                                .format("Keep alt text under %d characters", altConfig.getMaxLength()))
+                                        .explanation("Concise alt text is easier to process for screen readers")
+                                        .build())
+                                .build());
             }
         }
     }
@@ -332,7 +425,8 @@ public final class ImageBlockValidator extends AbstractBlockValidator<ImageBlock
                         // No alt text - position inside brackets
                         if (bracketEnd == bracketStart + 1) {
                             // Empty brackets []
-                            // bracketStart is 0-based index, +1 converts to 1-based, +1 more to position after [
+                            // bracketStart is 0-based index, +1 converts to 1-based, +1 more to position
+                            // after [
                             return new SourcePosition(bracketStart + 2, bracketStart + 2, lineNum);
                         } else {
                             // Has content but no alt text
@@ -387,7 +481,8 @@ public final class ImageBlockValidator extends AbstractBlockValidator<ImageBlock
     }
 
     /**
-     * Finds the column position of a dimension attribute (width/height) in image macro.
+     * Finds the column position of a dimension attribute (width/height) in image
+     * macro.
      */
     private SourcePosition findSourcePosition(StructuralNode block, BlockValidationContext context,
             String dimensionName, String value) {

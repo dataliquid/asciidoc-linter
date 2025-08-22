@@ -30,20 +30,39 @@ class ListingBlockTest {
         @DisplayName("should build ListingBlock with all attributes")
         void shouldBuildListingBlockWithAllAttributes() {
             // Given
-            ListingBlock.LanguageConfig languageRule = ListingBlock.LanguageConfig.builder().required(true)
-                    .allowed(Arrays.asList("java", "python", "javascript", "yaml")).severity(Severity.ERROR).build();
+            ListingBlock.LanguageConfig languageRule = ListingBlock.LanguageConfig
+                    .builder()
+                    .required(true)
+                    .allowed(Arrays.asList("java", "python", "javascript", "yaml"))
+                    .severity(Severity.ERROR)
+                    .build();
 
             LineConfig linesRule = LineConfig.builder().min(3).max(100).build();
 
-            ListingBlock.TitleConfig titleRule = ListingBlock.TitleConfig.builder().required(true)
-                    .pattern("^(Example|Beispiel|Listing)\\s+\\d+").severity(Severity.WARN).build();
+            ListingBlock.TitleConfig titleRule = ListingBlock.TitleConfig
+                    .builder()
+                    .required(true)
+                    .pattern("^(Example|Beispiel|Listing)\\s+\\d+")
+                    .severity(Severity.WARN)
+                    .build();
 
-            ListingBlock.CalloutsConfig calloutsRule = ListingBlock.CalloutsConfig.builder().allowed(true).max(10)
-                    .severity(Severity.INFO).build();
+            ListingBlock.CalloutsConfig calloutsRule = ListingBlock.CalloutsConfig
+                    .builder()
+                    .allowed(true)
+                    .max(10)
+                    .severity(Severity.INFO)
+                    .build();
 
             // When
-            ListingBlock listing = ListingBlock.builder().name("api-examples").severity(Severity.ERROR)
-                    .language(languageRule).lines(linesRule).title(titleRule).callouts(calloutsRule).build();
+            ListingBlock listing = ListingBlock
+                    .builder()
+                    .name("api-examples")
+                    .severity(Severity.ERROR)
+                    .language(languageRule)
+                    .lines(linesRule)
+                    .title(titleRule)
+                    .callouts(calloutsRule)
+                    .build();
 
             // Then
             assertEquals("api-examples", listing.getName());
@@ -90,8 +109,12 @@ class ListingBlockTest {
             List<String> allowedLanguages = Arrays.asList("java", "kotlin", "scala");
 
             // When
-            ListingBlock.LanguageConfig languageRule = ListingBlock.LanguageConfig.builder().required(true)
-                    .allowed(allowedLanguages).severity(Severity.ERROR).build();
+            ListingBlock.LanguageConfig languageRule = ListingBlock.LanguageConfig
+                    .builder()
+                    .required(true)
+                    .allowed(allowedLanguages)
+                    .severity(Severity.ERROR)
+                    .build();
 
             // Then
             assertTrue(languageRule.isRequired());
@@ -103,8 +126,11 @@ class ListingBlockTest {
         @DisplayName("should handle empty allowed list")
         void shouldHandleEmptyAllowedList() {
             // When
-            ListingBlock.LanguageConfig languageRule = ListingBlock.LanguageConfig.builder().required(false)
-                    .severity(Severity.WARN).build();
+            ListingBlock.LanguageConfig languageRule = ListingBlock.LanguageConfig
+                    .builder()
+                    .required(false)
+                    .severity(Severity.WARN)
+                    .build();
 
             // Then
             assertFalse(languageRule.isRequired());
@@ -121,8 +147,12 @@ class ListingBlockTest {
         @DisplayName("should create TitleConfig with string pattern")
         void shouldCreateTitleConfigWithStringPattern() {
             // Given & When
-            ListingBlock.TitleConfig titleRule = ListingBlock.TitleConfig.builder().required(true)
-                    .pattern("^Listing \\d+:").severity(Severity.ERROR).build();
+            ListingBlock.TitleConfig titleRule = ListingBlock.TitleConfig
+                    .builder()
+                    .required(true)
+                    .pattern("^Listing \\d+:")
+                    .severity(Severity.ERROR)
+                    .build();
 
             // Then
             assertTrue(titleRule.isRequired());
@@ -138,8 +168,12 @@ class ListingBlockTest {
             Pattern pattern = Pattern.compile("^Example.*");
 
             // When
-            ListingBlock.TitleConfig titleRule = ListingBlock.TitleConfig.builder().required(false).pattern(pattern)
-                    .severity(Severity.WARN).build();
+            ListingBlock.TitleConfig titleRule = ListingBlock.TitleConfig
+                    .builder()
+                    .required(false)
+                    .pattern(pattern)
+                    .severity(Severity.WARN)
+                    .build();
 
             // Then
             assertFalse(titleRule.isRequired());
@@ -157,8 +191,12 @@ class ListingBlockTest {
         @DisplayName("should create CalloutsConfig with max limit")
         void shouldCreateCalloutsConfigWithMaxLimit() {
             // Given & When
-            ListingBlock.CalloutsConfig calloutsRule = ListingBlock.CalloutsConfig.builder().allowed(true).max(15)
-                    .severity(Severity.INFO).build();
+            ListingBlock.CalloutsConfig calloutsRule = ListingBlock.CalloutsConfig
+                    .builder()
+                    .allowed(true)
+                    .max(15)
+                    .severity(Severity.INFO)
+                    .build();
 
             // Then
             assertTrue(calloutsRule.isAllowed());
@@ -170,8 +208,11 @@ class ListingBlockTest {
         @DisplayName("should create CalloutsConfig without max limit")
         void shouldCreateCalloutsConfigWithoutMaxLimit() {
             // Given & When
-            ListingBlock.CalloutsConfig calloutsRule = ListingBlock.CalloutsConfig.builder().allowed(false)
-                    .severity(Severity.ERROR).build();
+            ListingBlock.CalloutsConfig calloutsRule = ListingBlock.CalloutsConfig
+                    .builder()
+                    .allowed(false)
+                    .severity(Severity.ERROR)
+                    .build();
 
             // Then
             assertFalse(calloutsRule.isAllowed());
@@ -189,26 +230,54 @@ class ListingBlockTest {
         @DisplayName("should correctly implement equals and hashCode")
         void shouldCorrectlyImplementEqualsAndHashCode() {
             // Given
-            ListingBlock.LanguageConfig lang1 = ListingBlock.LanguageConfig.builder().required(true)
-                    .allowed(Arrays.asList("java", "python")).severity(Severity.ERROR).build();
+            ListingBlock.LanguageConfig lang1 = ListingBlock.LanguageConfig
+                    .builder()
+                    .required(true)
+                    .allowed(Arrays.asList("java", "python"))
+                    .severity(Severity.ERROR)
+                    .build();
 
-            ListingBlock.LanguageConfig lang2 = ListingBlock.LanguageConfig.builder().required(true)
-                    .allowed(Arrays.asList("java", "python")).severity(Severity.ERROR).build();
+            ListingBlock.LanguageConfig lang2 = ListingBlock.LanguageConfig
+                    .builder()
+                    .required(true)
+                    .allowed(Arrays.asList("java", "python"))
+                    .severity(Severity.ERROR)
+                    .build();
 
-            ListingBlock.TitleConfig title1 = ListingBlock.TitleConfig.builder().required(true).pattern("^Example.*")
-                    .severity(Severity.WARN).build();
+            ListingBlock.TitleConfig title1 = ListingBlock.TitleConfig
+                    .builder()
+                    .required(true)
+                    .pattern("^Example.*")
+                    .severity(Severity.WARN)
+                    .build();
 
-            ListingBlock.TitleConfig title2 = ListingBlock.TitleConfig.builder().required(true).pattern("^Example.*")
-                    .severity(Severity.WARN).build();
+            ListingBlock.TitleConfig title2 = ListingBlock.TitleConfig
+                    .builder()
+                    .required(true)
+                    .pattern("^Example.*")
+                    .severity(Severity.WARN)
+                    .build();
 
             // When
-            ListingBlock listing1 = ListingBlock.builder().severity(Severity.ERROR).language(lang1).title(title1)
+            ListingBlock listing1 = ListingBlock
+                    .builder()
+                    .severity(Severity.ERROR)
+                    .language(lang1)
+                    .title(title1)
                     .build();
 
-            ListingBlock listing2 = ListingBlock.builder().severity(Severity.ERROR).language(lang2).title(title2)
+            ListingBlock listing2 = ListingBlock
+                    .builder()
+                    .severity(Severity.ERROR)
+                    .language(lang2)
+                    .title(title2)
                     .build();
 
-            ListingBlock listing3 = ListingBlock.builder().severity(Severity.WARN).language(lang1).title(title1)
+            ListingBlock listing3 = ListingBlock
+                    .builder()
+                    .severity(Severity.WARN)
+                    .language(lang1)
+                    .title(title1)
                     .build();
 
             // Then
@@ -222,23 +291,47 @@ class ListingBlockTest {
         @DisplayName("should test inner class equals and hashCode")
         void shouldTestInnerClassEqualsAndHashCode() {
             // Given
-            ListingBlock.LanguageConfig lang1 = ListingBlock.LanguageConfig.builder().required(true)
-                    .allowed(Arrays.asList("java")).severity(Severity.ERROR).build();
+            ListingBlock.LanguageConfig lang1 = ListingBlock.LanguageConfig
+                    .builder()
+                    .required(true)
+                    .allowed(Arrays.asList("java"))
+                    .severity(Severity.ERROR)
+                    .build();
 
-            ListingBlock.LanguageConfig lang2 = ListingBlock.LanguageConfig.builder().required(true)
-                    .allowed(Arrays.asList("java")).severity(Severity.ERROR).build();
+            ListingBlock.LanguageConfig lang2 = ListingBlock.LanguageConfig
+                    .builder()
+                    .required(true)
+                    .allowed(Arrays.asList("java"))
+                    .severity(Severity.ERROR)
+                    .build();
 
-            ListingBlock.TitleConfig title1 = ListingBlock.TitleConfig.builder().required(false).pattern("test")
-                    .severity(Severity.INFO).build();
+            ListingBlock.TitleConfig title1 = ListingBlock.TitleConfig
+                    .builder()
+                    .required(false)
+                    .pattern("test")
+                    .severity(Severity.INFO)
+                    .build();
 
-            ListingBlock.TitleConfig title2 = ListingBlock.TitleConfig.builder().required(false).pattern("test")
-                    .severity(Severity.INFO).build();
+            ListingBlock.TitleConfig title2 = ListingBlock.TitleConfig
+                    .builder()
+                    .required(false)
+                    .pattern("test")
+                    .severity(Severity.INFO)
+                    .build();
 
-            ListingBlock.CalloutsConfig callouts1 = ListingBlock.CalloutsConfig.builder().allowed(true).max(5)
-                    .severity(Severity.WARN).build();
+            ListingBlock.CalloutsConfig callouts1 = ListingBlock.CalloutsConfig
+                    .builder()
+                    .allowed(true)
+                    .max(5)
+                    .severity(Severity.WARN)
+                    .build();
 
-            ListingBlock.CalloutsConfig callouts2 = ListingBlock.CalloutsConfig.builder().allowed(true).max(5)
-                    .severity(Severity.WARN).build();
+            ListingBlock.CalloutsConfig callouts2 = ListingBlock.CalloutsConfig
+                    .builder()
+                    .allowed(true)
+                    .max(5)
+                    .severity(Severity.WARN)
+                    .build();
 
             // Then
             assertEquals(lang1, lang2);

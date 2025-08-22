@@ -26,12 +26,11 @@ import org.asciidoctor.ast.Cursor;
 
 /**
  * Unit tests for {@link ParagraphBlockValidator}.
- *
  * <p>
- * This test class validates the behavior of the paragraph block validator, which processes text paragraph blocks in
- * AsciiDoc documents. The tests focus on line count validation rules including minimum and maximum constraints.
+ * This test class validates the behavior of the paragraph block validator,
+ * which processes text paragraph blocks in AsciiDoc documents. The tests focus
+ * on line count validation rules including minimum and maximum constraints.
  * </p>
- *
  * <p>
  * Test scenarios include:
  * </p>
@@ -43,9 +42,9 @@ import org.asciidoctor.ast.Cursor;
  * <li>Content extraction from nested blocks</li>
  * <li>Severity hierarchy with fallback to block severity</li>
  * </ul>
- *
  * <p>
- * The validator counts only non-empty lines, ignoring blank lines and lines containing only whitespace.
+ * The validator counts only non-empty lines, ignoring blank lines and lines
+ * containing only whitespace.
  * </p>
  *
  * @see ParagraphBlockValidator
@@ -120,7 +119,8 @@ class ParagraphBlockValidatorTest {
         @Test
         @DisplayName("should include placeholder and exact position for too few lines - based on test-errors.adoc line 11")
         void shouldIncludePlaceholderForTooFewLines() {
-            // Given - Based on test-errors.adoc line 11: "This section has a paragraph without any errors."
+            // Given - Based on test-errors.adoc line 11: "This section has a paragraph
+            // without any errors."
             BlockValidationContext testContext = new BlockValidationContext(mockSection, "test-errors.adoc");
 
             LineConfig lineConfig = LineConfig.builder().min(2).severity(Severity.INFO).build();
@@ -174,7 +174,9 @@ class ParagraphBlockValidatorTest {
         @DisplayName("should use block severity when lines severity is not defined")
         void shouldUseBlockSeverityWhenLinesSeverityNotDefined() {
             // Given - lines has no severity, block has INFO
-            LineConfig lineConfig = LineConfig.builder().max(2)
+            LineConfig lineConfig = LineConfig
+                    .builder()
+                    .max(2)
                     // No severity set
                     .build();
             ParagraphBlock config = ParagraphBlock.builder().lines(lineConfig).severity(Severity.INFO).build();
@@ -287,9 +289,14 @@ class ParagraphBlockValidatorTest {
             @DisplayName("should validate minimum sentence count")
             void shouldValidateMinimumSentenceCount() {
                 // Given
-                ParagraphBlock.SentenceConfig sentenceConfig = ParagraphBlock.SentenceConfig.builder()
-                        .occurrence(OccurrenceConfig.builder().min(3).severity(Severity.ERROR).build()).build();
-                ParagraphBlock config = ParagraphBlock.builder().sentence(sentenceConfig).severity(Severity.WARN)
+                ParagraphBlock.SentenceConfig sentenceConfig = ParagraphBlock.SentenceConfig
+                        .builder()
+                        .occurrence(OccurrenceConfig.builder().min(3).severity(Severity.ERROR).build())
+                        .build();
+                ParagraphBlock config = ParagraphBlock
+                        .builder()
+                        .sentence(sentenceConfig)
+                        .severity(Severity.WARN)
                         .build();
 
                 // Content with only 2 sentences
@@ -312,9 +319,14 @@ class ParagraphBlockValidatorTest {
             @DisplayName("should validate maximum sentence count")
             void shouldValidateMaximumSentenceCount() {
                 // Given
-                ParagraphBlock.SentenceConfig sentenceConfig = ParagraphBlock.SentenceConfig.builder()
-                        .occurrence(OccurrenceConfig.builder().max(2).severity(Severity.WARN).build()).build();
-                ParagraphBlock config = ParagraphBlock.builder().sentence(sentenceConfig).severity(Severity.ERROR)
+                ParagraphBlock.SentenceConfig sentenceConfig = ParagraphBlock.SentenceConfig
+                        .builder()
+                        .occurrence(OccurrenceConfig.builder().max(2).severity(Severity.WARN).build())
+                        .build();
+                ParagraphBlock config = ParagraphBlock
+                        .builder()
+                        .sentence(sentenceConfig)
+                        .severity(Severity.ERROR)
                         .build();
 
                 // Content with 3 sentences
@@ -337,12 +349,18 @@ class ParagraphBlockValidatorTest {
             @DisplayName("should use block severity when occurrence severity is not defined")
             void shouldUseBlockSeverityWhenOccurrenceSeverityNotDefined() {
                 // Given
-                ParagraphBlock.SentenceConfig sentenceConfig = ParagraphBlock.SentenceConfig.builder()
-                        .occurrence(OccurrenceConfig.builder().min(2)
+                ParagraphBlock.SentenceConfig sentenceConfig = ParagraphBlock.SentenceConfig
+                        .builder()
+                        .occurrence(OccurrenceConfig
+                                .builder()
+                                .min(2)
                                 // No severity set
                                 .build())
                         .build();
-                ParagraphBlock config = ParagraphBlock.builder().sentence(sentenceConfig).severity(Severity.INFO)
+                ParagraphBlock config = ParagraphBlock
+                        .builder()
+                        .sentence(sentenceConfig)
+                        .severity(Severity.INFO)
                         .build();
 
                 when(mockBlock.getContent()).thenReturn("Only one sentence here.");
@@ -361,9 +379,14 @@ class ParagraphBlockValidatorTest {
             @DisplayName("should handle empty content with minimum sentences required")
             void shouldHandleEmptyContentWithMinimumSentencesRequired() {
                 // Given
-                ParagraphBlock.SentenceConfig sentenceConfig = ParagraphBlock.SentenceConfig.builder()
-                        .occurrence(OccurrenceConfig.builder().min(1).severity(Severity.ERROR).build()).build();
-                ParagraphBlock config = ParagraphBlock.builder().sentence(sentenceConfig).severity(Severity.ERROR)
+                ParagraphBlock.SentenceConfig sentenceConfig = ParagraphBlock.SentenceConfig
+                        .builder()
+                        .occurrence(OccurrenceConfig.builder().min(1).severity(Severity.ERROR).build())
+                        .build();
+                ParagraphBlock config = ParagraphBlock
+                        .builder()
+                        .sentence(sentenceConfig)
+                        .severity(Severity.ERROR)
                         .build();
 
                 when(mockBlock.getContent()).thenReturn("");
@@ -385,9 +408,14 @@ class ParagraphBlockValidatorTest {
             @DisplayName("should validate minimum words per sentence")
             void shouldValidateMinimumWordsPerSentence() {
                 // Given
-                ParagraphBlock.SentenceConfig sentenceConfig = ParagraphBlock.SentenceConfig.builder()
-                        .words(ParagraphBlock.WordsConfig.builder().min(5).severity(Severity.ERROR).build()).build();
-                ParagraphBlock config = ParagraphBlock.builder().sentence(sentenceConfig).severity(Severity.WARN)
+                ParagraphBlock.SentenceConfig sentenceConfig = ParagraphBlock.SentenceConfig
+                        .builder()
+                        .words(ParagraphBlock.WordsConfig.builder().min(5).severity(Severity.ERROR).build())
+                        .build();
+                ParagraphBlock config = ParagraphBlock
+                        .builder()
+                        .sentence(sentenceConfig)
+                        .severity(Severity.WARN)
                         .build();
 
                 // First sentence has only 3 words, second has 5
@@ -410,9 +438,14 @@ class ParagraphBlockValidatorTest {
             @DisplayName("should validate maximum words per sentence")
             void shouldValidateMaximumWordsPerSentence() {
                 // Given
-                ParagraphBlock.SentenceConfig sentenceConfig = ParagraphBlock.SentenceConfig.builder()
-                        .words(ParagraphBlock.WordsConfig.builder().max(8).severity(Severity.WARN).build()).build();
-                ParagraphBlock config = ParagraphBlock.builder().sentence(sentenceConfig).severity(Severity.ERROR)
+                ParagraphBlock.SentenceConfig sentenceConfig = ParagraphBlock.SentenceConfig
+                        .builder()
+                        .words(ParagraphBlock.WordsConfig.builder().max(8).severity(Severity.WARN).build())
+                        .build();
+                ParagraphBlock config = ParagraphBlock
+                        .builder()
+                        .sentence(sentenceConfig)
+                        .severity(Severity.ERROR)
                         .build();
 
                 // Sentence with 10 words
@@ -436,12 +469,18 @@ class ParagraphBlockValidatorTest {
             @DisplayName("should use block severity when words severity is not defined")
             void shouldUseBlockSeverityWhenWordsSeverityNotDefined() {
                 // Given
-                ParagraphBlock.SentenceConfig sentenceConfig = ParagraphBlock.SentenceConfig.builder()
-                        .words(ParagraphBlock.WordsConfig.builder().min(5)
+                ParagraphBlock.SentenceConfig sentenceConfig = ParagraphBlock.SentenceConfig
+                        .builder()
+                        .words(ParagraphBlock.WordsConfig
+                                .builder()
+                                .min(5)
                                 // No severity set
                                 .build())
                         .build();
-                ParagraphBlock config = ParagraphBlock.builder().sentence(sentenceConfig).severity(Severity.INFO)
+                ParagraphBlock config = ParagraphBlock
+                        .builder()
+                        .sentence(sentenceConfig)
+                        .severity(Severity.INFO)
                         .build();
 
                 when(mockBlock.getContent()).thenReturn("Short.");
@@ -460,10 +499,14 @@ class ParagraphBlockValidatorTest {
             @DisplayName("should validate multiple sentences for word count")
             void shouldValidateMultipleSentencesForWordCount() {
                 // Given
-                ParagraphBlock.SentenceConfig sentenceConfig = ParagraphBlock.SentenceConfig.builder()
+                ParagraphBlock.SentenceConfig sentenceConfig = ParagraphBlock.SentenceConfig
+                        .builder()
                         .words(ParagraphBlock.WordsConfig.builder().min(4).max(8).severity(Severity.ERROR).build())
                         .build();
-                ParagraphBlock config = ParagraphBlock.builder().sentence(sentenceConfig).severity(Severity.ERROR)
+                ParagraphBlock config = ParagraphBlock
+                        .builder()
+                        .sentence(sentenceConfig)
+                        .severity(Severity.ERROR)
                         .build();
 
                 // Mix of valid and invalid sentences
@@ -490,9 +533,14 @@ class ParagraphBlockValidatorTest {
             @DisplayName("should detect sentences with different punctuation")
             void shouldDetectSentencesWithDifferentPunctuation() {
                 // Given
-                ParagraphBlock.SentenceConfig sentenceConfig = ParagraphBlock.SentenceConfig.builder()
-                        .occurrence(OccurrenceConfig.builder().min(3).max(3).severity(Severity.ERROR).build()).build();
-                ParagraphBlock config = ParagraphBlock.builder().sentence(sentenceConfig).severity(Severity.ERROR)
+                ParagraphBlock.SentenceConfig sentenceConfig = ParagraphBlock.SentenceConfig
+                        .builder()
+                        .occurrence(OccurrenceConfig.builder().min(3).max(3).severity(Severity.ERROR).build())
+                        .build();
+                ParagraphBlock config = ParagraphBlock
+                        .builder()
+                        .sentence(sentenceConfig)
+                        .severity(Severity.ERROR)
                         .build();
 
                 // Content with period, question mark, and exclamation mark
@@ -509,9 +557,14 @@ class ParagraphBlockValidatorTest {
             @DisplayName("should handle multi-line sentences")
             void shouldHandleMultiLineSentences() {
                 // Given
-                ParagraphBlock.SentenceConfig sentenceConfig = ParagraphBlock.SentenceConfig.builder()
-                        .occurrence(OccurrenceConfig.builder().min(2).max(2).severity(Severity.ERROR).build()).build();
-                ParagraphBlock config = ParagraphBlock.builder().sentence(sentenceConfig).severity(Severity.ERROR)
+                ParagraphBlock.SentenceConfig sentenceConfig = ParagraphBlock.SentenceConfig
+                        .builder()
+                        .occurrence(OccurrenceConfig.builder().min(2).max(2).severity(Severity.ERROR).build())
+                        .build();
+                ParagraphBlock config = ParagraphBlock
+                        .builder()
+                        .sentence(sentenceConfig)
+                        .severity(Severity.ERROR)
                         .build();
 
                 // Content with sentences spanning multiple lines
@@ -530,9 +583,14 @@ class ParagraphBlockValidatorTest {
             @DisplayName("should treat content without sentence ending as one sentence")
             void shouldTreatContentWithoutSentenceEndingAsOneSentence() {
                 // Given
-                ParagraphBlock.SentenceConfig sentenceConfig = ParagraphBlock.SentenceConfig.builder()
-                        .occurrence(OccurrenceConfig.builder().min(1).max(1).severity(Severity.ERROR).build()).build();
-                ParagraphBlock config = ParagraphBlock.builder().sentence(sentenceConfig).severity(Severity.ERROR)
+                ParagraphBlock.SentenceConfig sentenceConfig = ParagraphBlock.SentenceConfig
+                        .builder()
+                        .occurrence(OccurrenceConfig.builder().min(1).max(1).severity(Severity.ERROR).build())
+                        .build();
+                ParagraphBlock config = ParagraphBlock
+                        .builder()
+                        .sentence(sentenceConfig)
+                        .severity(Severity.ERROR)
                         .build();
 
                 // Content without sentence-ending punctuation
@@ -554,11 +612,15 @@ class ParagraphBlockValidatorTest {
             @DisplayName("should validate both occurrence and words constraints")
             void shouldValidateBothOccurrenceAndWordsConstraints() {
                 // Given
-                ParagraphBlock.SentenceConfig sentenceConfig = ParagraphBlock.SentenceConfig.builder()
+                ParagraphBlock.SentenceConfig sentenceConfig = ParagraphBlock.SentenceConfig
+                        .builder()
                         .occurrence(OccurrenceConfig.builder().min(2).max(4).severity(Severity.WARN).build())
                         .words(ParagraphBlock.WordsConfig.builder().min(5).max(10).severity(Severity.ERROR).build())
                         .build();
-                ParagraphBlock config = ParagraphBlock.builder().sentence(sentenceConfig).severity(Severity.INFO)
+                ParagraphBlock config = ParagraphBlock
+                        .builder()
+                        .sentence(sentenceConfig)
+                        .severity(Severity.INFO)
                         .build();
 
                 // One sentence with too few words, one with too many
@@ -576,10 +638,14 @@ class ParagraphBlockValidatorTest {
                 // Then
                 assertEquals(2, messages.size());
                 // Check word violations (should use ERROR severity)
-                assertTrue(messages.stream().anyMatch(m -> m.getRuleId().equals("paragraph.sentence.words.min")
-                        && m.getSeverity() == Severity.ERROR));
-                assertTrue(messages.stream().anyMatch(m -> m.getRuleId().equals("paragraph.sentence.words.max")
-                        && m.getSeverity() == Severity.ERROR));
+                assertTrue(messages
+                        .stream()
+                        .anyMatch(m -> m.getRuleId().equals("paragraph.sentence.words.min")
+                                && m.getSeverity() == Severity.ERROR));
+                assertTrue(messages
+                        .stream()
+                        .anyMatch(m -> m.getRuleId().equals("paragraph.sentence.words.max")
+                                && m.getSeverity() == Severity.ERROR));
             }
 
             @Test

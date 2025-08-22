@@ -43,21 +43,42 @@ class VideoBlockTest {
         @Test
         @DisplayName("should build with all fields")
         void shouldBuildWithAllFields() {
-            VideoBlock block = VideoBlock.builder().name("full-video").severity(Severity.ERROR)
+            VideoBlock block = VideoBlock
+                    .builder()
+                    .name("full-video")
+                    .severity(Severity.ERROR)
                     .occurrence(OccurrenceConfig.builder().min(1).max(3).build())
-                    .url(VideoBlock.UrlConfig.builder().required(true).pattern("^https?://.*\\.(mp4|webm)$")
-                            .severity(Severity.ERROR).build())
-                    .width(VideoBlock.DimensionConfig.builder().minValue(320).maxValue(1920).severity(Severity.INFO)
+                    .url(VideoBlock.UrlConfig
+                            .builder()
+                            .required(true)
+                            .pattern("^https?://.*\\.(mp4|webm)$")
+                            .severity(Severity.ERROR)
+                            .build())
+                    .width(VideoBlock.DimensionConfig
+                            .builder()
+                            .minValue(320)
+                            .maxValue(1920)
+                            .severity(Severity.INFO)
                             .build())
                     .height(VideoBlock.DimensionConfig
-                            .builder().minValue(180).maxValue(1080).severity(Severity.INFO).build())
+                            .builder()
+                            .minValue(180)
+                            .maxValue(1080)
+                            .severity(Severity.INFO)
+                            .build())
                     .poster(VideoBlock.PosterConfig.builder().pattern(".*\\.(jpg|jpeg|png)$").build())
-                    .options(VideoBlock.OptionsConfig.builder()
+                    .options(VideoBlock.OptionsConfig
+                            .builder()
                             .controls(
                                     VideoBlock.ControlsConfig.builder().required(true).severity(Severity.ERROR).build())
                             .build())
-                    .caption(VideoBlock.CaptionConfig.builder().required(true).minLength(15).maxLength(200)
-                            .severity(Severity.WARN).build())
+                    .caption(VideoBlock.CaptionConfig
+                            .builder()
+                            .required(true)
+                            .minLength(15)
+                            .maxLength(200)
+                            .severity(Severity.WARN)
+                            .build())
                     .build();
 
             assertNotNull(block);
@@ -92,8 +113,12 @@ class VideoBlockTest {
         @Test
         @DisplayName("should build url config with all fields")
         void shouldBuildUrlConfigWithAllFields() {
-            VideoBlock.UrlConfig config = VideoBlock.UrlConfig.builder().required(true)
-                    .pattern("^https?://.*\\.(mp4|webm)$").severity(Severity.ERROR).build();
+            VideoBlock.UrlConfig config = VideoBlock.UrlConfig
+                    .builder()
+                    .required(true)
+                    .pattern("^https?://.*\\.(mp4|webm)$")
+                    .severity(Severity.ERROR)
+                    .build();
 
             assertTrue(config.getRequired());
             assertNotNull(config.getPattern());
@@ -126,8 +151,13 @@ class VideoBlockTest {
         @Test
         @DisplayName("should build dimension config with all fields")
         void shouldBuildDimensionConfigWithAllFields() {
-            VideoBlock.DimensionConfig config = VideoBlock.DimensionConfig.builder().required(false).minValue(320)
-                    .maxValue(1920).severity(Severity.INFO).build();
+            VideoBlock.DimensionConfig config = VideoBlock.DimensionConfig
+                    .builder()
+                    .required(false)
+                    .minValue(320)
+                    .maxValue(1920)
+                    .severity(Severity.INFO)
+                    .build();
 
             assertFalse(config.getRequired());
             assertEquals(320, config.getMinValue());
@@ -143,8 +173,13 @@ class VideoBlockTest {
         @Test
         @DisplayName("should build caption config with all fields")
         void shouldBuildCaptionConfigWithAllFields() {
-            VideoBlock.CaptionConfig config = VideoBlock.CaptionConfig.builder().required(true).minLength(15)
-                    .maxLength(200).severity(Severity.WARN).build();
+            VideoBlock.CaptionConfig config = VideoBlock.CaptionConfig
+                    .builder()
+                    .required(true)
+                    .minLength(15)
+                    .maxLength(200)
+                    .severity(Severity.WARN)
+                    .build();
 
             assertTrue(config.getRequired());
             assertEquals(15, config.getMinLength());
@@ -160,11 +195,19 @@ class VideoBlockTest {
         @Test
         @DisplayName("should be equal for same values")
         void shouldBeEqualForSameValues() {
-            VideoBlock block1 = VideoBlock.builder().name("test").severity(Severity.WARN)
-                    .url(VideoBlock.UrlConfig.builder().required(true).pattern("test.*").build()).build();
+            VideoBlock block1 = VideoBlock
+                    .builder()
+                    .name("test")
+                    .severity(Severity.WARN)
+                    .url(VideoBlock.UrlConfig.builder().required(true).pattern("test.*").build())
+                    .build();
 
-            VideoBlock block2 = VideoBlock.builder().name("test").severity(Severity.WARN)
-                    .url(VideoBlock.UrlConfig.builder().required(true).pattern("test.*").build()).build();
+            VideoBlock block2 = VideoBlock
+                    .builder()
+                    .name("test")
+                    .severity(Severity.WARN)
+                    .url(VideoBlock.UrlConfig.builder().required(true).pattern("test.*").build())
+                    .build();
 
             assertEquals(block1, block2);
             assertEquals(block1.hashCode(), block2.hashCode());

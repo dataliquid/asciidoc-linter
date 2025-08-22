@@ -10,7 +10,8 @@ import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.EMP
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
 /**
- * Wrapper class for the output configuration to match the YAML structure. The YAML file has "output" as the root key.
+ * Wrapper class for the output configuration to match the YAML structure. The
+ * YAML file has "output" as the root key.
  */
 @JsonDeserialize(builder = OutputConfigWrapper.Builder.class)
 public final class OutputConfigWrapper {

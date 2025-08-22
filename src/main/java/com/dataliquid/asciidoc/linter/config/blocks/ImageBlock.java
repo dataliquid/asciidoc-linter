@@ -119,8 +119,9 @@ public final class ImageBlock extends AbstractBlock {
                 return true;
             if (!(o instanceof UrlConfig that))
                 return false;
-            return required == that.required && Objects.equals(pattern == null ? null : pattern.pattern(),
-                    that.pattern == null ? null : that.pattern.pattern());
+            return required == that.required && Objects
+                    .equals(pattern == null ? null : pattern.pattern(),
+                            that.pattern == null ? null : that.pattern.pattern());
         }
 
         @Override

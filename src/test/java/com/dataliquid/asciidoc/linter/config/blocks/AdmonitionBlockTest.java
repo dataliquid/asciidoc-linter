@@ -29,22 +29,46 @@ class AdmonitionBlockTest {
         @DisplayName("should build block with all properties")
         void shouldBuildCompleteBlock() {
             // Given
-            AdmonitionBlock.TypeConfig typeConfig = AdmonitionBlock.TypeConfig.builder().required(true)
-                    .allowed(List.of("NOTE", "TIP", "IMPORTANT", "WARNING", "CAUTION")).severity(Severity.ERROR)
+            AdmonitionBlock.TypeConfig typeConfig = AdmonitionBlock.TypeConfig
+                    .builder()
+                    .required(true)
+                    .allowed(List.of("NOTE", "TIP", "IMPORTANT", "WARNING", "CAUTION"))
+                    .severity(Severity.ERROR)
                     .build();
 
-            AdmonitionBlock.TitleConfig titleConfig = AdmonitionBlock.TitleConfig.builder().required(true)
-                    .pattern("^[A-Z].*").minLength(3).maxLength(50).severity(Severity.ERROR).build();
+            AdmonitionBlock.TitleConfig titleConfig = AdmonitionBlock.TitleConfig
+                    .builder()
+                    .required(true)
+                    .pattern("^[A-Z].*")
+                    .minLength(3)
+                    .maxLength(50)
+                    .severity(Severity.ERROR)
+                    .build();
 
-            AdmonitionBlock.ContentConfig contentConfig = AdmonitionBlock.ContentConfig.builder().required(true)
-                    .minLength(10).maxLength(500).severity(Severity.WARN).build();
+            AdmonitionBlock.ContentConfig contentConfig = AdmonitionBlock.ContentConfig
+                    .builder()
+                    .required(true)
+                    .minLength(10)
+                    .maxLength(500)
+                    .severity(Severity.WARN)
+                    .build();
 
-            AdmonitionBlock.IconConfig iconConfig = AdmonitionBlock.IconConfig.builder().required(false)
-                    .pattern("^(fa-|icon-|octicon-).*$").severity(Severity.INFO).build();
+            AdmonitionBlock.IconConfig iconConfig = AdmonitionBlock.IconConfig
+                    .builder()
+                    .required(false)
+                    .pattern("^(fa-|icon-|octicon-).*$")
+                    .severity(Severity.INFO)
+                    .build();
 
             // When
-            AdmonitionBlock block = AdmonitionBlock.builder().severity(Severity.ERROR).type(typeConfig)
-                    .title(titleConfig).content(contentConfig).icon(iconConfig).build();
+            AdmonitionBlock block = AdmonitionBlock
+                    .builder()
+                    .severity(Severity.ERROR)
+                    .type(typeConfig)
+                    .title(titleConfig)
+                    .content(contentConfig)
+                    .icon(iconConfig)
+                    .build();
 
             // Then
             assertNotNull(block);
@@ -74,8 +98,12 @@ class AdmonitionBlockTest {
             List<String> allowedTypes = List.of("NOTE", "TIP", "IMPORTANT", "WARNING", "CAUTION");
 
             // When
-            AdmonitionBlock.TypeConfig config = AdmonitionBlock.TypeConfig.builder().required(true)
-                    .allowed(allowedTypes).severity(Severity.ERROR).build();
+            AdmonitionBlock.TypeConfig config = AdmonitionBlock.TypeConfig
+                    .builder()
+                    .required(true)
+                    .allowed(allowedTypes)
+                    .severity(Severity.ERROR)
+                    .build();
 
             // Then
             assertTrue(config.isRequired());
@@ -107,8 +135,14 @@ class AdmonitionBlockTest {
             String patternStr = "^[A-Z][A-Za-z\\s]{2,49}$";
 
             // When
-            AdmonitionBlock.TitleConfig config = AdmonitionBlock.TitleConfig.builder().required(true)
-                    .pattern(patternStr).minLength(3).maxLength(50).severity(Severity.ERROR).build();
+            AdmonitionBlock.TitleConfig config = AdmonitionBlock.TitleConfig
+                    .builder()
+                    .required(true)
+                    .pattern(patternStr)
+                    .minLength(3)
+                    .maxLength(50)
+                    .severity(Severity.ERROR)
+                    .build();
 
             // Then
             assertTrue(config.isRequired());
@@ -144,8 +178,14 @@ class AdmonitionBlockTest {
             LineConfig lineConfig = LineConfig.builder().min(1).max(10).severity(Severity.INFO).build();
 
             // When
-            AdmonitionBlock.ContentConfig config = AdmonitionBlock.ContentConfig.builder().required(true).minLength(10)
-                    .maxLength(500).lines(lineConfig).severity(Severity.WARN).build();
+            AdmonitionBlock.ContentConfig config = AdmonitionBlock.ContentConfig
+                    .builder()
+                    .required(true)
+                    .minLength(10)
+                    .maxLength(500)
+                    .lines(lineConfig)
+                    .severity(Severity.WARN)
+                    .build();
 
             // Then
             assertTrue(config.isRequired());
@@ -178,8 +218,12 @@ class AdmonitionBlockTest {
         @DisplayName("should build icon config with all properties")
         void shouldBuildCompleteIconConfig() {
             // When
-            AdmonitionBlock.IconConfig config = AdmonitionBlock.IconConfig.builder().required(false)
-                    .pattern("^(fa-|icon-|octicon-).*$").severity(Severity.INFO).build();
+            AdmonitionBlock.IconConfig config = AdmonitionBlock.IconConfig
+                    .builder()
+                    .required(false)
+                    .pattern("^(fa-|icon-|octicon-).*$")
+                    .severity(Severity.INFO)
+                    .build();
 
             // Then
             assertFalse(config.isRequired());
@@ -210,11 +254,23 @@ class AdmonitionBlockTest {
         @DisplayName("should implement equals and hashCode correctly")
         void shouldImplementEqualsAndHashCode() {
             // Given
-            AdmonitionBlock.TitleConfig title1 = AdmonitionBlock.TitleConfig.builder().required(true)
-                    .pattern("^[A-Z].*").minLength(3).maxLength(50).severity(Severity.ERROR).build();
+            AdmonitionBlock.TitleConfig title1 = AdmonitionBlock.TitleConfig
+                    .builder()
+                    .required(true)
+                    .pattern("^[A-Z].*")
+                    .minLength(3)
+                    .maxLength(50)
+                    .severity(Severity.ERROR)
+                    .build();
 
-            AdmonitionBlock.TitleConfig title2 = AdmonitionBlock.TitleConfig.builder().required(true)
-                    .pattern("^[A-Z].*").minLength(3).maxLength(50).severity(Severity.ERROR).build();
+            AdmonitionBlock.TitleConfig title2 = AdmonitionBlock.TitleConfig
+                    .builder()
+                    .required(true)
+                    .pattern("^[A-Z].*")
+                    .minLength(3)
+                    .maxLength(50)
+                    .severity(Severity.ERROR)
+                    .build();
 
             AdmonitionBlock block1 = AdmonitionBlock.builder().severity(Severity.ERROR).title(title1).build();
 

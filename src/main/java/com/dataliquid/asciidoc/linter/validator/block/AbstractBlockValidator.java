@@ -13,38 +13,37 @@ import com.dataliquid.asciidoc.linter.report.console.FileContentCache;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
 
 /**
- * Abstract base class for block validators using Template Method pattern. Provides common validation logic and helper
- * methods to reduce code duplication.
+ * Abstract base class for block validators using Template Method pattern.
+ * Provides common validation logic and helper methods to reduce code
+ * duplication.
  *
- * @param <T>
- *            The specific block configuration type
+ * @param <T> The specific block configuration type
  */
 public abstract class AbstractBlockValidator<T extends Block> implements BlockTypeValidator {
 
     /**
-     * Shared file content cache for accessing source file content. Used by subclasses to find exact positions in source
-     * files for error reporting.
+     * Shared file content cache for accessing source file content. Used by
+     * subclasses to find exact positions in source files for error reporting.
      */
     protected final FileContentCache fileCache = new FileContentCache();
 
     /**
-     * Returns the specific block configuration class type. Used for safe casting of the generic Block to the specific
-     * type.
+     * Returns the specific block configuration class type. Used for safe casting of
+     * the generic Block to the specific type.
      *
      * @return the class of the specific block configuration
      */
     protected abstract Class<T> getBlockConfigClass();
 
     /**
-     * Performs block-specific validations. This method should contain all validation logic specific to the block type.
+     * Performs block-specific validations. This method should contain all
+     * validation logic specific to the block type.
      *
-     * @param node
-     *            the AsciiDoc node to validate
-     * @param config
-     *            the specific block configuration
-     * @param context
-     *            the validation context
-     * @return list of validation messages
+     * @param  node    the AsciiDoc node to validate
+     * @param  config  the specific block configuration
+     * @param  context the validation context
+     *
+     * @return         list of validation messages
      */
     protected abstract List<ValidationMessage> performSpecificValidations(StructuralNode node, T config,
             BlockValidationContext context);
@@ -69,11 +68,12 @@ public abstract class AbstractBlockValidator<T extends Block> implements BlockTy
     // Common helper methods
 
     /**
-     * Extracts text content from a structural node. Handles both direct content and nested blocks.
+     * Extracts text content from a structural node. Handles both direct content and
+     * nested blocks.
      *
-     * @param node
-     *            the node to extract content from
-     * @return the text content or empty string if none
+     * @param  node the node to extract content from
+     *
+     * @return      the text content or empty string if none
      */
     protected String getBlockContent(StructuralNode node) {
         if (node.getContent() instanceof String) {
@@ -100,9 +100,9 @@ public abstract class AbstractBlockValidator<T extends Block> implements BlockTy
     /**
      * Counts lines in text content.
      *
-     * @param content
-     *            the text content
-     * @return number of lines
+     * @param  content the text content
+     *
+     * @return         number of lines
      */
     protected int countLines(String content) {
         if (content == null || content.isEmpty()) {
@@ -112,13 +112,13 @@ public abstract class AbstractBlockValidator<T extends Block> implements BlockTy
     }
 
     /**
-     * Resolves severity with fallback. If specific severity is null, uses the fallback severity.
+     * Resolves severity with fallback. If specific severity is null, uses the
+     * fallback severity.
      *
-     * @param specific
-     *            the specific severity (may be null)
-     * @param fallback
-     *            the fallback severity
-     * @return resolved severity
+     * @param  specific the specific severity (may be null)
+     * @param  fallback the fallback severity
+     *
+     * @return          resolved severity
      */
     protected Severity resolveSeverity(Severity specific, Severity fallback) {
         return specific != null ? specific : fallback;
@@ -127,69 +127,62 @@ public abstract class AbstractBlockValidator<T extends Block> implements BlockTy
     /**
      * Creates a validation message for required field violations.
      *
-     * @param fieldName
-     *            the name of the required field
-     * @param severity
-     *            the severity level
-     * @param context
-     *            the validation context
-     * @param node
-     *            the node being validated
-     * @return validation message
+     * @param  fieldName the name of the required field
+     * @param  severity  the severity level
+     * @param  context   the validation context
+     * @param  node      the node being validated
+     *
+     * @return           validation message
      */
     protected ValidationMessage createRequiredFieldMessage(String fieldName, Severity severity,
             BlockValidationContext context, StructuralNode node) {
-        return ValidationMessage.builder().severity(severity)
+        return ValidationMessage
+                .builder()
+                .severity(severity)
                 .ruleId(getSupportedType().toValue() + "." + fieldName + ".required")
-                .location(context.createLocation(node)).message("Literal block must have a " + fieldName)
+                .location(context.createLocation(node))
+                .message("Literal block must have a " + fieldName)
                 .actualValue("No " + fieldName)
-                .expectedValue(fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1) + " required").build();
+                .expectedValue(fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1) + " required")
+                .build();
     }
 
     /**
      * Creates a validation message for pattern violations.
      *
-     * @param fieldName
-     *            the name of the field
-     * @param value
-     *            the actual value
-     * @param pattern
-     *            the expected pattern
-     * @param severity
-     *            the severity level
-     * @param context
-     *            the validation context
-     * @param node
-     *            the node being validated
-     * @return validation message
+     * @param  fieldName the name of the field
+     * @param  value     the actual value
+     * @param  pattern   the expected pattern
+     * @param  severity  the severity level
+     * @param  context   the validation context
+     * @param  node      the node being validated
+     *
+     * @return           validation message
      */
     protected ValidationMessage createPatternViolationMessage(String fieldName, String value, String pattern,
             Severity severity, BlockValidationContext context, StructuralNode node) {
-        return ValidationMessage.builder().severity(severity)
+        return ValidationMessage
+                .builder()
+                .severity(severity)
                 .ruleId(getSupportedType().toValue() + "." + fieldName + ".pattern")
-                .location(context.createLocation(node)).message(fieldName + " does not match pattern: " + pattern
-                        + ". Actual: " + (value != null ? value : "null"))
+                .location(context.createLocation(node))
+                .message(fieldName + " does not match pattern: " + pattern + ". Actual: "
+                        + (value != null ? value : "null"))
                 .build();
     }
 
     /**
      * Creates a validation message for length violations.
      *
-     * @param fieldName
-     *            the name of the field
-     * @param actualLength
-     *            the actual length
-     * @param minLength
-     *            the minimum length (may be null)
-     * @param maxLength
-     *            the maximum length (may be null)
-     * @param severity
-     *            the severity level
-     * @param context
-     *            the validation context
-     * @param node
-     *            the node being validated
-     * @return validation message
+     * @param  fieldName    the name of the field
+     * @param  actualLength the actual length
+     * @param  minLength    the minimum length (may be null)
+     * @param  maxLength    the maximum length (may be null)
+     * @param  severity     the severity level
+     * @param  context      the validation context
+     * @param  node         the node being validated
+     *
+     * @return              validation message
      */
     protected ValidationMessage createLengthViolationMessage(String fieldName, int actualLength, Integer minLength,
             Integer maxLength, Severity severity, BlockValidationContext context, StructuralNode node) {
@@ -211,28 +204,28 @@ public abstract class AbstractBlockValidator<T extends Block> implements BlockTy
             return null;
         }
 
-        return ValidationMessage.builder().severity(severity)
+        return ValidationMessage
+                .builder()
+                .severity(severity)
                 .ruleId(getSupportedType().toValue() + "." + fieldName + "." + ruleIdSuffix)
-                .location(context.createLocation(node)).message(message.toString()).actualValue(actualValue)
-                .expectedValue(expectedValue).build();
+                .location(context.createLocation(node))
+                .message(message.toString())
+                .actualValue(actualValue)
+                .expectedValue(expectedValue)
+                .build();
     }
 
     /**
      * Validates a required field.
      *
-     * @param value
-     *            the value to check
-     * @param fieldName
-     *            the name of the field
-     * @param required
-     *            whether the field is required
-     * @param severity
-     *            the severity level
-     * @param context
-     *            the validation context
-     * @param node
-     *            the node being validated
-     * @return validation message if validation fails, null otherwise
+     * @param  value     the value to check
+     * @param  fieldName the name of the field
+     * @param  required  whether the field is required
+     * @param  severity  the severity level
+     * @param  context   the validation context
+     * @param  node      the node being validated
+     *
+     * @return           validation message if validation fails, null otherwise
      */
     protected ValidationMessage validateRequired(String value, String fieldName, boolean required, Severity severity,
             BlockValidationContext context, StructuralNode node) {
@@ -245,19 +238,14 @@ public abstract class AbstractBlockValidator<T extends Block> implements BlockTy
     /**
      * Validates a value against a pattern.
      *
-     * @param value
-     *            the value to validate
-     * @param patternStr
-     *            the pattern string
-     * @param fieldName
-     *            the name of the field
-     * @param severity
-     *            the severity level
-     * @param context
-     *            the validation context
-     * @param node
-     *            the node being validated
-     * @return validation message if validation fails, null otherwise
+     * @param  value      the value to validate
+     * @param  patternStr the pattern string
+     * @param  fieldName  the name of the field
+     * @param  severity   the severity level
+     * @param  context    the validation context
+     * @param  node       the node being validated
+     *
+     * @return            validation message if validation fails, null otherwise
      */
     protected ValidationMessage validatePattern(String value, String patternStr, String fieldName, Severity severity,
             BlockValidationContext context, StructuralNode node) {
@@ -268,10 +256,13 @@ public abstract class AbstractBlockValidator<T extends Block> implements BlockTy
                     return createPatternViolationMessage(fieldName, value, patternStr, severity, context, node);
                 }
             } catch (PatternSyntaxException e) {
-                return ValidationMessage.builder().severity(Severity.ERROR)
+                return ValidationMessage
+                        .builder()
+                        .severity(Severity.ERROR)
                         .ruleId(getSupportedType().toValue() + "." + fieldName + ".pattern.invalid")
                         .location(context.createLocation(node))
-                        .message("Invalid pattern for " + fieldName + ": " + e.getMessage()).build();
+                        .message("Invalid pattern for " + fieldName + ": " + e.getMessage())
+                        .build();
             }
         }
         return null;
@@ -280,21 +271,15 @@ public abstract class AbstractBlockValidator<T extends Block> implements BlockTy
     /**
      * Validates string length constraints.
      *
-     * @param value
-     *            the value to validate
-     * @param minLength
-     *            minimum length constraint
-     * @param maxLength
-     *            maximum length constraint
-     * @param fieldName
-     *            the name of the field
-     * @param severity
-     *            the severity level
-     * @param context
-     *            the validation context
-     * @param node
-     *            the node being validated
-     * @return validation message if validation fails, null otherwise
+     * @param  value     the value to validate
+     * @param  minLength minimum length constraint
+     * @param  maxLength maximum length constraint
+     * @param  fieldName the name of the field
+     * @param  severity  the severity level
+     * @param  context   the validation context
+     * @param  node      the node being validated
+     *
+     * @return           validation message if validation fails, null otherwise
      */
     protected ValidationMessage validateLength(String value, Integer minLength, Integer maxLength, String fieldName,
             Severity severity, BlockValidationContext context, StructuralNode node) {
@@ -310,21 +295,15 @@ public abstract class AbstractBlockValidator<T extends Block> implements BlockTy
     /**
      * Validates numeric constraints.
      *
-     * @param value
-     *            the value to validate
-     * @param min
-     *            minimum constraint
-     * @param max
-     *            maximum constraint
-     * @param fieldName
-     *            the name of the field
-     * @param severity
-     *            the severity level
-     * @param context
-     *            the validation context
-     * @param node
-     *            the node being validated
-     * @return validation message if validation fails, null otherwise
+     * @param  value     the value to validate
+     * @param  min       minimum constraint
+     * @param  max       maximum constraint
+     * @param  fieldName the name of the field
+     * @param  severity  the severity level
+     * @param  context   the validation context
+     * @param  node      the node being validated
+     *
+     * @return           validation message if validation fails, null otherwise
      */
     protected ValidationMessage validateMinMax(int value, Integer min, Integer max, String fieldName, Severity severity,
             BlockValidationContext context, StructuralNode node) {
@@ -360,9 +339,15 @@ public abstract class AbstractBlockValidator<T extends Block> implements BlockTy
                 ruleIdBase = getSupportedType().toValue() + "." + fieldName.toLowerCase().replace(" ", "");
             }
 
-            return ValidationMessage.builder().severity(severity).ruleId(ruleIdBase + "." + ruleIdSuffix)
-                    .location(context.createLocation(node)).message(message.toString()).actualValue(actualValue)
-                    .expectedValue(expectedValue).build();
+            return ValidationMessage
+                    .builder()
+                    .severity(severity)
+                    .ruleId(ruleIdBase + "." + ruleIdSuffix)
+                    .location(context.createLocation(node))
+                    .message(message.toString())
+                    .actualValue(actualValue)
+                    .expectedValue(expectedValue)
+                    .build();
         }
         return null;
     }
@@ -370,10 +355,8 @@ public abstract class AbstractBlockValidator<T extends Block> implements BlockTy
     /**
      * Helper method to add a validation message to the list if not null.
      *
-     * @param messages
-     *            the list to add to
-     * @param message
-     *            the message to add (may be null)
+     * @param messages the list to add to
+     * @param message  the message to add (may be null)
      */
     protected void addIfNotNull(List<ValidationMessage> messages, ValidationMessage message) {
         if (message != null) {

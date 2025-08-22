@@ -5,7 +5,8 @@ import java.io.InputStream;
 import java.util.Properties;
 
 /**
- * Provides version information for the AsciiDoc Linter. Reads version details from Maven-generated pom.properties file.
+ * Provides version information for the AsciiDoc Linter. Reads version details
+ * from Maven-generated pom.properties file.
  */
 public class VersionInfo {
     private static final String POM_PROPERTIES_PATH = "/META-INF/maven/com.dataliquid/asciidoc-linter/pom.properties";

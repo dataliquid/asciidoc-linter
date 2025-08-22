@@ -44,13 +44,18 @@ public final class ValidationResult {
     }
 
     public Map<String, List<ValidationMessage>> getMessagesByFile() {
-        return messages.stream().collect(
-                Collectors.groupingBy(msg -> msg.getLocation().getFilename(), TreeMap::new, Collectors.toList()));
+        return messages
+                .stream()
+                .collect(Collectors
+                        .groupingBy(msg -> msg.getLocation().getFilename(), TreeMap::new, Collectors.toList()));
     }
 
     public Map<Integer, List<ValidationMessage>> getMessagesByLine(String filename) {
-        return messages.stream().filter(msg -> msg.getLocation().getFilename().equals(filename)).collect(
-                Collectors.groupingBy(msg -> msg.getLocation().getStartLine(), TreeMap::new, Collectors.toList()));
+        return messages
+                .stream()
+                .filter(msg -> msg.getLocation().getFilename().equals(filename))
+                .collect(Collectors
+                        .groupingBy(msg -> msg.getLocation().getStartLine(), TreeMap::new, Collectors.toList()));
     }
 
     public boolean isValid() {
@@ -97,8 +102,10 @@ public final class ValidationResult {
 
             for (Map.Entry<String, List<ValidationMessage>> entry : messagesByFile.entrySet()) {
                 List<ValidationMessage> fileMessages = entry.getValue();
-                fileMessages.sort(Comparator.comparing((ValidationMessage msg) -> msg.getLocation().getStartLine())
-                        .thenComparing(msg -> msg.getLocation().getStartColumn()));
+                fileMessages
+                        .sort(Comparator
+                                .comparing((ValidationMessage msg) -> msg.getLocation().getStartLine())
+                                .thenComparing(msg -> msg.getLocation().getStartColumn()));
 
                 for (ValidationMessage msg : fileMessages) {
                     System.out.println(msg.format());
@@ -107,8 +114,9 @@ public final class ValidationResult {
             }
         }
 
-        System.out.println("Summary: " + getErrorCount() + " errors, " + getWarningCount() + " warnings, "
-                + getInfoCount() + " info messages");
+        System.out
+                .println("Summary: " + getErrorCount() + " errors, " + getWarningCount() + " warnings, "
+                        + getInfoCount() + " info messages");
         System.out.println("Validation completed in " + getValidationTimeMillis() + "ms");
     }
 

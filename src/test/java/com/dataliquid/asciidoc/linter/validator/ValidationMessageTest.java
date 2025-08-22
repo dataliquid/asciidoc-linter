@@ -36,8 +36,13 @@ class ValidationMessageTest {
             String message = "Missing required attribute";
 
             // When
-            ValidationMessage validationMessage = ValidationMessage.builder().severity(severity).ruleId(ruleId)
-                    .message(message).location(testLocation).build();
+            ValidationMessage validationMessage = ValidationMessage
+                    .builder()
+                    .severity(severity)
+                    .ruleId(ruleId)
+                    .message(message)
+                    .location(testLocation)
+                    .build();
 
             // Then
             assertEquals(severity, validationMessage.getSeverity());
@@ -58,9 +63,16 @@ class ValidationMessageTest {
             String expectedValue = "Pattern '^[A-Z].*'";
 
             // When
-            ValidationMessage message = ValidationMessage.builder().severity(severity).ruleId(ruleId)
-                    .message(messageText).location(testLocation).attributeName(attributeName).actualValue(actualValue)
-                    .expectedValue(expectedValue).build();
+            ValidationMessage message = ValidationMessage
+                    .builder()
+                    .severity(severity)
+                    .ruleId(ruleId)
+                    .message(messageText)
+                    .location(testLocation)
+                    .attributeName(attributeName)
+                    .actualValue(actualValue)
+                    .expectedValue(expectedValue)
+                    .build();
 
             // Then
             assertTrue(message.getAttributeName().isPresent());
@@ -105,9 +117,13 @@ class ValidationMessageTest {
         @DisplayName("should format simple message")
         void shouldFormatMessageWhenOnlyRequiredFieldsProvided() {
             // Given
-            ValidationMessage message = ValidationMessage.builder().severity(Severity.ERROR).ruleId("metadata.required")
+            ValidationMessage message = ValidationMessage
+                    .builder()
+                    .severity(Severity.ERROR)
+                    .ruleId("metadata.required")
                     .message("Missing required attribute 'author': actual not present, expected non-empty value")
-                    .location(testLocation).build();
+                    .location(testLocation)
+                    .build();
 
             // When
             String formatted = message.format();
@@ -122,9 +138,15 @@ class ValidationMessageTest {
         @DisplayName("should format message with actual and expected values")
         void shouldFormatMessageWhenActualAndExpectedValuesProvided() {
             // Given
-            ValidationMessage message = ValidationMessage.builder().severity(Severity.WARN).ruleId("metadata.pattern")
-                    .message("Invalid format").location(testLocation).actualValue("john")
-                    .expectedValue("Pattern '^[A-Z].*'").build();
+            ValidationMessage message = ValidationMessage
+                    .builder()
+                    .severity(Severity.WARN)
+                    .ruleId("metadata.pattern")
+                    .message("Invalid format")
+                    .location(testLocation)
+                    .actualValue("john")
+                    .expectedValue("Pattern '^[A-Z].*'")
+                    .build();
 
             // When
             String formatted = message.format();
@@ -138,8 +160,14 @@ class ValidationMessageTest {
         @DisplayName("should format message with only actual value")
         void shouldFormatMessageWhenOnlyActualValueProvided() {
             // Given
-            ValidationMessage message = ValidationMessage.builder().severity(Severity.INFO).ruleId("metadata.length")
-                    .message("Value detected").location(testLocation).actualValue("Some long text...").build();
+            ValidationMessage message = ValidationMessage
+                    .builder()
+                    .severity(Severity.INFO)
+                    .ruleId("metadata.length")
+                    .message("Value detected")
+                    .location(testLocation)
+                    .actualValue("Some long text...")
+                    .build();
 
             // When
             String formatted = message.format();
@@ -163,11 +191,21 @@ class ValidationMessageTest {
             String messageText = "Test message";
 
             // When
-            ValidationMessage message1 = ValidationMessage.builder().severity(severity).ruleId(ruleId)
-                    .message(messageText).location(testLocation).build();
+            ValidationMessage message1 = ValidationMessage
+                    .builder()
+                    .severity(severity)
+                    .ruleId(ruleId)
+                    .message(messageText)
+                    .location(testLocation)
+                    .build();
 
-            ValidationMessage message2 = ValidationMessage.builder().severity(severity).ruleId(ruleId)
-                    .message(messageText).location(testLocation).build();
+            ValidationMessage message2 = ValidationMessage
+                    .builder()
+                    .severity(severity)
+                    .ruleId(ruleId)
+                    .message(messageText)
+                    .location(testLocation)
+                    .build();
 
             // Then
             assertEquals(message1, message2);
@@ -182,11 +220,21 @@ class ValidationMessageTest {
             String messageText = "Test message";
 
             // When
-            ValidationMessage message1 = ValidationMessage.builder().severity(Severity.ERROR).ruleId(ruleId)
-                    .message(messageText).location(testLocation).build();
+            ValidationMessage message1 = ValidationMessage
+                    .builder()
+                    .severity(Severity.ERROR)
+                    .ruleId(ruleId)
+                    .message(messageText)
+                    .location(testLocation)
+                    .build();
 
-            ValidationMessage message2 = ValidationMessage.builder().severity(Severity.WARN).ruleId(ruleId)
-                    .message(messageText).location(testLocation).build();
+            ValidationMessage message2 = ValidationMessage
+                    .builder()
+                    .severity(Severity.WARN)
+                    .ruleId(ruleId)
+                    .message(messageText)
+                    .location(testLocation)
+                    .build();
 
             // Then
             assertNotEquals(message1, message2);

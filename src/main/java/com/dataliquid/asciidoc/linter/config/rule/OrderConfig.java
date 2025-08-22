@@ -54,8 +54,8 @@ public final class OrderConfig {
         private OrderConstraint(String first, String second, Severity severity) {
             this.first = Objects.requireNonNull(first, "[" + getClass().getName() + "] first must not be null");
             this.second = Objects.requireNonNull(second, "[" + getClass().getName() + "] second must not be null");
-            this.severity = Objects.requireNonNull(severity,
-                    "[" + getClass().getName() + "] severity must not be null");
+            this.severity = Objects
+                    .requireNonNull(severity, "[" + getClass().getName() + "] severity must not be null");
         }
 
         public String first() {
@@ -128,8 +128,8 @@ public final class OrderConfig {
         }
 
         public Builder severity(Severity severity) {
-            this.severity = Objects.requireNonNull(severity,
-                    "[" + getClass().getName() + "] severity must not be null");
+            this.severity = Objects
+                    .requireNonNull(severity, "[" + getClass().getName() + "] severity must not be null");
             return this;
         }
 

@@ -27,27 +27,54 @@ class AudioBlockTest {
         @DisplayName("should build AudioBlock with all attributes")
         void shouldBuildAudioBlockWithAllAttributes() {
             // Given
-            AudioBlock.UrlConfig urlRule = AudioBlock.UrlConfig.builder().required(true)
-                    .pattern("^(https?://|\\./|/).*\\.(mp3|ogg|wav|m4a)$").severity(Severity.ERROR).build();
-
-            AudioBlock.AutoplayConfig autoplayRule = AudioBlock.AutoplayConfig.builder().allowed(false)
-                    .severity(Severity.ERROR).build();
-
-            AudioBlock.ControlsConfig controlsRule = AudioBlock.ControlsConfig.builder().required(true)
-                    .severity(Severity.ERROR).build();
-
-            AudioBlock.LoopConfig loopRule = AudioBlock.LoopConfig.builder().allowed(true).severity(Severity.INFO)
+            AudioBlock.UrlConfig urlRule = AudioBlock.UrlConfig
+                    .builder()
+                    .required(true)
+                    .pattern("^(https?://|\\./|/).*\\.(mp3|ogg|wav|m4a)$")
+                    .severity(Severity.ERROR)
                     .build();
 
-            AudioBlock.OptionsConfig optionsRule = AudioBlock.OptionsConfig.builder().autoplay(autoplayRule)
-                    .controls(controlsRule).loop(loopRule).build();
+            AudioBlock.AutoplayConfig autoplayRule = AudioBlock.AutoplayConfig
+                    .builder()
+                    .allowed(false)
+                    .severity(Severity.ERROR)
+                    .build();
 
-            AudioBlock.TitleConfig titleRule = AudioBlock.TitleConfig.builder().required(true).minLength(10)
-                    .maxLength(100).severity(Severity.WARN).build();
+            AudioBlock.ControlsConfig controlsRule = AudioBlock.ControlsConfig
+                    .builder()
+                    .required(true)
+                    .severity(Severity.ERROR)
+                    .build();
+
+            AudioBlock.LoopConfig loopRule = AudioBlock.LoopConfig
+                    .builder()
+                    .allowed(true)
+                    .severity(Severity.INFO)
+                    .build();
+
+            AudioBlock.OptionsConfig optionsRule = AudioBlock.OptionsConfig
+                    .builder()
+                    .autoplay(autoplayRule)
+                    .controls(controlsRule)
+                    .loop(loopRule)
+                    .build();
+
+            AudioBlock.TitleConfig titleRule = AudioBlock.TitleConfig
+                    .builder()
+                    .required(true)
+                    .minLength(10)
+                    .maxLength(100)
+                    .severity(Severity.WARN)
+                    .build();
 
             // When
-            AudioBlock audio = AudioBlock.builder().severity(Severity.INFO).url(urlRule).options(optionsRule)
-                    .title(titleRule).build();
+            AudioBlock audio = AudioBlock
+                    .builder()
+                    .severity(Severity.INFO)
+                    .url(urlRule)
+                    .options(optionsRule)
+                    .title(titleRule)
+                    .build();
 
             // Then
             assertEquals(Severity.INFO, audio.getSeverity());
@@ -95,8 +122,12 @@ class AudioBlockTest {
         @DisplayName("should create UrlConfig with string pattern")
         void shouldCreateUrlConfigWithStringPattern() {
             // Given & When
-            AudioBlock.UrlConfig urlRule = AudioBlock.UrlConfig.builder().required(true).pattern("^https?://.*\\.mp3$")
-                    .severity(Severity.ERROR).build();
+            AudioBlock.UrlConfig urlRule = AudioBlock.UrlConfig
+                    .builder()
+                    .required(true)
+                    .pattern("^https?://.*\\.mp3$")
+                    .severity(Severity.ERROR)
+                    .build();
 
             // Then
             assertTrue(urlRule.isRequired());
@@ -141,17 +172,27 @@ class AudioBlockTest {
         @DisplayName("should create OptionsConfig with all options")
         void shouldCreateOptionsConfigWithAllOptions() {
             // Given
-            AudioBlock.AutoplayConfig autoplay = AudioBlock.AutoplayConfig.builder().allowed(false)
-                    .severity(Severity.ERROR).build();
+            AudioBlock.AutoplayConfig autoplay = AudioBlock.AutoplayConfig
+                    .builder()
+                    .allowed(false)
+                    .severity(Severity.ERROR)
+                    .build();
 
-            AudioBlock.ControlsConfig controls = AudioBlock.ControlsConfig.builder().required(true)
-                    .severity(Severity.ERROR).build();
+            AudioBlock.ControlsConfig controls = AudioBlock.ControlsConfig
+                    .builder()
+                    .required(true)
+                    .severity(Severity.ERROR)
+                    .build();
 
             AudioBlock.LoopConfig loop = AudioBlock.LoopConfig.builder().allowed(true).build();
 
             // When
-            AudioBlock.OptionsConfig options = AudioBlock.OptionsConfig.builder().autoplay(autoplay).controls(controls)
-                    .loop(loop).build();
+            AudioBlock.OptionsConfig options = AudioBlock.OptionsConfig
+                    .builder()
+                    .autoplay(autoplay)
+                    .controls(controls)
+                    .loop(loop)
+                    .build();
 
             // Then
             assertNotNull(options.getAutoplay());
@@ -188,8 +229,13 @@ class AudioBlockTest {
         @DisplayName("should create TitleConfig with length constraints")
         void shouldCreateTitleConfigWithLengthConstraints() {
             // Given & When
-            AudioBlock.TitleConfig title = AudioBlock.TitleConfig.builder().required(true).minLength(10).maxLength(100)
-                    .severity(Severity.WARN).build();
+            AudioBlock.TitleConfig title = AudioBlock.TitleConfig
+                    .builder()
+                    .required(true)
+                    .minLength(10)
+                    .maxLength(100)
+                    .severity(Severity.WARN)
+                    .build();
 
             // Then
             assertTrue(title.isRequired());
@@ -220,17 +266,33 @@ class AudioBlockTest {
         @DisplayName("should correctly implement equals and hashCode")
         void shouldCorrectlyImplementEqualsAndHashCode() {
             // Given
-            AudioBlock.UrlConfig url1 = AudioBlock.UrlConfig.builder().required(true).pattern(".*\\.mp3$")
-                    .severity(Severity.ERROR).build();
+            AudioBlock.UrlConfig url1 = AudioBlock.UrlConfig
+                    .builder()
+                    .required(true)
+                    .pattern(".*\\.mp3$")
+                    .severity(Severity.ERROR)
+                    .build();
 
-            AudioBlock.UrlConfig url2 = AudioBlock.UrlConfig.builder().required(true).pattern(".*\\.mp3$")
-                    .severity(Severity.ERROR).build();
+            AudioBlock.UrlConfig url2 = AudioBlock.UrlConfig
+                    .builder()
+                    .required(true)
+                    .pattern(".*\\.mp3$")
+                    .severity(Severity.ERROR)
+                    .build();
 
-            AudioBlock.TitleConfig title1 = AudioBlock.TitleConfig.builder().required(true).minLength(10)
-                    .severity(Severity.WARN).build();
+            AudioBlock.TitleConfig title1 = AudioBlock.TitleConfig
+                    .builder()
+                    .required(true)
+                    .minLength(10)
+                    .severity(Severity.WARN)
+                    .build();
 
-            AudioBlock.TitleConfig title2 = AudioBlock.TitleConfig.builder().required(true).minLength(10)
-                    .severity(Severity.WARN).build();
+            AudioBlock.TitleConfig title2 = AudioBlock.TitleConfig
+                    .builder()
+                    .required(true)
+                    .minLength(10)
+                    .severity(Severity.WARN)
+                    .build();
 
             // When
             AudioBlock audio1 = AudioBlock.builder().severity(Severity.INFO).url(url1).title(title1).build();
@@ -250,33 +312,63 @@ class AudioBlockTest {
         @DisplayName("should test inner class equals and hashCode")
         void shouldTestInnerClassEqualsAndHashCode() {
             // Given
-            AudioBlock.UrlConfig url1 = AudioBlock.UrlConfig.builder().required(true).pattern("test")
-                    .severity(Severity.ERROR).build();
+            AudioBlock.UrlConfig url1 = AudioBlock.UrlConfig
+                    .builder()
+                    .required(true)
+                    .pattern("test")
+                    .severity(Severity.ERROR)
+                    .build();
 
-            AudioBlock.UrlConfig url2 = AudioBlock.UrlConfig.builder().required(true).pattern("test")
-                    .severity(Severity.ERROR).build();
+            AudioBlock.UrlConfig url2 = AudioBlock.UrlConfig
+                    .builder()
+                    .required(true)
+                    .pattern("test")
+                    .severity(Severity.ERROR)
+                    .build();
 
-            AudioBlock.AutoplayConfig autoplay1 = AudioBlock.AutoplayConfig.builder().allowed(false)
-                    .severity(Severity.ERROR).build();
+            AudioBlock.AutoplayConfig autoplay1 = AudioBlock.AutoplayConfig
+                    .builder()
+                    .allowed(false)
+                    .severity(Severity.ERROR)
+                    .build();
 
-            AudioBlock.AutoplayConfig autoplay2 = AudioBlock.AutoplayConfig.builder().allowed(false)
-                    .severity(Severity.ERROR).build();
+            AudioBlock.AutoplayConfig autoplay2 = AudioBlock.AutoplayConfig
+                    .builder()
+                    .allowed(false)
+                    .severity(Severity.ERROR)
+                    .build();
 
-            AudioBlock.ControlsConfig controls1 = AudioBlock.ControlsConfig.builder().required(true)
-                    .severity(Severity.ERROR).build();
+            AudioBlock.ControlsConfig controls1 = AudioBlock.ControlsConfig
+                    .builder()
+                    .required(true)
+                    .severity(Severity.ERROR)
+                    .build();
 
-            AudioBlock.ControlsConfig controls2 = AudioBlock.ControlsConfig.builder().required(true)
-                    .severity(Severity.ERROR).build();
+            AudioBlock.ControlsConfig controls2 = AudioBlock.ControlsConfig
+                    .builder()
+                    .required(true)
+                    .severity(Severity.ERROR)
+                    .build();
 
             AudioBlock.LoopConfig loop1 = AudioBlock.LoopConfig.builder().allowed(true).severity(Severity.INFO).build();
 
             AudioBlock.LoopConfig loop2 = AudioBlock.LoopConfig.builder().allowed(true).severity(Severity.INFO).build();
 
-            AudioBlock.TitleConfig title1 = AudioBlock.TitleConfig.builder().required(true).minLength(5).maxLength(50)
-                    .severity(Severity.WARN).build();
+            AudioBlock.TitleConfig title1 = AudioBlock.TitleConfig
+                    .builder()
+                    .required(true)
+                    .minLength(5)
+                    .maxLength(50)
+                    .severity(Severity.WARN)
+                    .build();
 
-            AudioBlock.TitleConfig title2 = AudioBlock.TitleConfig.builder().required(true).minLength(5).maxLength(50)
-                    .severity(Severity.WARN).build();
+            AudioBlock.TitleConfig title2 = AudioBlock.TitleConfig
+                    .builder()
+                    .required(true)
+                    .minLength(5)
+                    .maxLength(50)
+                    .severity(Severity.WARN)
+                    .build();
 
             // Then
             assertEquals(url1, url2);

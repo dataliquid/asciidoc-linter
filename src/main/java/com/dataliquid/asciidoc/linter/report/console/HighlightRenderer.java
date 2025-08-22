@@ -143,7 +143,8 @@ public class HighlightRenderer {
                     return line;
                 }
             }
-            // For paragraph.sentence.occurrence.min, append placeholder at end of line with space
+            // For paragraph.sentence.occurrence.min, append placeholder at end of line with
+            // space
             else if ("paragraph.sentence.occurrence.min".equals(message.getRuleId())) {
                 return insertPlaceholderWithSpace(line, message);
             }
@@ -278,7 +279,8 @@ public class HighlightRenderer {
     }
 
     private String insertPlaceholder(String line, ValidationMessage message) {
-        // For section.min-occurrences errors with empty lines, show placeholder at start
+        // For section.min-occurrences errors with empty lines, show placeholder at
+        // start
         if ("section.min-occurrences".equals(message.getRuleId()) && line.isEmpty()) {
             String placeholderText = PLACEHOLDER_START + message.getMissingValueHint() + PLACEHOLDER_END;
             return colorScheme.error(placeholderText);
@@ -332,31 +334,36 @@ public class HighlightRenderer {
             return colorScheme.error(placeholderText);
         }
 
-        // For example.caption.required errors with empty lines, show placeholder at start
+        // For example.caption.required errors with empty lines, show placeholder at
+        // start
         if ("example.caption.required".equals(message.getRuleId()) && line.isEmpty()) {
             String placeholderText = PLACEHOLDER_START + message.getMissingValueHint() + PLACEHOLDER_END;
             return colorScheme.error(placeholderText);
         }
 
-        // For example.collapsible.required errors with empty lines, show placeholder at start
+        // For example.collapsible.required errors with empty lines, show placeholder at
+        // start
         if ("example.collapsible.required".equals(message.getRuleId()) && line.isEmpty()) {
             String placeholderText = PLACEHOLDER_START + message.getMissingValueHint() + PLACEHOLDER_END;
             return colorScheme.error(placeholderText);
         }
 
-        // For admonition.title.required errors with empty lines, show placeholder at start
+        // For admonition.title.required errors with empty lines, show placeholder at
+        // start
         if ("admonition.title.required".equals(message.getRuleId()) && line.isEmpty()) {
             String placeholderText = PLACEHOLDER_START + message.getMissingValueHint() + PLACEHOLDER_END;
             return colorScheme.error(placeholderText);
         }
 
-        // For admonition.content.required errors with empty lines, show placeholder at start
+        // For admonition.content.required errors with empty lines, show placeholder at
+        // start
         if ("admonition.content.required".equals(message.getRuleId()) && line.isEmpty()) {
             String placeholderText = PLACEHOLDER_START + message.getMissingValueHint() + PLACEHOLDER_END;
             return colorScheme.error(placeholderText);
         }
 
-        // For admonition.icon.required errors with empty lines, show placeholder at start
+        // For admonition.icon.required errors with empty lines, show placeholder at
+        // start
         if ("admonition.icon.required".equals(message.getRuleId()) && line.isEmpty()) {
             String placeholderText = PLACEHOLDER_START + message.getMissingValueHint() + PLACEHOLDER_END;
             return colorScheme.error(placeholderText);
@@ -368,13 +375,15 @@ public class HighlightRenderer {
             return colorScheme.error(placeholderText);
         }
 
-        // For sidebar.content.required errors with empty lines, show placeholder at start
+        // For sidebar.content.required errors with empty lines, show placeholder at
+        // start
         if ("sidebar.content.required".equals(message.getRuleId()) && line.isEmpty()) {
             String placeholderText = PLACEHOLDER_START + message.getMissingValueHint() + PLACEHOLDER_END;
             return colorScheme.error(placeholderText);
         }
 
-        // For sidebar.position.required errors with empty lines, show placeholder at start
+        // For sidebar.position.required errors with empty lines, show placeholder at
+        // start
         if ("sidebar.position.required".equals(message.getRuleId()) && line.isEmpty()) {
             String placeholderText = PLACEHOLDER_START + message.getMissingValueHint() + PLACEHOLDER_END;
             return colorScheme.error(placeholderText);

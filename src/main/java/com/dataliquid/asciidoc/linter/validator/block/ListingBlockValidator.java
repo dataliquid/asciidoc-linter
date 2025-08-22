@@ -21,26 +21,27 @@ import com.dataliquid.asciidoc.linter.validator.Suggestion;
 
 /**
  * Validator for listing (code) blocks in AsciiDoc documents.
- *
  * <p>
- * This validator validates listing blocks based on the YAML schema structure defined in
- * {@code src/main/resources/schemas/blocks/listing-block.yaml}. The YAML configuration is parsed into
- * {@link ListingBlock} objects which define the validation rules.
+ * This validator validates listing blocks based on the YAML schema structure
+ * defined in {@code src/main/resources/schemas/blocks/listing-block.yaml}. The
+ * YAML configuration is parsed into {@link ListingBlock} objects which define
+ * the validation rules.
  * </p>
- *
  * <p>
  * Supported validation rules from YAML schema:
  * </p>
  * <ul>
- * <li><b>language</b>: Validates programming language specification (required, allowed values)</li>
- * <li><b>title</b>: Validates block title (required, pattern, length constraints)</li>
+ * <li><b>language</b>: Validates programming language specification (required,
+ * allowed values)</li>
+ * <li><b>title</b>: Validates block title (required, pattern, length
+ * constraints)</li>
  * <li><b>lines</b>: Validates line count (min/max)</li>
- * <li><b>callouts</b>: Validates callout annotations (required, min/max count)</li>
+ * <li><b>callouts</b>: Validates callout annotations (required, min/max
+ * count)</li>
  * </ul>
- *
  * <p>
- * Each nested configuration can optionally define its own severity level. If not specified, the block-level severity is
- * used as fallback.
+ * Each nested configuration can optionally define its own severity level. If
+ * not specified, the block-level severity is used as fallback.
  * </p>
  *
  * @see ListingBlock
@@ -124,19 +125,41 @@ public final class ListingBlockValidator extends AbstractBlockValidator<ListingB
         if (config.isRequired() && (language == null || language.trim().isEmpty())) {
             // Find column position for missing language
             SourcePosition pos = findSourcePosition(block, context);
-            messages.add(ValidationMessage.builder().severity(severity).ruleId(LANGUAGE_REQUIRED)
-                    .location(SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
-                    .message("Listing language is required").actualValue("No language")
-                    .expectedValue("Language required").errorType(ErrorType.MISSING_VALUE).missingValueHint("language")
-                    .placeholderContext(
-                            PlaceholderContext.builder().type(PlaceholderContext.PlaceholderType.LIST_VALUE).build())
-                    .addSuggestion(Suggestion.builder().description("Add Java language").fixedValue("java")
-                            .addExample("[source,java]").build())
-                    .addSuggestion(Suggestion.builder().description("Add Python language").fixedValue("python")
-                            .addExample("[source,python]").build())
-                    .addSuggestion(Suggestion.builder().description("Add JavaScript language").fixedValue("javascript")
-                            .addExample("[source,javascript]").build())
-                    .build());
+            messages
+                    .add(ValidationMessage
+                            .builder()
+                            .severity(severity)
+                            .ruleId(LANGUAGE_REQUIRED)
+                            .location(
+                                    SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
+                            .message("Listing language is required")
+                            .actualValue("No language")
+                            .expectedValue("Language required")
+                            .errorType(ErrorType.MISSING_VALUE)
+                            .missingValueHint("language")
+                            .placeholderContext(PlaceholderContext
+                                    .builder()
+                                    .type(PlaceholderContext.PlaceholderType.LIST_VALUE)
+                                    .build())
+                            .addSuggestion(Suggestion
+                                    .builder()
+                                    .description("Add Java language")
+                                    .fixedValue("java")
+                                    .addExample("[source,java]")
+                                    .build())
+                            .addSuggestion(Suggestion
+                                    .builder()
+                                    .description("Add Python language")
+                                    .fixedValue("python")
+                                    .addExample("[source,python]")
+                                    .build())
+                            .addSuggestion(Suggestion
+                                    .builder()
+                                    .description("Add JavaScript language")
+                                    .fixedValue("javascript")
+                                    .addExample("[source,javascript]")
+                                    .build())
+                            .build());
         }
 
         // Validate allowed languages if specified
@@ -144,17 +167,25 @@ public final class ListingBlockValidator extends AbstractBlockValidator<ListingB
             if (!config.getAllowed().contains(language)) {
                 // Find column position for invalid language
                 SourcePosition pos = findLanguagePosition(block, context, language);
-                ValidationMessage.Builder messageBuilder = ValidationMessage.builder().severity(severity)
+                ValidationMessage.Builder messageBuilder = ValidationMessage
+                        .builder()
+                        .severity(severity)
                         .ruleId(LANGUAGE_ALLOWED)
                         .location(SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
-                        .message("Listing language '" + language + "' is not allowed").actualValue(language)
+                        .message("Listing language '" + language + "' is not allowed")
+                        .actualValue(language)
                         .expectedValue("One of: " + String.join(", ", config.getAllowed()));
 
                 // Add suggestions for each allowed language
                 for (String allowedLang : config.getAllowed()) {
-                    messageBuilder.addSuggestion(Suggestion.builder().description("Change to " + allowedLang)
-                            .fixedValue(allowedLang).addExample("[source," + allowedLang + "]")
-                            .explanation("Use allowed language: " + allowedLang).build());
+                    messageBuilder
+                            .addSuggestion(Suggestion
+                                    .builder()
+                                    .description("Change to " + allowedLang)
+                                    .fixedValue(allowedLang)
+                                    .addExample("[source," + allowedLang + "]")
+                                    .explanation("Use allowed language: " + allowedLang)
+                                    .build());
                 }
 
                 messages.add(messageBuilder.build());
@@ -169,31 +200,62 @@ public final class ListingBlockValidator extends AbstractBlockValidator<ListingB
         Severity severity = resolveSeverity(config.getSeverity(), blockConfig.getSeverity());
 
         if (config.isRequired() && (title == null || title.trim().isEmpty())) {
-            messages.add(ValidationMessage.builder().severity(severity).ruleId(TITLE_REQUIRED)
-                    .location(context.createLocation(block)).message("Listing block must have a title")
-                    .actualValue("No title").expectedValue("Title required")
-                    .addSuggestion(Suggestion.builder().description("Add code example title")
-                            .fixedValue(".Code Example").addExample(".Code Example").build())
-                    .addSuggestion(Suggestion.builder().description("Add implementation title")
-                            .fixedValue(".Implementation").addExample(".Implementation").build())
-                    .addSuggestion(Suggestion.builder().description("Add descriptive title").fixedValue(".Sample Code")
-                            .addExample(".Sample Code").build())
-                    .build());
+            messages
+                    .add(ValidationMessage
+                            .builder()
+                            .severity(severity)
+                            .ruleId(TITLE_REQUIRED)
+                            .location(context.createLocation(block))
+                            .message("Listing block must have a title")
+                            .actualValue("No title")
+                            .expectedValue("Title required")
+                            .addSuggestion(Suggestion
+                                    .builder()
+                                    .description("Add code example title")
+                                    .fixedValue(".Code Example")
+                                    .addExample(".Code Example")
+                                    .build())
+                            .addSuggestion(Suggestion
+                                    .builder()
+                                    .description("Add implementation title")
+                                    .fixedValue(".Implementation")
+                                    .addExample(".Implementation")
+                                    .build())
+                            .addSuggestion(Suggestion
+                                    .builder()
+                                    .description("Add descriptive title")
+                                    .fixedValue(".Sample Code")
+                                    .addExample(".Sample Code")
+                                    .build())
+                            .build());
             return;
         }
 
         if (title != null && config.getPattern() != null) {
             if (!config.getPattern().matcher(title).matches()) {
                 SourcePosition pos = findTitlePosition(block, context, title);
-                messages.add(ValidationMessage.builder().severity(severity).ruleId(TITLE_PATTERN)
-                        .location(SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
-                        .message("Listing title does not match required pattern").actualValue(title)
-                        .expectedValue("Pattern: " + config.getPattern().pattern())
-                        .addSuggestion(Suggestion.builder().description("Use pattern-compliant title")
-                                .addExample(".Example: Code Implementation").addExample(".Listing: Main Function")
-                                .addExample(".Source: API Usage")
-                                .explanation("Title must match pattern: " + config.getPattern().pattern()).build())
-                        .build());
+                messages
+                        .add(ValidationMessage
+                                .builder()
+                                .severity(severity)
+                                .ruleId(TITLE_PATTERN)
+                                .location(SourceLocation
+                                        .builder()
+                                        .filename(context.getFilename())
+                                        .fromPosition(pos)
+                                        .build())
+                                .message("Listing title does not match required pattern")
+                                .actualValue(title)
+                                .expectedValue("Pattern: " + config.getPattern().pattern())
+                                .addSuggestion(Suggestion
+                                        .builder()
+                                        .description("Use pattern-compliant title")
+                                        .addExample(".Example: Code Implementation")
+                                        .addExample(".Listing: Main Function")
+                                        .addExample(".Source: API Usage")
+                                        .explanation("Title must match pattern: " + config.getPattern().pattern())
+                                        .build())
+                                .build());
             }
         }
     }
@@ -210,18 +272,30 @@ public final class ListingBlockValidator extends AbstractBlockValidator<ListingB
 
         // Validate min lines
         if (config.min() != null && lineCount < config.min()) {
-            messages.add(ValidationMessage.builder().severity(severity).ruleId(LINES_MIN)
-                    .location(context.createLocation(block)).message("Listing block has too few lines")
-                    .actualValue(String.valueOf(lineCount)).expectedValue("At least " + config.min() + " lines")
-                    .build());
+            messages
+                    .add(ValidationMessage
+                            .builder()
+                            .severity(severity)
+                            .ruleId(LINES_MIN)
+                            .location(context.createLocation(block))
+                            .message("Listing block has too few lines")
+                            .actualValue(String.valueOf(lineCount))
+                            .expectedValue("At least " + config.min() + " lines")
+                            .build());
         }
 
         // Validate max lines
         if (config.max() != null && lineCount > config.max()) {
-            messages.add(ValidationMessage.builder().severity(severity).ruleId(LINES_MAX)
-                    .location(context.createLocation(block)).message("Listing block has too many lines")
-                    .actualValue(String.valueOf(lineCount)).expectedValue("At most " + config.max() + " lines")
-                    .build());
+            messages
+                    .add(ValidationMessage
+                            .builder()
+                            .severity(severity)
+                            .ruleId(LINES_MAX)
+                            .location(context.createLocation(block))
+                            .message("Listing block has too many lines")
+                            .actualValue(String.valueOf(lineCount))
+                            .expectedValue("At most " + config.max() + " lines")
+                            .build());
         }
     }
 
@@ -236,17 +310,30 @@ public final class ListingBlockValidator extends AbstractBlockValidator<ListingB
 
         // Check if callouts are allowed
         if (!config.isAllowed() && calloutCount > 0) {
-            messages.add(ValidationMessage.builder().severity(severity).ruleId(CALLOUTS_NOT_ALLOWED)
-                    .location(context.createLocation(block)).message("Listing block must not contain callouts")
-                    .actualValue(calloutCount + " callouts").expectedValue("No callouts allowed").build());
+            messages
+                    .add(ValidationMessage
+                            .builder()
+                            .severity(severity)
+                            .ruleId(CALLOUTS_NOT_ALLOWED)
+                            .location(context.createLocation(block))
+                            .message("Listing block must not contain callouts")
+                            .actualValue(calloutCount + " callouts")
+                            .expectedValue("No callouts allowed")
+                            .build());
         }
 
         // Validate max callouts
         if (config.getMax() != null && calloutCount > config.getMax()) {
-            messages.add(ValidationMessage.builder().severity(severity).ruleId(CALLOUTS_MAX)
-                    .location(context.createLocation(block)).message("Listing block has too many callouts")
-                    .actualValue(String.valueOf(calloutCount)).expectedValue("At most " + config.getMax() + " callouts")
-                    .build());
+            messages
+                    .add(ValidationMessage
+                            .builder()
+                            .severity(severity)
+                            .ruleId(CALLOUTS_MAX)
+                            .location(context.createLocation(block))
+                            .message("Listing block has too many callouts")
+                            .actualValue(String.valueOf(calloutCount))
+                            .expectedValue("At most " + config.getMax() + " callouts")
+                            .build());
         }
     }
 

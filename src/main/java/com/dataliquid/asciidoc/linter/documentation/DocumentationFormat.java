@@ -4,8 +4,8 @@ package com.dataliquid.asciidoc.linter.documentation;
  * Supported documentation output formats.
  */
 public enum DocumentationFormat {
-    ASCIIDOC(".adoc", "AsciiDoc", "text/asciidoc"), MARKDOWN(".md", "Markdown", "text/markdown"), HTML(".html", "HTML",
-            "text/html");
+    ASCIIDOC(".adoc", "AsciiDoc", "text/asciidoc"), MARKDOWN(".md", "Markdown", "text/markdown"),
+    HTML(".html", "HTML", "text/html");
 
     private final String extension;
     private final String displayName;

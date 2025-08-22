@@ -54,21 +54,29 @@ public final class OrderRule implements AttributeRule {
 
                     if (!attrName.equals(otherAttrName) && otherActual != null && otherConfig.hasOrder()) {
                         if (config.getOrder() < otherConfig.getOrder() && actual.position > otherActual.position) {
-                            messages.add(ValidationMessage.builder().severity(config.getSeverity()).ruleId(getRuleId())
-                                    .message("Attribute '" + attrName + "' should appear before '" + otherAttrName
-                                            + "': actual position line " + actual.location.getStartLine()
-                                            + ", expected before line " + otherActual.location.getStartLine())
-                                    .location(actual.location).attributeName(attrName)
-                                    .actualValue("Line " + actual.location.getStartLine())
-                                    .expectedValue("Before line " + otherActual.location.getStartLine())
-                                    .addSuggestion(Suggestion.builder()
-                                            .description("Reorder attributes according to configuration")
-                                            .addExample("Move ':" + attrName + ":' before ':" + otherAttrName + ":'")
-                                            .addExample("Rearrange document header attributes")
-                                            .explanation(
-                                                    "Attributes should appear in the configured order for consistency")
-                                            .build())
-                                    .build());
+                            messages
+                                    .add(ValidationMessage
+                                            .builder()
+                                            .severity(config.getSeverity())
+                                            .ruleId(getRuleId())
+                                            .message("Attribute '" + attrName + "' should appear before '"
+                                                    + otherAttrName + "': actual position line "
+                                                    + actual.location.getStartLine() + ", expected before line "
+                                                    + otherActual.location.getStartLine())
+                                            .location(actual.location)
+                                            .attributeName(attrName)
+                                            .actualValue("Line " + actual.location.getStartLine())
+                                            .expectedValue("Before line " + otherActual.location.getStartLine())
+                                            .addSuggestion(Suggestion
+                                                    .builder()
+                                                    .description("Reorder attributes according to configuration")
+                                                    .addExample("Move ':" + attrName + ":' before ':" + otherAttrName
+                                                            + ":'")
+                                                    .addExample("Rearrange document header attributes")
+                                                    .explanation(
+                                                            "Attributes should appear in the configured order for consistency")
+                                                    .build())
+                                            .build());
                         }
                     }
                 }

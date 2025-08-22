@@ -23,9 +23,9 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
 /**
- * Configuration for quote blocks. Based on the YAML schema structure for validating AsciiDoc quote blocks.
- *
- * Syntax: [quote, Autor, Quelle] ____ Quote content here ____
+ * Configuration for quote blocks. Based on the YAML schema structure for
+ * validating AsciiDoc quote blocks. Syntax: [quote, Autor, Quelle] ____ Quote
+ * content here ____
  */
 @JsonDeserialize(builder = QuoteBlock.Builder.class)
 public class QuoteBlock extends AbstractBlock {

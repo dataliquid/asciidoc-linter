@@ -1,8 +1,9 @@
 package com.dataliquid.asciidoc.linter.config.common;
 
 /**
- * Central repository for all JSON property names used in configuration classes. This class provides constants for JSON
- * property names to ensure consistency and maintainability across all configuration POJOs.
+ * Central repository for all JSON property names used in configuration classes.
+ * This class provides constants for JSON property names to ensure consistency
+ * and maintainability across all configuration POJOs.
  */
 public final class JsonPropertyNames {
 

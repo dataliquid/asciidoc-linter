@@ -20,18 +20,18 @@ import com.dataliquid.asciidoc.linter.validator.Suggestion;
 
 /**
  * Validator for paragraph blocks in AsciiDoc documents.
- *
  * <p>
- * This validator validates paragraph blocks based on the YAML schema structure defined in
- * {@code src/main/resources/schemas/blocks/paragraph-block.yaml}. The YAML configuration is parsed into
- * {@link ParagraphBlock} objects which define the validation rules.
+ * This validator validates paragraph blocks based on the YAML schema structure
+ * defined in {@code src/main/resources/schemas/blocks/paragraph-block.yaml}.
+ * The YAML configuration is parsed into {@link ParagraphBlock} objects which
+ * define the validation rules.
  * </p>
- *
  * <p>
  * Supported validation rules from YAML schema:
  * </p>
  * <ul>
- * <li><b>lines</b>: Validates line count constraints (min/max number of lines)</li>
+ * <li><b>lines</b>: Validates line count constraints (min/max number of
+ * lines)</li>
  * <li><b>sentence</b>: Validates sentence-level constraints:
  * <ul>
  * <li><b>occurrence</b>: Min/max number of sentences per paragraph</li>
@@ -39,10 +39,10 @@ import com.dataliquid.asciidoc.linter.validator.Suggestion;
  * </ul>
  * </li>
  * </ul>
- *
  * <p>
- * The lines and sentence configurations can optionally define their own severity levels. If not specified, the
- * block-level severity is used as fallback.
+ * The lines and sentence configurations can optionally define their own
+ * severity levels. If not specified, the block-level severity is used as
+ * fallback.
  * </p>
  *
  * @see ParagraphBlock
@@ -109,31 +109,53 @@ public final class ParagraphBlockValidator extends AbstractBlockValidator<Paragr
 
         if (lineConfig.min() != null && actualLines < lineConfig.min()) {
             SourcePosition pos = findSourcePosition(block, context, actualLines);
-            messages.add(ValidationMessage.builder().severity(severity).ruleId(LINES_MIN)
-                    .location(SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
-                    .message("Paragraph has too few lines").actualValue(String.valueOf(actualLines))
-                    .expectedValue("At least " + lineConfig.min() + " lines").errorType(ErrorType.MISSING_VALUE)
-                    .missingValueHint("Add more content here...")
-                    .placeholderContext(
-                            PlaceholderContext.builder().type(PlaceholderContext.PlaceholderType.INSERT_BEFORE).build())
-                    .addSuggestion(Suggestion.builder().description("Add more lines to paragraph")
-                            .addExample("This is the first line of content.")
-                            .addExample("This is additional content on a new line.")
-                            .addExample("Add more descriptive text here.")
-                            .explanation("Paragraph needs at least " + lineConfig.min() + " lines").build())
-                    .build());
+            messages
+                    .add(ValidationMessage
+                            .builder()
+                            .severity(severity)
+                            .ruleId(LINES_MIN)
+                            .location(
+                                    SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
+                            .message("Paragraph has too few lines")
+                            .actualValue(String.valueOf(actualLines))
+                            .expectedValue("At least " + lineConfig.min() + " lines")
+                            .errorType(ErrorType.MISSING_VALUE)
+                            .missingValueHint("Add more content here...")
+                            .placeholderContext(PlaceholderContext
+                                    .builder()
+                                    .type(PlaceholderContext.PlaceholderType.INSERT_BEFORE)
+                                    .build())
+                            .addSuggestion(Suggestion
+                                    .builder()
+                                    .description("Add more lines to paragraph")
+                                    .addExample("This is the first line of content.")
+                                    .addExample("This is additional content on a new line.")
+                                    .addExample("Add more descriptive text here.")
+                                    .explanation("Paragraph needs at least " + lineConfig.min() + " lines")
+                                    .build())
+                            .build());
         }
 
         if (lineConfig.max() != null && actualLines > lineConfig.max()) {
-            messages.add(ValidationMessage.builder().severity(severity).ruleId(LINES_MAX)
-                    .location(context.createLocation(block)).message("Paragraph has too many lines")
-                    .actualValue(String.valueOf(actualLines)).expectedValue("At most " + lineConfig.max() + " lines")
-                    .addSuggestion(Suggestion.builder().description("Split paragraph into smaller parts")
-                            .addExample("Break into multiple paragraphs").addExample("Use bullet points for lists")
-                            .addExample("Remove unnecessary details")
-                            .explanation("Consider splitting content to stay under " + lineConfig.max() + " lines")
-                            .build())
-                    .build());
+            messages
+                    .add(ValidationMessage
+                            .builder()
+                            .severity(severity)
+                            .ruleId(LINES_MAX)
+                            .location(context.createLocation(block))
+                            .message("Paragraph has too many lines")
+                            .actualValue(String.valueOf(actualLines))
+                            .expectedValue("At most " + lineConfig.max() + " lines")
+                            .addSuggestion(Suggestion
+                                    .builder()
+                                    .description("Split paragraph into smaller parts")
+                                    .addExample("Break into multiple paragraphs")
+                                    .addExample("Use bullet points for lists")
+                                    .addExample("Remove unnecessary details")
+                                    .explanation(
+                                            "Consider splitting content to stay under " + lineConfig.max() + " lines")
+                                    .build())
+                            .build());
         }
     }
 
@@ -147,22 +169,30 @@ public final class ParagraphBlockValidator extends AbstractBlockValidator<Paragr
                 Severity severity = resolveSeverity(sentenceConfig.getOccurrence().severity(),
                         blockConfig.getSeverity());
 
-                messages.add(
-                        ValidationMessage.builder().severity(severity).ruleId(SENTENCE_OCCURRENCE_MIN)
-                                .location(context.createLocation(block)).message("Paragraph has too few sentences")
+                messages
+                        .add(ValidationMessage
+                                .builder()
+                                .severity(severity)
+                                .ruleId(SENTENCE_OCCURRENCE_MIN)
+                                .location(context.createLocation(block))
+                                .message("Paragraph has too few sentences")
                                 .actualValue("0")
                                 .expectedValue("At least " + sentenceConfig.getOccurrence().min() + " sentences")
-                                .errorType(ErrorType.MISSING_VALUE).missingValueHint("Add sentence content.")
-                                .placeholderContext(PlaceholderContext.builder()
-                                        .type(PlaceholderContext.PlaceholderType.SIMPLE_VALUE).build())
-                                .addSuggestion(
-                                        Suggestion.builder().description("Add sentences to paragraph")
-                                                .addExample("This is the first sentence.")
-                                                .addExample("This is the second sentence with more detail.")
-                                                .addExample("This concludes the paragraph.")
-                                                .explanation("Paragraph needs at least "
-                                                        + sentenceConfig.getOccurrence().min() + " sentences")
-                                                .build())
+                                .errorType(ErrorType.MISSING_VALUE)
+                                .missingValueHint("Add sentence content.")
+                                .placeholderContext(PlaceholderContext
+                                        .builder()
+                                        .type(PlaceholderContext.PlaceholderType.SIMPLE_VALUE)
+                                        .build())
+                                .addSuggestion(Suggestion
+                                        .builder()
+                                        .description("Add sentences to paragraph")
+                                        .addExample("This is the first sentence.")
+                                        .addExample("This is the second sentence with more detail.")
+                                        .addExample("This concludes the paragraph.")
+                                        .explanation("Paragraph needs at least " + sentenceConfig.getOccurrence().min()
+                                                + " sentences")
+                                        .build())
                                 .build());
             }
             return;
@@ -200,7 +230,8 @@ public final class ParagraphBlockValidator extends AbstractBlockValidator<Paragr
             }
         }
 
-        // If no sentences found but content exists, treat the whole content as one sentence
+        // If no sentences found but content exists, treat the whole content as one
+        // sentence
         if (sentences.isEmpty() && !normalizedContent.trim().isEmpty()) {
             sentences.add(normalizedContent.trim());
         }
@@ -216,32 +247,53 @@ public final class ParagraphBlockValidator extends AbstractBlockValidator<Paragr
 
         if (sentenceCount < occurrenceConfig.min()) {
             SourcePosition pos = findSourcePositionAtEndOfContent(block, context);
-            messages.add(ValidationMessage.builder().severity(severity).ruleId(SENTENCE_OCCURRENCE_MIN)
-                    .location(SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
-                    .message("Paragraph has too few sentences").actualValue(String.valueOf(sentenceCount))
-                    .expectedValue("At least " + occurrenceConfig.min() + " sentences")
-                    .errorType(ErrorType.MISSING_VALUE).missingValueHint("Add more sentences.")
-                    .placeholderContext(
-                            PlaceholderContext.builder().type(PlaceholderContext.PlaceholderType.SIMPLE_VALUE).build())
-                    .addSuggestion(Suggestion.builder().description("Add more sentences")
-                            .addExample("Expand with additional details.").addExample("Provide supporting information.")
-                            .addExample("Include relevant examples.")
-                            .explanation("Need " + (occurrenceConfig.min() - sentenceCount) + " more sentences")
-                            .build())
-                    .build());
+            messages
+                    .add(ValidationMessage
+                            .builder()
+                            .severity(severity)
+                            .ruleId(SENTENCE_OCCURRENCE_MIN)
+                            .location(
+                                    SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
+                            .message("Paragraph has too few sentences")
+                            .actualValue(String.valueOf(sentenceCount))
+                            .expectedValue("At least " + occurrenceConfig.min() + " sentences")
+                            .errorType(ErrorType.MISSING_VALUE)
+                            .missingValueHint("Add more sentences.")
+                            .placeholderContext(PlaceholderContext
+                                    .builder()
+                                    .type(PlaceholderContext.PlaceholderType.SIMPLE_VALUE)
+                                    .build())
+                            .addSuggestion(Suggestion
+                                    .builder()
+                                    .description("Add more sentences")
+                                    .addExample("Expand with additional details.")
+                                    .addExample("Provide supporting information.")
+                                    .addExample("Include relevant examples.")
+                                    .explanation("Need " + (occurrenceConfig.min() - sentenceCount) + " more sentences")
+                                    .build())
+                            .build());
         }
 
         if (sentenceCount > occurrenceConfig.max()) {
             SourceLocation location = createParagraphLocation(block, context);
-            messages.add(ValidationMessage.builder().severity(severity).ruleId(SENTENCE_OCCURRENCE_MAX)
-                    .location(location).message("Paragraph has too many sentences")
-                    .actualValue(String.valueOf(sentenceCount))
-                    .expectedValue("At most " + occurrenceConfig.max() + " sentences")
-                    .addSuggestion(Suggestion.builder().description("Reduce sentence count")
-                            .addExample("Split into multiple paragraphs").addExample("Combine related sentences")
-                            .addExample("Remove redundant information")
-                            .explanation("Remove " + (sentenceCount - occurrenceConfig.max()) + " sentences").build())
-                    .build());
+            messages
+                    .add(ValidationMessage
+                            .builder()
+                            .severity(severity)
+                            .ruleId(SENTENCE_OCCURRENCE_MAX)
+                            .location(location)
+                            .message("Paragraph has too many sentences")
+                            .actualValue(String.valueOf(sentenceCount))
+                            .expectedValue("At most " + occurrenceConfig.max() + " sentences")
+                            .addSuggestion(Suggestion
+                                    .builder()
+                                    .description("Reduce sentence count")
+                                    .addExample("Split into multiple paragraphs")
+                                    .addExample("Combine related sentences")
+                                    .addExample("Remove redundant information")
+                                    .explanation("Remove " + (sentenceCount - occurrenceConfig.max()) + " sentences")
+                                    .build())
+                            .build());
         }
     }
 
@@ -258,31 +310,57 @@ public final class ParagraphBlockValidator extends AbstractBlockValidator<Paragr
 
             if (wordsConfig.getMin() != null && wordCount < wordsConfig.getMin()) {
                 SourcePosition pos = findSentenceEndPosition(block, context, sentence, i);
-                messages.add(ValidationMessage.builder().severity(severity).ruleId(SENTENCE_WORDS_MIN)
-                        .location(SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
-                        .message("Sentence " + (i + 1) + " has too few words").actualValue(wordCount + " words")
-                        .expectedValue("At least " + wordsConfig.getMin() + " words").errorType(ErrorType.MISSING_VALUE)
-                        .missingValueHint("add more words")
-                        .placeholderContext(PlaceholderContext.builder()
-                                .type(PlaceholderContext.PlaceholderType.SIMPLE_VALUE).build())
-                        .addSuggestion(Suggestion.builder().description("Expand sentence with more detail")
-                                .addExample("Add descriptive adjectives").addExample("Include supporting details")
-                                .addExample("Provide specific examples")
-                                .explanation("Sentence needs " + (wordsConfig.getMin() - wordCount) + " more words")
-                                .build())
-                        .build());
+                messages
+                        .add(ValidationMessage
+                                .builder()
+                                .severity(severity)
+                                .ruleId(SENTENCE_WORDS_MIN)
+                                .location(SourceLocation
+                                        .builder()
+                                        .filename(context.getFilename())
+                                        .fromPosition(pos)
+                                        .build())
+                                .message("Sentence " + (i + 1) + " has too few words")
+                                .actualValue(wordCount + " words")
+                                .expectedValue("At least " + wordsConfig.getMin() + " words")
+                                .errorType(ErrorType.MISSING_VALUE)
+                                .missingValueHint("add more words")
+                                .placeholderContext(PlaceholderContext
+                                        .builder()
+                                        .type(PlaceholderContext.PlaceholderType.SIMPLE_VALUE)
+                                        .build())
+                                .addSuggestion(Suggestion
+                                        .builder()
+                                        .description("Expand sentence with more detail")
+                                        .addExample("Add descriptive adjectives")
+                                        .addExample("Include supporting details")
+                                        .addExample("Provide specific examples")
+                                        .explanation(
+                                                "Sentence needs " + (wordsConfig.getMin() - wordCount) + " more words")
+                                        .build())
+                                .build());
             }
 
             if (wordsConfig.getMax() != null && wordCount > wordsConfig.getMax()) {
                 SourceLocation location = createSentenceLocation(block, context, fullContent, sentence, i);
-                messages.add(ValidationMessage.builder().severity(severity).ruleId(SENTENCE_WORDS_MAX)
-                        .location(location).message("Sentence " + (i + 1) + " has too many words")
-                        .actualValue(wordCount + " words").expectedValue("At most " + wordsConfig.getMax() + " words")
-                        .addSuggestion(Suggestion.builder().description("Simplify sentence")
-                                .addExample("Remove unnecessary words").addExample("Split into two sentences")
-                                .addExample("Use more concise language")
-                                .explanation("Remove " + (wordCount - wordsConfig.getMax()) + " words").build())
-                        .build());
+                messages
+                        .add(ValidationMessage
+                                .builder()
+                                .severity(severity)
+                                .ruleId(SENTENCE_WORDS_MAX)
+                                .location(location)
+                                .message("Sentence " + (i + 1) + " has too many words")
+                                .actualValue(wordCount + " words")
+                                .expectedValue("At most " + wordsConfig.getMax() + " words")
+                                .addSuggestion(Suggestion
+                                        .builder()
+                                        .description("Simplify sentence")
+                                        .addExample("Remove unnecessary words")
+                                        .addExample("Split into two sentences")
+                                        .addExample("Use more concise language")
+                                        .explanation("Remove " + (wordCount - wordsConfig.getMax()) + " words")
+                                        .build())
+                                .build());
             }
         }
     }
@@ -298,7 +376,8 @@ public final class ParagraphBlockValidator extends AbstractBlockValidator<Paragr
     }
 
     /**
-     * Creates a source location for the entire paragraph block with proper column positions.
+     * Creates a source location for the entire paragraph block with proper column
+     * positions.
      */
     private SourceLocation createParagraphLocation(StructuralNode block, BlockValidationContext context) {
         List<String> fileLines = fileCache.getFileLines(context.getFilename());
@@ -321,8 +400,14 @@ public final class ParagraphBlockValidator extends AbstractBlockValidator<Paragr
         String firstLine = fileLines.get(startLine - 1);
 
         // Create location with full line span
-        return SourceLocation.builder().filename(context.getFilename()).startLine(startLine).endLine(startLine)
-                .startColumn(1).endColumn(firstLine.length()).build();
+        return SourceLocation
+                .builder()
+                .filename(context.getFilename())
+                .startLine(startLine)
+                .endLine(startLine)
+                .startColumn(1)
+                .endColumn(firstLine.length())
+                .build();
     }
 
     /**
@@ -352,7 +437,11 @@ public final class ParagraphBlockValidator extends AbstractBlockValidator<Paragr
         }
 
         // Create location for the specific sentence
-        return SourceLocation.builder().filename(context.getFilename()).startLine(startLine).endLine(startLine)
+        return SourceLocation
+                .builder()
+                .filename(context.getFilename())
+                .startLine(startLine)
+                .endLine(startLine)
                 .startColumn(sentenceStart + 1) // 1-based indexing
                 .endColumn(sentenceStart + sentence.trim().length()) // Exclusive end position
                 .build();

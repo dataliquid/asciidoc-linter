@@ -45,9 +45,9 @@ public class CLIRunner {
     /**
      * Runs the linter with the given configuration.
      *
-     * @param config
-     *            CLI configuration
-     * @return Exit code (0 = success, 1 = violations, 2 = error)
+     * @param  config CLI configuration
+     *
+     * @return        Exit code (0 = success, 1 = violations, 2 = error)
      */
     public int run(CLIConfig config) {
         try {
@@ -144,14 +144,14 @@ public class CLIRunner {
 
     private int determineExitCode(ValidationResult result, Severity failLevel) {
         switch (failLevel) {
-            case ERROR :
-                return result.hasErrors() ? 1 : 0;
-            case WARN :
-                return (result.hasErrors() || result.hasWarnings()) ? 1 : 0;
-            case INFO :
-                return result.hasMessages() ? 1 : 0;
-            default :
-                return 0;
+        case ERROR:
+            return result.hasErrors() ? 1 : 0;
+        case WARN:
+            return (result.hasErrors() || result.hasWarnings()) ? 1 : 0;
+        case INFO:
+            return result.hasMessages() ? 1 : 0;
+        default:
+            return 0;
         }
     }
 

@@ -16,8 +16,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
 /**
- * Formats validation results as JSON using Jackson. Supports both pretty-printed and compact (single-line) output
- * formats.
+ * Formats validation results as JSON using Jackson. Supports both
+ * pretty-printed and compact (single-line) output formats.
  */
 public class JsonFormatter implements ReportFormatter {
 
@@ -29,10 +29,8 @@ public class JsonFormatter implements ReportFormatter {
     /**
      * Creates a JSON formatter with the specified name and pretty-print setting.
      *
-     * @param name
-     *            the formatter name (e.g., "json" or "json-compact")
-     * @param prettyPrint
-     *            whether to enable pretty printing
+     * @param name        the formatter name (e.g., "json" or "json-compact")
+     * @param prettyPrint whether to enable pretty printing
      */
     public JsonFormatter(String name, boolean prettyPrint) {
         this.name = name;
@@ -82,7 +80,10 @@ public class JsonFormatter implements ReportFormatter {
         root.put("summary", summary);
 
         // Messages
-        List<Map<String, Object>> messages = result.getMessages().stream().map(this::formatMessage)
+        List<Map<String, Object>> messages = result
+                .getMessages()
+                .stream()
+                .map(this::formatMessage)
                 .collect(Collectors.toList());
         root.put("messages", messages);
 

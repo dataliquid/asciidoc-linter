@@ -45,12 +45,18 @@ class MetadataValidatorUnderlineTest {
         Path testFile = tempDir.resolve("test.adoc");
         Files.writeString(testFile, content);
 
-        Document document = asciidoctor.loadFile(testFile.toFile(),
-                Options.builder().sourcemap(true).toFile(false).build());
+        Document document = asciidoctor
+                .loadFile(testFile.toFile(), Options.builder().sourcemap(true).toFile(false).build());
 
-        MetadataConfiguration config = MetadataConfiguration.builder()
-                .attributes(java.util.Arrays.asList(AttributeConfig.builder().name("author")
-                        .pattern("^[A-Z][a-z]+ [A-Z][a-z]+$").severity(Severity.ERROR).build()))
+        MetadataConfiguration config = MetadataConfiguration
+                .builder()
+                .attributes(java.util.Arrays
+                        .asList(AttributeConfig
+                                .builder()
+                                .name("author")
+                                .pattern("^[A-Z][a-z]+ [A-Z][a-z]+$")
+                                .severity(Severity.ERROR)
+                                .build()))
                 .build();
 
         MetadataValidator validator = MetadataValidator.fromConfiguration(config).build();

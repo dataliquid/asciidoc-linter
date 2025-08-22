@@ -20,25 +20,26 @@ import com.dataliquid.asciidoc.linter.validator.Suggestion;
 
 /**
  * Validator for verse/quote blocks in AsciiDoc documents.
- *
  * <p>
- * This validator validates verse blocks based on the YAML schema structure defined in
- * {@code src/main/resources/schemas/blocks/verse-block.yaml}. The YAML configuration is parsed into {@link VerseBlock}
- * objects which define the validation rules.
+ * This validator validates verse blocks based on the YAML schema structure
+ * defined in {@code src/main/resources/schemas/blocks/verse-block.yaml}. The
+ * YAML configuration is parsed into {@link VerseBlock} objects which define the
+ * validation rules.
  * </p>
- *
  * <p>
  * Supported validation rules from YAML schema:
  * </p>
  * <ul>
- * <li><b>author</b>: Validates verse author (required, pattern, length constraints)</li>
- * <li><b>attribution</b>: Validates source attribution (required, pattern, length constraints)</li>
- * <li><b>content</b>: Validates verse content (required, length constraints, pattern)</li>
+ * <li><b>author</b>: Validates verse author (required, pattern, length
+ * constraints)</li>
+ * <li><b>attribution</b>: Validates source attribution (required, pattern,
+ * length constraints)</li>
+ * <li><b>content</b>: Validates verse content (required, length constraints,
+ * pattern)</li>
  * </ul>
- *
  * <p>
- * Note: Verse block nested configurations do not support individual severity levels. All validations use the
- * block-level severity.
+ * Note: Verse block nested configurations do not support individual severity
+ * levels. All validations use the block-level severity.
  * </p>
  *
  * @see VerseBlock
@@ -139,23 +140,39 @@ public final class VerseBlockValidator extends AbstractBlockValidator<VerseBlock
             // Create location pointing to where author should be in [verse] line
             SourceLocation verseLocation = context.createLocation(block);
             // The [verse] line is typically one line before the block delimiter
-            SourceLocation authorLocation = SourceLocation.builder().filename(verseLocation.getFilename())
+            SourceLocation authorLocation = SourceLocation
+                    .builder()
+                    .filename(verseLocation.getFilename())
                     .startLine(verseLocation.getStartLine() - 1) // [verse] line is before ____
-                    .endLine(verseLocation.getStartLine() - 1).startColumn(7) // After "[verse,"
-                    .endColumn(7).build();
+                    .endLine(verseLocation.getStartLine() - 1)
+                    .startColumn(7) // After "[verse,"
+                    .endColumn(7)
+                    .build();
 
-            messages.add(ValidationMessage.builder().severity(verseConfig.getSeverity()).ruleId(AUTHOR_REQUIRED)
-                    .location(authorLocation).message("Verse author is required but not provided")
-                    .actualValue("No author").expectedValue("Author required").errorType(ErrorType.MISSING_VALUE)
-                    .missingValueHint("author")
-                    .placeholderContext(
-                            PlaceholderContext.builder().type(PlaceholderContext.PlaceholderType.SIMPLE_VALUE).build())
-                    .addSuggestion(Suggestion.builder().description("Add author to verse block")
-                            .addExample("[verse, \"William Shakespeare\", \"Hamlet\"]")
-                            .addExample("[verse, \"Maya Angelou\", \"I Know Why the Caged Bird Sings\"]")
-                            .addExample("[verse, \"Robert Frost\", \"The Road Not Taken\"]")
-                            .explanation("Verse blocks should include proper attribution with author name").build())
-                    .build());
+            messages
+                    .add(ValidationMessage
+                            .builder()
+                            .severity(verseConfig.getSeverity())
+                            .ruleId(AUTHOR_REQUIRED)
+                            .location(authorLocation)
+                            .message("Verse author is required but not provided")
+                            .actualValue("No author")
+                            .expectedValue("Author required")
+                            .errorType(ErrorType.MISSING_VALUE)
+                            .missingValueHint("author")
+                            .placeholderContext(PlaceholderContext
+                                    .builder()
+                                    .type(PlaceholderContext.PlaceholderType.SIMPLE_VALUE)
+                                    .build())
+                            .addSuggestion(Suggestion
+                                    .builder()
+                                    .description("Add author to verse block")
+                                    .addExample("[verse, \"William Shakespeare\", \"Hamlet\"]")
+                                    .addExample("[verse, \"Maya Angelou\", \"I Know Why the Caged Bird Sings\"]")
+                                    .addExample("[verse, \"Robert Frost\", \"The Road Not Taken\"]")
+                                    .explanation("Verse blocks should include proper attribution with author name")
+                                    .build())
+                            .build());
             return;
         }
 
@@ -163,43 +180,82 @@ public final class VerseBlockValidator extends AbstractBlockValidator<VerseBlock
             // Validate author length
             if (config.getMinLength() != null && author.length() < config.getMinLength()) {
                 SourcePosition pos = findSourcePosition(block, context);
-                messages.add(ValidationMessage.builder().severity(verseConfig.getSeverity()).ruleId(AUTHOR_MIN_LENGTH)
-                        .location(SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
-                        .message("Verse author is too short").actualValue(author.length() + " characters")
-                        .expectedValue("At least " + config.getMinLength() + " characters")
-                        .addSuggestion(Suggestion.builder().description("Use longer author name")
-                                .addExample("William Shakespeare").addExample("Edgar Allan Poe")
-                                .addExample("Emily Dickinson")
-                                .explanation("Author names should meet the minimum length requirement").build())
-                        .build());
+                messages
+                        .add(ValidationMessage
+                                .builder()
+                                .severity(verseConfig.getSeverity())
+                                .ruleId(AUTHOR_MIN_LENGTH)
+                                .location(SourceLocation
+                                        .builder()
+                                        .filename(context.getFilename())
+                                        .fromPosition(pos)
+                                        .build())
+                                .message("Verse author is too short")
+                                .actualValue(author.length() + " characters")
+                                .expectedValue("At least " + config.getMinLength() + " characters")
+                                .addSuggestion(Suggestion
+                                        .builder()
+                                        .description("Use longer author name")
+                                        .addExample("William Shakespeare")
+                                        .addExample("Edgar Allan Poe")
+                                        .addExample("Emily Dickinson")
+                                        .explanation("Author names should meet the minimum length requirement")
+                                        .build())
+                                .build());
             }
 
             if (config.getMaxLength() != null && author.length() > config.getMaxLength()) {
                 SourcePosition pos = findSourcePosition(block, context);
-                messages.add(ValidationMessage.builder().severity(verseConfig.getSeverity()).ruleId(AUTHOR_MAX_LENGTH)
-                        .location(SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
-                        .message("Verse author is too long").actualValue(author.length() + " characters")
-                        .expectedValue("At most " + config.getMaxLength() + " characters")
-                        .addSuggestion(Suggestion.builder().description("Shorten author name")
-                                .addExample("Use initials: E.A. Poe").addExample("Use last name only: Shakespeare")
-                                .addExample("Use common name: Anonymous")
-                                .explanation("Author names should not exceed the maximum length limit").build())
-                        .build());
+                messages
+                        .add(ValidationMessage
+                                .builder()
+                                .severity(verseConfig.getSeverity())
+                                .ruleId(AUTHOR_MAX_LENGTH)
+                                .location(SourceLocation
+                                        .builder()
+                                        .filename(context.getFilename())
+                                        .fromPosition(pos)
+                                        .build())
+                                .message("Verse author is too long")
+                                .actualValue(author.length() + " characters")
+                                .expectedValue("At most " + config.getMaxLength() + " characters")
+                                .addSuggestion(Suggestion
+                                        .builder()
+                                        .description("Shorten author name")
+                                        .addExample("Use initials: E.A. Poe")
+                                        .addExample("Use last name only: Shakespeare")
+                                        .addExample("Use common name: Anonymous")
+                                        .explanation("Author names should not exceed the maximum length limit")
+                                        .build())
+                                .build());
             }
 
             // Validate pattern if specified
             if (config.getPattern() != null) {
                 if (!config.getPattern().matcher(author).matches()) {
                     SourcePosition pos = findSourcePosition(block, context);
-                    messages.add(ValidationMessage.builder().severity(verseConfig.getSeverity()).ruleId(AUTHOR_PATTERN)
-                            .location(
-                                    SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
-                            .message("Verse author does not match required pattern").actualValue(author)
-                            .expectedValue("Pattern: " + config.getPattern().pattern())
-                            .addSuggestion(Suggestion.builder().description("Format author name to match pattern")
-                                    .addExample("John Smith").addExample("Mary Jane Watson").addExample("Dr. John Doe")
-                                    .explanation("Author names must follow the specified format pattern").build())
-                            .build());
+                    messages
+                            .add(ValidationMessage
+                                    .builder()
+                                    .severity(verseConfig.getSeverity())
+                                    .ruleId(AUTHOR_PATTERN)
+                                    .location(SourceLocation
+                                            .builder()
+                                            .filename(context.getFilename())
+                                            .fromPosition(pos)
+                                            .build())
+                                    .message("Verse author does not match required pattern")
+                                    .actualValue(author)
+                                    .expectedValue("Pattern: " + config.getPattern().pattern())
+                                    .addSuggestion(Suggestion
+                                            .builder()
+                                            .description("Format author name to match pattern")
+                                            .addExample("John Smith")
+                                            .addExample("Mary Jane Watson")
+                                            .addExample("Dr. John Doe")
+                                            .explanation("Author names must follow the specified format pattern")
+                                            .build())
+                                    .build());
                 }
             }
         }
@@ -214,23 +270,39 @@ public final class VerseBlockValidator extends AbstractBlockValidator<VerseBlock
             // Create location pointing to where attribution should be in [verse] line
             SourceLocation verseLocation = context.createLocation(block);
             // The [verse] line is typically one line before the block delimiter
-            SourceLocation attributionLocation = SourceLocation.builder().filename(verseLocation.getFilename())
+            SourceLocation attributionLocation = SourceLocation
+                    .builder()
+                    .filename(verseLocation.getFilename())
                     .startLine(verseLocation.getStartLine() - 1) // [verse] line is before ____
-                    .endLine(verseLocation.getStartLine() - 1).startColumn(7) // After "[verse,"
-                    .endColumn(7).build();
+                    .endLine(verseLocation.getStartLine() - 1)
+                    .startColumn(7) // After "[verse,"
+                    .endColumn(7)
+                    .build();
 
-            messages.add(ValidationMessage.builder().severity(verseConfig.getSeverity()).ruleId(ATTRIBUTION_REQUIRED)
-                    .location(attributionLocation).message("Verse attribution is required but not provided")
-                    .actualValue("No attribution").expectedValue("Attribution required")
-                    .errorType(ErrorType.MISSING_VALUE).missingValueHint("attribution")
-                    .placeholderContext(
-                            PlaceholderContext.builder().type(PlaceholderContext.PlaceholderType.SIMPLE_VALUE).build())
-                    .addSuggestion(Suggestion.builder().description("Add attribution source to verse block")
-                            .addExample("[verse, \"William Shakespeare\", \"Hamlet Act 3, Scene 1\"]")
-                            .addExample("[verse, \"Maya Angelou\", \"Still I Rise\"]")
-                            .addExample("[verse, \"Robert Frost\", \"The Road Not Taken\"]")
-                            .explanation("Verse blocks should include proper source attribution").build())
-                    .build());
+            messages
+                    .add(ValidationMessage
+                            .builder()
+                            .severity(verseConfig.getSeverity())
+                            .ruleId(ATTRIBUTION_REQUIRED)
+                            .location(attributionLocation)
+                            .message("Verse attribution is required but not provided")
+                            .actualValue("No attribution")
+                            .expectedValue("Attribution required")
+                            .errorType(ErrorType.MISSING_VALUE)
+                            .missingValueHint("attribution")
+                            .placeholderContext(PlaceholderContext
+                                    .builder()
+                                    .type(PlaceholderContext.PlaceholderType.SIMPLE_VALUE)
+                                    .build())
+                            .addSuggestion(Suggestion
+                                    .builder()
+                                    .description("Add attribution source to verse block")
+                                    .addExample("[verse, \"William Shakespeare\", \"Hamlet Act 3, Scene 1\"]")
+                                    .addExample("[verse, \"Maya Angelou\", \"Still I Rise\"]")
+                                    .addExample("[verse, \"Robert Frost\", \"The Road Not Taken\"]")
+                                    .explanation("Verse blocks should include proper source attribution")
+                                    .build())
+                            .build());
             return;
         }
 
@@ -238,49 +310,82 @@ public final class VerseBlockValidator extends AbstractBlockValidator<VerseBlock
             // Validate attribution length
             if (config.getMinLength() != null && attribution.length() < config.getMinLength()) {
                 SourcePosition pos = findAttributionPosition(block, context);
-                messages.add(ValidationMessage.builder().severity(verseConfig.getSeverity())
-                        .ruleId(ATTRIBUTION_MIN_LENGTH)
-                        .location(SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
-                        .message("Verse attribution is too short").actualValue(attribution.length() + " characters")
-                        .expectedValue("At least " + config.getMinLength() + " characters")
-                        .addSuggestion(Suggestion.builder().description("Use longer attribution source")
-                                .addExample("Romeo and Juliet Act 2, Scene 2").addExample("The Great Gatsby Chapter 9")
-                                .addExample("Paradise Lost Book 1")
-                                .explanation("Attribution sources should meet the minimum length requirement").build())
-                        .build());
+                messages
+                        .add(ValidationMessage
+                                .builder()
+                                .severity(verseConfig.getSeverity())
+                                .ruleId(ATTRIBUTION_MIN_LENGTH)
+                                .location(SourceLocation
+                                        .builder()
+                                        .filename(context.getFilename())
+                                        .fromPosition(pos)
+                                        .build())
+                                .message("Verse attribution is too short")
+                                .actualValue(attribution.length() + " characters")
+                                .expectedValue("At least " + config.getMinLength() + " characters")
+                                .addSuggestion(Suggestion
+                                        .builder()
+                                        .description("Use longer attribution source")
+                                        .addExample("Romeo and Juliet Act 2, Scene 2")
+                                        .addExample("The Great Gatsby Chapter 9")
+                                        .addExample("Paradise Lost Book 1")
+                                        .explanation("Attribution sources should meet the minimum length requirement")
+                                        .build())
+                                .build());
             }
 
             if (config.getMaxLength() != null && attribution.length() > config.getMaxLength()) {
                 SourcePosition pos = findAttributionPosition(block, context);
-                messages.add(ValidationMessage.builder().severity(verseConfig.getSeverity())
-                        .ruleId(ATTRIBUTION_MAX_LENGTH)
-                        .location(SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
-                        .message("Verse attribution is too long").actualValue(attribution.length() + " characters")
-                        .expectedValue("At most " + config.getMaxLength() + " characters")
-                        .addSuggestion(Suggestion.builder().description("Shorten attribution source")
-                                .addExample("Use abbreviations: Hamlet Act 3").addExample("Use short title: The Raven")
-                                .addExample("Use year only: Poetry 1920")
-                                .explanation("Attribution sources should not exceed the maximum length limit").build())
-                        .build());
+                messages
+                        .add(ValidationMessage
+                                .builder()
+                                .severity(verseConfig.getSeverity())
+                                .ruleId(ATTRIBUTION_MAX_LENGTH)
+                                .location(SourceLocation
+                                        .builder()
+                                        .filename(context.getFilename())
+                                        .fromPosition(pos)
+                                        .build())
+                                .message("Verse attribution is too long")
+                                .actualValue(attribution.length() + " characters")
+                                .expectedValue("At most " + config.getMaxLength() + " characters")
+                                .addSuggestion(Suggestion
+                                        .builder()
+                                        .description("Shorten attribution source")
+                                        .addExample("Use abbreviations: Hamlet Act 3")
+                                        .addExample("Use short title: The Raven")
+                                        .addExample("Use year only: Poetry 1920")
+                                        .explanation("Attribution sources should not exceed the maximum length limit")
+                                        .build())
+                                .build());
             }
 
             // Validate pattern if specified
             if (config.getPattern() != null) {
                 if (!config.getPattern().matcher(attribution).matches()) {
                     SourcePosition pos = findAttributionPosition(block, context);
-                    messages.add(ValidationMessage.builder().severity(verseConfig.getSeverity())
-                            .ruleId(ATTRIBUTION_PATTERN)
-                            .location(
-                                    SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
-                            .message("Verse attribution does not match required pattern").actualValue(attribution)
-                            .expectedValue("Pattern: " + config.getPattern().pattern())
-                            .addSuggestion(
-                                    Suggestion.builder().description("Format attribution source to match pattern")
+                    messages
+                            .add(ValidationMessage
+                                    .builder()
+                                    .severity(verseConfig.getSeverity())
+                                    .ruleId(ATTRIBUTION_PATTERN)
+                                    .location(SourceLocation
+                                            .builder()
+                                            .filename(context.getFilename())
+                                            .fromPosition(pos)
+                                            .build())
+                                    .message("Verse attribution does not match required pattern")
+                                    .actualValue(attribution)
+                                    .expectedValue("Pattern: " + config.getPattern().pattern())
+                                    .addSuggestion(Suggestion
+                                            .builder()
+                                            .description("Format attribution source to match pattern")
                                             .addExample("Hamlet, Act III, Scene I")
-                                            .addExample("Romeo and Juliet (1595)").addExample("Sonnets, No. 18")
+                                            .addExample("Romeo and Juliet (1595)")
+                                            .addExample("Sonnets, No. 18")
                                             .explanation("Attribution sources must follow the specified format pattern")
                                             .build())
-                            .build());
+                                    .build());
                 }
             }
         }
@@ -293,21 +398,39 @@ public final class VerseBlockValidator extends AbstractBlockValidator<VerseBlock
         if (config.isRequired() && (content == null || content.trim().isEmpty())) {
             // Report error on the [verse] line, not the block delimiter
             SourceLocation verseLocation = context.createLocation(block, 1, 1);
-            SourceLocation contentLocation = SourceLocation.builder().filename(verseLocation.getFilename())
+            SourceLocation contentLocation = SourceLocation
+                    .builder()
+                    .filename(verseLocation.getFilename())
                     .startLine(verseLocation.getStartLine() - 1) // [verse] line is before ____
-                    .endLine(verseLocation.getStartLine() - 1).startColumn(1).endColumn(1).build();
+                    .endLine(verseLocation.getStartLine() - 1)
+                    .startColumn(1)
+                    .endColumn(1)
+                    .build();
 
-            messages.add(ValidationMessage.builder().severity(verseConfig.getSeverity()).ruleId(CONTENT_REQUIRED)
-                    .location(contentLocation).message("Verse block requires content").actualValue("No content")
-                    .expectedValue("Content required").errorType(ErrorType.MISSING_VALUE).missingValueHint("Content")
-                    .placeholderContext(
-                            PlaceholderContext.builder().type(PlaceholderContext.PlaceholderType.INSERT_BEFORE).build())
-                    .addSuggestion(Suggestion.builder().description("Add content to verse block")
-                            .addExample("To be or not to be, that is the question")
-                            .addExample("Roses are red,\nViolets are blue")
-                            .addExample("Two roads diverged in a yellow wood")
-                            .explanation("Verse blocks must contain the actual verse or poem content").build())
-                    .build());
+            messages
+                    .add(ValidationMessage
+                            .builder()
+                            .severity(verseConfig.getSeverity())
+                            .ruleId(CONTENT_REQUIRED)
+                            .location(contentLocation)
+                            .message("Verse block requires content")
+                            .actualValue("No content")
+                            .expectedValue("Content required")
+                            .errorType(ErrorType.MISSING_VALUE)
+                            .missingValueHint("Content")
+                            .placeholderContext(PlaceholderContext
+                                    .builder()
+                                    .type(PlaceholderContext.PlaceholderType.INSERT_BEFORE)
+                                    .build())
+                            .addSuggestion(Suggestion
+                                    .builder()
+                                    .description("Add content to verse block")
+                                    .addExample("To be or not to be, that is the question")
+                                    .addExample("Roses are red,\nViolets are blue")
+                                    .addExample("Two roads diverged in a yellow wood")
+                                    .explanation("Verse blocks must contain the actual verse or poem content")
+                                    .build())
+                            .build());
             return;
         }
 
@@ -315,47 +438,80 @@ public final class VerseBlockValidator extends AbstractBlockValidator<VerseBlock
         int contentLength = content != null ? content.length() : 0;
         if (config.getMinLength() != null && contentLength < config.getMinLength()) {
             SourcePosition pos = findContentPosition(block, context);
-            messages.add(ValidationMessage.builder().severity(verseConfig.getSeverity()).ruleId(CONTENT_MIN_LENGTH)
-                    .location(SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
-                    .message("Verse content is too short").actualValue(contentLength + " characters")
-                    .expectedValue("At least " + config.getMinLength() + " characters")
-                    .addSuggestion(Suggestion.builder().description("Add more content to verse block")
-                            .addExample("Include complete verses or stanzas")
-                            .addExample("Add additional lines of poetry").addExample("Include full quotations")
-                            .explanation("Verse content should meet the minimum length requirement").build())
-                    .build());
+            messages
+                    .add(ValidationMessage
+                            .builder()
+                            .severity(verseConfig.getSeverity())
+                            .ruleId(CONTENT_MIN_LENGTH)
+                            .location(
+                                    SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
+                            .message("Verse content is too short")
+                            .actualValue(contentLength + " characters")
+                            .expectedValue("At least " + config.getMinLength() + " characters")
+                            .addSuggestion(Suggestion
+                                    .builder()
+                                    .description("Add more content to verse block")
+                                    .addExample("Include complete verses or stanzas")
+                                    .addExample("Add additional lines of poetry")
+                                    .addExample("Include full quotations")
+                                    .explanation("Verse content should meet the minimum length requirement")
+                                    .build())
+                            .build());
         }
 
         if (content != null) {
             if (config.getMaxLength() != null && content.length() > config.getMaxLength()) {
                 SourcePosition pos = findContentPosition(block, context);
-                messages.add(ValidationMessage.builder().severity(verseConfig.getSeverity()).ruleId(CONTENT_MAX_LENGTH)
-                        .location(SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
-                        .message("Verse content is too long").actualValue(content.length() + " characters")
-                        .expectedValue("At most " + config.getMaxLength() + " characters")
-                        .addSuggestion(Suggestion.builder().description("Shorten verse content")
-                                .addExample("Use selected stanzas only")
-                                .addExample("Quote key lines instead of full text")
-                                .addExample("Split into multiple verse blocks")
-                                .explanation("Verse content should not exceed the maximum length limit").build())
-                        .build());
+                messages
+                        .add(ValidationMessage
+                                .builder()
+                                .severity(verseConfig.getSeverity())
+                                .ruleId(CONTENT_MAX_LENGTH)
+                                .location(SourceLocation
+                                        .builder()
+                                        .filename(context.getFilename())
+                                        .fromPosition(pos)
+                                        .build())
+                                .message("Verse content is too long")
+                                .actualValue(content.length() + " characters")
+                                .expectedValue("At most " + config.getMaxLength() + " characters")
+                                .addSuggestion(Suggestion
+                                        .builder()
+                                        .description("Shorten verse content")
+                                        .addExample("Use selected stanzas only")
+                                        .addExample("Quote key lines instead of full text")
+                                        .addExample("Split into multiple verse blocks")
+                                        .explanation("Verse content should not exceed the maximum length limit")
+                                        .build())
+                                .build());
             }
 
             // Validate pattern if specified
             if (config.getPattern() != null) {
                 if (!config.getPattern().matcher(content).matches()) {
                     SourcePosition pos = findContentPosition(block, context);
-                    messages.add(ValidationMessage.builder().severity(verseConfig.getSeverity()).ruleId(CONTENT_PATTERN)
-                            .location(
-                                    SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
-                            .message("Verse content does not match required pattern")
-                            .actualValue(content.substring(0, Math.min(content.length(), 50)) + "...")
-                            .expectedValue("Pattern: " + config.getPattern().pattern())
-                            .addSuggestion(Suggestion.builder().description("Format verse content to match pattern")
-                                    .addExample("Ensure proper line breaks").addExample("Use correct punctuation")
-                                    .addExample("Follow required verse structure")
-                                    .explanation("Verse content must follow the specified format pattern").build())
-                            .build());
+                    messages
+                            .add(ValidationMessage
+                                    .builder()
+                                    .severity(verseConfig.getSeverity())
+                                    .ruleId(CONTENT_PATTERN)
+                                    .location(SourceLocation
+                                            .builder()
+                                            .filename(context.getFilename())
+                                            .fromPosition(pos)
+                                            .build())
+                                    .message("Verse content does not match required pattern")
+                                    .actualValue(content.substring(0, Math.min(content.length(), 50)) + "...")
+                                    .expectedValue("Pattern: " + config.getPattern().pattern())
+                                    .addSuggestion(Suggestion
+                                            .builder()
+                                            .description("Format verse content to match pattern")
+                                            .addExample("Ensure proper line breaks")
+                                            .addExample("Use correct punctuation")
+                                            .addExample("Follow required verse structure")
+                                            .explanation("Verse content must follow the specified format pattern")
+                                            .build())
+                                    .build());
                 }
             }
         }

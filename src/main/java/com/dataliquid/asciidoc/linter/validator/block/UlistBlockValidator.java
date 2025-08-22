@@ -19,13 +19,13 @@ import com.dataliquid.asciidoc.linter.validator.Suggestion;
 
 /**
  * Validator for unordered list (ulist) blocks in AsciiDoc documents.
- *
  * <p>
- * This validator validates unordered list blocks based on the YAML schema structure defined in
- * {@code src/main/resources/schemas/blocks/ulist-block.yaml}. The YAML configuration is parsed into {@link UlistBlock}
- * objects which define the validation rules.
+ * This validator validates unordered list blocks based on the YAML schema
+ * structure defined in
+ * {@code src/main/resources/schemas/blocks/ulist-block.yaml}. The YAML
+ * configuration is parsed into {@link UlistBlock} objects which define the
+ * validation rules.
  * </p>
- *
  * <p>
  * Supported validation rules from YAML schema:
  * </p>
@@ -34,10 +34,9 @@ import com.dataliquid.asciidoc.linter.validator.Suggestion;
  * <li><b>nestingLevel</b>: Validates maximum nesting depth</li>
  * <li><b>markerStyle</b>: Validates the list marker style (*, -, etc.)</li>
  * </ul>
- *
  * <p>
- * Each nested configuration can optionally define its own severity level. If not specified, the block-level severity is
- * used as fallback.
+ * Each nested configuration can optionally define its own severity level. If
+ * not specified, the block-level severity is used as fallback.
  * </p>
  *
  * @see UlistBlock
@@ -100,32 +99,59 @@ public final class UlistBlockValidator extends AbstractBlockValidator<UlistBlock
         // Validate min items
         if (config.getMin() != null && itemCount < config.getMin()) {
             SourcePosition pos = findItemInsertPosition(block, context, items);
-            messages.add(ValidationMessage.builder().severity(severity).ruleId(ITEMS_MIN)
-                    .location(SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
-                    .message("Unordered list has too few items").errorType(ErrorType.MISSING_VALUE)
-                    .actualValue(String.valueOf(itemCount)).expectedValue("At least " + config.getMin() + " items")
-                    .missingValueHint("* Item")
-                    .placeholderContext(
-                            PlaceholderContext.builder().type(PlaceholderContext.PlaceholderType.INSERT_BEFORE).build())
-                    .addSuggestion(Suggestion.builder().description("Add list item with asterisk").fixedValue("* ")
-                            .addExample("* First item").addExample("* Second item").build())
-                    .addSuggestion(Suggestion.builder().description("Add list item with dash").fixedValue("- ")
-                            .addExample("- First item").addExample("- Second item").build())
-                    .build());
+            messages
+                    .add(ValidationMessage
+                            .builder()
+                            .severity(severity)
+                            .ruleId(ITEMS_MIN)
+                            .location(
+                                    SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
+                            .message("Unordered list has too few items")
+                            .errorType(ErrorType.MISSING_VALUE)
+                            .actualValue(String.valueOf(itemCount))
+                            .expectedValue("At least " + config.getMin() + " items")
+                            .missingValueHint("* Item")
+                            .placeholderContext(PlaceholderContext
+                                    .builder()
+                                    .type(PlaceholderContext.PlaceholderType.INSERT_BEFORE)
+                                    .build())
+                            .addSuggestion(Suggestion
+                                    .builder()
+                                    .description("Add list item with asterisk")
+                                    .fixedValue("* ")
+                                    .addExample("* First item")
+                                    .addExample("* Second item")
+                                    .build())
+                            .addSuggestion(Suggestion
+                                    .builder()
+                                    .description("Add list item with dash")
+                                    .fixedValue("- ")
+                                    .addExample("- First item")
+                                    .addExample("- Second item")
+                                    .build())
+                            .build());
         }
 
         // Validate max items
         if (config.getMax() != null && itemCount > config.getMax()) {
-            messages.add(ValidationMessage.builder().severity(severity).ruleId(ITEMS_MAX)
-                    .location(context.createLocation(block)).message("Unordered list has too many items")
-                    .actualValue(String.valueOf(itemCount)).expectedValue("At most " + config.getMax() + " items")
-                    .addSuggestion(Suggestion.builder().description("Remove excess items")
-                            .addExample("Keep only the most important " + config.getMax() + " items")
-                            .addExample("Group related items into sub-lists")
-                            .explanation(
-                                    "Consider consolidating or removing " + (itemCount - config.getMax()) + " items")
-                            .build())
-                    .build());
+            messages
+                    .add(ValidationMessage
+                            .builder()
+                            .severity(severity)
+                            .ruleId(ITEMS_MAX)
+                            .location(context.createLocation(block))
+                            .message("Unordered list has too many items")
+                            .actualValue(String.valueOf(itemCount))
+                            .expectedValue("At most " + config.getMax() + " items")
+                            .addSuggestion(Suggestion
+                                    .builder()
+                                    .description("Remove excess items")
+                                    .addExample("Keep only the most important " + config.getMax() + " items")
+                                    .addExample("Group related items into sub-lists")
+                                    .explanation("Consider consolidating or removing " + (itemCount - config.getMax())
+                                            + " items")
+                                    .build())
+                            .build());
         }
     }
 
@@ -139,18 +165,29 @@ public final class UlistBlockValidator extends AbstractBlockValidator<UlistBlock
 
         // Validate max nesting
         if (config.getMax() != null && nestingLevel > config.getMax()) {
-            messages.add(ValidationMessage.builder().severity(severity).ruleId(NESTING_LEVEL_MAX)
-                    .location(context.createLocation(block)).message("Unordered list exceeds maximum nesting level")
-                    .actualValue(String.valueOf(nestingLevel))
-                    .expectedValue("Maximum nesting level: " + config.getMax())
-                    .addSuggestion(Suggestion.builder().description("Flatten nested lists")
-                            .addExample("Move nested items to main level")
-                            .addExample("Use numbered sub-sections instead")
-                            .explanation("Reduce nesting to improve readability").build())
-                    .addSuggestion(Suggestion.builder().description("Break into separate lists")
-                            .addExample("Split complex nested structure into multiple lists")
-                            .explanation("Consider using separate lists with headings").build())
-                    .build());
+            messages
+                    .add(ValidationMessage
+                            .builder()
+                            .severity(severity)
+                            .ruleId(NESTING_LEVEL_MAX)
+                            .location(context.createLocation(block))
+                            .message("Unordered list exceeds maximum nesting level")
+                            .actualValue(String.valueOf(nestingLevel))
+                            .expectedValue("Maximum nesting level: " + config.getMax())
+                            .addSuggestion(Suggestion
+                                    .builder()
+                                    .description("Flatten nested lists")
+                                    .addExample("Move nested items to main level")
+                                    .addExample("Use numbered sub-sections instead")
+                                    .explanation("Reduce nesting to improve readability")
+                                    .build())
+                            .addSuggestion(Suggestion
+                                    .builder()
+                                    .description("Break into separate lists")
+                                    .addExample("Split complex nested structure into multiple lists")
+                                    .explanation("Consider using separate lists with headings")
+                                    .build())
+                            .build());
         }
     }
 
@@ -162,18 +199,31 @@ public final class UlistBlockValidator extends AbstractBlockValidator<UlistBlock
 
         if (actualMarkerStyle != null && !actualMarkerStyle.equals(expectedMarkerStyle)) {
             SourcePosition pos = findSourcePosition(block, context);
-            messages.add(ValidationMessage.builder().severity(blockConfig.getSeverity()).ruleId(MARKER_STYLE)
-                    .location(SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
-                    .message("Unordered list uses incorrect marker style").actualValue(actualMarkerStyle)
-                    .expectedValue(expectedMarkerStyle).errorType(ErrorType.INVALID_ENUM)
-                    .missingValueHint(expectedMarkerStyle)
-                    .placeholderContext(
-                            PlaceholderContext.builder().type(PlaceholderContext.PlaceholderType.SIMPLE_VALUE).build())
-                    .addSuggestion(Suggestion.builder().description("Change to " + expectedMarkerStyle + " marker")
-                            .fixedValue(expectedMarkerStyle).addExample(expectedMarkerStyle + " First item")
-                            .addExample(expectedMarkerStyle + " Second item")
-                            .explanation("Use consistent marker style: " + expectedMarkerStyle).build())
-                    .build());
+            messages
+                    .add(ValidationMessage
+                            .builder()
+                            .severity(blockConfig.getSeverity())
+                            .ruleId(MARKER_STYLE)
+                            .location(
+                                    SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
+                            .message("Unordered list uses incorrect marker style")
+                            .actualValue(actualMarkerStyle)
+                            .expectedValue(expectedMarkerStyle)
+                            .errorType(ErrorType.INVALID_ENUM)
+                            .missingValueHint(expectedMarkerStyle)
+                            .placeholderContext(PlaceholderContext
+                                    .builder()
+                                    .type(PlaceholderContext.PlaceholderType.SIMPLE_VALUE)
+                                    .build())
+                            .addSuggestion(Suggestion
+                                    .builder()
+                                    .description("Change to " + expectedMarkerStyle + " marker")
+                                    .fixedValue(expectedMarkerStyle)
+                                    .addExample(expectedMarkerStyle + " First item")
+                                    .addExample(expectedMarkerStyle + " Second item")
+                                    .explanation("Use consistent marker style: " + expectedMarkerStyle)
+                                    .build())
+                            .build());
         }
     }
 
@@ -309,19 +359,29 @@ public final class UlistBlockValidator extends AbstractBlockValidator<UlistBlock
                         String nestedMarkerStyle = getMarkerStyle(nestedBlock);
                         if (nestedMarkerStyle != null && !nestedMarkerStyle.equals(expectedMarkerStyle)) {
                             SourcePosition pos = findSourcePosition(nestedBlock, context);
-                            messages.add(ValidationMessage.builder().severity(blockConfig.getSeverity())
-                                    .ruleId(MARKER_STYLE)
-                                    .location(SourceLocation.builder().filename(context.getFilename()).fromPosition(pos)
-                                            .build())
-                                    .message("Unordered list marker style '" + nestedMarkerStyle
-                                            + "' does not match expected style '" + expectedMarkerStyle + "'")
-                                    .actualValue(nestedMarkerStyle).expectedValue(expectedMarkerStyle)
-                                    .addSuggestion(Suggestion.builder()
-                                            .description("Change nested list to " + expectedMarkerStyle + " marker")
-                                            .fixedValue(expectedMarkerStyle)
-                                            .addExample("  " + expectedMarkerStyle + " Nested item")
-                                            .explanation("Maintain consistent marker style in nested lists").build())
-                                    .build());
+                            messages
+                                    .add(ValidationMessage
+                                            .builder()
+                                            .severity(blockConfig.getSeverity())
+                                            .ruleId(MARKER_STYLE)
+                                            .location(SourceLocation
+                                                    .builder()
+                                                    .filename(context.getFilename())
+                                                    .fromPosition(pos)
+                                                    .build())
+                                            .message("Unordered list marker style '" + nestedMarkerStyle
+                                                    + "' does not match expected style '" + expectedMarkerStyle + "'")
+                                            .actualValue(nestedMarkerStyle)
+                                            .expectedValue(expectedMarkerStyle)
+                                            .addSuggestion(Suggestion
+                                                    .builder()
+                                                    .description(
+                                                            "Change nested list to " + expectedMarkerStyle + " marker")
+                                                    .fixedValue(expectedMarkerStyle)
+                                                    .addExample("  " + expectedMarkerStyle + " Nested item")
+                                                    .explanation("Maintain consistent marker style in nested lists")
+                                                    .build())
+                                            .build());
 
                             // Recursively check nested items
                             List<StructuralNode> nestedItems = nestedBlock.getBlocks();

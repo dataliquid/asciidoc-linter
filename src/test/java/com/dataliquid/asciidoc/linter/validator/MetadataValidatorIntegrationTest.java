@@ -33,15 +33,39 @@ class MetadataValidatorIntegrationTest {
         asciidoctor = Asciidoctor.Factory.create();
         tempDir = Files.createTempDirectory("asciidoc-test");
 
-        MetadataConfiguration config = MetadataConfiguration.builder().attributes(Arrays.asList(
-                AttributeConfig.builder().name("author").required(true).minLength(5).maxLength(50)
-                        .pattern("^[A-Z][a-zA-Z\\s\\.]+$").severity(Severity.ERROR).build(),
-                AttributeConfig.builder().name("revdate").required(true).pattern("^\\d{4}-\\d{2}-\\d{2}$")
-                        .severity(Severity.ERROR).build(),
-                AttributeConfig.builder().name("version").required(true).pattern("^\\d+\\.\\d+(\\.\\d+)?$")
-                        .severity(Severity.ERROR).build(),
-                AttributeConfig.builder().name("email").required(false)
-                        .pattern("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$").severity(Severity.WARN).build()))
+        MetadataConfiguration config = MetadataConfiguration
+                .builder()
+                .attributes(Arrays
+                        .asList(AttributeConfig
+                                .builder()
+                                .name("author")
+                                .required(true)
+                                .minLength(5)
+                                .maxLength(50)
+                                .pattern("^[A-Z][a-zA-Z\\s\\.]+$")
+                                .severity(Severity.ERROR)
+                                .build(),
+                                AttributeConfig
+                                        .builder()
+                                        .name("revdate")
+                                        .required(true)
+                                        .pattern("^\\d{4}-\\d{2}-\\d{2}$")
+                                        .severity(Severity.ERROR)
+                                        .build(),
+                                AttributeConfig
+                                        .builder()
+                                        .name("version")
+                                        .required(true)
+                                        .pattern("^\\d+\\.\\d+(\\.\\d+)?$")
+                                        .severity(Severity.ERROR)
+                                        .build(),
+                                AttributeConfig
+                                        .builder()
+                                        .name("email")
+                                        .required(false)
+                                        .pattern("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$")
+                                        .severity(Severity.WARN)
+                                        .build()))
                 .build();
 
         validator = MetadataValidator.fromConfiguration(config).build();
@@ -92,11 +116,17 @@ class MetadataValidatorIntegrationTest {
         // Then
         assertTrue(result.hasErrors());
         assertEquals(3, result.getErrorCount()); // missing author, revdate, version
-        assertTrue(result.getMessages().stream()
+        assertTrue(result
+                .getMessages()
+                .stream()
                 .anyMatch(msg -> msg.getMessage().equals("Missing required attribute 'author'")));
-        assertTrue(result.getMessages().stream()
+        assertTrue(result
+                .getMessages()
+                .stream()
                 .anyMatch(msg -> msg.getMessage().equals("Missing required attribute 'revdate'")));
-        assertTrue(result.getMessages().stream()
+        assertTrue(result
+                .getMessages()
+                .stream()
                 .anyMatch(msg -> msg.getMessage().equals("Missing required attribute 'version'")));
     }
 
@@ -123,20 +153,37 @@ class MetadataValidatorIntegrationTest {
         assertTrue(result.hasErrors());
         assertTrue(result.hasWarnings());
         // Author pattern and length errors
-        assertTrue(result.getMessages().stream().anyMatch(msg -> msg.getMessage().equals(
-                "Attribute 'author' does not match required pattern: actual 'john', expected pattern '^[A-Z][a-zA-Z\\s\\.]+$'")
-                || msg.getMessage().equals(
-                        "Attribute 'author' is too short: actual 'john' (4 characters), expected minimum 5 characters")));
+        assertTrue(result
+                .getMessages()
+                .stream()
+                .anyMatch(msg -> msg
+                        .getMessage()
+                        .equals("Attribute 'author' does not match required pattern: actual 'john', expected pattern '^[A-Z][a-zA-Z\\s\\.]+$'")
+                        || msg
+                                .getMessage()
+                                .equals("Attribute 'author' is too short: actual 'john' (4 characters), expected minimum 5 characters")));
         // Date format error
-        assertTrue(result.getMessages().stream().anyMatch(msg -> msg.getMessage().equals(
-                "Attribute 'revdate' does not match required pattern: actual '15.01.2024', expected pattern '^\\d{4}-\\d{2}-\\d{2}$'")));
+        assertTrue(result
+                .getMessages()
+                .stream()
+                .anyMatch(msg -> msg
+                        .getMessage()
+                        .equals("Attribute 'revdate' does not match required pattern: actual '15.01.2024', expected pattern '^\\d{4}-\\d{2}-\\d{2}$'")));
         // Version format error
-        assertTrue(result.getMessages().stream().anyMatch(msg -> msg.getMessage().equals(
-                "Attribute 'version' does not match required pattern: actual '1.0-SNAPSHOT', expected pattern '^\\d+\\.\\d+(\\.\\d+)?$'")));
+        assertTrue(result
+                .getMessages()
+                .stream()
+                .anyMatch(msg -> msg
+                        .getMessage()
+                        .equals("Attribute 'version' does not match required pattern: actual '1.0-SNAPSHOT', expected pattern '^\\d+\\.\\d+(\\.\\d+)?$'")));
         // Email warning
-        assertTrue(result.getMessages().stream().anyMatch(msg -> msg.getMessage().equals(
-                "Attribute 'email' does not match required pattern: actual 'invalid-email', expected pattern '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$'")
-                && msg.getSeverity() == Severity.WARN));
+        assertTrue(result
+                .getMessages()
+                .stream()
+                .anyMatch(msg -> msg
+                        .getMessage()
+                        .equals("Attribute 'email' does not match required pattern: actual 'invalid-email', expected pattern '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$'")
+                        && msg.getSeverity() == Severity.WARN));
     }
 
     @Test
@@ -160,8 +207,12 @@ class MetadataValidatorIntegrationTest {
         // Then
         assertTrue(result.hasErrors());
         // Author too short
-        assertTrue(result.getMessages().stream().anyMatch(msg -> msg.getMessage()
-                .equals("Attribute 'author' is too short: actual 'Jo' (2 characters), expected minimum 5 characters")));
+        assertTrue(result
+                .getMessages()
+                .stream()
+                .anyMatch(msg -> msg
+                        .getMessage()
+                        .equals("Attribute 'author' is too short: actual 'Jo' (2 characters), expected minimum 5 characters")));
     }
 
     @Test

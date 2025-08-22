@@ -34,7 +34,9 @@ class PatternRuleTest {
         @DisplayName("should build rule with valid patterns")
         void shouldBuildRuleWithValidPatterns() {
             // Given
-            PatternRule.Builder builder = PatternRule.builder().addPattern("title", "^[A-Z].*", Severity.ERROR)
+            PatternRule.Builder builder = PatternRule
+                    .builder()
+                    .addPattern("title", "^[A-Z].*", Severity.ERROR)
                     .addPattern("version", "^\\d+\\.\\d+(\\.\\d+)?$", Severity.ERROR)
                     .addPattern("email", "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", Severity.WARN);
 
@@ -120,7 +122,7 @@ class PatternRuleTest {
         @DisplayName("should accept semantic version format")
         void shouldAcceptSemanticVersionFormat() {
             // Given
-            String[] validVersions = {"1.0", "1.0.0", "2.15.3"};
+            String[] validVersions = { "1.0", "1.0.0", "2.15.3" };
 
             // When/Then
             for (String version : validVersions) {
@@ -132,7 +134,7 @@ class PatternRuleTest {
         @DisplayName("should reject invalid version format")
         void shouldRejectInvalidVersionFormat() {
             // Given
-            String[] invalidVersions = {"1", "1.0.0.0", "v1.0.0", "1.0-SNAPSHOT"};
+            String[] invalidVersions = { "1", "1.0.0.0", "v1.0.0", "1.0-SNAPSHOT" };
 
             // When/Then
             for (String version : invalidVersions) {
@@ -149,15 +151,17 @@ class PatternRuleTest {
 
         @BeforeEach
         void setUp() {
-            rule = PatternRule.builder()
-                    .addPattern("email", "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", Severity.WARN).build();
+            rule = PatternRule
+                    .builder()
+                    .addPattern("email", "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", Severity.WARN)
+                    .build();
         }
 
         @Test
         @DisplayName("should accept valid email formats")
         void shouldAcceptValidEmailFormats() {
             // Given
-            String[] validEmails = {"user@example.com", "john.doe@company.co.uk", "test+tag@domain.org"};
+            String[] validEmails = { "user@example.com", "john.doe@company.co.uk", "test+tag@domain.org" };
 
             // When/Then
             for (String email : validEmails) {
@@ -169,7 +173,7 @@ class PatternRuleTest {
         @DisplayName("should reject invalid email formats")
         void shouldRejectInvalidEmailFormats() {
             // Given
-            String[] invalidEmails = {"invalid", "@example.com", "user@", "user@domain"};
+            String[] invalidEmails = { "invalid", "@example.com", "user@", "user@domain" };
 
             // When/Then
             for (String email : invalidEmails) {

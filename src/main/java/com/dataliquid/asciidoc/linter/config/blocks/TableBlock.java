@@ -216,8 +216,10 @@ public final class TableBlock extends AbstractBlock {
                 return true;
             if (!(o instanceof HeaderConfig that))
                 return false;
-            return required == that.required && Objects.equals(pattern == null ? null : pattern.pattern(),
-                    that.pattern == null ? null : that.pattern.pattern()) && severity == that.severity;
+            return required == that.required && Objects
+                    .equals(pattern == null ? null : pattern.pattern(),
+                            that.pattern == null ? null : that.pattern.pattern())
+                    && severity == that.severity;
         }
 
         @Override
@@ -321,8 +323,9 @@ public final class TableBlock extends AbstractBlock {
             if (!(o instanceof CaptionConfig that))
                 return false;
             return required == that.required
-                    && Objects.equals(pattern == null ? null : pattern.pattern(),
-                            that.pattern == null ? null : that.pattern.pattern())
+                    && Objects
+                            .equals(pattern == null ? null : pattern.pattern(),
+                                    that.pattern == null ? null : that.pattern.pattern())
                     && Objects.equals(minLength, that.minLength) && Objects.equals(maxLength, that.maxLength)
                     && severity == that.severity;
         }

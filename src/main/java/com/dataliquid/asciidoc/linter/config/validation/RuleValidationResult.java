@@ -29,7 +29,9 @@ public class RuleValidationResult {
      * Creates a result from networknt validation messages.
      */
     public static RuleValidationResult from(Set<ValidationMessage> messages) {
-        List<ValidationError> errors = messages.stream().map(RuleValidationResult::convertMessage)
+        List<ValidationError> errors = messages
+                .stream()
+                .map(RuleValidationResult::convertMessage)
                 .collect(Collectors.toList());
 
         return new RuleValidationResult(errors);

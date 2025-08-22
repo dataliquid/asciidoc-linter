@@ -17,11 +17,10 @@ public final class BlockOrderValidator {
     /**
      * Validates order constraints for blocks in a section.
      *
-     * @param context
-     *            the validation context containing tracked blocks
-     * @param orderConfig
-     *            the order configuration to validate
-     * @return list of validation messages
+     * @param  context     the validation context containing tracked blocks
+     * @param  orderConfig the order configuration to validate
+     *
+     * @return             list of validation messages
      */
     public List<ValidationMessage> validate(BlockValidationContext context, OrderConfig orderConfig) {
         if (context == null || orderConfig == null) {
@@ -66,12 +65,16 @@ public final class BlockOrderValidator {
             if (foundIndex >= 0) {
                 if (foundIndex < expectedIndex) {
                     // Block appears out of order
-                    messages.add(ValidationMessage.builder().severity(orderConfig.severity()).ruleId(ORDER_FIXED)
-                            .location(context.createLocation(position.getBlock()))
-                            .message("Block '" + blockIdentifier + "' appears out of order")
-                            .actualValue("Position " + (position.getIndex() + 1))
-                            .expectedValue("Should appear after '" + expectedOrder.get(expectedIndex - 1) + "'")
-                            .build());
+                    messages
+                            .add(ValidationMessage
+                                    .builder()
+                                    .severity(orderConfig.severity())
+                                    .ruleId(ORDER_FIXED)
+                                    .location(context.createLocation(position.getBlock()))
+                                    .message("Block '" + blockIdentifier + "' appears out of order")
+                                    .actualValue("Position " + (position.getIndex() + 1))
+                                    .expectedValue("Should appear after '" + expectedOrder.get(expectedIndex - 1) + "'")
+                                    .build());
                 } else {
                     expectedIndex = foundIndex + 1;
                 }
@@ -110,12 +113,18 @@ public final class BlockOrderValidator {
 
         // Validate constraint if both blocks exist
         if (firstPos != null && secondPos != null && firstPos > secondPos) {
-            messages.add(ValidationMessage.builder().severity(constraint.severity()).ruleId(ORDER_BEFORE)
-                    .location(createSectionLocation(context))
-                    .message("Block '" + constraint.first() + "' must appear before '" + constraint.second() + "'")
-                    .actualValue("'" + constraint.first() + "' at position " + (firstPos + 1) + ", '"
-                            + constraint.second() + "' at position " + (secondPos + 1))
-                    .expectedValue("'" + constraint.first() + "' before '" + constraint.second() + "'").build());
+            messages
+                    .add(ValidationMessage
+                            .builder()
+                            .severity(constraint.severity())
+                            .ruleId(ORDER_BEFORE)
+                            .location(createSectionLocation(context))
+                            .message("Block '" + constraint.first() + "' must appear before '" + constraint.second()
+                                    + "'")
+                            .actualValue("'" + constraint.first() + "' at position " + (firstPos + 1) + ", '"
+                                    + constraint.second() + "' at position " + (secondPos + 1))
+                            .expectedValue("'" + constraint.first() + "' before '" + constraint.second() + "'")
+                            .build());
         }
     }
 
@@ -150,12 +159,18 @@ public final class BlockOrderValidator {
 
         // Validate constraint if both blocks exist
         if (firstPos != null && secondPos != null && firstPos < secondPos) {
-            messages.add(ValidationMessage.builder().severity(constraint.severity()).ruleId(ORDER_AFTER)
-                    .location(createSectionLocation(context))
-                    .message("Block '" + constraint.first() + "' must appear after '" + constraint.second() + "'")
-                    .actualValue("'" + constraint.first() + "' at position " + (firstPos + 1) + ", '"
-                            + constraint.second() + "' at position " + (secondPos + 1))
-                    .expectedValue("'" + constraint.first() + "' after '" + constraint.second() + "'").build());
+            messages
+                    .add(ValidationMessage
+                            .builder()
+                            .severity(constraint.severity())
+                            .ruleId(ORDER_AFTER)
+                            .location(createSectionLocation(context))
+                            .message("Block '" + constraint.first() + "' must appear after '" + constraint.second()
+                                    + "'")
+                            .actualValue("'" + constraint.first() + "' at position " + (firstPos + 1) + ", '"
+                                    + constraint.second() + "' at position " + (secondPos + 1))
+                            .expectedValue("'" + constraint.first() + "' after '" + constraint.second() + "'")
+                            .build());
         }
     }
 
@@ -183,7 +198,10 @@ public final class BlockOrderValidator {
             lineNumber = container.getSourceLocation().getLineNumber();
         }
 
-        return com.dataliquid.asciidoc.linter.validator.SourceLocation.builder().filename(context.getFilename())
-                .startLine(lineNumber).build();
+        return com.dataliquid.asciidoc.linter.validator.SourceLocation
+                .builder()
+                .filename(context.getFilename())
+                .startLine(lineNumber)
+                .build();
     }
 }
