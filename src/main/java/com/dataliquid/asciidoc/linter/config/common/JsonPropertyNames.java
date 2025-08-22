@@ -1,20 +1,20 @@
 package com.dataliquid.asciidoc.linter.config.common;
 
 /**
- * Central repository for all JSON property names used in configuration classes.
- * This class provides constants for JSON property names to ensure consistency
- * and maintainability across all configuration POJOs.
+ * Central repository for all JSON property names used in configuration classes. This class provides constants for JSON
+ * property names to ensure consistency and maintainability across all configuration POJOs.
  */
 public final class JsonPropertyNames {
-    
+
     // Prevent instantiation
-    private JsonPropertyNames() {}
-    
+    private JsonPropertyNames() {
+    }
+
     /**
      * Empty string constant for use in annotations like @JsonPOJOBuilder
      */
     public static final String EMPTY = "";
-    
+
     /**
      * Common property names used across multiple configuration classes
      */
@@ -46,7 +46,7 @@ public final class JsonPropertyNames {
         public static final String THRESHOLD = "threshold";
         public static final String DEFAULT_VALUE = "defaultValue";
     }
-    
+
     /**
      * Property names for document configuration
      */
@@ -58,7 +58,7 @@ public final class JsonPropertyNames {
         public static final String SUBSECTIONS = "subsections";
         public static final String ALLOWED_BLOCKS = "allowedBlocks";
     }
-    
+
     /**
      * Property names for admonition block configuration
      */
@@ -66,7 +66,7 @@ public final class JsonPropertyNames {
         public static final String TYPE = "type";
         public static final String ICON = "icon";
     }
-    
+
     /**
      * Property names for audio/video block configuration
      */
@@ -77,7 +77,7 @@ public final class JsonPropertyNames {
         public static final String POSTER = "poster";
         public static final String NO_CONTROLS = "nocontrols";
     }
-    
+
     /**
      * Property names for quote/verse block configuration
      */
@@ -86,7 +86,7 @@ public final class JsonPropertyNames {
         public static final String CITATION = "citation";
         public static final String AUTHOR = "author";
     }
-    
+
     /**
      * Property names for listing block configuration
      */
@@ -94,7 +94,7 @@ public final class JsonPropertyNames {
         public static final String LANGUAGE = "language";
         public static final String CALLOUTS = "callouts";
     }
-    
+
     /**
      * Property names for literal block configuration
      */
@@ -104,21 +104,21 @@ public final class JsonPropertyNames {
         public static final String MAX_SPACES = "maxSpaces";
         public static final String CONSISTENT = "consistent";
     }
-    
+
     /**
      * Property names for example block configuration
      */
     public static final class Example {
         public static final String COLLAPSIBLE = "collapsible";
     }
-    
+
     /**
      * Property names for sidebar block configuration
      */
     public static final class Sidebar {
         public static final String POSITION = "position";
     }
-    
+
     /**
      * Property names for table block configuration
      */
@@ -130,7 +130,7 @@ public final class JsonPropertyNames {
         public static final String STYLE = "style";
         public static final String BORDERS = "borders";
     }
-    
+
     /**
      * Property names for list block configuration
      */
@@ -143,7 +143,7 @@ public final class JsonPropertyNames {
         public static final String DELIMITER_STYLE = "delimiterStyle";
         public static final String ALLOWED_DELIMITERS = "allowedDelimiters";
     }
-    
+
     /**
      * Property names for paragraph block configuration
      */
@@ -151,21 +151,21 @@ public final class JsonPropertyNames {
         public static final String SENTENCE = "sentence";
         public static final String WORDS = "words";
     }
-    
+
     /**
      * Property names for pass block configuration
      */
     public static final class Pass {
         public static final String REASON = "reason";
     }
-    
+
     /**
      * Property names for image block configuration
      */
     public static final class Image {
         public static final String ALT = "alt";
     }
-    
+
     /**
      * Property names for output configuration
      */

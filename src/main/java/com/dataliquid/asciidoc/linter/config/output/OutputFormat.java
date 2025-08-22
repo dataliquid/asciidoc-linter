@@ -11,28 +11,28 @@ public enum OutputFormat {
      * Enhanced format with full context, highlighting, and suggestions.
      */
     ENHANCED("enhanced"),
-    
+
     /**
      * Simple format with basic error information.
      */
     SIMPLE("simple"),
-    
+
     /**
      * Compact single-line format for CI/CD environments.
      */
     COMPACT("compact");
-    
+
     private final String value;
-    
+
     OutputFormat(String value) {
         this.value = value;
     }
-    
+
     @JsonValue
     public String getValue() {
         return value;
     }
-    
+
     @JsonCreator
     public static OutputFormat fromValue(String value) {
         for (OutputFormat format : OutputFormat.values()) {

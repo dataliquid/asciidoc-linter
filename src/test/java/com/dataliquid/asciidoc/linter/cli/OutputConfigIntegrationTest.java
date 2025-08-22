@@ -21,7 +21,7 @@ class OutputConfigIntegrationTest {
     void testLoadEnhancedConfig() throws IOException {
         OutputConfigurationLoader loader = new OutputConfigurationLoader();
         OutputConfiguration config = loader.loadPredefinedConfiguration(OutputFormat.ENHANCED);
-        
+
         assertNotNull(config);
         assertEquals(OutputFormat.ENHANCED, config.getFormat());
         assertEquals(3, config.getDisplay().getContextLines());
@@ -35,7 +35,7 @@ class OutputConfigIntegrationTest {
     void testLoadSimpleConfig() throws IOException {
         OutputConfigurationLoader loader = new OutputConfigurationLoader();
         OutputConfiguration config = loader.loadPredefinedConfiguration(OutputFormat.SIMPLE);
-        
+
         assertNotNull(config);
         assertEquals(OutputFormat.SIMPLE, config.getFormat());
         assertEquals(1, config.getDisplay().getContextLines());
@@ -47,7 +47,7 @@ class OutputConfigIntegrationTest {
     void testLoadCompactConfig() throws IOException {
         OutputConfigurationLoader loader = new OutputConfigurationLoader();
         OutputConfiguration config = loader.loadPredefinedConfiguration(OutputFormat.COMPACT);
-        
+
         assertNotNull(config);
         assertEquals(OutputFormat.COMPACT, config.getFormat());
         assertEquals(0, config.getDisplay().getContextLines());

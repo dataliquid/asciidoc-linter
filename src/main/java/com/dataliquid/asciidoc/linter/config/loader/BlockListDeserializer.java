@@ -28,8 +28,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * Custom deserializer for Block lists in YAML.
- * Handles the special YAML structure where block type is the key:
+ * Custom deserializer for Block lists in YAML. Handles the special YAML structure where block type is the key:
+ *
  * <pre>
  * allowedBlocks:
  *   - paragraph:
@@ -42,35 +42,34 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  *       name: code-example
  *       severity: error
  * </pre>
- * 
- * This deserializer expects valid YAML that conforms to the schema.
- * No transformations or default values are applied.
+ *
+ * This deserializer expects valid YAML that conforms to the schema. No transformations or default values are applied.
  */
 public class BlockListDeserializer extends JsonDeserializer<List<Block>> {
-    
+
     @Override
     public List<Block> deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
         List<Block> blocks = new ArrayList<>();
         JsonNode node = p.getCodec().readTree(p);
-        
+
         if (!node.isArray()) {
             throw new IOException("Expected array for block list");
         }
-        
+
         ObjectMapper mapper = (ObjectMapper) p.getCodec();
-        
+
         for (JsonNode blockNode : node) {
             if (!blockNode.isObject()) {
                 continue;
             }
-            
+
             // Each block is an object with a single key (the block type)
             String blockType = blockNode.fieldNames().next();
             JsonNode blockData = blockNode.get(blockType);
-            
+
             // Convert blockType string to BlockType enum
             BlockType type = BlockType.fromValue(blockType);
-            
+
             // Deserialize based on block type - Jackson will handle all validation
             Block block = switch (type) {
                 case PARAGRAPH -> mapper.treeToValue(blockData, ParagraphBlock.class);
@@ -89,10 +88,10 @@ public class BlockListDeserializer extends JsonDeserializer<List<Block>> {
                 case ULIST -> mapper.treeToValue(blockData, UlistBlock.class);
                 case DLIST -> mapper.treeToValue(blockData, DlistBlock.class);
             };
-            
+
             blocks.add(block);
         }
-        
+
         return blocks;
     }
 }

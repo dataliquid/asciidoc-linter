@@ -32,29 +32,25 @@ public final class PatternRule implements AttributeRule {
     @Override
     public List<ValidationMessage> validate(String attributeName, String value, SourceLocation location) {
         List<ValidationMessage> messages = new ArrayList<>();
-        
+
         PatternConfig config = patternConfigs.get(attributeName);
         if (config != null && value != null && !value.isEmpty()) {
             if (!config.getPattern().matcher(value).matches()) {
-                messages.add(ValidationMessage.builder()
-                    .severity(config.getSeverity())
-                    .ruleId(getRuleId())
-                    .message("Attribute '" + attributeName + "' does not match required pattern: actual '" + value + "', expected pattern '" + config.getPatternString() + "'")
-                    .location(location)
-                    .attributeName(attributeName)
-                    .actualValue(value)
-                    .expectedValue("Pattern '" + config.getPatternString() + "'")
-                    .errorType(ErrorType.INVALID_PATTERN)
-                    .addSuggestion(Suggestion.builder()
-                        .description("Format attribute value to match pattern")
-                        .addExample(":" + attributeName + ": [value matching pattern]")
-                        .addExample("Check pattern: " + config.getPatternString())
-                        .explanation("Attribute value must match the configured regex pattern for validation")
-                        .build())
-                    .build());
+                messages.add(ValidationMessage.builder().severity(config.getSeverity()).ruleId(getRuleId())
+                        .message("Attribute '" + attributeName + "' does not match required pattern: actual '" + value
+                                + "', expected pattern '" + config.getPatternString() + "'")
+                        .location(location).attributeName(attributeName).actualValue(value)
+                        .expectedValue("Pattern '" + config.getPatternString() + "'")
+                        .errorType(ErrorType.INVALID_PATTERN)
+                        .addSuggestion(Suggestion.builder().description("Format attribute value to match pattern")
+                                .addExample(":" + attributeName + ": [value matching pattern]")
+                                .addExample("Check pattern: " + config.getPatternString())
+                                .explanation("Attribute value must match the configured regex pattern for validation")
+                                .build())
+                        .build());
             }
         }
-        
+
         return messages;
     }
 
@@ -77,14 +73,15 @@ public final class PatternRule implements AttributeRule {
             Objects.requireNonNull(attributeName, "[" + getClass().getName() + "] attributeName must not be null");
             Objects.requireNonNull(pattern, "[" + getClass().getName() + "] pattern must not be null");
             Objects.requireNonNull(severity, "[" + getClass().getName() + "] severity must not be null");
-            
+
             try {
                 Pattern compiledPattern = Pattern.compile(pattern);
                 patternConfigs.put(attributeName, new PatternConfig(compiledPattern, pattern, severity));
             } catch (PatternSyntaxException e) {
-                throw new IllegalArgumentException("Invalid pattern for attribute '" + attributeName + "': " + e.getMessage());
+                throw new IllegalArgumentException(
+                        "Invalid pattern for attribute '" + attributeName + "': " + e.getMessage());
             }
-            
+
             return this;
         }
 

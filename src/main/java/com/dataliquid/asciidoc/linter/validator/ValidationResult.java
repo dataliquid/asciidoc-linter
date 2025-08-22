@@ -40,28 +40,17 @@ public final class ValidationResult {
     }
 
     public List<ValidationMessage> getMessagesBySeverity(Severity severity) {
-        return messages.stream()
-                .filter(msg -> msg.getSeverity() == severity)
-                .collect(Collectors.toList());
+        return messages.stream().filter(msg -> msg.getSeverity() == severity).collect(Collectors.toList());
     }
 
     public Map<String, List<ValidationMessage>> getMessagesByFile() {
-        return messages.stream()
-                .collect(Collectors.groupingBy(
-                    msg -> msg.getLocation().getFilename(),
-                    TreeMap::new,
-                    Collectors.toList()
-                ));
+        return messages.stream().collect(
+                Collectors.groupingBy(msg -> msg.getLocation().getFilename(), TreeMap::new, Collectors.toList()));
     }
 
     public Map<Integer, List<ValidationMessage>> getMessagesByLine(String filename) {
-        return messages.stream()
-                .filter(msg -> msg.getLocation().getFilename().equals(filename))
-                .collect(Collectors.groupingBy(
-                    msg -> msg.getLocation().getStartLine(),
-                    TreeMap::new,
-                    Collectors.toList()
-                ));
+        return messages.stream().filter(msg -> msg.getLocation().getFilename().equals(filename)).collect(
+                Collectors.groupingBy(msg -> msg.getLocation().getStartLine(), TreeMap::new, Collectors.toList()));
     }
 
     public boolean isValid() {
@@ -75,27 +64,21 @@ public final class ValidationResult {
     public boolean hasWarnings() {
         return messages.stream().anyMatch(msg -> msg.getSeverity() == Severity.WARN);
     }
-    
+
     public boolean hasMessages() {
         return !messages.isEmpty();
     }
 
     public int getErrorCount() {
-        return (int) messages.stream()
-                .filter(msg -> msg.getSeverity() == Severity.ERROR)
-                .count();
+        return (int) messages.stream().filter(msg -> msg.getSeverity() == Severity.ERROR).count();
     }
 
     public int getWarningCount() {
-        return (int) messages.stream()
-                .filter(msg -> msg.getSeverity() == Severity.WARN)
-                .count();
+        return (int) messages.stream().filter(msg -> msg.getSeverity() == Severity.WARN).count();
     }
 
     public int getInfoCount() {
-        return (int) messages.stream()
-                .filter(msg -> msg.getSeverity() == Severity.INFO)
-                .count();
+        return (int) messages.stream().filter(msg -> msg.getSeverity() == Severity.INFO).count();
     }
 
     public long getValidationTimeMillis() {
@@ -111,13 +94,12 @@ public final class ValidationResult {
             System.out.println("No validation issues found.");
         } else {
             Map<String, List<ValidationMessage>> messagesByFile = getMessagesByFile();
-            
+
             for (Map.Entry<String, List<ValidationMessage>> entry : messagesByFile.entrySet()) {
                 List<ValidationMessage> fileMessages = entry.getValue();
-                fileMessages.sort(Comparator
-                    .comparing((ValidationMessage msg) -> msg.getLocation().getStartLine())
-                    .thenComparing(msg -> msg.getLocation().getStartColumn()));
-                
+                fileMessages.sort(Comparator.comparing((ValidationMessage msg) -> msg.getLocation().getStartLine())
+                        .thenComparing(msg -> msg.getLocation().getStartColumn()));
+
                 for (ValidationMessage msg : fileMessages) {
                     System.out.println(msg.format());
                     System.out.println();
@@ -125,9 +107,8 @@ public final class ValidationResult {
             }
         }
 
-        System.out.println("Summary: " + getErrorCount() + " errors, " + 
-                         getWarningCount() + " warnings, " + 
-                         getInfoCount() + " info messages");
+        System.out.println("Summary: " + getErrorCount() + " errors, " + getWarningCount() + " warnings, "
+                + getInfoCount() + " info messages");
         System.out.println("Validation completed in " + getValidationTimeMillis() + "ms");
     }
 

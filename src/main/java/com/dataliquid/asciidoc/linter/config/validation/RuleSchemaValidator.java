@@ -23,15 +23,15 @@ import com.networknt.schema.ValidationMessage;
  */
 public class RuleSchemaValidator {
     private static final String SCHEMA_PATH = "/schemas/rules/linter-config-schema.yaml";
-    
+
     private final JsonSchema schema;
     private final ObjectMapper yamlMapper;
-    
+
     public RuleSchemaValidator() {
         this.yamlMapper = new ObjectMapper(new YAMLFactory());
         this.schema = loadSchema();
     }
-    
+
     private JsonSchema loadSchema() {
         try {
             // Load the main schema from classpath
@@ -39,76 +39,76 @@ public class RuleSchemaValidator {
             if (schemaStream == null) {
                 throw new RuleValidationException("Schema not found: " + SCHEMA_PATH);
             }
-            
+
             // Convert YAML schema to JSON
             JsonNode schemaNode = yamlMapper.readTree(schemaStream);
-            
+
             // Get the current classloader base URL for mapping
             String baseClasspathUrl = getClass().getResource("/schemas/").toString();
-            
+
             // Configure JsonSchemaFactory for JSON Schema 2020-12 with schema mappings
             JsonSchemaFactory factory = JsonSchemaFactory.builder()
-                .defaultMetaSchemaIri(JsonMetaSchema.getV202012().getIri())
-                .schemaMappers(schemaMappers -> {
-                    // Map HTTPS references to actual classpath URLs
-                    schemaMappers.mapPrefix("https://dataliquid.com/asciidoc/linter/schemas/", baseClasspathUrl);
-                })
-                .metaSchema(JsonMetaSchema.getV202012())
-                .build();
-            
+                    .defaultMetaSchemaIri(JsonMetaSchema.getV202012().getIri()).schemaMappers(schemaMappers -> {
+                        // Map HTTPS references to actual classpath URLs
+                        schemaMappers.mapPrefix("https://dataliquid.com/asciidoc/linter/schemas/", baseClasspathUrl);
+                    }).metaSchema(JsonMetaSchema.getV202012()).build();
+
             // Configure validators
-            SchemaValidatorsConfig config = SchemaValidatorsConfig.builder()
-                .pathType(PathType.JSON_POINTER)
-                .build();
-            
+            SchemaValidatorsConfig config = SchemaValidatorsConfig.builder().pathType(PathType.JSON_POINTER).build();
+
             // Load schema with the resource URL as base URI
             URI schemaUri = getClass().getResource(SCHEMA_PATH).toURI();
             return factory.getSchema(schemaUri, schemaNode, config);
-            
+
         } catch (IOException | URISyntaxException e) {
             throw new RuleValidationException("Failed to load schema", e);
         }
     }
-    
+
     /**
      * Validates a user configuration file against the schema.
-     * 
-     * @param userConfigFile the user's configuration file
-     * @throws RuleValidationException if validation fails
+     *
+     * @param userConfigFile
+     *            the user's configuration file
+     * @throws RuleValidationException
+     *             if validation fails
      */
     public void validateUserConfig(Path userConfigFile) throws RuleValidationException {
         if (!Files.exists(userConfigFile)) {
             throw new RuleValidationException("Configuration file not found: " + userConfigFile);
         }
-        
+
         try {
             JsonNode configNode = yamlMapper.readTree(userConfigFile.toFile());
             validateUserConfig(configNode);
         } catch (IOException e) {
-            throw new RuleValidationException(
-                "Failed to read configuration file: " + userConfigFile, e);
+            throw new RuleValidationException("Failed to read configuration file: " + userConfigFile, e);
         }
     }
-    
+
     /**
      * Validates a user configuration JsonNode against the schema.
-     * 
-     * @param userConfigNode the configuration as JsonNode
-     * @throws RuleValidationException if validation fails
+     *
+     * @param userConfigNode
+     *            the configuration as JsonNode
+     * @throws RuleValidationException
+     *             if validation fails
      */
     public void validateUserConfig(JsonNode userConfigNode) throws RuleValidationException {
         Set<ValidationMessage> messages = schema.validate(userConfigNode);
-        
+
         if (!messages.isEmpty()) {
             throw new RuleValidationException(formatErrors(messages));
         }
     }
-    
+
     /**
      * Validates a user configuration from an InputStream.
-     * 
-     * @param yamlStream the YAML configuration stream
-     * @throws RuleValidationException if validation fails
+     *
+     * @param yamlStream
+     *            the YAML configuration stream
+     * @throws RuleValidationException
+     *             if validation fails
      */
     public void validateUserConfig(InputStream yamlStream) throws RuleValidationException {
         try {
@@ -118,12 +118,14 @@ public class RuleSchemaValidator {
             throw new RuleValidationException("Failed to parse YAML configuration", e);
         }
     }
-    
+
     /**
      * Validates a user configuration from a YAML string.
-     * 
-     * @param yamlContent the YAML configuration as string
-     * @throws RuleValidationException if validation fails
+     *
+     * @param yamlContent
+     *            the YAML configuration as string
+     * @throws RuleValidationException
+     *             if validation fails
      */
     public void validateYamlString(String yamlContent) throws RuleValidationException {
         try {
@@ -133,14 +135,14 @@ public class RuleSchemaValidator {
             throw new RuleValidationException("Failed to parse YAML configuration string", e);
         }
     }
-    
+
     private String formatErrors(Set<ValidationMessage> messages) {
         StringBuilder sb = new StringBuilder("User configuration does not match schema:");
-        
+
         for (ValidationMessage msg : messages) {
             sb.append("\n\n  Error at ").append(msg.getInstanceLocation()).append(":");
             sb.append("\n    ").append(msg.getMessage());
-            
+
             // Add helpful context for common errors
             if ("enum".equals(msg.getType())) {
                 sb.append("\n    Valid values: error, warn, info");
@@ -150,7 +152,7 @@ public class RuleSchemaValidator {
                 sb.append("\n    Check the allowed range");
             }
         }
-        
+
         return sb.toString();
     }
 }

@@ -22,14 +22,14 @@ import com.dataliquid.asciidoc.linter.config.blocks.QuoteBlock;
 
 @DisplayName("QuoteBlock YAML Loading Tests")
 class QuoteBlockYamlTest {
-    
+
     private ConfigurationLoader loader;
-    
+
     @BeforeEach
     void setUp() {
         loader = new ConfigurationLoader(true); // Skip schema validation for tests
     }
-    
+
     @Test
     @DisplayName("should load quote block from YAML with all configurations")
     void shouldLoadQuoteBlockFromYaml() throws Exception {
@@ -70,33 +70,33 @@ class QuoteBlockYamlTest {
                                 max: 20
                                 severity: info
                 """;
-        
+
         InputStream stream = new ByteArrayInputStream(yaml.getBytes(StandardCharsets.UTF_8));
         LinterConfiguration config = loader.loadConfiguration(stream);
-        
+
         assertNotNull(config);
         assertNotNull(config.document());
         assertNotNull(config.document().sections());
         assertEquals(1, config.document().sections().size());
-        
+
         var section = config.document().sections().get(0);
         assertNotNull(section.allowedBlocks());
         assertEquals(1, section.allowedBlocks().size());
-        
+
         var block = section.allowedBlocks().get(0);
         assertInstanceOf(QuoteBlock.class, block);
-        
+
         QuoteBlock quoteBlock = (QuoteBlock) block;
         assertEquals("important-quote", quoteBlock.getName());
         assertEquals(Severity.INFO, quoteBlock.getSeverity());
         assertEquals(BlockType.QUOTE, quoteBlock.getType());
-        
+
         // Verify occurrence
         assertNotNull(quoteBlock.getOccurrence());
         assertEquals(0, quoteBlock.getOccurrence().min());
         assertEquals(3, quoteBlock.getOccurrence().max());
         assertEquals(Severity.WARN, quoteBlock.getOccurrence().severity());
-        
+
         // Verify attribution config
         assertNotNull(quoteBlock.getAttribution());
         assertTrue(quoteBlock.getAttribution().isRequired());
@@ -104,7 +104,7 @@ class QuoteBlockYamlTest {
         assertEquals(100, quoteBlock.getAttribution().getMaxLength());
         assertEquals("^[A-Z][a-zA-Z\\s\\.\\-,]+$", quoteBlock.getAttribution().getPattern().pattern());
         assertEquals(Severity.ERROR, quoteBlock.getAttribution().getSeverity());
-        
+
         // Verify citation config
         assertNotNull(quoteBlock.getCitation());
         assertFalse(quoteBlock.getCitation().isRequired());
@@ -112,20 +112,20 @@ class QuoteBlockYamlTest {
         assertEquals(200, quoteBlock.getCitation().getMaxLength());
         assertEquals("^[A-Za-z0-9\\s,\\.\\-\\(\\)]+$", quoteBlock.getCitation().getPattern().pattern());
         assertEquals(Severity.WARN, quoteBlock.getCitation().getSeverity());
-        
+
         // Verify content config
         assertNotNull(quoteBlock.getContent());
         assertTrue(quoteBlock.getContent().isRequired());
         assertEquals(20, quoteBlock.getContent().getMinLength());
         assertEquals(1000, quoteBlock.getContent().getMaxLength());
-        
+
         // Verify lines config
         assertNotNull(quoteBlock.getContent().getLines());
         assertEquals(1, quoteBlock.getContent().getLines().getMin());
         assertEquals(20, quoteBlock.getContent().getLines().getMax());
         assertEquals(Severity.INFO, quoteBlock.getContent().getLines().getSeverity());
     }
-    
+
     @Test
     @DisplayName("should load quote block with minimal configuration")
     void shouldLoadQuoteBlockWithMinimalConfig() throws Exception {
@@ -141,13 +141,13 @@ class QuoteBlockYamlTest {
                         - quote:
                             severity: info
                 """;
-        
+
         InputStream stream = new ByteArrayInputStream(yaml.getBytes(StandardCharsets.UTF_8));
         LinterConfiguration config = loader.loadConfiguration(stream);
-        
+
         var block = config.document().sections().get(0).allowedBlocks().get(0);
         assertInstanceOf(QuoteBlock.class, block);
-        
+
         QuoteBlock quoteBlock = (QuoteBlock) block;
         assertEquals(Severity.INFO, quoteBlock.getSeverity());
         assertNull(quoteBlock.getName());

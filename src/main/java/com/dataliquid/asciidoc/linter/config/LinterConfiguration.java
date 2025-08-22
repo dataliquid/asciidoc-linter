@@ -19,7 +19,9 @@ public final class LinterConfiguration {
     }
 
     @JsonProperty(DOCUMENT)
-    public DocumentConfiguration document() { return document; }
+    public DocumentConfiguration document() {
+        return document;
+    }
 
     public static Builder builder() {
         return new Builder();
@@ -43,8 +45,10 @@ public final class LinterConfiguration {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         LinterConfiguration that = (LinterConfiguration) o;
         return Objects.equals(document, that.document);
     }
