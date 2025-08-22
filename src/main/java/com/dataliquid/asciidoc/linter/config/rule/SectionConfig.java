@@ -37,25 +37,39 @@ public final class SectionConfig {
     }
 
     @JsonProperty(NAME)
-    public String name() { return name; }
-    
+    public String name() {
+        return name;
+    }
+
     @JsonProperty(ORDER)
-    public Integer order() { return order; }
-    
+    public Integer order() {
+        return order;
+    }
+
     @JsonProperty(LEVEL)
-    public int level() { return level; }
-    
+    public int level() {
+        return level;
+    }
+
     @JsonProperty(OCCURRENCE)
-    public OccurrenceConfig occurrence() { return occurrence; }
-    
+    public OccurrenceConfig occurrence() {
+        return occurrence;
+    }
+
     @JsonProperty(TITLE)
-    public TitleConfig title() { return title; }
-    
+    public TitleConfig title() {
+        return title;
+    }
+
     @JsonProperty(ALLOWED_BLOCKS)
-    public List<Block> allowedBlocks() { return allowedBlocks; }
-    
+    public List<Block> allowedBlocks() {
+        return allowedBlocks;
+    }
+
     @JsonProperty(SUBSECTIONS)
-    public List<SectionConfig> subsections() { return subsections; }
+    public List<SectionConfig> subsections() {
+        return subsections;
+    }
 
     public static Builder builder() {
         return new Builder();
@@ -131,16 +145,14 @@ public final class SectionConfig {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         SectionConfig that = (SectionConfig) o;
-        return level == that.level &&
-               Objects.equals(occurrence, that.occurrence) &&
-               Objects.equals(name, that.name) &&
-               Objects.equals(order, that.order) &&
-               Objects.equals(title, that.title) &&
-               Objects.equals(allowedBlocks, that.allowedBlocks) &&
-               Objects.equals(subsections, that.subsections);
+        return level == that.level && Objects.equals(occurrence, that.occurrence) && Objects.equals(name, that.name)
+                && Objects.equals(order, that.order) && Objects.equals(title, that.title)
+                && Objects.equals(allowedBlocks, that.allowedBlocks) && Objects.equals(subsections, that.subsections);
     }
 
     @Override

@@ -11,7 +11,8 @@ public final class SourceLocation {
     private final String sourceLine;
 
     private SourceLocation(Builder builder) {
-        this.filename = Objects.requireNonNull(builder.filename, "[" + getClass().getName() + "] filename must not be null");
+        this.filename = Objects.requireNonNull(builder.filename,
+                "[" + getClass().getName() + "] filename must not be null");
         this.startLine = builder.startLine;
         this.startColumn = builder.startColumn;
         this.endLine = builder.endLine;
@@ -61,15 +62,14 @@ public final class SourceLocation {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         SourceLocation that = (SourceLocation) o;
-        return startLine == that.startLine &&
-                startColumn == that.startColumn &&
-                endLine == that.endLine &&
-                endColumn == that.endColumn &&
-                Objects.equals(filename, that.filename) &&
-                Objects.equals(sourceLine, that.sourceLine);
+        return startLine == that.startLine && startColumn == that.startColumn && endLine == that.endLine
+                && endColumn == that.endColumn && Objects.equals(filename, that.filename)
+                && Objects.equals(sourceLine, that.sourceLine);
     }
 
     @Override

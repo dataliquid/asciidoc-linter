@@ -25,10 +25,14 @@ public final class DocumentConfiguration {
     }
 
     @JsonProperty(METADATA)
-    public MetadataConfiguration metadata() { return metadata; }
-    
+    public MetadataConfiguration metadata() {
+        return metadata;
+    }
+
     @JsonProperty(SECTIONS)
-    public List<SectionConfig> sections() { return sections; }
+    public List<SectionConfig> sections() {
+        return sections;
+    }
 
     public static Builder builder() {
         return new Builder();
@@ -63,11 +67,12 @@ public final class DocumentConfiguration {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         DocumentConfiguration that = (DocumentConfiguration) o;
-        return Objects.equals(metadata, that.metadata) &&
-               Objects.equals(sections, that.sections);
+        return Objects.equals(metadata, that.metadata) && Objects.equals(sections, that.sections);
     }
 
     @Override

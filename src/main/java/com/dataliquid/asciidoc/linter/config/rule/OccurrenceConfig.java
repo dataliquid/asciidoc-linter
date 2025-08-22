@@ -28,16 +28,24 @@ public final class OccurrenceConfig {
     }
 
     @JsonProperty(ORDER)
-    public Integer order() { return order; }
-    
+    public Integer order() {
+        return order;
+    }
+
     @JsonProperty(MIN)
-    public int min() { return min; }
-    
+    public int min() {
+        return min;
+    }
+
     @JsonProperty(MAX)
-    public int max() { return max; }
-    
+    public int max() {
+        return max;
+    }
+
     @JsonProperty(SEVERITY)
-    public Severity severity() { return severity; }
+    public Severity severity() {
+        return severity;
+    }
 
     public static Builder builder() {
         return new Builder();
@@ -81,13 +89,12 @@ public final class OccurrenceConfig {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         OccurrenceConfig that = (OccurrenceConfig) o;
-        return min == that.min &&
-               max == that.max &&
-               Objects.equals(order, that.order) &&
-               severity == that.severity;
+        return min == that.min && max == that.max && Objects.equals(order, that.order) && severity == that.severity;
     }
 
     @Override

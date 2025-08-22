@@ -31,25 +31,39 @@ public final class AttributeConfig {
     }
 
     @JsonProperty(NAME)
-    public String name() { return name; }
-    
+    public String name() {
+        return name;
+    }
+
     @JsonProperty(ORDER)
-    public Integer order() { return order; }
-    
+    public Integer order() {
+        return order;
+    }
+
     @JsonProperty(REQUIRED)
-    public boolean required() { return required; }
-    
+    public boolean required() {
+        return required;
+    }
+
     @JsonProperty(MIN_LENGTH)
-    public Integer minLength() { return minLength; }
-    
+    public Integer minLength() {
+        return minLength;
+    }
+
     @JsonProperty(MAX_LENGTH)
-    public Integer maxLength() { return maxLength; }
-    
+    public Integer maxLength() {
+        return maxLength;
+    }
+
     @JsonProperty(PATTERN)
-    public String pattern() { return pattern; }
-    
+    public String pattern() {
+        return pattern;
+    }
+
     @JsonProperty(SEVERITY)
-    public Severity severity() { return severity; }
+    public Severity severity() {
+        return severity;
+    }
 
     public static Builder builder() {
         return new Builder();
@@ -116,16 +130,14 @@ public final class AttributeConfig {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         AttributeConfig that = (AttributeConfig) o;
-        return required == that.required &&
-               Objects.equals(name, that.name) &&
-               Objects.equals(order, that.order) &&
-               Objects.equals(minLength, that.minLength) &&
-               Objects.equals(maxLength, that.maxLength) &&
-               Objects.equals(pattern, that.pattern) &&
-               severity == that.severity;
+        return required == that.required && Objects.equals(name, that.name) && Objects.equals(order, that.order)
+                && Objects.equals(minLength, that.minLength) && Objects.equals(maxLength, that.maxLength)
+                && Objects.equals(pattern, that.pattern) && severity == that.severity;
     }
 
     @Override

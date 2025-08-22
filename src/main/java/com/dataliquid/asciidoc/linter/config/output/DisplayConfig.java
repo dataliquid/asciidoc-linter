@@ -25,14 +25,14 @@ public final class DisplayConfig {
     private static final boolean DEFAULT_SHOW_LINE_NUMBERS = true;
     private static final int DEFAULT_MAX_LINE_WIDTH = 120;
     private static final boolean DEFAULT_SHOW_HEADER = true;
-    
+
     private final int contextLines;
     private final HighlightStyle highlightStyle;
     private final boolean useColors;
     private final boolean showLineNumbers;
     private final int maxLineWidth;
     private final boolean showHeader;
-    
+
     private DisplayConfig(Builder builder) {
         this.contextLines = builder.contextLines;
         this.highlightStyle = builder.highlightStyle;
@@ -41,54 +41,52 @@ public final class DisplayConfig {
         this.maxLineWidth = builder.maxLineWidth;
         this.showHeader = builder.showHeader;
     }
-    
+
     public int getContextLines() {
         return contextLines;
     }
-    
+
     public HighlightStyle getHighlightStyle() {
         return highlightStyle;
     }
-    
+
     public boolean isUseColors() {
         return useColors;
     }
-    
+
     public boolean isShowLineNumbers() {
         return showLineNumbers;
     }
-    
+
     public int getMaxLineWidth() {
         return maxLineWidth;
     }
-    
+
     public boolean isShowHeader() {
         return showHeader;
     }
-    
+
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         DisplayConfig that = (DisplayConfig) o;
-        return contextLines == that.contextLines &&
-                useColors == that.useColors &&
-                showLineNumbers == that.showLineNumbers &&
-                maxLineWidth == that.maxLineWidth &&
-                showHeader == that.showHeader &&
-                highlightStyle == that.highlightStyle;
+        return contextLines == that.contextLines && useColors == that.useColors
+                && showLineNumbers == that.showLineNumbers && maxLineWidth == that.maxLineWidth
+                && showHeader == that.showHeader && highlightStyle == that.highlightStyle;
     }
-    
+
     @Override
     public int hashCode() {
-        return Objects.hash(contextLines, highlightStyle, useColors, 
-                          showLineNumbers, maxLineWidth, showHeader);
+        return Objects.hash(contextLines, highlightStyle, useColors, showLineNumbers, maxLineWidth, showHeader);
     }
-    
+
     public static Builder builder() {
         return new Builder();
     }
-    
+
     @JsonPOJOBuilder(withPrefix = EMPTY)
     public static final class Builder {
         private int contextLines = DEFAULT_CONTEXT_LINES;
@@ -97,46 +95,46 @@ public final class DisplayConfig {
         private boolean showLineNumbers = DEFAULT_SHOW_LINE_NUMBERS;
         private int maxLineWidth = DEFAULT_MAX_LINE_WIDTH;
         private boolean showHeader = DEFAULT_SHOW_HEADER;
-        
+
         private Builder() {
         }
-        
+
         @JsonProperty(CONTEXT_LINES)
         public Builder contextLines(int contextLines) {
             this.contextLines = contextLines;
             return this;
         }
-        
+
         @JsonProperty(HIGHLIGHT_STYLE)
         public Builder highlightStyle(HighlightStyle highlightStyle) {
             this.highlightStyle = highlightStyle != null ? highlightStyle : DEFAULT_HIGHLIGHT_STYLE;
             return this;
         }
-        
+
         @JsonProperty(USE_COLORS)
         public Builder useColors(boolean useColors) {
             this.useColors = useColors;
             return this;
         }
-        
+
         @JsonProperty(SHOW_LINE_NUMBERS)
         public Builder showLineNumbers(boolean showLineNumbers) {
             this.showLineNumbers = showLineNumbers;
             return this;
         }
-        
+
         @JsonProperty(MAX_LINE_WIDTH)
         public Builder maxLineWidth(int maxLineWidth) {
             this.maxLineWidth = maxLineWidth;
             return this;
         }
-        
+
         @JsonProperty(SHOW_HEADER)
         public Builder showHeader(boolean showHeader) {
             this.showHeader = showHeader;
             return this;
         }
-        
+
         public DisplayConfig build() {
             return new DisplayConfig(this);
         }

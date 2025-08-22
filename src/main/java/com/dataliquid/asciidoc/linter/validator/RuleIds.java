@@ -1,15 +1,15 @@
 package com.dataliquid.asciidoc.linter.validator;
 
 /**
- * Central repository for all validation rule IDs.
- * This class provides constants for rule IDs used across all validators
+ * Central repository for all validation rule IDs. This class provides constants for rule IDs used across all validators
  * to ensure consistency and maintainability.
  */
 public final class RuleIds {
-    
+
     // Prevent instantiation
-    private RuleIds() {}
-    
+    private RuleIds() {
+    }
+
     /**
      * Rule IDs for general block validation
      */
@@ -24,7 +24,7 @@ public final class RuleIds {
         public static final String OCCURRENCE_MIN = "block.occurrence.min";
         public static final String OCCURRENCE_MAX = "block.occurrence.max";
     }
-    
+
     /**
      * Rule IDs for section validation
      */
@@ -37,7 +37,7 @@ public final class RuleIds {
         public static final String LEVEL0_MISSING = "section.level0.missing";
         public static final String ORDER = "section.order";
     }
-    
+
     /**
      * Rule IDs for metadata validation
      */
@@ -49,7 +49,7 @@ public final class RuleIds {
         public static final String LENGTH_MAX = "metadata.length.max";
         public static final String ORDER = "metadata.order";
     }
-    
+
     /**
      * Rule IDs for admonition block validation
      */
@@ -68,7 +68,7 @@ public final class RuleIds {
         public static final String ICON_REQUIRED = "admonition.icon.required";
         public static final String ICON_PATTERN = "admonition.icon.pattern";
     }
-    
+
     /**
      * Rule IDs for audio block validation
      */
@@ -82,7 +82,7 @@ public final class RuleIds {
         public static final String TITLE_MIN_LENGTH = "audio.title.minLength";
         public static final String TITLE_MAX_LENGTH = "audio.title.maxLength";
     }
-    
+
     /**
      * Rule IDs for description list (dlist) validation
      */
@@ -95,7 +95,7 @@ public final class RuleIds {
         public static final String DESCRIPTIONS_REQUIRED = "dlist.descriptions.required";
         public static final String DESCRIPTIONS_PATTERN = "dlist.descriptions.pattern";
     }
-    
+
     /**
      * Rule IDs for example block validation
      */
@@ -107,7 +107,7 @@ public final class RuleIds {
         public static final String COLLAPSIBLE_REQUIRED = "example.collapsible.required";
         public static final String COLLAPSIBLE_ALLOWED = "example.collapsible.allowed";
     }
-    
+
     /**
      * Rule IDs for image block validation
      */
@@ -124,7 +124,7 @@ public final class RuleIds {
         public static final String ALT_MIN_LENGTH = "image.alt.minLength";
         public static final String ALT_MAX_LENGTH = "image.alt.maxLength";
     }
-    
+
     /**
      * Rule IDs for listing block validation
      */
@@ -138,7 +138,7 @@ public final class RuleIds {
         public static final String CALLOUTS_NOT_ALLOWED = "listing.callouts.notAllowed";
         public static final String CALLOUTS_MAX = "listing.callouts.max";
     }
-    
+
     /**
      * Rule IDs for literal block validation
      */
@@ -149,7 +149,7 @@ public final class RuleIds {
         public static final String INDENTATION_CONSISTENT = "literal.indentation.consistent";
         public static final String LINES_MIN = "literal.lines.min";
     }
-    
+
     /**
      * Rule IDs for paragraph block validation
      */
@@ -165,7 +165,7 @@ public final class RuleIds {
         public static final String SENTENCE_WORDS_MIN = "paragraph.sentence.words.min";
         public static final String SENTENCE_WORDS_MAX = "paragraph.sentence.words.max";
     }
-    
+
     /**
      * Rule IDs for pass block validation
      */
@@ -179,7 +179,7 @@ public final class RuleIds {
         public static final String REASON_MIN_LENGTH = "pass.reason.minLength";
         public static final String REASON_MAX_LENGTH = "pass.reason.maxLength";
     }
-    
+
     /**
      * Rule IDs for quote block validation
      */
@@ -198,7 +198,7 @@ public final class RuleIds {
         public static final String CONTENT_LINES_MIN = "quote.content.lines.min";
         public static final String CONTENT_LINES_MAX = "quote.content.lines.max";
     }
-    
+
     /**
      * Rule IDs for sidebar block validation
      */
@@ -215,7 +215,7 @@ public final class RuleIds {
         public static final String POSITION_REQUIRED = "sidebar.position.required";
         public static final String POSITION_ALLOWED = "sidebar.position.allowed";
     }
-    
+
     /**
      * Rule IDs for table block validation
      */
@@ -233,7 +233,7 @@ public final class RuleIds {
         public static final String FORMAT_STYLE = "table.format.style";
         public static final String FORMAT_BORDERS = "table.format.borders";
     }
-    
+
     /**
      * Rule IDs for unordered list validation
      */
@@ -243,7 +243,7 @@ public final class RuleIds {
         public static final String NESTING_LEVEL_MAX = "ulist.nestingLevel.max";
         public static final String MARKER_STYLE = "ulist.markerStyle";
     }
-    
+
     /**
      * Rule IDs for verse block validation
      */
@@ -261,7 +261,7 @@ public final class RuleIds {
         public static final String CONTENT_MAX_LENGTH = "verse.content.maxLength";
         public static final String CONTENT_PATTERN = "verse.content.pattern";
     }
-    
+
     /**
      * Rule IDs for video block validation
      */

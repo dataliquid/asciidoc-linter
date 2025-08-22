@@ -14,16 +14,16 @@ import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Com
 public interface Block {
     @JsonProperty(TYPE)
     BlockType getType();
-    
+
     @JsonProperty(NAME)
     String getName();
-    
+
     @JsonProperty(SEVERITY)
     Severity getSeverity();
-    
+
     @JsonProperty(OCCURRENCE)
     OccurrenceConfig getOccurrence();
-    
+
     @JsonProperty(ORDER)
     Integer getOrder();
 }

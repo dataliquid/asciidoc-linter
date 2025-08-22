@@ -4,30 +4,17 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum BlockType {
-    PARAGRAPH,
-    LISTING,
-    TABLE,
-    IMAGE,
-    VERSE,
-    ADMONITION,
-    PASS,
-    LITERAL,
-    AUDIO,
-    QUOTE,
-    SIDEBAR,
-    EXAMPLE,
-    VIDEO,
-    ULIST,
-    DLIST;
-    
+    PARAGRAPH, LISTING, TABLE, IMAGE, VERSE, ADMONITION, PASS, LITERAL, AUDIO, QUOTE, SIDEBAR, EXAMPLE, VIDEO, ULIST, DLIST;
+
     @JsonValue
     public String toValue() {
         return name().toLowerCase();
     }
-    
+
     @JsonCreator
     public static BlockType fromValue(String value) {
-        if (value == null) return null;
+        if (value == null)
+            return null;
         return switch (value.toLowerCase()) {
             case "paragraph" -> PARAGRAPH;
             case "listing" -> LISTING;

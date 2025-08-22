@@ -13,14 +13,14 @@ import java.util.Map;
  */
 public class FileContentCache {
     private final Map<String, List<String>> cache = new HashMap<>();
-    
+
     /**
      * Gets the lines of a file, reading from cache if available.
      */
     public List<String> getFileLines(String filename) {
         return cache.computeIfAbsent(filename, this::readFileLines);
     }
-    
+
     private List<String> readFileLines(String filename) {
         try {
             Path path = Paths.get(filename);
@@ -32,7 +32,7 @@ public class FileContentCache {
         }
         return List.of();
     }
-    
+
     /**
      * Clears the cache to free memory.
      */

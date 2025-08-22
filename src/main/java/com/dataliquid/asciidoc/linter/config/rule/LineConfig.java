@@ -25,13 +25,19 @@ public final class LineConfig {
     }
 
     @JsonProperty(MIN)
-    public Integer min() { return min; }
-    
+    public Integer min() {
+        return min;
+    }
+
     @JsonProperty(MAX)
-    public Integer max() { return max; }
-    
+    public Integer max() {
+        return max;
+    }
+
     @JsonProperty(SEVERITY)
-    public Severity severity() { return severity; }
+    public Severity severity() {
+        return severity;
+    }
 
     public static Builder builder() {
         return new Builder();
@@ -68,12 +74,12 @@ public final class LineConfig {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         LineConfig lineRule = (LineConfig) o;
-        return Objects.equals(min, lineRule.min) &&
-               Objects.equals(max, lineRule.max) &&
-               severity == lineRule.severity;
+        return Objects.equals(min, lineRule.min) && Objects.equals(max, lineRule.max) && severity == lineRule.severity;
     }
 
     @Override

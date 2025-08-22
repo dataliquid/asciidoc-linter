@@ -34,7 +34,7 @@ public class VideoBlock extends AbstractBlock {
     private final PosterConfig poster;
     private final OptionsConfig options;
     private final CaptionConfig caption;
-    
+
     @Override
     public BlockType getType() {
         return BlockType.VIDEO;
@@ -80,16 +80,16 @@ public class VideoBlock extends AbstractBlock {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof VideoBlock)) return false;
-        if (!super.equals(o)) return false;
+        if (this == o)
+            return true;
+        if (!(o instanceof VideoBlock))
+            return false;
+        if (!super.equals(o))
+            return false;
         VideoBlock that = (VideoBlock) o;
-        return Objects.equals(url, that.url) &&
-                Objects.equals(width, that.width) &&
-                Objects.equals(height, that.height) &&
-                Objects.equals(poster, that.poster) &&
-                Objects.equals(options, that.options) &&
-                Objects.equals(caption, that.caption);
+        return Objects.equals(url, that.url) && Objects.equals(width, that.width) && Objects.equals(height, that.height)
+                && Objects.equals(poster, that.poster) && Objects.equals(options, that.options)
+                && Objects.equals(caption, that.caption);
     }
 
     @Override
@@ -179,12 +179,13 @@ public class VideoBlock extends AbstractBlock {
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (!(o instanceof UrlConfig)) return false;
+            if (this == o)
+                return true;
+            if (!(o instanceof UrlConfig))
+                return false;
             UrlConfig urlConfig = (UrlConfig) o;
-            return Objects.equals(required, urlConfig.required) &&
-                    patternEquals(pattern, urlConfig.pattern) &&
-                    severity == urlConfig.severity;
+            return Objects.equals(required, urlConfig.required) && patternEquals(pattern, urlConfig.pattern)
+                    && severity == urlConfig.severity;
         }
 
         @Override
@@ -193,8 +194,10 @@ public class VideoBlock extends AbstractBlock {
         }
 
         private boolean patternEquals(Pattern p1, Pattern p2) {
-            if (p1 == p2) return true;
-            if (p1 == null || p2 == null) return false;
+            if (p1 == p2)
+                return true;
+            if (p1 == null || p2 == null)
+                return false;
             return p1.pattern().equals(p2.pattern());
         }
 
@@ -274,13 +277,13 @@ public class VideoBlock extends AbstractBlock {
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (!(o instanceof DimensionConfig)) return false;
+            if (this == o)
+                return true;
+            if (!(o instanceof DimensionConfig))
+                return false;
             DimensionConfig that = (DimensionConfig) o;
-            return Objects.equals(required, that.required) &&
-                    Objects.equals(minValue, that.minValue) &&
-                    Objects.equals(maxValue, that.maxValue) &&
-                    severity == that.severity;
+            return Objects.equals(required, that.required) && Objects.equals(minValue, that.minValue)
+                    && Objects.equals(maxValue, that.maxValue) && severity == that.severity;
         }
 
         @Override
@@ -355,12 +358,13 @@ public class VideoBlock extends AbstractBlock {
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (!(o instanceof PosterConfig)) return false;
+            if (this == o)
+                return true;
+            if (!(o instanceof PosterConfig))
+                return false;
             PosterConfig that = (PosterConfig) o;
-            return Objects.equals(required, that.required) &&
-                    patternEquals(pattern, that.pattern) &&
-                    severity == that.severity;
+            return Objects.equals(required, that.required) && patternEquals(pattern, that.pattern)
+                    && severity == that.severity;
         }
 
         @Override
@@ -369,8 +373,10 @@ public class VideoBlock extends AbstractBlock {
         }
 
         private boolean patternEquals(Pattern p1, Pattern p2) {
-            if (p1 == p2) return true;
-            if (p1 == null || p2 == null) return false;
+            if (p1 == p2)
+                return true;
+            if (p1 == null || p2 == null)
+                return false;
             return p1.pattern().equals(p2.pattern());
         }
 
@@ -432,8 +438,10 @@ public class VideoBlock extends AbstractBlock {
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (!(o instanceof OptionsConfig)) return false;
+            if (this == o)
+                return true;
+            if (!(o instanceof OptionsConfig))
+                return false;
             OptionsConfig that = (OptionsConfig) o;
             return Objects.equals(controls, that.controls);
         }
@@ -483,11 +491,12 @@ public class VideoBlock extends AbstractBlock {
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (!(o instanceof ControlsConfig)) return false;
+            if (this == o)
+                return true;
+            if (!(o instanceof ControlsConfig))
+                return false;
             ControlsConfig that = (ControlsConfig) o;
-            return Objects.equals(required, that.required) &&
-                    severity == that.severity;
+            return Objects.equals(required, that.required) && severity == that.severity;
         }
 
         @Override
@@ -554,13 +563,13 @@ public class VideoBlock extends AbstractBlock {
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (!(o instanceof CaptionConfig)) return false;
+            if (this == o)
+                return true;
+            if (!(o instanceof CaptionConfig))
+                return false;
             CaptionConfig that = (CaptionConfig) o;
-            return Objects.equals(required, that.required) &&
-                    Objects.equals(minLength, that.minLength) &&
-                    Objects.equals(maxLength, that.maxLength) &&
-                    severity == that.severity;
+            return Objects.equals(required, that.required) && Objects.equals(minLength, that.minLength)
+                    && Objects.equals(maxLength, that.maxLength) && severity == that.severity;
         }
 
         @Override

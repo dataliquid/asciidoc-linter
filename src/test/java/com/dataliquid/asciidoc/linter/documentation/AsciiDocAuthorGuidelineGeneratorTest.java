@@ -26,110 +26,90 @@ import com.dataliquid.asciidoc.linter.config.rule.SectionConfig;
 
 @DisplayName("AsciiDocAuthorGuidelineGenerator")
 class AsciiDocAuthorGuidelineGeneratorTest {
-    
+
     private AsciiDocAuthorGuidelineGenerator generator;
     private StringWriter stringWriter;
     private PrintWriter printWriter;
-    
+
     @BeforeEach
     void setUp() {
         generator = new AsciiDocAuthorGuidelineGenerator();
         stringWriter = new StringWriter();
         printWriter = new PrintWriter(stringWriter);
     }
-    
+
     @Test
     @DisplayName("should return correct format")
     void shouldReturnCorrectFormat() {
         assertEquals(DocumentationFormat.ASCIIDOC, generator.getFormat());
     }
-    
+
     @Test
     @DisplayName("should return correct name")
     void shouldReturnCorrectName() {
         assertEquals("AsciiDoc Author Guideline Generator", generator.getName());
     }
-    
+
     @Nested
     @DisplayName("Generate Documentation")
     class GenerateDocumentation {
-        
+
         @Test
         @DisplayName("should require non-null configuration")
         void shouldRequireNonNullConfiguration() {
-            assertThrows(NullPointerException.class, () -> 
-                generator.generate(null, printWriter)
-            );
+            assertThrows(NullPointerException.class, () -> generator.generate(null, printWriter));
         }
-        
+
         @Test
         @DisplayName("should require non-null writer")
         void shouldRequireNonNullWriter() {
-            LinterConfiguration config = LinterConfiguration.builder()
-                .document(DocumentConfiguration.builder().build())
-                .build();
-            
-            assertThrows(NullPointerException.class, () -> 
-                generator.generate(config, null)
-            );
+            LinterConfiguration config = LinterConfiguration.builder().document(DocumentConfiguration.builder().build())
+                    .build();
+
+            assertThrows(NullPointerException.class, () -> generator.generate(config, null));
         }
-        
+
         @Test
         @DisplayName("should generate basic documentation structure")
         void shouldGenerateBasicDocumentationStructure() {
             // Given
-            LinterConfiguration config = LinterConfiguration.builder()
-                .document(DocumentConfiguration.builder().build())
-                .build();
-            
+            LinterConfiguration config = LinterConfiguration.builder().document(DocumentConfiguration.builder().build())
+                    .build();
+
             // When
             generator.generate(config, printWriter);
             printWriter.flush();
             String output = stringWriter.toString();
-            
+
             // Then
             assertTrue(output.contains("= AsciiDoc Author Guidelines"));
             assertTrue(output.contains(":toc: left"));
             assertTrue(output.contains("== Introduction"));
             assertTrue(output.contains("== Validation Levels"));
         }
-        
+
         @Test
         @DisplayName("should generate metadata documentation")
         void shouldGenerateMetadataDocumentation() {
             // Given
-            AttributeConfig titleAttr = AttributeConfig.builder()
-                .name("title")
-                .required(true)
-                .minLength(10)
-                .maxLength(100)
-                .severity(Severity.ERROR)
-                .build();
-            
-            AttributeConfig authorAttr = AttributeConfig.builder()
-                .name("author")
-                .required(false)
-                .pattern("^[A-Z].*")
-                .severity(Severity.WARN)
-                .build();
-            
-            MetadataConfiguration metadata = MetadataConfiguration.builder()
-                .attributes(List.of(titleAttr, authorAttr))
-                .build();
-            
-            DocumentConfiguration document = DocumentConfiguration.builder()
-                .metadata(metadata)
-                .build();
-            
-            LinterConfiguration config = LinterConfiguration.builder()
-                .document(document)
-                .build();
-            
+            AttributeConfig titleAttr = AttributeConfig.builder().name("title").required(true).minLength(10)
+                    .maxLength(100).severity(Severity.ERROR).build();
+
+            AttributeConfig authorAttr = AttributeConfig.builder().name("author").required(false).pattern("^[A-Z].*")
+                    .severity(Severity.WARN).build();
+
+            MetadataConfiguration metadata = MetadataConfiguration.builder().attributes(List.of(titleAttr, authorAttr))
+                    .build();
+
+            DocumentConfiguration document = DocumentConfiguration.builder().metadata(metadata).build();
+
+            LinterConfiguration config = LinterConfiguration.builder().document(document).build();
+
             // When
             generator.generate(config, printWriter);
             printWriter.flush();
             String output = stringWriter.toString();
-            
+
             // Then
             assertTrue(output.contains("== Document Metadata"));
             assertTrue(output.contains("=== Required Attributes"));
@@ -139,43 +119,27 @@ class AsciiDocAuthorGuidelineGeneratorTest {
             assertTrue(output.contains("Minimum length: 10 characters"));
             assertTrue(output.contains("Maximum length: 100 characters"));
         }
-        
+
         @Test
         @DisplayName("should generate section documentation")
         void shouldGenerateSectionDocumentation() {
             // Given
-            ParagraphBlock paragraph = ParagraphBlock.builder()
-                .severity(Severity.WARN)
-                .occurrence(OccurrenceConfig.builder()
-                    .min(1)
-                    .max(3)
-                    .build())
-                .build();
-            
-            SectionConfig section = SectionConfig.builder()
-                .name("introduction")
-                .level(1)
-                .order(1)
-                .occurrence(OccurrenceConfig.builder()
-                    .min(1)
-                    .max(1)
-                    .build())
-                .allowedBlocks(List.of(paragraph))
-                .build();
-            
-            DocumentConfiguration document = DocumentConfiguration.builder()
-                .sections(List.of(section))
-                .build();
-            
-            LinterConfiguration config = LinterConfiguration.builder()
-                .document(document)
-                .build();
-            
+            ParagraphBlock paragraph = ParagraphBlock.builder().severity(Severity.WARN)
+                    .occurrence(OccurrenceConfig.builder().min(1).max(3).build()).build();
+
+            SectionConfig section = SectionConfig.builder().name("introduction").level(1).order(1)
+                    .occurrence(OccurrenceConfig.builder().min(1).max(1).build()).allowedBlocks(List.of(paragraph))
+                    .build();
+
+            DocumentConfiguration document = DocumentConfiguration.builder().sections(List.of(section)).build();
+
+            LinterConfiguration config = LinterConfiguration.builder().document(document).build();
+
             // When
             generator.generate(config, printWriter);
             printWriter.flush();
             String output = stringWriter.toString();
-            
+
             // Then
             assertTrue(output.contains("== Document Structure"));
             assertTrue(output.contains("=== Section: introduction"));
@@ -183,67 +147,52 @@ class AsciiDocAuthorGuidelineGeneratorTest {
             assertTrue(output.contains("paragraph"));
         }
     }
-    
+
     @Nested
     @DisplayName("Visualization Styles")
     class VisualizationStyles {
-        
+
         @Test
         @DisplayName("should use default tree visualization")
         void shouldUseDefaultTreeVisualization() {
             // Given
-            SectionConfig section = SectionConfig.builder()
-                .name("test")
-                .level(1)
-                .build();
-            
-            DocumentConfiguration document = DocumentConfiguration.builder()
-                .sections(List.of(section))
-                .build();
-            
-            LinterConfiguration config = LinterConfiguration.builder()
-                .document(document)
-                .build();
-            
+            SectionConfig section = SectionConfig.builder().name("test").level(1).build();
+
+            DocumentConfiguration document = DocumentConfiguration.builder().sections(List.of(section)).build();
+
+            LinterConfiguration config = LinterConfiguration.builder().document(document).build();
+
             // When
             generator.generate(config, printWriter);
             printWriter.flush();
             String output = stringWriter.toString();
-            
+
             // Then
             assertTrue(output.contains("[literal]"));
             assertTrue(output.contains("document/"));
         }
-        
+
         @Test
         @DisplayName("should support multiple visualization styles")
         void shouldSupportMultipleVisualizationStyles() {
             // Given
             AsciiDocAuthorGuidelineGenerator multiStyleGenerator = new AsciiDocAuthorGuidelineGenerator(
-                Set.of(VisualizationStyle.TREE, VisualizationStyle.TABLE)
-            );
-            
-            SectionConfig section = SectionConfig.builder()
-                .name("test")
-                .level(1)
-                .build();
-            
-            DocumentConfiguration document = DocumentConfiguration.builder()
-                .sections(List.of(section))
-                .build();
-            
-            LinterConfiguration config = LinterConfiguration.builder()
-                .document(document)
-                .build();
-            
+                    Set.of(VisualizationStyle.TREE, VisualizationStyle.TABLE));
+
+            SectionConfig section = SectionConfig.builder().name("test").level(1).build();
+
+            DocumentConfiguration document = DocumentConfiguration.builder().sections(List.of(section)).build();
+
+            LinterConfiguration config = LinterConfiguration.builder().document(document).build();
+
             // When
             assertDoesNotThrow(() -> {
                 multiStyleGenerator.generate(config, printWriter);
                 printWriter.flush();
             });
-            
+
             String output = stringWriter.toString();
-            
+
             // Then
             assertTrue(output.contains("ASCII-art tree structure"));
             assertTrue(output.contains("Hierarchical table with indentation"));

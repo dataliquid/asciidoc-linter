@@ -22,8 +22,8 @@ public final class MetadataConfiguration {
     }
 
     @JsonProperty(ATTRIBUTES)
-    public List<AttributeConfig> attributes() { 
-        return attributes; 
+    public List<AttributeConfig> attributes() {
+        return attributes;
     }
 
     public static Builder builder() {
@@ -52,8 +52,10 @@ public final class MetadataConfiguration {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         MetadataConfiguration that = (MetadataConfiguration) o;
         return Objects.equals(attributes, that.attributes);
     }

@@ -32,38 +32,18 @@ class MetadataValidatorIntegrationTest {
     void setUp() throws IOException {
         asciidoctor = Asciidoctor.Factory.create();
         tempDir = Files.createTempDirectory("asciidoc-test");
-        
-        MetadataConfiguration config = MetadataConfiguration.builder()
-            .attributes(Arrays.asList(
-                AttributeConfig.builder()
-                    .name("author")
-                    .required(true)
-                    .minLength(5)
-                    .maxLength(50)
-                    .pattern("^[A-Z][a-zA-Z\\s\\.]+$")
-                    .severity(Severity.ERROR)
-                    .build(),
-                AttributeConfig.builder()
-                    .name("revdate")
-                    .required(true)
-                    .pattern("^\\d{4}-\\d{2}-\\d{2}$")
-                    .severity(Severity.ERROR)
-                    .build(),
-                AttributeConfig.builder()
-                    .name("version")
-                    .required(true)
-                    .pattern("^\\d+\\.\\d+(\\.\\d+)?$")
-                    .severity(Severity.ERROR)
-                    .build(),
-                AttributeConfig.builder()
-                    .name("email")
-                    .required(false)
-                    .pattern("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$")
-                    .severity(Severity.WARN)
-                    .build()
-            ))
-            .build();
-        
+
+        MetadataConfiguration config = MetadataConfiguration.builder().attributes(Arrays.asList(
+                AttributeConfig.builder().name("author").required(true).minLength(5).maxLength(50)
+                        .pattern("^[A-Z][a-zA-Z\\s\\.]+$").severity(Severity.ERROR).build(),
+                AttributeConfig.builder().name("revdate").required(true).pattern("^\\d{4}-\\d{2}-\\d{2}$")
+                        .severity(Severity.ERROR).build(),
+                AttributeConfig.builder().name("version").required(true).pattern("^\\d+\\.\\d+(\\.\\d+)?$")
+                        .severity(Severity.ERROR).build(),
+                AttributeConfig.builder().name("email").required(false)
+                        .pattern("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$").severity(Severity.WARN).build()))
+                .build();
+
         validator = MetadataValidator.fromConfiguration(config).build();
     }
 
@@ -72,21 +52,21 @@ class MetadataValidatorIntegrationTest {
     void shouldPassValidationWhenDocumentHasAllValidMetadata() throws IOException {
         // Given
         String content = """
-            = Valid Document Title
-            :author: John Doe
-            :revdate: 2024-01-15
-            :version: 1.0.0
-            :email: john.doe@example.com
-            
-            == Introduction
-            This is a valid document.
-            """;
+                = Valid Document Title
+                :author: John Doe
+                :revdate: 2024-01-15
+                :version: 1.0.0
+                :email: john.doe@example.com
+
+                == Introduction
+                This is a valid document.
+                """;
         File docFile = createTempFile("valid-doc.adoc", content);
         Document document = asciidoctor.loadFile(docFile, Options.builder().sourcemap(true).toFile(false).build());
-        
+
         // When
         ValidationResult result = validator.validate(document);
-        
+
         // Then
         assertFalse(result.hasErrors());
         assertFalse(result.hasWarnings());
@@ -98,26 +78,26 @@ class MetadataValidatorIntegrationTest {
     void shouldReportErrorsWhenRequiredAttributesAreMissing() throws IOException {
         // Given
         String content = """
-            = Valid Title
-            :email: test@example.com
-            
-            Content without required metadata.
-            """;
+                = Valid Title
+                :email: test@example.com
+
+                Content without required metadata.
+                """;
         File docFile = createTempFile("missing-attrs.adoc", content);
         Document document = asciidoctor.loadFile(docFile, Options.builder().sourcemap(true).toFile(false).build());
-        
+
         // When
         ValidationResult result = validator.validate(document);
-        
+
         // Then
         assertTrue(result.hasErrors());
         assertEquals(3, result.getErrorCount()); // missing author, revdate, version
         assertTrue(result.getMessages().stream()
-            .anyMatch(msg -> msg.getMessage().equals("Missing required attribute 'author'")));
+                .anyMatch(msg -> msg.getMessage().equals("Missing required attribute 'author'")));
         assertTrue(result.getMessages().stream()
-            .anyMatch(msg -> msg.getMessage().equals("Missing required attribute 'revdate'")));
+                .anyMatch(msg -> msg.getMessage().equals("Missing required attribute 'revdate'")));
         assertTrue(result.getMessages().stream()
-            .anyMatch(msg -> msg.getMessage().equals("Missing required attribute 'version'")));
+                .anyMatch(msg -> msg.getMessage().equals("Missing required attribute 'version'")));
     }
 
     @Test
@@ -125,37 +105,38 @@ class MetadataValidatorIntegrationTest {
     void shouldReportViolationsWhenAttributesDontMatchPatterns() throws IOException {
         // Given
         String content = """
-            = invalid title
-            :author: john
-            :revdate: 15.01.2024
-            :version: 1.0-SNAPSHOT
-            :email: invalid-email
-            
-            Content with invalid metadata patterns.
-            """;
+                = invalid title
+                :author: john
+                :revdate: 15.01.2024
+                :version: 1.0-SNAPSHOT
+                :email: invalid-email
+
+                Content with invalid metadata patterns.
+                """;
         File docFile = createTempFile("invalid-patterns.adoc", content);
         Document document = asciidoctor.loadFile(docFile, Options.builder().sourcemap(true).toFile(false).build());
-        
+
         // When
         ValidationResult result = validator.validate(document);
-        
+
         // Then
         assertTrue(result.hasErrors());
         assertTrue(result.hasWarnings());
         // Author pattern and length errors
-        assertTrue(result.getMessages().stream()
-            .anyMatch(msg -> msg.getMessage().equals("Attribute 'author' does not match required pattern: actual 'john', expected pattern '^[A-Z][a-zA-Z\\s\\.]+$'") ||
-                       msg.getMessage().equals("Attribute 'author' is too short: actual 'john' (4 characters), expected minimum 5 characters")));
+        assertTrue(result.getMessages().stream().anyMatch(msg -> msg.getMessage().equals(
+                "Attribute 'author' does not match required pattern: actual 'john', expected pattern '^[A-Z][a-zA-Z\\s\\.]+$'")
+                || msg.getMessage().equals(
+                        "Attribute 'author' is too short: actual 'john' (4 characters), expected minimum 5 characters")));
         // Date format error
-        assertTrue(result.getMessages().stream()
-            .anyMatch(msg -> msg.getMessage().equals("Attribute 'revdate' does not match required pattern: actual '15.01.2024', expected pattern '^\\d{4}-\\d{2}-\\d{2}$'")));
+        assertTrue(result.getMessages().stream().anyMatch(msg -> msg.getMessage().equals(
+                "Attribute 'revdate' does not match required pattern: actual '15.01.2024', expected pattern '^\\d{4}-\\d{2}-\\d{2}$'")));
         // Version format error
-        assertTrue(result.getMessages().stream()
-            .anyMatch(msg -> msg.getMessage().equals("Attribute 'version' does not match required pattern: actual '1.0-SNAPSHOT', expected pattern '^\\d+\\.\\d+(\\.\\d+)?$'")));
+        assertTrue(result.getMessages().stream().anyMatch(msg -> msg.getMessage().equals(
+                "Attribute 'version' does not match required pattern: actual '1.0-SNAPSHOT', expected pattern '^\\d+\\.\\d+(\\.\\d+)?$'")));
         // Email warning
-        assertTrue(result.getMessages().stream()
-            .anyMatch(msg -> msg.getMessage().equals("Attribute 'email' does not match required pattern: actual 'invalid-email', expected pattern '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$'") &&
-                       msg.getSeverity() == Severity.WARN));
+        assertTrue(result.getMessages().stream().anyMatch(msg -> msg.getMessage().equals(
+                "Attribute 'email' does not match required pattern: actual 'invalid-email', expected pattern '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$'")
+                && msg.getSeverity() == Severity.WARN));
     }
 
     @Test
@@ -163,24 +144,24 @@ class MetadataValidatorIntegrationTest {
     void shouldReportErrorsWhenAttributesViolateLengthConstraints() throws IOException {
         // Given
         String content = """
-            = Doc
-            :author: Jo
-            :revdate: 2024-01-15
-            :version: 1.0.0
-            
-            Short title and author.
-            """;
+                = Doc
+                :author: Jo
+                :revdate: 2024-01-15
+                :version: 1.0.0
+
+                Short title and author.
+                """;
         File docFile = createTempFile("length-violations.adoc", content);
         Document document = asciidoctor.loadFile(docFile, Options.builder().sourcemap(true).toFile(false).build());
-        
+
         // When
         ValidationResult result = validator.validate(document);
-        
+
         // Then
         assertTrue(result.hasErrors());
         // Author too short
-        assertTrue(result.getMessages().stream()
-            .anyMatch(msg -> msg.getMessage().equals("Attribute 'author' is too short: actual 'Jo' (2 characters), expected minimum 5 characters")));
+        assertTrue(result.getMessages().stream().anyMatch(msg -> msg.getMessage()
+                .equals("Attribute 'author' is too short: actual 'Jo' (2 characters), expected minimum 5 characters")));
     }
 
     @Test
@@ -188,19 +169,19 @@ class MetadataValidatorIntegrationTest {
     void shouldAcceptAttributesInAnyOrder() throws IOException {
         // Given
         String content = """
-            = Valid Document Title
-            :version: 1.0.0
-            :revdate: 2024-01-15
-            :author: John Doe
-            
-            Attributes can be in any order.
-            """;
+                = Valid Document Title
+                :version: 1.0.0
+                :revdate: 2024-01-15
+                :author: John Doe
+
+                Attributes can be in any order.
+                """;
         File docFile = createTempFile("any-order.adoc", content);
         Document document = asciidoctor.loadFile(docFile, Options.builder().sourcemap(true).toFile(false).build());
-        
+
         // When
         ValidationResult result = validator.validate(document);
-        
+
         // Then
         assertFalse(result.hasErrors());
         assertEquals(0, result.getErrorCount());
@@ -213,10 +194,10 @@ class MetadataValidatorIntegrationTest {
         String content = "";
         File docFile = createTempFile("empty.adoc", content);
         Document document = asciidoctor.loadFile(docFile, Options.builder().sourcemap(true).toFile(false).build());
-        
+
         // When
         ValidationResult result = validator.validate(document);
-        
+
         // Then
         assertTrue(result.hasErrors());
         assertEquals(3, result.getErrorCount()); // All required attributes missing (author, revdate, version)
@@ -227,26 +208,26 @@ class MetadataValidatorIntegrationTest {
     void shouldGenerateReadableReportWhenPrintingValidationResult() throws IOException {
         // Given
         String content = """
-            = test
-            :author: j
-            
-            Invalid document.
-            """;
+                = test
+                :author: j
+
+                Invalid document.
+                """;
         File docFile = createTempFile("report-test.adoc", content);
         Document document = asciidoctor.loadFile(docFile, Options.builder().sourcemap(true).toFile(false).build());
         ValidationResult result = validator.validate(document);
-        
+
         // When
         java.io.ByteArrayOutputStream baos = new java.io.ByteArrayOutputStream();
         java.io.PrintStream ps = new java.io.PrintStream(baos);
         java.io.PrintStream old = System.out;
         System.setOut(ps);
-        
+
         result.printReport();
-        
+
         System.out.flush();
         System.setOut(old);
-        
+
         // Then
         String report = baos.toString();
         assertTrue(report.contains("Validation Report"));

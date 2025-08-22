@@ -22,10 +22,14 @@ public final class TitleConfig {
     }
 
     @JsonProperty(PATTERN)
-    public String pattern() { return pattern; }
-    
+    public String pattern() {
+        return pattern;
+    }
+
     @JsonProperty(SEVERITY)
-    public Severity severity() { return severity; }
+    public Severity severity() {
+        return severity;
+    }
 
     public static Builder builder() {
         return new Builder();
@@ -44,7 +48,8 @@ public final class TitleConfig {
 
         @JsonProperty(SEVERITY)
         public Builder severity(Severity severity) {
-            this.severity = Objects.requireNonNull(severity, "[" + getClass().getName() + "] severity must not be null");
+            this.severity = Objects.requireNonNull(severity,
+                    "[" + getClass().getName() + "] severity must not be null");
             return this;
         }
 
@@ -58,11 +63,12 @@ public final class TitleConfig {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         TitleConfig that = (TitleConfig) o;
-        return Objects.equals(pattern, that.pattern) &&
-               severity == that.severity;
+        return Objects.equals(pattern, that.pattern) && severity == that.severity;
     }
 
     @Override
