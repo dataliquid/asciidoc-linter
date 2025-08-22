@@ -66,7 +66,9 @@ class QuoteBlockValidatorTest {
             when(mockNode.getAttribute("attribution")).thenReturn(null);
             when(mockNode.getAttribute("1")).thenReturn(null);
 
-            QuoteBlock block = QuoteBlock.builder().severity(Severity.WARN)
+            QuoteBlock block = QuoteBlock
+                    .builder()
+                    .severity(Severity.WARN)
                     .attribution(QuoteBlock.AttributionConfig.builder().required(true).severity(Severity.ERROR).build())
                     .build();
 
@@ -82,8 +84,11 @@ class QuoteBlockValidatorTest {
         void shouldValidateAuthorMinLength() {
             when(mockNode.getAttribute("author")).thenReturn("AB");
 
-            QuoteBlock block = QuoteBlock.builder().severity(Severity.WARN)
-                    .attribution(QuoteBlock.AttributionConfig.builder().minLength(3).build()).build();
+            QuoteBlock block = QuoteBlock
+                    .builder()
+                    .severity(Severity.WARN)
+                    .attribution(QuoteBlock.AttributionConfig.builder().minLength(3).build())
+                    .build();
 
             List<ValidationMessage> results = validator.validate(mockNode, block, mockContext);
 
@@ -100,7 +105,9 @@ class QuoteBlockValidatorTest {
             String longAuthor = "A".repeat(101);
             when(mockNode.getAttribute("author")).thenReturn(longAuthor);
 
-            QuoteBlock block = QuoteBlock.builder().severity(Severity.INFO)
+            QuoteBlock block = QuoteBlock
+                    .builder()
+                    .severity(Severity.INFO)
                     .attribution(QuoteBlock.AttributionConfig.builder().maxLength(100).severity(Severity.ERROR).build())
                     .build();
 
@@ -118,7 +125,9 @@ class QuoteBlockValidatorTest {
         void shouldValidateAuthorPattern() {
             when(mockNode.getAttribute("author")).thenReturn("123 Invalid");
 
-            QuoteBlock block = QuoteBlock.builder().severity(Severity.WARN)
+            QuoteBlock block = QuoteBlock
+                    .builder()
+                    .severity(Severity.WARN)
                     .attribution(QuoteBlock.AttributionConfig.builder().pattern("^[A-Z][a-zA-Z\\s\\.\\-,]+$").build())
                     .build();
 
@@ -134,8 +143,16 @@ class QuoteBlockValidatorTest {
         void shouldAcceptValidAuthor() {
             when(mockNode.getAttribute("author")).thenReturn("John Doe");
 
-            QuoteBlock block = QuoteBlock.builder().severity(Severity.WARN).attribution(QuoteBlock.AttributionConfig
-                    .builder().required(true).minLength(3).maxLength(100).pattern("^[A-Z][a-zA-Z\\s\\.\\-,]+$").build())
+            QuoteBlock block = QuoteBlock
+                    .builder()
+                    .severity(Severity.WARN)
+                    .attribution(QuoteBlock.AttributionConfig
+                            .builder()
+                            .required(true)
+                            .minLength(3)
+                            .maxLength(100)
+                            .pattern("^[A-Z][a-zA-Z\\s\\.\\-,]+$")
+                            .build())
                     .build();
 
             List<ValidationMessage> results = validator.validate(mockNode, block, mockContext);
@@ -149,8 +166,11 @@ class QuoteBlockValidatorTest {
             when(mockNode.getAttribute("author")).thenReturn(null);
             when(mockNode.getAttribute("attribution")).thenReturn("Jane Smith");
 
-            QuoteBlock block = QuoteBlock.builder().severity(Severity.WARN)
-                    .attribution(QuoteBlock.AttributionConfig.builder().required(true).build()).build();
+            QuoteBlock block = QuoteBlock
+                    .builder()
+                    .severity(Severity.WARN)
+                    .attribution(QuoteBlock.AttributionConfig.builder().required(true).build())
+                    .build();
 
             List<ValidationMessage> results = validator.validate(mockNode, block, mockContext);
 
@@ -169,7 +189,9 @@ class QuoteBlockValidatorTest {
             when(mockNode.getAttribute("source")).thenReturn(null);
             when(mockNode.getAttribute("2")).thenReturn(null);
 
-            QuoteBlock block = QuoteBlock.builder().severity(Severity.WARN)
+            QuoteBlock block = QuoteBlock
+                    .builder()
+                    .severity(Severity.WARN)
                     .citation(QuoteBlock.CitationConfig.builder().required(true).severity(Severity.ERROR).build())
                     .build();
 
@@ -185,7 +207,9 @@ class QuoteBlockValidatorTest {
         void shouldValidateSourcePattern() {
             when(mockNode.getAttribute("citetitle")).thenReturn("Book @ Title #123");
 
-            QuoteBlock block = QuoteBlock.builder().severity(Severity.WARN)
+            QuoteBlock block = QuoteBlock
+                    .builder()
+                    .severity(Severity.WARN)
                     .citation(QuoteBlock.CitationConfig.builder().pattern("^[A-Za-z0-9\\s,\\.\\-\\(\\)]+$").build())
                     .build();
 
@@ -202,8 +226,11 @@ class QuoteBlockValidatorTest {
             when(mockNode.getAttribute("source")).thenReturn(null);
             when(mockNode.getAttribute("2")).thenReturn("The Great Book");
 
-            QuoteBlock block = QuoteBlock.builder().severity(Severity.WARN)
-                    .citation(QuoteBlock.CitationConfig.builder().required(true).minLength(5).build()).build();
+            QuoteBlock block = QuoteBlock
+                    .builder()
+                    .severity(Severity.WARN)
+                    .citation(QuoteBlock.CitationConfig.builder().required(true).minLength(5).build())
+                    .build();
 
             List<ValidationMessage> results = validator.validate(mockNode, block, mockContext);
 
@@ -220,8 +247,11 @@ class QuoteBlockValidatorTest {
         void shouldValidateRequiredContentWhenMissing() {
             when(mockNode.getContent()).thenReturn(null);
 
-            QuoteBlock block = QuoteBlock.builder().severity(Severity.WARN)
-                    .content(QuoteBlock.ContentConfig.builder().required(true).build()).build();
+            QuoteBlock block = QuoteBlock
+                    .builder()
+                    .severity(Severity.WARN)
+                    .content(QuoteBlock.ContentConfig.builder().required(true).build())
+                    .build();
 
             List<ValidationMessage> results = validator.validate(mockNode, block, mockContext);
 
@@ -234,8 +264,11 @@ class QuoteBlockValidatorTest {
         void shouldValidateContentMinLength() {
             when(mockNode.getContent()).thenReturn("Short");
 
-            QuoteBlock block = QuoteBlock.builder().severity(Severity.WARN)
-                    .content(QuoteBlock.ContentConfig.builder().minLength(20).build()).build();
+            QuoteBlock block = QuoteBlock
+                    .builder()
+                    .severity(Severity.WARN)
+                    .content(QuoteBlock.ContentConfig.builder().minLength(20).build())
+                    .build();
 
             List<ValidationMessage> results = validator.validate(mockNode, block, mockContext);
 
@@ -251,8 +284,11 @@ class QuoteBlockValidatorTest {
             String longContent = "A".repeat(1001);
             when(mockNode.getContent()).thenReturn(longContent);
 
-            QuoteBlock block = QuoteBlock.builder().severity(Severity.WARN)
-                    .content(QuoteBlock.ContentConfig.builder().maxLength(1000).build()).build();
+            QuoteBlock block = QuoteBlock
+                    .builder()
+                    .severity(Severity.WARN)
+                    .content(QuoteBlock.ContentConfig.builder().maxLength(1000).build())
+                    .build();
 
             List<ValidationMessage> results = validator.validate(mockNode, block, mockContext);
 
@@ -268,9 +304,13 @@ class QuoteBlockValidatorTest {
             String multiLineContent = "Line 1\nLine 2\nLine 3";
             when(mockNode.getContent()).thenReturn(multiLineContent);
 
-            QuoteBlock block = QuoteBlock.builder().severity(Severity.WARN)
-                    .content(QuoteBlock.ContentConfig.builder()
-                            .lines(QuoteBlock.LinesConfig.builder().min(5).severity(Severity.ERROR).build()).build())
+            QuoteBlock block = QuoteBlock
+                    .builder()
+                    .severity(Severity.WARN)
+                    .content(QuoteBlock.ContentConfig
+                            .builder()
+                            .lines(QuoteBlock.LinesConfig.builder().min(5).severity(Severity.ERROR).build())
+                            .build())
                     .build();
 
             List<ValidationMessage> results = validator.validate(mockNode, block, mockContext);
@@ -288,8 +328,13 @@ class QuoteBlockValidatorTest {
             String manyLines = String.join("\n", "Line".repeat(21).split("(?<=.{4})"));
             when(mockNode.getContent()).thenReturn(manyLines);
 
-            QuoteBlock block = QuoteBlock.builder().severity(Severity.WARN).content(
-                    QuoteBlock.ContentConfig.builder().lines(QuoteBlock.LinesConfig.builder().max(20).build()).build())
+            QuoteBlock block = QuoteBlock
+                    .builder()
+                    .severity(Severity.WARN)
+                    .content(QuoteBlock.ContentConfig
+                            .builder()
+                            .lines(QuoteBlock.LinesConfig.builder().max(20).build())
+                            .build())
                     .build();
 
             List<ValidationMessage> results = validator.validate(mockNode, block, mockContext);
@@ -308,9 +353,14 @@ class QuoteBlockValidatorTest {
         void shouldUseNestedSeverityOverBlockSeverity() {
             when(mockNode.getAttribute("author")).thenReturn("AB");
 
-            QuoteBlock block = QuoteBlock.builder().severity(Severity.INFO) // Block level
-                    .attribution(QuoteBlock.AttributionConfig.builder().minLength(3).severity(Severity.ERROR) // Nested
-                                                                                                              // level
+            QuoteBlock block = QuoteBlock
+                    .builder()
+                    .severity(Severity.INFO) // Block level
+                    .attribution(QuoteBlock.AttributionConfig
+                            .builder()
+                            .minLength(3)
+                            .severity(Severity.ERROR) // Nested
+                                                      // level
                             .build())
                     .build();
 
@@ -325,8 +375,12 @@ class QuoteBlockValidatorTest {
         void shouldFallBackToBlockSeverity() {
             when(mockNode.getAttribute("source")).thenReturn("AB");
 
-            QuoteBlock block = QuoteBlock.builder().severity(Severity.WARN) // Block level
-                    .citation(QuoteBlock.CitationConfig.builder().minLength(3)
+            QuoteBlock block = QuoteBlock
+                    .builder()
+                    .severity(Severity.WARN) // Block level
+                    .citation(QuoteBlock.CitationConfig
+                            .builder()
+                            .minLength(3)
                             // No severity specified
                             .build())
                     .build();
@@ -347,15 +401,29 @@ class QuoteBlockValidatorTest {
         void shouldValidateCompleteQuoteBlock() {
             when(mockNode.getAttribute("author")).thenReturn("Albert Einstein");
             when(mockNode.getAttribute("citetitle")).thenReturn("Theory of Relativity");
-            when(mockNode.getContent()).thenReturn("Imagination is more important than knowledge. "
-                    + "Knowledge is limited. Imagination embraces the entire world, stimulating progress, giving birth to evolution.");
+            when(mockNode.getContent())
+                    .thenReturn("Imagination is more important than knowledge. "
+                            + "Knowledge is limited. Imagination embraces the entire world, stimulating progress, giving birth to evolution.");
 
-            QuoteBlock block = QuoteBlock.builder().severity(Severity.INFO)
-                    .attribution(QuoteBlock.AttributionConfig.builder().required(true).minLength(3).maxLength(100)
-                            .pattern("^[A-Z][a-zA-Z\\s\\.\\-,]+$").severity(Severity.ERROR).build())
+            QuoteBlock block = QuoteBlock
+                    .builder()
+                    .severity(Severity.INFO)
+                    .attribution(QuoteBlock.AttributionConfig
+                            .builder()
+                            .required(true)
+                            .minLength(3)
+                            .maxLength(100)
+                            .pattern("^[A-Z][a-zA-Z\\s\\.\\-,]+$")
+                            .severity(Severity.ERROR)
+                            .build())
                     .citation(QuoteBlock.CitationConfig.builder().required(false).minLength(5).maxLength(200).build())
-                    .content(QuoteBlock.ContentConfig.builder().required(true).minLength(20).maxLength(1000)
-                            .lines(QuoteBlock.LinesConfig.builder().min(1).max(20).build()).build())
+                    .content(QuoteBlock.ContentConfig
+                            .builder()
+                            .required(true)
+                            .minLength(20)
+                            .maxLength(1000)
+                            .lines(QuoteBlock.LinesConfig.builder().min(1).max(20).build())
+                            .build())
                     .build();
 
             List<ValidationMessage> results = validator.validate(mockNode, block, mockContext);
@@ -370,10 +438,13 @@ class QuoteBlockValidatorTest {
             when(mockNode.getAttribute("citetitle")).thenReturn("b"); // Too short
             when(mockNode.getContent()).thenReturn("Short"); // Too short
 
-            QuoteBlock block = QuoteBlock.builder().severity(Severity.WARN)
+            QuoteBlock block = QuoteBlock
+                    .builder()
+                    .severity(Severity.WARN)
                     .attribution(QuoteBlock.AttributionConfig.builder().minLength(3).build())
                     .citation(QuoteBlock.CitationConfig.builder().minLength(5).build())
-                    .content(QuoteBlock.ContentConfig.builder().minLength(20).build()).build();
+                    .content(QuoteBlock.ContentConfig.builder().minLength(20).build())
+                    .build();
 
             List<ValidationMessage> results = validator.validate(mockNode, block, mockContext);
 

@@ -14,8 +14,8 @@ public final class SourceContext {
     private final SourceLocation errorLocation;
 
     public SourceContext(List<String> fileLines, int startLineNumber, SourceLocation errorLocation) {
-        this.errorLocation = Objects.requireNonNull(errorLocation,
-                "[" + getClass().getName() + "] errorLocation must not be null");
+        this.errorLocation = Objects
+                .requireNonNull(errorLocation, "[" + getClass().getName() + "] errorLocation must not be null");
         this.lines = new ArrayList<>();
 
         int lineNum = startLineNumber;
@@ -31,8 +31,8 @@ public final class SourceContext {
      */
     public SourceContext(List<ContextLine> contextLines, SourceLocation originalLocation) {
         this.lines = new ArrayList<>(contextLines);
-        this.errorLocation = Objects.requireNonNull(originalLocation,
-                "[" + getClass().getName() + "] originalLocation must not be null");
+        this.errorLocation = Objects
+                .requireNonNull(originalLocation, "[" + getClass().getName() + "] originalLocation must not be null");
     }
 
     public List<ContextLine> getLines() {

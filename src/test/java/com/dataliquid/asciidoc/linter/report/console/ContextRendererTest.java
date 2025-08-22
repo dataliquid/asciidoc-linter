@@ -25,8 +25,14 @@ class ContextRendererTest {
 
     @BeforeEach
     void setUp() {
-        displayConfig = DisplayConfig.builder().contextLines(2).useColors(true).showLineNumbers(true).maxLineWidth(120)
-                .showHeader(true).build();
+        displayConfig = DisplayConfig
+                .builder()
+                .contextLines(2)
+                .useColors(true)
+                .showLineNumbers(true)
+                .maxLineWidth(120)
+                .showHeader(true)
+                .build();
         renderer = new ContextRenderer(displayConfig);
     }
 
@@ -38,16 +44,27 @@ class ContextRendererTest {
         @DisplayName("should handle short files without throwing exception")
         void shouldHandleShortFiles() {
             // Given
-            SourceLocation location = SourceLocation.builder().filename("test.adoc").startLine(8).endLine(8)
-                    .startColumn(1).endColumn(1).build();
+            SourceLocation location = SourceLocation
+                    .builder()
+                    .filename("test.adoc")
+                    .startLine(8)
+                    .endLine(8)
+                    .startColumn(1)
+                    .endColumn(1)
+                    .build();
 
-            ValidationMessage message = ValidationMessage.builder().severity(Severity.ERROR).ruleId("test.rule")
-                    .message("Test error").location(location).contextLines(List.of("Line 1", "Line 2", "Line 3")) // Short
-                                                                                                                  // file
-                                                                                                                  // with
-                                                                                                                  // only
-                                                                                                                  // 3
-                                                                                                                  // lines
+            ValidationMessage message = ValidationMessage
+                    .builder()
+                    .severity(Severity.ERROR)
+                    .ruleId("test.rule")
+                    .message("Test error")
+                    .location(location)
+                    .contextLines(List.of("Line 1", "Line 2", "Line 3")) // Short
+                                                                         // file
+                                                                         // with
+                                                                         // only
+                                                                         // 3
+                                                                         // lines
                     .build();
 
             // When & Then - should not throw exception
@@ -62,11 +79,23 @@ class ContextRendererTest {
         void shouldUseProvidedContextLines() {
             // Given
             List<String> providedLines = List.of("Line 1", "Line 2", "Line 3");
-            SourceLocation location = SourceLocation.builder().filename("test.adoc").startLine(2).endLine(2)
-                    .startColumn(1).endColumn(10).build();
+            SourceLocation location = SourceLocation
+                    .builder()
+                    .filename("test.adoc")
+                    .startLine(2)
+                    .endLine(2)
+                    .startColumn(1)
+                    .endColumn(10)
+                    .build();
 
-            ValidationMessage message = ValidationMessage.builder().severity(Severity.ERROR).ruleId("test.rule")
-                    .message("Test error").location(location).contextLines(providedLines).build();
+            ValidationMessage message = ValidationMessage
+                    .builder()
+                    .severity(Severity.ERROR)
+                    .ruleId("test.rule")
+                    .message("Test error")
+                    .location(location)
+                    .contextLines(providedLines)
+                    .build();
 
             // When
             SourceContext context = renderer.getContext(message);
@@ -81,11 +110,22 @@ class ContextRendererTest {
         @DisplayName("should handle empty file content")
         void shouldHandleEmptyFileContent() {
             // Given
-            SourceLocation location = SourceLocation.builder().filename("empty.adoc").startLine(1).endLine(1)
-                    .startColumn(1).endColumn(1).build();
+            SourceLocation location = SourceLocation
+                    .builder()
+                    .filename("empty.adoc")
+                    .startLine(1)
+                    .endLine(1)
+                    .startColumn(1)
+                    .endColumn(1)
+                    .build();
 
-            ValidationMessage message = ValidationMessage.builder().severity(Severity.ERROR).ruleId("test.rule")
-                    .message("Test error").location(location).contextLines(List.of()) // Empty context
+            ValidationMessage message = ValidationMessage
+                    .builder()
+                    .severity(Severity.ERROR)
+                    .ruleId("test.rule")
+                    .message("Test error")
+                    .location(location)
+                    .contextLines(List.of()) // Empty context
                     .build();
 
             // When
@@ -101,11 +141,23 @@ class ContextRendererTest {
         void shouldHandleLocationAtEndOfFile() {
             // Given
             List<String> lines = List.of("Line 1", "Line 2", "Line 3", "Line 4", "Line 5");
-            SourceLocation location = SourceLocation.builder().filename("test.adoc").startLine(5).endLine(5)
-                    .startColumn(1).endColumn(10).build();
+            SourceLocation location = SourceLocation
+                    .builder()
+                    .filename("test.adoc")
+                    .startLine(5)
+                    .endLine(5)
+                    .startColumn(1)
+                    .endColumn(10)
+                    .build();
 
-            ValidationMessage message = ValidationMessage.builder().severity(Severity.ERROR).ruleId("test.rule")
-                    .message("Test error").location(location).contextLines(lines).build();
+            ValidationMessage message = ValidationMessage
+                    .builder()
+                    .severity(Severity.ERROR)
+                    .ruleId("test.rule")
+                    .message("Test error")
+                    .location(location)
+                    .contextLines(lines)
+                    .build();
 
             // When
             SourceContext context = renderer.getContext(message);

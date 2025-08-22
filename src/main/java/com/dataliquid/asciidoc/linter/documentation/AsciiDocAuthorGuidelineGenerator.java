@@ -31,10 +31,10 @@ import com.dataliquid.asciidoc.linter.config.rule.SectionConfig;
 
 /**
  * Generates author guidelines from linter configuration rules.
- *
  * <p>
- * This generator creates human-readable author guidelines in AsciiDoc format, helping content authors understand the
- * validation requirements for their documents.
+ * This generator creates human-readable author guidelines in AsciiDoc format,
+ * helping content authors understand the validation requirements for their
+ * documents.
  * </p>
  */
 public class AsciiDocAuthorGuidelineGenerator implements RuleDocumentationGenerator {
@@ -44,17 +44,18 @@ public class AsciiDocAuthorGuidelineGenerator implements RuleDocumentationGenera
     private final HierarchyVisualizerFactory visualizerFactory;
 
     /**
-     * Creates a new AsciiDoc author guideline generator with default visualization styles.
+     * Creates a new AsciiDoc author guideline generator with default visualization
+     * styles.
      */
     public AsciiDocAuthorGuidelineGenerator() {
         this(Set.of(VisualizationStyle.TREE));
     }
 
     /**
-     * Creates a new AsciiDoc author guideline generator with specified visualization styles.
+     * Creates a new AsciiDoc author guideline generator with specified
+     * visualization styles.
      *
-     * @param visualizationStyles
-     *            the visualization styles to use
+     * @param visualizationStyles the visualization styles to use
      */
     public AsciiDocAuthorGuidelineGenerator(Set<VisualizationStyle> visualizationStyles) {
         this.visualizationStyles = new HashSet<>(visualizationStyles);
@@ -264,7 +265,8 @@ public class AsciiDocAuthorGuidelineGenerator implements RuleDocumentationGenera
         writer.println("Detailed description of all available block types and their validation rules.");
         writer.println();
 
-        // TODO: Collect all unique block types from configuration and generate detailed docs
+        // TODO: Collect all unique block types from configuration and generate detailed
+        // docs
     }
 
     private void generateValidationLevelsSection(PrintWriter writer) {
@@ -294,11 +296,11 @@ public class AsciiDocAuthorGuidelineGenerator implements RuleDocumentationGenera
     private String getAttributeDescription(AttributeConfig attr) {
         // TODO: Load from schema or generate based on name
         return switch (attr.name()) {
-            case "title" -> "Document title";
-            case "author" -> "Document author";
-            case "version" -> "Document version";
-            case "email" -> "Contact email";
-            default -> attr.name();
+        case "title" -> "Document title";
+        case "author" -> "Document author";
+        case "version" -> "Document version";
+        case "email" -> "Contact email";
+        default -> attr.name();
         };
     }
 
@@ -308,11 +310,11 @@ public class AsciiDocAuthorGuidelineGenerator implements RuleDocumentationGenera
 
     private String generateAttributeExample(AttributeConfig attr) {
         return switch (attr.name()) {
-            case "title" -> "User Guide for AsciiDoc Linter";
-            case "author" -> "John Doe";
-            case "version" -> "1.0.0";
-            case "email" -> "author@example.com";
-            default -> "Example value";
+        case "title" -> "User Guide for AsciiDoc Linter";
+        case "author" -> "John Doe";
+        case "version" -> "1.0.0";
+        case "email" -> "author@example.com";
+        default -> "Example value";
         };
     }
 
@@ -540,7 +542,8 @@ public class AsciiDocAuthorGuidelineGenerator implements RuleDocumentationGenera
     }
 
     private void generateVideoBlockDetails(VideoBlock block, PrintWriter writer) {
-        // VideoBlock has different structure - needs proper implementation based on actual methods
+        // VideoBlock has different structure - needs proper implementation based on
+        // actual methods
         // For now, just show basic info
         if (block.getUrl() != null) {
             writer.println("* **URL configuration present**");
@@ -623,8 +626,9 @@ public class AsciiDocAuthorGuidelineGenerator implements RuleDocumentationGenera
                 writer.println("  - Required: Yes");
             }
             if (block.getAttribution().getPattern() != null) {
-                writer.println(
-                        "  - Pattern: " + patternHumanizer.humanize(block.getAttribution().getPattern().pattern()));
+                writer
+                        .println("  - Pattern: "
+                                + patternHumanizer.humanize(block.getAttribution().getPattern().pattern()));
             }
         }
 
@@ -696,8 +700,9 @@ public class AsciiDocAuthorGuidelineGenerator implements RuleDocumentationGenera
                 writer.println("  - Required: Yes");
             }
             if (block.getAttribution().getPattern() != null) {
-                writer.println(
-                        "  - Pattern: " + patternHumanizer.humanize(block.getAttribution().getPattern().pattern()));
+                writer
+                        .println("  - Pattern: "
+                                + patternHumanizer.humanize(block.getAttribution().getPattern().pattern()));
             }
         }
         // VerseBlock might have other attributes like citation

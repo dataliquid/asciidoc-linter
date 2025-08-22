@@ -29,8 +29,11 @@ class ConsoleFormatterTest {
     @BeforeEach
     void setUp() {
         // Create formatter with no colors for testing
-        OutputConfiguration config = OutputConfiguration.builder().format(OutputFormat.SIMPLE)
-                .display(DisplayConfig.builder().useColors(false).build()).build();
+        OutputConfiguration config = OutputConfiguration
+                .builder()
+                .format(OutputFormat.SIMPLE)
+                .display(DisplayConfig.builder().useColors(false).build())
+                .build();
         formatter = new ConsoleFormatter(config);
         stringWriter = new StringWriter();
         printWriter = new PrintWriter(stringWriter);
@@ -61,10 +64,13 @@ class ConsoleFormatterTest {
         @DisplayName("should format single error message")
         void shouldFormatSingleErrorMessage() {
             // Given
-            ValidationMessage message = ValidationMessage.builder().severity(Severity.ERROR)
+            ValidationMessage message = ValidationMessage
+                    .builder()
+                    .severity(Severity.ERROR)
                     .ruleId("required-attribute")
                     .location(SourceLocation.builder().filename("test.adoc").startLine(10).build())
-                    .message("Missing required attribute").build();
+                    .message("Missing required attribute")
+                    .build();
 
             ValidationResult result = ValidationResult.builder().addMessage(message).complete().build();
 
@@ -94,9 +100,13 @@ class ConsoleFormatterTest {
         @DisplayName("should include rule ID when present")
         void shouldIncludeRuleId() {
             // Given
-            ValidationMessage message = ValidationMessage.builder().severity(Severity.WARN)
+            ValidationMessage message = ValidationMessage
+                    .builder()
+                    .severity(Severity.WARN)
                     .location(SourceLocation.builder().filename("test.adoc").startLine(5).build())
-                    .message("Line too long").ruleId("line-length").build();
+                    .message("Line too long")
+                    .ruleId("line-length")
+                    .build();
 
             ValidationResult result = ValidationResult.builder().addMessage(message).complete().build();
 
@@ -113,9 +123,15 @@ class ConsoleFormatterTest {
         @DisplayName("should include actual and expected values")
         void shouldIncludeActualAndExpectedValues() {
             // Given
-            ValidationMessage message = ValidationMessage.builder().severity(Severity.ERROR).ruleId("value-check")
+            ValidationMessage message = ValidationMessage
+                    .builder()
+                    .severity(Severity.ERROR)
+                    .ruleId("value-check")
                     .location(SourceLocation.builder().filename("test.adoc").startLine(15).build())
-                    .message("Invalid value").actualValue("100").expectedValue("80").build();
+                    .message("Invalid value")
+                    .actualValue("100")
+                    .expectedValue("80")
+                    .build();
 
             ValidationResult result = ValidationResult.builder().addMessage(message).complete().build();
 
@@ -133,9 +149,13 @@ class ConsoleFormatterTest {
         @DisplayName("should include column when present")
         void shouldIncludeColumn() {
             // Given
-            ValidationMessage message = ValidationMessage.builder().severity(Severity.INFO).ruleId("info-rule")
+            ValidationMessage message = ValidationMessage
+                    .builder()
+                    .severity(Severity.INFO)
+                    .ruleId("info-rule")
                     .location(SourceLocation.builder().filename("test.adoc").startLine(20).startColumn(15).build())
-                    .message("Info message").build();
+                    .message("Info message")
+                    .build();
 
             ValidationResult result = ValidationResult.builder().addMessage(message).complete().build();
 
@@ -157,13 +177,21 @@ class ConsoleFormatterTest {
         @DisplayName("should group messages by file")
         void shouldGroupMessagesByFile() {
             // Given
-            ValidationMessage msg1 = ValidationMessage.builder().severity(Severity.ERROR).ruleId("test-rule")
+            ValidationMessage msg1 = ValidationMessage
+                    .builder()
+                    .severity(Severity.ERROR)
+                    .ruleId("test-rule")
                     .location(SourceLocation.builder().filename("file1.adoc").startLine(10).build())
-                    .message("Error in file1").build();
+                    .message("Error in file1")
+                    .build();
 
-            ValidationMessage msg2 = ValidationMessage.builder().severity(Severity.WARN).ruleId("test-rule")
+            ValidationMessage msg2 = ValidationMessage
+                    .builder()
+                    .severity(Severity.WARN)
+                    .ruleId("test-rule")
                     .location(SourceLocation.builder().filename("file2.adoc").startLine(5).build())
-                    .message("Warning in file2").build();
+                    .message("Warning in file2")
+                    .build();
 
             ValidationResult result = ValidationResult.builder().addMessage(msg1).addMessage(msg2).complete().build();
 
@@ -189,13 +217,20 @@ class ConsoleFormatterTest {
         @DisplayName("should add colors when enabled")
         void shouldAddColorsWhenEnabled() {
             // Given
-            OutputConfiguration colorConfig = OutputConfiguration.builder().format(OutputFormat.SIMPLE)
-                    .display(DisplayConfig.builder().useColors(true).build()).build();
+            OutputConfiguration colorConfig = OutputConfiguration
+                    .builder()
+                    .format(OutputFormat.SIMPLE)
+                    .display(DisplayConfig.builder().useColors(true).build())
+                    .build();
             ConsoleFormatter colorFormatter = new ConsoleFormatter(colorConfig);
 
-            ValidationMessage error = ValidationMessage.builder().severity(Severity.ERROR).ruleId("test-rule")
+            ValidationMessage error = ValidationMessage
+                    .builder()
+                    .severity(Severity.ERROR)
+                    .ruleId("test-rule")
                     .location(SourceLocation.builder().filename("test.adoc").startLine(1).build())
-                    .message("Error message").build();
+                    .message("Error message")
+                    .build();
 
             ValidationResult result = ValidationResult.builder().addMessage(error).complete().build();
 

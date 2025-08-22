@@ -49,16 +49,34 @@ public class GuidelinesCommand implements Command {
         Options options = new Options();
 
         // Configuration file (required for execution, but not for help)
-        options.addOption(Option.builder("r").longOpt("rule").hasArg().argName("file")
-                .desc("YAML rule configuration file (required)").build());
+        options
+                .addOption(Option
+                        .builder("r")
+                        .longOpt("rule")
+                        .hasArg()
+                        .argName("file")
+                        .desc("YAML rule configuration file (required)")
+                        .build());
 
         // Output file
-        options.addOption(Option.builder("o").longOpt("output").hasArg().argName("file")
-                .desc("Output file for generated guidelines (default: stdout)").build());
+        options
+                .addOption(Option
+                        .builder("o")
+                        .longOpt("output")
+                        .hasArg()
+                        .argName("file")
+                        .desc("Output file for generated guidelines (default: stdout)")
+                        .build());
 
         // Visualization style
-        options.addOption(Option.builder("s").longOpt("style").hasArg().argName("styles")
-                .desc("Comma-separated visualization styles: tree, nested, breadcrumb, table (default: tree)").build());
+        options
+                .addOption(Option
+                        .builder("s")
+                        .longOpt("style")
+                        .hasArg()
+                        .argName("styles")
+                        .desc("Comma-separated visualization styles: tree, nested, breadcrumb, table (default: tree)")
+                        .build());
 
         // Help
         options.addOption(Option.builder("h").longOpt("help").desc("Show help for guidelines command").build());
@@ -146,7 +164,10 @@ public class GuidelinesCommand implements Command {
             return Set.of(VisualizationStyle.TREE);
         }
 
-        return Arrays.stream(stylesArg.split(",")).map(String::trim).map(VisualizationStyle::fromName)
+        return Arrays
+                .stream(stylesArg.split(","))
+                .map(String::trim)
+                .map(VisualizationStyle::fromName)
                 .collect(Collectors.toSet());
     }
 

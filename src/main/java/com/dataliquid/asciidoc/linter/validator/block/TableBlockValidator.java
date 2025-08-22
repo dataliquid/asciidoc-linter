@@ -25,13 +25,12 @@ import com.dataliquid.asciidoc.linter.validator.Suggestion;
 
 /**
  * Validator for table blocks in AsciiDoc documents.
- *
  * <p>
- * This validator validates table blocks based on the YAML schema structure defined in
- * {@code src/main/resources/schemas/blocks/table-block.yaml}. The YAML configuration is parsed into {@link TableBlock}
- * objects which define the validation rules.
+ * This validator validates table blocks based on the YAML schema structure
+ * defined in {@code src/main/resources/schemas/blocks/table-block.yaml}. The
+ * YAML configuration is parsed into {@link TableBlock} objects which define the
+ * validation rules.
  * </p>
- *
  * <p>
  * Supported validation rules from YAML schema:
  * </p>
@@ -39,13 +38,13 @@ import com.dataliquid.asciidoc.linter.validator.Suggestion;
  * <li><b>columns</b>: Validates column count (min/max)</li>
  * <li><b>rows</b>: Validates row count (min/max)</li>
  * <li><b>header</b>: Validates header row (required, pattern matching)</li>
- * <li><b>caption</b>: Validates table caption (required, pattern, length constraints)</li>
+ * <li><b>caption</b>: Validates table caption (required, pattern, length
+ * constraints)</li>
  * <li><b>format</b>: Validates table formatting (style, borders)</li>
  * </ul>
- *
  * <p>
- * Each nested configuration can optionally define its own severity level. If not specified, the block-level severity is
- * used as fallback.
+ * Each nested configuration can optionally define its own severity level. If
+ * not specified, the block-level severity is used as fallback.
  * </p>
  *
  * @see TableBlock
@@ -111,23 +110,44 @@ public final class TableBlockValidator extends AbstractBlockValidator<TableBlock
         int columnCount = table.getColumns().size();
 
         if (config.getMin() != null && columnCount < config.getMin()) {
-            messages.add(ValidationMessage.builder().severity(severity).ruleId(COLUMNS_MIN)
-                    .location(context.createLocation(table)).message("Table has too few columns")
-                    .actualValue(String.valueOf(columnCount)).expectedValue("At least " + config.getMin() + " columns")
-                    .addSuggestion(Suggestion.builder().description("Add more columns").addExample("|=== ")
-                            .addExample("| Column 1 | Column 2 | Column 3").addExample("| Data 1   | Data 2   | Data 3")
-                            .addExample("|===").build())
-                    .build());
+            messages
+                    .add(ValidationMessage
+                            .builder()
+                            .severity(severity)
+                            .ruleId(COLUMNS_MIN)
+                            .location(context.createLocation(table))
+                            .message("Table has too few columns")
+                            .actualValue(String.valueOf(columnCount))
+                            .expectedValue("At least " + config.getMin() + " columns")
+                            .addSuggestion(Suggestion
+                                    .builder()
+                                    .description("Add more columns")
+                                    .addExample("|=== ")
+                                    .addExample("| Column 1 | Column 2 | Column 3")
+                                    .addExample("| Data 1   | Data 2   | Data 3")
+                                    .addExample("|===")
+                                    .build())
+                            .build());
         }
 
         if (config.getMax() != null && columnCount > config.getMax()) {
-            messages.add(ValidationMessage.builder().severity(severity).ruleId(COLUMNS_MAX)
-                    .location(context.createLocation(table)).message("Table has too many columns")
-                    .actualValue(String.valueOf(columnCount)).expectedValue("At most " + config.getMax() + " columns")
-                    .addSuggestion(Suggestion.builder().description("Remove excess columns")
-                            .addExample("Combine related columns").addExample("Split table into multiple tables")
-                            .explanation("Consider removing " + (columnCount - config.getMax()) + " columns").build())
-                    .build());
+            messages
+                    .add(ValidationMessage
+                            .builder()
+                            .severity(severity)
+                            .ruleId(COLUMNS_MAX)
+                            .location(context.createLocation(table))
+                            .message("Table has too many columns")
+                            .actualValue(String.valueOf(columnCount))
+                            .expectedValue("At most " + config.getMax() + " columns")
+                            .addSuggestion(Suggestion
+                                    .builder()
+                                    .description("Remove excess columns")
+                                    .addExample("Combine related columns")
+                                    .addExample("Split table into multiple tables")
+                                    .explanation("Consider removing " + (columnCount - config.getMax()) + " columns")
+                                    .build())
+                            .build());
         }
     }
 
@@ -140,23 +160,42 @@ public final class TableBlockValidator extends AbstractBlockValidator<TableBlock
         int rowCount = table.getBody().size();
 
         if (config.getMin() != null && rowCount < config.getMin()) {
-            messages.add(ValidationMessage.builder().severity(severity).ruleId(ROWS_MIN)
-                    .location(context.createLocation(table)).message("Table has too few rows")
-                    .actualValue(String.valueOf(rowCount)).expectedValue("At least " + config.getMin() + " rows")
-                    .addSuggestion(Suggestion.builder().description("Add more rows")
-                            .addExample("| Additional data | More content |")
-                            .addExample("| Row data       | Row content  |").build())
-                    .build());
+            messages
+                    .add(ValidationMessage
+                            .builder()
+                            .severity(severity)
+                            .ruleId(ROWS_MIN)
+                            .location(context.createLocation(table))
+                            .message("Table has too few rows")
+                            .actualValue(String.valueOf(rowCount))
+                            .expectedValue("At least " + config.getMin() + " rows")
+                            .addSuggestion(Suggestion
+                                    .builder()
+                                    .description("Add more rows")
+                                    .addExample("| Additional data | More content |")
+                                    .addExample("| Row data       | Row content  |")
+                                    .build())
+                            .build());
         }
 
         if (config.getMax() != null && rowCount > config.getMax()) {
-            messages.add(ValidationMessage.builder().severity(severity).ruleId(ROWS_MAX)
-                    .location(context.createLocation(table)).message("Table has too many rows")
-                    .actualValue(String.valueOf(rowCount)).expectedValue("At most " + config.getMax() + " rows")
-                    .addSuggestion(Suggestion.builder().description("Remove excess rows")
-                            .addExample("Keep most important data").addExample("Split into multiple tables")
-                            .explanation("Consider removing " + (rowCount - config.getMax()) + " rows").build())
-                    .build());
+            messages
+                    .add(ValidationMessage
+                            .builder()
+                            .severity(severity)
+                            .ruleId(ROWS_MAX)
+                            .location(context.createLocation(table))
+                            .message("Table has too many rows")
+                            .actualValue(String.valueOf(rowCount))
+                            .expectedValue("At most " + config.getMax() + " rows")
+                            .addSuggestion(Suggestion
+                                    .builder()
+                                    .description("Remove excess rows")
+                                    .addExample("Keep most important data")
+                                    .addExample("Split into multiple tables")
+                                    .explanation("Consider removing " + (rowCount - config.getMax()) + " rows")
+                                    .build())
+                            .build());
         }
     }
 
@@ -170,17 +209,30 @@ public final class TableBlockValidator extends AbstractBlockValidator<TableBlock
 
         if (config.isRequired() && !hasHeader) {
             SourcePosition pos = findHeaderPosition(table, context);
-            messages.add(ValidationMessage.builder().severity(severity).ruleId(HEADER_REQUIRED)
-                    .location(SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
-                    .message("Table header is required but not provided").errorType(ErrorType.MISSING_VALUE)
-                    .missingValueHint("| Header 1 | Header 2")
-                    .placeholderContext(
-                            PlaceholderContext.builder().type(PlaceholderContext.PlaceholderType.INSERT_BEFORE).build())
-                    .addSuggestion(
-                            Suggestion.builder().description("Add table header").fixedValue("| Header 1 | Header 2 |")
-                                    .addExample("|====").addExample("| Name | Description |")
-                                    .addExample("| Item | Details     |").addExample("|====").build())
-                    .build());
+            messages
+                    .add(ValidationMessage
+                            .builder()
+                            .severity(severity)
+                            .ruleId(HEADER_REQUIRED)
+                            .location(
+                                    SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
+                            .message("Table header is required but not provided")
+                            .errorType(ErrorType.MISSING_VALUE)
+                            .missingValueHint("| Header 1 | Header 2")
+                            .placeholderContext(PlaceholderContext
+                                    .builder()
+                                    .type(PlaceholderContext.PlaceholderType.INSERT_BEFORE)
+                                    .build())
+                            .addSuggestion(Suggestion
+                                    .builder()
+                                    .description("Add table header")
+                                    .fixedValue("| Header 1 | Header 2 |")
+                                    .addExample("|====")
+                                    .addExample("| Name | Description |")
+                                    .addExample("| Item | Details     |")
+                                    .addExample("|====")
+                                    .build())
+                            .build());
         }
 
         // Validate header pattern if header exists
@@ -192,16 +244,27 @@ public final class TableBlockValidator extends AbstractBlockValidator<TableBlock
                     String content = cell.getText();
                     if (!pattern.matcher(content).matches()) {
                         SourcePosition pos = findHeaderCellPosition(table, context, content);
-                        messages.add(ValidationMessage.builder().severity(severity).ruleId(HEADER_PATTERN)
-                                .location(SourceLocation.builder().filename(context.getFilename()).fromPosition(pos)
-                                        .build())
-                                .message("Table header does not match required pattern").actualValue(content)
-                                .expectedValue("Pattern: " + config.getPattern())
-                                .addSuggestion(Suggestion.builder().description("Follow header pattern")
-                                        .addExample("Use consistent header format")
-                                        .addExample("Example: Name, Description, Status")
-                                        .explanation("Header must match pattern: " + config.getPattern()).build())
-                                .build());
+                        messages
+                                .add(ValidationMessage
+                                        .builder()
+                                        .severity(severity)
+                                        .ruleId(HEADER_PATTERN)
+                                        .location(SourceLocation
+                                                .builder()
+                                                .filename(context.getFilename())
+                                                .fromPosition(pos)
+                                                .build())
+                                        .message("Table header does not match required pattern")
+                                        .actualValue(content)
+                                        .expectedValue("Pattern: " + config.getPattern())
+                                        .addSuggestion(Suggestion
+                                                .builder()
+                                                .description("Follow header pattern")
+                                                .addExample("Use consistent header format")
+                                                .addExample("Example: Name, Description, Status")
+                                                .explanation("Header must match pattern: " + config.getPattern())
+                                                .build())
+                                        .build());
                     }
                 }
             }
@@ -218,16 +281,29 @@ public final class TableBlockValidator extends AbstractBlockValidator<TableBlock
 
         if (config.isRequired() && (caption == null || caption.trim().isEmpty())) {
             SourcePosition pos = findSourcePosition(table, context);
-            messages.add(ValidationMessage.builder().severity(severity).ruleId(CAPTION_REQUIRED)
-                    .location(SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
-                    .message("Table caption is required but not provided").errorType(ErrorType.MISSING_VALUE)
-                    .missingValueHint(".Table Title")
-                    .placeholderContext(
-                            PlaceholderContext.builder().type(PlaceholderContext.PlaceholderType.INSERT_BEFORE).build())
-                    .addSuggestion(Suggestion.builder().description("Add table caption").fixedValue(".Table Title")
-                            .addExample(".User Data Summary").addExample(".Configuration Options")
-                            .addExample(".Performance Metrics").build())
-                    .build());
+            messages
+                    .add(ValidationMessage
+                            .builder()
+                            .severity(severity)
+                            .ruleId(CAPTION_REQUIRED)
+                            .location(
+                                    SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
+                            .message("Table caption is required but not provided")
+                            .errorType(ErrorType.MISSING_VALUE)
+                            .missingValueHint(".Table Title")
+                            .placeholderContext(PlaceholderContext
+                                    .builder()
+                                    .type(PlaceholderContext.PlaceholderType.INSERT_BEFORE)
+                                    .build())
+                            .addSuggestion(Suggestion
+                                    .builder()
+                                    .description("Add table caption")
+                                    .fixedValue(".Table Title")
+                                    .addExample(".User Data Summary")
+                                    .addExample(".Configuration Options")
+                                    .addExample(".Performance Metrics")
+                                    .build())
+                            .build());
             return;
         }
 
@@ -237,44 +313,80 @@ public final class TableBlockValidator extends AbstractBlockValidator<TableBlock
                 Pattern pattern = config.getPattern();
                 if (!pattern.matcher(caption).matches()) {
                     SourcePosition pos = findSourcePosition(table, context);
-                    messages.add(ValidationMessage.builder().severity(severity).ruleId(CAPTION_PATTERN)
-                            .location(
-                                    SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
-                            .message("Table caption does not match required pattern").actualValue(caption)
-                            .expectedValue("Pattern: " + config.getPattern())
-                            .addSuggestion(Suggestion.builder().description("Follow caption pattern")
-                                    .addExample("Use descriptive table title").addExample(".Table: Data Summary")
-                                    .addExample(".Results Overview")
-                                    .explanation("Caption must match pattern: " + config.getPattern()).build())
-                            .build());
+                    messages
+                            .add(ValidationMessage
+                                    .builder()
+                                    .severity(severity)
+                                    .ruleId(CAPTION_PATTERN)
+                                    .location(SourceLocation
+                                            .builder()
+                                            .filename(context.getFilename())
+                                            .fromPosition(pos)
+                                            .build())
+                                    .message("Table caption does not match required pattern")
+                                    .actualValue(caption)
+                                    .expectedValue("Pattern: " + config.getPattern())
+                                    .addSuggestion(Suggestion
+                                            .builder()
+                                            .description("Follow caption pattern")
+                                            .addExample("Use descriptive table title")
+                                            .addExample(".Table: Data Summary")
+                                            .addExample(".Results Overview")
+                                            .explanation("Caption must match pattern: " + config.getPattern())
+                                            .build())
+                                    .build());
                 }
             }
 
             // Validate caption length
             if (config.getMinLength() != null && caption.length() < config.getMinLength()) {
                 SourcePosition pos = findSourcePosition(table, context);
-                messages.add(ValidationMessage.builder().severity(severity).ruleId(CAPTION_MIN_LENGTH)
-                        .location(SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
-                        .message("Table caption is too short").actualValue(caption.length() + " characters")
-                        .expectedValue("At least " + config.getMinLength() + " characters")
-                        .addSuggestion(Suggestion.builder().description("Make caption more descriptive")
-                                .addExample(".Detailed User Information Table")
-                                .addExample(".System Configuration Parameters")
-                                .explanation("Caption needs at least " + config.getMinLength() + " characters").build())
-                        .build());
+                messages
+                        .add(ValidationMessage
+                                .builder()
+                                .severity(severity)
+                                .ruleId(CAPTION_MIN_LENGTH)
+                                .location(SourceLocation
+                                        .builder()
+                                        .filename(context.getFilename())
+                                        .fromPosition(pos)
+                                        .build())
+                                .message("Table caption is too short")
+                                .actualValue(caption.length() + " characters")
+                                .expectedValue("At least " + config.getMinLength() + " characters")
+                                .addSuggestion(Suggestion
+                                        .builder()
+                                        .description("Make caption more descriptive")
+                                        .addExample(".Detailed User Information Table")
+                                        .addExample(".System Configuration Parameters")
+                                        .explanation("Caption needs at least " + config.getMinLength() + " characters")
+                                        .build())
+                                .build());
             }
 
             if (config.getMaxLength() != null && caption.length() > config.getMaxLength()) {
                 SourcePosition pos = findSourcePosition(table, context);
-                messages.add(ValidationMessage.builder().severity(severity).ruleId(CAPTION_MAX_LENGTH)
-                        .location(SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
-                        .message("Table caption is too long").actualValue(caption.length() + " characters")
-                        .expectedValue("At most " + config.getMaxLength() + " characters")
-                        .addSuggestion(Suggestion.builder().description("Shorten caption").addExample(".User Data")
-                                .addExample(".Config")
-                                .explanation("Caption must be at most " + config.getMaxLength() + " characters")
-                                .build())
-                        .build());
+                messages
+                        .add(ValidationMessage
+                                .builder()
+                                .severity(severity)
+                                .ruleId(CAPTION_MAX_LENGTH)
+                                .location(SourceLocation
+                                        .builder()
+                                        .filename(context.getFilename())
+                                        .fromPosition(pos)
+                                        .build())
+                                .message("Table caption is too long")
+                                .actualValue(caption.length() + " characters")
+                                .expectedValue("At most " + config.getMaxLength() + " characters")
+                                .addSuggestion(Suggestion
+                                        .builder()
+                                        .description("Shorten caption")
+                                        .addExample(".User Data")
+                                        .addExample(".Config")
+                                        .explanation("Caption must be at most " + config.getMaxLength() + " characters")
+                                        .build())
+                                .build());
             }
         }
     }
@@ -290,14 +402,23 @@ public final class TableBlockValidator extends AbstractBlockValidator<TableBlock
             Object styleObj = table.getAttribute(OPTIONS);
             String actualStyle = styleObj != null ? styleObj.toString() : null;
             if (actualStyle == null || !actualStyle.contains(config.getStyle())) {
-                messages.add(ValidationMessage.builder().severity(severity).ruleId(FORMAT_STYLE)
-                        .location(context.createLocation(table)).message("Table does not have required style")
-                        .actualValue(actualStyle != null ? actualStyle : "default")
-                        .expectedValue("Style: " + config.getStyle())
-                        .addSuggestion(Suggestion.builder().description("Add table style")
-                                .addExample("[options=\"" + config.getStyle() + "\"]").addExample("|====")
-                                .explanation("Apply style: " + config.getStyle()).build())
-                        .build());
+                messages
+                        .add(ValidationMessage
+                                .builder()
+                                .severity(severity)
+                                .ruleId(FORMAT_STYLE)
+                                .location(context.createLocation(table))
+                                .message("Table does not have required style")
+                                .actualValue(actualStyle != null ? actualStyle : "default")
+                                .expectedValue("Style: " + config.getStyle())
+                                .addSuggestion(Suggestion
+                                        .builder()
+                                        .description("Add table style")
+                                        .addExample("[options=\"" + config.getStyle() + "\"]")
+                                        .addExample("|====")
+                                        .explanation("Apply style: " + config.getStyle())
+                                        .build())
+                                .build());
             }
         }
 
@@ -306,13 +427,24 @@ public final class TableBlockValidator extends AbstractBlockValidator<TableBlock
             Object frameObj = table.getAttribute(FRAME);
             String frame = frameObj != null ? frameObj.toString() : null;
             if (frame == null || "none".equals(frame)) {
-                messages.add(ValidationMessage.builder().severity(severity).ruleId(FORMAT_BORDERS)
-                        .location(context.createLocation(table)).message("Table must have borders")
-                        .actualValue("No borders").expectedValue("Borders required")
-                        .addSuggestion(Suggestion.builder().description("Enable table borders")
-                                .addExample("[frame=\"all\"]").addExample("|====").addExample("[grid=\"all\"]")
-                                .explanation("Add frame or grid attributes for borders").build())
-                        .build());
+                messages
+                        .add(ValidationMessage
+                                .builder()
+                                .severity(severity)
+                                .ruleId(FORMAT_BORDERS)
+                                .location(context.createLocation(table))
+                                .message("Table must have borders")
+                                .actualValue("No borders")
+                                .expectedValue("Borders required")
+                                .addSuggestion(Suggestion
+                                        .builder()
+                                        .description("Enable table borders")
+                                        .addExample("[frame=\"all\"]")
+                                        .addExample("|====")
+                                        .addExample("[grid=\"all\"]")
+                                        .explanation("Add frame or grid attributes for borders")
+                                        .build())
+                                .build());
             }
         }
     }

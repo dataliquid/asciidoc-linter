@@ -106,9 +106,11 @@ class LinterValidationIntegrationTest {
                 assertTrue(result.hasErrors());
                 assertEquals(2, result.getErrorCount());
                 List<ValidationMessage> messages = result.getMessages();
-                assertTrue(messages.stream()
+                assertTrue(messages
+                        .stream()
                         .anyMatch(msg -> msg.getMessage().equals("Missing required attribute 'author'")));
-                assertTrue(messages.stream()
+                assertTrue(messages
+                        .stream()
                         .anyMatch(msg -> msg.getMessage().equals("Missing required attribute 'revdate'")));
             }
 
@@ -517,10 +519,16 @@ class LinterValidationIntegrationTest {
                 assertTrue(result.hasErrors());
                 assertEquals(2, result.getErrorCount()); // Pattern and minLength violations
                 List<ValidationMessage> messages = result.getMessages();
-                assertTrue(messages.stream().anyMatch(msg -> msg.getMessage().equals(
-                        "Attribute 'description' does not match required pattern: actual 'short', expected pattern '^[A-Z].*'")));
-                assertTrue(messages.stream().anyMatch(msg -> msg.getMessage().equals(
-                        "Attribute 'description' is too short: actual 'short' (5 characters), expected minimum 10 characters")));
+                assertTrue(messages
+                        .stream()
+                        .anyMatch(msg -> msg
+                                .getMessage()
+                                .equals("Attribute 'description' does not match required pattern: actual 'short', expected pattern '^[A-Z].*'")));
+                assertTrue(messages
+                        .stream()
+                        .anyMatch(msg -> msg
+                                .getMessage()
+                                .equals("Attribute 'description' is too short: actual 'short' (5 characters), expected minimum 10 characters")));
             }
 
             @Test
@@ -1040,7 +1048,9 @@ class LinterValidationIntegrationTest {
 
                 // Then
                 assertTrue(result.hasErrors());
-                assertTrue(result.getMessages().stream()
+                assertTrue(result
+                        .getMessages()
+                        .stream()
                         .anyMatch(msg -> msg.getMessage().contains("Too many occurrences of block: paragraph")));
             }
 
@@ -1216,7 +1226,9 @@ class LinterValidationIntegrationTest {
 
                 // Then
                 assertTrue(result.hasErrors());
-                assertTrue(result.getMessages().stream()
+                assertTrue(result
+                        .getMessages()
+                        .stream()
                         .anyMatch(msg -> msg.getMessage().contains("Too many occurrences of block: paragraph")));
             }
 
@@ -1267,8 +1279,12 @@ class LinterValidationIntegrationTest {
                 LinterConfiguration configWithout = configLoader.loadConfiguration(rulesWithoutSubsections);
 
                 ValidationResult resultWithout = linter.validateContent(adocContent, configWithout);
-                assertFalse(resultWithout.hasErrors(), "Without subsections should work, but got: " + resultWithout
-                        .getMessages().stream().map(msg -> msg.getMessage()).collect(Collectors.joining(", ")));
+                assertFalse(resultWithout.hasErrors(),
+                        "Without subsections should work, but got: " + resultWithout
+                                .getMessages()
+                                .stream()
+                                .map(msg -> msg.getMessage())
+                                .collect(Collectors.joining(", ")));
             }
 
             @Test
@@ -1424,9 +1440,13 @@ class LinterValidationIntegrationTest {
             // Then
             assertTrue(result.hasErrors());
             assertEquals(2, result.getErrorCount()); // Missing 1 paragraph and 1 listing
-            assertTrue(result.getMessages().stream()
+            assertTrue(result
+                    .getMessages()
+                    .stream()
                     .anyMatch(msg -> msg.getMessage().contains("Too few occurrences of block: paragraph")));
-            assertTrue(result.getMessages().stream()
+            assertTrue(result
+                    .getMessages()
+                    .stream()
                     .anyMatch(msg -> msg.getMessage().contains("Too few occurrences of block: listing")));
         }
 
@@ -1476,9 +1496,13 @@ class LinterValidationIntegrationTest {
             // Then
             assertTrue(result.hasErrors());
             assertEquals(2, result.getErrorCount()); // Too many paragraphs and images
-            assertTrue(result.getMessages().stream()
+            assertTrue(result
+                    .getMessages()
+                    .stream()
                     .anyMatch(msg -> msg.getMessage().contains("Too many occurrences of block: paragraph")));
-            assertTrue(result.getMessages().stream()
+            assertTrue(result
+                    .getMessages()
+                    .stream()
                     .anyMatch(msg -> msg.getMessage().contains("Too many occurrences of block: image")));
         }
 
@@ -1589,10 +1613,16 @@ class LinterValidationIntegrationTest {
             assertTrue(result.hasWarnings()); // max listing violation is warning
             assertEquals(1, result.getErrorCount());
             assertEquals(1, result.getWarningCount());
-            assertTrue(result.getMessages().stream().anyMatch(msg -> msg.getSeverity().toString().equals("ERROR")
-                    && msg.getMessage().contains("Too few occurrences of block: paragraph")));
-            assertTrue(result.getMessages().stream().anyMatch(msg -> msg.getSeverity().toString().equals("WARN")
-                    && msg.getMessage().contains("Too many occurrences of block: listing")));
+            assertTrue(result
+                    .getMessages()
+                    .stream()
+                    .anyMatch(msg -> msg.getSeverity().toString().equals("ERROR")
+                            && msg.getMessage().contains("Too few occurrences of block: paragraph")));
+            assertTrue(result
+                    .getMessages()
+                    .stream()
+                    .anyMatch(msg -> msg.getSeverity().toString().equals("WARN")
+                            && msg.getMessage().contains("Too many occurrences of block: listing")));
         }
 
         @Test
@@ -1666,7 +1696,8 @@ class LinterValidationIntegrationTest {
         @Test
         @DisplayName("should show placeholder at correct position in nested sections")
         void shouldShowPlaceholderAtCorrectPositionInNestedSections() {
-            // Given - Document with level 0, 1, and 2 sections where listing is missing in level 2
+            // Given - Document with level 0, 1, and 2 sections where listing is missing in
+            // level 2
             String rules = """
                     document:
                       sections:
@@ -1743,7 +1774,8 @@ class LinterValidationIntegrationTest {
 
             // The location should point to where the missing block should be inserted
             // The placeholder should appear after the paragraph in the subsection
-            // After our fix, the line is correctly calculated as 13 (after the last line of content)
+            // After our fix, the line is correctly calculated as 13 (after the last line of
+            // content)
             assertEquals(13, msg.getLocation().getStartLine()); // Points to where block should be added
 
             // Let's also run a console report to see where the placeholder appears
@@ -1856,10 +1888,15 @@ class LinterValidationIntegrationTest {
             // Then
             assertTrue(result.hasErrors());
             assertTrue(
-                    result.getMessages().stream()
+                    result
+                            .getMessages()
+                            .stream()
                             .anyMatch(msg -> msg.getMessage().contains("order") || msg.getMessage().contains("Order")),
-                    "Expected order validation error, but got: " + result.getMessages().stream()
-                            .map(ValidationMessage::getMessage).collect(Collectors.joining(", ")));
+                    "Expected order validation error, but got: " + result
+                            .getMessages()
+                            .stream()
+                            .map(ValidationMessage::getMessage)
+                            .collect(Collectors.joining(", ")));
         }
 
         @Test
@@ -2215,11 +2252,15 @@ class LinterValidationIntegrationTest {
             assertEquals(2, result.getErrorCount()); // Title pattern error + too many paragraphs
 
             // Check for title pattern error
-            assertTrue(result.getMessages().stream()
+            assertTrue(result
+                    .getMessages()
+                    .stream()
                     .anyMatch(msg -> msg.getMessage().contains("Document title does not match required pattern")));
 
             // Check for paragraph occurrence error
-            assertTrue(result.getMessages().stream()
+            assertTrue(result
+                    .getMessages()
+                    .stream()
                     .anyMatch(msg -> msg.getMessage().contains("Too many occurrences of block: paragraph")));
         }
     }
@@ -2352,12 +2393,16 @@ class LinterValidationIntegrationTest {
             assertEquals(2, result.getMessages().size());
 
             // Check for pattern violation
-            assertTrue(result.getMessages().stream()
+            assertTrue(result
+                    .getMessages()
+                    .stream()
                     .anyMatch(msg -> msg.getMessage().contains("does not match required pattern")
                             && msg.getActualValue().orElse("").equals("Description without period")));
 
             // Check for missing description
-            assertTrue(result.getMessages().stream()
+            assertTrue(result
+                    .getMessages()
+                    .stream()
                     .anyMatch(msg -> msg.getMessage().contains("missing required description")));
         }
 

@@ -20,8 +20,9 @@ import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
 import com.dataliquid.asciidoc.linter.validator.ValidationResult;
 
 /**
- * Completely redesigned console formatter with enhanced error display, context visualization, and fix suggestions. This
- * replaces the old ConsoleFormatter entirely.
+ * Completely redesigned console formatter with enhanced error display, context
+ * visualization, and fix suggestions. This replaces the old ConsoleFormatter
+ * entirely.
  */
 public class ConsoleFormatter implements ReportFormatter {
 
@@ -117,8 +118,10 @@ public class ConsoleFormatter implements ReportFormatter {
     }
 
     private Map<String, List<ValidationMessage>> groupByFile(List<ValidationMessage> messages) {
-        return messages.stream()
-                .sorted(Comparator.comparing((ValidationMessage msg) -> msg.getLocation().getFilename())
+        return messages
+                .stream()
+                .sorted(Comparator
+                        .comparing((ValidationMessage msg) -> msg.getLocation().getFilename())
                         .thenComparing(msg -> msg.getLocation().getStartLine())
                         .thenComparing(msg -> msg.getLocation().getStartColumn()))
                 .collect(Collectors.groupingBy(msg -> msg.getLocation().getFilename(), Collectors.toList()));

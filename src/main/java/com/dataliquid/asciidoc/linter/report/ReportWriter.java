@@ -14,8 +14,8 @@ import com.dataliquid.asciidoc.linter.config.output.OutputConfiguration;
 import com.dataliquid.asciidoc.linter.validator.ValidationResult;
 
 /**
- * Facade for writing validation reports in different formats. Manages available formatters and handles output to files
- * or console.
+ * Facade for writing validation reports in different formats. Manages available
+ * formatters and handles output to files or console.
  */
 public class ReportWriter {
 
@@ -35,8 +35,7 @@ public class ReportWriter {
     /**
      * Registers a formatter for use by this writer.
      *
-     * @param formatter
-     *            the formatter to register
+     * @param formatter the formatter to register
      */
     public void registerFormatter(ReportFormatter formatter) {
         Objects.requireNonNull(formatter, "[" + getClass().getName() + "] formatter must not be null");
@@ -44,38 +43,34 @@ public class ReportWriter {
     }
 
     /**
-     * Writes the validation result using the specified format. If outputPath is null, writes to standard output.
+     * Writes the validation result using the specified format. If outputPath is
+     * null, writes to standard output.
      *
-     * @param result
-     *            the validation result to write
-     * @param format
-     *            the output format (e.g., "console", "json")
-     * @param outputPath
-     *            the output file path, or null for standard output
-     * @throws IOException
-     *             if an I/O error occurs
-     * @throws IllegalArgumentException
-     *             if the format is not supported
+     * @param  result                   the validation result to write
+     * @param  format                   the output format (e.g., "console", "json")
+     * @param  outputPath               the output file path, or null for standard
+     *                                  output
+     *
+     * @throws IOException              if an I/O error occurs
+     * @throws IllegalArgumentException if the format is not supported
      */
     public void write(ValidationResult result, String format, String outputPath) throws IOException {
         write(result, format, outputPath, null);
     }
 
     /**
-     * Writes the validation result using the specified format with optional output configuration.
+     * Writes the validation result using the specified format with optional output
+     * configuration.
      *
-     * @param result
-     *            the validation result to write
-     * @param format
-     *            the output format (e.g., "console", "json")
-     * @param outputPath
-     *            the output file path, or null for standard output
-     * @param outputConfig
-     *            the output configuration for console format, or null for default
-     * @throws IOException
-     *             if an I/O error occurs
-     * @throws IllegalArgumentException
-     *             if the format is not supported
+     * @param  result                   the validation result to write
+     * @param  format                   the output format (e.g., "console", "json")
+     * @param  outputPath               the output file path, or null for standard
+     *                                  output
+     * @param  outputConfig             the output configuration for console format,
+     *                                  or null for default
+     *
+     * @throws IOException              if an I/O error occurs
+     * @throws IllegalArgumentException if the format is not supported
      */
     public void write(ValidationResult result, String format, String outputPath, OutputConfiguration outputConfig)
             throws IOException {
@@ -93,14 +88,11 @@ public class ReportWriter {
     /**
      * Writes the validation result using the specified format to a Path.
      *
-     * @param result
-     *            the validation result to write
-     * @param format
-     *            the output format
-     * @param outputPath
-     *            the output file path
-     * @throws IOException
-     *             if an I/O error occurs
+     * @param  result      the validation result to write
+     * @param  format      the output format
+     * @param  outputPath  the output file path
+     *
+     * @throws IOException if an I/O error occurs
      */
     public void write(ValidationResult result, String format, Path outputPath) throws IOException {
         write(result, format, outputPath != null ? outputPath.toString() : null);
@@ -109,28 +101,23 @@ public class ReportWriter {
     /**
      * Writes the validation result to a PrintWriter using the specified format.
      *
-     * @param result
-     *            the validation result to write
-     * @param format
-     *            the output format
-     * @param writer
-     *            the writer to write to
+     * @param result the validation result to write
+     * @param format the output format
+     * @param writer the writer to write to
      */
     public void write(ValidationResult result, String format, PrintWriter writer) {
         write(result, format, writer, null);
     }
 
     /**
-     * Writes the validation result to a PrintWriter using the specified format with optional output configuration.
+     * Writes the validation result to a PrintWriter using the specified format with
+     * optional output configuration.
      *
-     * @param result
-     *            the validation result to write
-     * @param format
-     *            the output format
-     * @param writer
-     *            the writer to write to
-     * @param outputConfig
-     *            the output configuration for console format, or null for default
+     * @param result       the validation result to write
+     * @param format       the output format
+     * @param writer       the writer to write to
+     * @param outputConfig the output configuration for console format, or null for
+     *                     default
      */
     public void write(ValidationResult result, String format, PrintWriter writer, OutputConfiguration outputConfig) {
         Objects.requireNonNull(result, "[" + getClass().getName() + "] result must not be null");
@@ -144,24 +131,21 @@ public class ReportWriter {
     /**
      * Writes the validation result to the console using the specified format.
      *
-     * @param result
-     *            the validation result to write
-     * @param format
-     *            the output format
+     * @param result the validation result to write
+     * @param format the output format
      */
     public void writeToConsole(ValidationResult result, String format) {
         writeToConsole(result, format, null);
     }
 
     /**
-     * Writes the validation result to the console using the specified format with optional output configuration.
+     * Writes the validation result to the console using the specified format with
+     * optional output configuration.
      *
-     * @param result
-     *            the validation result to write
-     * @param format
-     *            the output format
-     * @param outputConfig
-     *            the output configuration for console format, or null for default
+     * @param result       the validation result to write
+     * @param format       the output format
+     * @param outputConfig the output configuration for console format, or null for
+     *                     default
      */
     public void writeToConsole(ValidationResult result, String format, OutputConfiguration outputConfig) {
         Objects.requireNonNull(result, "[" + getClass().getName() + "] result must not be null");
@@ -217,9 +201,9 @@ public class ReportWriter {
     /**
      * Calculates the exit code based on the validation result.
      *
-     * @param result
-     *            the validation result
-     * @return 0 if no errors, 1 if errors found
+     * @param  result the validation result
+     *
+     * @return        0 if no errors, 1 if errors found
      */
     public static int calculateExitCode(ValidationResult result) {
         return result.hasErrors() ? 1 : 0;

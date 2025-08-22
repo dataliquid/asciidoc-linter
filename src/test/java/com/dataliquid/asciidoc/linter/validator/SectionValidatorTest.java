@@ -43,11 +43,16 @@ class SectionValidatorTest {
                     Content here.
                     """;
 
-            SectionConfig titleConfig = SectionConfig.builder().level(0)
+            SectionConfig titleConfig = SectionConfig
+                    .builder()
+                    .level(0)
                     .occurrence(OccurrenceConfig.builder().min(1).max(1).build())
-                    .title(TitleConfig.builder().pattern("^[A-Z].*").severity(Severity.ERROR).build()).build();
+                    .title(TitleConfig.builder().pattern("^[A-Z].*").severity(Severity.ERROR).build())
+                    .build();
 
-            DocumentConfiguration docConfig = DocumentConfiguration.builder().sections(Arrays.asList(titleConfig))
+            DocumentConfiguration docConfig = DocumentConfiguration
+                    .builder()
+                    .sections(Arrays.asList(titleConfig))
                     .build();
 
             Document document = asciidoctor.load(content, Options.builder().sourcemap(true).toFile(false).build());
@@ -70,10 +75,15 @@ class SectionValidatorTest {
                     Content without title.
                     """;
 
-            SectionConfig titleConfig = SectionConfig.builder().level(0)
-                    .occurrence(OccurrenceConfig.builder().min(1).max(1).build()).build();
+            SectionConfig titleConfig = SectionConfig
+                    .builder()
+                    .level(0)
+                    .occurrence(OccurrenceConfig.builder().min(1).max(1).build())
+                    .build();
 
-            DocumentConfiguration docConfig = DocumentConfiguration.builder().sections(Arrays.asList(titleConfig))
+            DocumentConfiguration docConfig = DocumentConfiguration
+                    .builder()
+                    .sections(Arrays.asList(titleConfig))
                     .build();
 
             Document document = asciidoctor.load(content, Options.builder().sourcemap(true).toFile(false).build());
@@ -97,11 +107,16 @@ class SectionValidatorTest {
                     Content here.
                     """;
 
-            SectionConfig titleConfig = SectionConfig.builder().level(0)
+            SectionConfig titleConfig = SectionConfig
+                    .builder()
+                    .level(0)
                     .occurrence(OccurrenceConfig.builder().min(1).max(1).build())
-                    .title(TitleConfig.builder().pattern("^[A-Z].*").severity(Severity.ERROR).build()).build();
+                    .title(TitleConfig.builder().pattern("^[A-Z].*").severity(Severity.ERROR).build())
+                    .build();
 
-            DocumentConfiguration docConfig = DocumentConfiguration.builder().sections(Arrays.asList(titleConfig))
+            DocumentConfiguration docConfig = DocumentConfiguration
+                    .builder()
+                    .sections(Arrays.asList(titleConfig))
                     .build();
 
             Document document = asciidoctor.load(content, Options.builder().sourcemap(true).toFile(false).build());
@@ -133,16 +148,26 @@ class SectionValidatorTest {
                     This is how to get started.
                     """;
 
-            SectionConfig introSection = SectionConfig.builder().name("introduction").level(1)
+            SectionConfig introSection = SectionConfig
+                    .builder()
+                    .name("introduction")
+                    .level(1)
                     .occurrence(OccurrenceConfig.builder().min(1).max(1).build())
-                    .title(TitleConfig.builder().pattern("^Introduction$").severity(Severity.ERROR).build()).build();
+                    .title(TitleConfig.builder().pattern("^Introduction$").severity(Severity.ERROR).build())
+                    .build();
 
-            SectionConfig gettingStartedSection = SectionConfig.builder().name("getting-started").level(1)
+            SectionConfig gettingStartedSection = SectionConfig
+                    .builder()
+                    .name("getting-started")
+                    .level(1)
                     .occurrence(OccurrenceConfig.builder().min(0).max(1).build())
-                    .title(TitleConfig.builder().pattern("^Getting Started$").severity(Severity.ERROR).build()).build();
+                    .title(TitleConfig.builder().pattern("^Getting Started$").severity(Severity.ERROR).build())
+                    .build();
 
-            DocumentConfiguration config = DocumentConfiguration.builder()
-                    .sections(Arrays.asList(introSection, gettingStartedSection)).build();
+            DocumentConfiguration config = DocumentConfiguration
+                    .builder()
+                    .sections(Arrays.asList(introSection, gettingStartedSection))
+                    .build();
 
             // When
             SectionValidator validator = SectionValidator.fromConfiguration(config).build();
@@ -165,11 +190,17 @@ class SectionValidatorTest {
                     This is how to get started.
                     """;
 
-            SectionConfig requiredSection = SectionConfig.builder().name("introduction").level(1)
+            SectionConfig requiredSection = SectionConfig
+                    .builder()
+                    .name("introduction")
+                    .level(1)
                     .occurrence(OccurrenceConfig.builder().min(1).max(1).build())
-                    .title(TitleConfig.builder().pattern("^Introduction$").severity(Severity.ERROR).build()).build();
+                    .title(TitleConfig.builder().pattern("^Introduction$").severity(Severity.ERROR).build())
+                    .build();
 
-            DocumentConfiguration config = DocumentConfiguration.builder().sections(Arrays.asList(requiredSection))
+            DocumentConfiguration config = DocumentConfiguration
+                    .builder()
+                    .sections(Arrays.asList(requiredSection))
                     .build();
 
             // When
@@ -180,7 +211,8 @@ class SectionValidatorTest {
             // Then
             assertFalse(result.isValid());
 
-            // The validator finds a section at level 1 ("Getting Started") but it doesn't match
+            // The validator finds a section at level 1 ("Getting Started") but it doesn't
+            // match
             // the required pattern "^Introduction$", so it reports a pattern mismatch
             assertEquals(1, result.getMessages().size());
 
@@ -205,8 +237,12 @@ class SectionValidatorTest {
                     Second intro.
                     """;
 
-            SectionConfig section = SectionConfig.builder().name("introduction").level(1)
-                    .occurrence(OccurrenceConfig.builder().min(0).max(1).build()).build();
+            SectionConfig section = SectionConfig
+                    .builder()
+                    .name("introduction")
+                    .level(1)
+                    .occurrence(OccurrenceConfig.builder().min(0).max(1).build())
+                    .build();
 
             DocumentConfiguration config = DocumentConfiguration.builder().sections(Arrays.asList(section)).build();
 
@@ -245,11 +281,17 @@ class SectionValidatorTest {
                     This is at level 2.
                     """;
 
-            SectionConfig conclusionSection = SectionConfig.builder().name("conclusion").level(1)
+            SectionConfig conclusionSection = SectionConfig
+                    .builder()
+                    .name("conclusion")
+                    .level(1)
                     .occurrence(OccurrenceConfig.builder().min(0).max(1).build())
-                    .title(TitleConfig.builder().pattern("^Conclusion$").severity(Severity.ERROR).build()).build();
+                    .title(TitleConfig.builder().pattern("^Conclusion$").severity(Severity.ERROR).build())
+                    .build();
 
-            DocumentConfiguration config = DocumentConfiguration.builder().sections(Arrays.asList(conclusionSection))
+            DocumentConfiguration config = DocumentConfiguration
+                    .builder()
+                    .sections(Arrays.asList(conclusionSection))
                     .build();
 
             // When
@@ -261,8 +303,11 @@ class SectionValidatorTest {
             assertTrue(result.isValid()); // "Conclusion" matches the pattern
 
             // The subsection should generate a "not allowed at level" error
-            ValidationMessage levelError = result.getMessages().stream()
-                    .filter(msg -> msg.getMessage().contains("Section not allowed at level 2")).findFirst()
+            ValidationMessage levelError = result
+                    .getMessages()
+                    .stream()
+                    .filter(msg -> msg.getMessage().contains("Section not allowed at level 2"))
+                    .findFirst()
                     .orElse(null);
 
             if (levelError != null) {
@@ -282,11 +327,17 @@ class SectionValidatorTest {
                     This is the conclusion with lowercase title.
                     """;
 
-            SectionConfig conclusionSection = SectionConfig.builder().name("conclusion").level(1)
+            SectionConfig conclusionSection = SectionConfig
+                    .builder()
+                    .name("conclusion")
+                    .level(1)
                     .occurrence(OccurrenceConfig.builder().min(0).max(1).build())
-                    .title(TitleConfig.builder().pattern("^Conclusion$").severity(Severity.ERROR).build()).build();
+                    .title(TitleConfig.builder().pattern("^Conclusion$").severity(Severity.ERROR).build())
+                    .build();
 
-            DocumentConfiguration config = DocumentConfiguration.builder().sections(Arrays.asList(conclusionSection))
+            DocumentConfiguration config = DocumentConfiguration
+                    .builder()
+                    .sections(Arrays.asList(conclusionSection))
                     .build();
 
             // When
@@ -297,9 +348,12 @@ class SectionValidatorTest {
             // Then
             assertFalse(result.isValid());
 
-            ValidationMessage message = result.getMessages().stream()
+            ValidationMessage message = result
+                    .getMessages()
+                    .stream()
                     .filter(msg -> msg.getMessage().contains("Section title does not match required pattern"))
-                    .findFirst().orElseThrow();
+                    .findFirst()
+                    .orElseThrow();
 
             assertEquals(Severity.ERROR, message.getSeverity());
             assertEquals("Section title does not match required pattern", message.getMessage());
@@ -321,11 +375,17 @@ class SectionValidatorTest {
                     This is chapter 2.
                     """;
 
-            SectionConfig chapterSection = SectionConfig.builder().name("chapter").level(1)
+            SectionConfig chapterSection = SectionConfig
+                    .builder()
+                    .name("chapter")
+                    .level(1)
                     .occurrence(OccurrenceConfig.builder().min(1).max(10).build())
-                    .title(TitleConfig.builder().pattern("Chapter \\d+: .*").severity(Severity.ERROR).build()).build();
+                    .title(TitleConfig.builder().pattern("Chapter \\d+: .*").severity(Severity.ERROR).build())
+                    .build();
 
-            DocumentConfiguration config = DocumentConfiguration.builder().sections(Arrays.asList(chapterSection))
+            DocumentConfiguration config = DocumentConfiguration
+                    .builder()
+                    .sections(Arrays.asList(chapterSection))
                     .build();
 
             // When
@@ -349,9 +409,13 @@ class SectionValidatorTest {
                     This doesn't match the pattern.
                     """;
 
-            SectionConfig section = SectionConfig.builder().name("chapter").level(1)
+            SectionConfig section = SectionConfig
+                    .builder()
+                    .name("chapter")
+                    .level(1)
                     .occurrence(OccurrenceConfig.builder().min(0).max(10).build())
-                    .title(TitleConfig.builder().pattern("Chapter \\d+: .*").severity(Severity.ERROR).build()).build();
+                    .title(TitleConfig.builder().pattern("Chapter \\d+: .*").severity(Severity.ERROR).build())
+                    .build();
 
             DocumentConfiguration config = DocumentConfiguration.builder().sections(Arrays.asList(section)).build();
 
@@ -363,9 +427,12 @@ class SectionValidatorTest {
             // Then
             assertFalse(result.isValid());
 
-            ValidationMessage message = result.getMessages().stream()
+            ValidationMessage message = result
+                    .getMessages()
+                    .stream()
                     .filter(msg -> msg.getMessage().contains("Section title does not match required pattern"))
-                    .findFirst().orElseThrow();
+                    .findFirst()
+                    .orElseThrow();
 
             assertEquals(Severity.ERROR, message.getSeverity());
             assertEquals("Section title does not match required pattern", message.getMessage());
@@ -389,8 +456,12 @@ class SectionValidatorTest {
                     This is at level 2 instead of level 1.
                     """;
 
-            SectionConfig section = SectionConfig.builder().name("introduction").level(1)
-                    .occurrence(OccurrenceConfig.builder().min(0).max(1).build()).build();
+            SectionConfig section = SectionConfig
+                    .builder()
+                    .name("introduction")
+                    .level(1)
+                    .occurrence(OccurrenceConfig.builder().min(0).max(1).build())
+                    .build();
 
             DocumentConfiguration config = DocumentConfiguration.builder().sections(Arrays.asList(section)).build();
 
@@ -402,8 +473,12 @@ class SectionValidatorTest {
             // Then
             assertFalse(result.isValid());
 
-            ValidationMessage unexpectedMessage = result.getMessages().stream()
-                    .filter(msg -> msg.getMessage().contains("Section not allowed at level")).findFirst().orElseThrow();
+            ValidationMessage unexpectedMessage = result
+                    .getMessages()
+                    .stream()
+                    .filter(msg -> msg.getMessage().contains("Section not allowed at level"))
+                    .findFirst()
+                    .orElseThrow();
 
             assertEquals("Section not allowed at level 2: 'Introduction'", unexpectedMessage.getMessage());
             assertEquals("Introduction", unexpectedMessage.getActualValue().orElse(null));
@@ -432,17 +507,34 @@ class SectionValidatorTest {
                     This is how to install.
                     """;
 
-            SectionConfig intro = SectionConfig.builder().name("introduction").level(1).order(1)
-                    .title(TitleConfig.builder().pattern("^Introduction$").severity(Severity.ERROR).build()).build();
+            SectionConfig intro = SectionConfig
+                    .builder()
+                    .name("introduction")
+                    .level(1)
+                    .order(1)
+                    .title(TitleConfig.builder().pattern("^Introduction$").severity(Severity.ERROR).build())
+                    .build();
 
-            SectionConfig prereq = SectionConfig.builder().name("prerequisites").level(1).order(2)
-                    .title(TitleConfig.builder().pattern("^Prerequisites$").severity(Severity.ERROR).build()).build();
+            SectionConfig prereq = SectionConfig
+                    .builder()
+                    .name("prerequisites")
+                    .level(1)
+                    .order(2)
+                    .title(TitleConfig.builder().pattern("^Prerequisites$").severity(Severity.ERROR).build())
+                    .build();
 
-            SectionConfig install = SectionConfig.builder().name("installation").level(1).order(3)
-                    .title(TitleConfig.builder().pattern("^Installation$").severity(Severity.ERROR).build()).build();
+            SectionConfig install = SectionConfig
+                    .builder()
+                    .name("installation")
+                    .level(1)
+                    .order(3)
+                    .title(TitleConfig.builder().pattern("^Installation$").severity(Severity.ERROR).build())
+                    .build();
 
-            DocumentConfiguration config = DocumentConfiguration.builder()
-                    .sections(Arrays.asList(intro, prereq, install)).build();
+            DocumentConfiguration config = DocumentConfiguration
+                    .builder()
+                    .sections(Arrays.asList(intro, prereq, install))
+                    .build();
 
             // When
             SectionValidator validator = SectionValidator.fromConfiguration(config).build();
@@ -468,13 +560,25 @@ class SectionValidatorTest {
                     This is the introduction.
                     """;
 
-            SectionConfig intro = SectionConfig.builder().name("introduction").level(1).order(1)
-                    .title(TitleConfig.builder().pattern("^Introduction$").severity(Severity.ERROR).build()).build();
+            SectionConfig intro = SectionConfig
+                    .builder()
+                    .name("introduction")
+                    .level(1)
+                    .order(1)
+                    .title(TitleConfig.builder().pattern("^Introduction$").severity(Severity.ERROR).build())
+                    .build();
 
-            SectionConfig install = SectionConfig.builder().name("installation").level(1).order(2)
-                    .title(TitleConfig.builder().pattern("^Installation$").severity(Severity.ERROR).build()).build();
+            SectionConfig install = SectionConfig
+                    .builder()
+                    .name("installation")
+                    .level(1)
+                    .order(2)
+                    .title(TitleConfig.builder().pattern("^Installation$").severity(Severity.ERROR).build())
+                    .build();
 
-            DocumentConfiguration config = DocumentConfiguration.builder().sections(Arrays.asList(intro, install))
+            DocumentConfiguration config = DocumentConfiguration
+                    .builder()
+                    .sections(Arrays.asList(intro, install))
                     .build();
 
             // When
@@ -515,21 +619,34 @@ class SectionValidatorTest {
                     These are advanced features.
                     """;
 
-            SectionConfig coreFeatures = SectionConfig.builder().name("core-features").level(2)
+            SectionConfig coreFeatures = SectionConfig
+                    .builder()
+                    .name("core-features")
+                    .level(2)
                     .occurrence(OccurrenceConfig.builder().min(1).max(1).build())
-                    .title(TitleConfig.builder().pattern("^Core Features$").severity(Severity.ERROR).build()).build();
+                    .title(TitleConfig.builder().pattern("^Core Features$").severity(Severity.ERROR).build())
+                    .build();
 
-            SectionConfig advancedFeatures = SectionConfig.builder().name("advanced-features").level(2)
+            SectionConfig advancedFeatures = SectionConfig
+                    .builder()
+                    .name("advanced-features")
+                    .level(2)
                     .occurrence(OccurrenceConfig.builder().min(0).max(1).build())
                     .title(TitleConfig.builder().pattern("^Advanced Features$").severity(Severity.ERROR).build())
                     .build();
 
-            SectionConfig featuresSection = SectionConfig.builder().name("features").level(1)
+            SectionConfig featuresSection = SectionConfig
+                    .builder()
+                    .name("features")
+                    .level(1)
                     .occurrence(OccurrenceConfig.builder().min(1).max(1).build())
                     .title(TitleConfig.builder().pattern("^Features$").severity(Severity.ERROR).build())
-                    .subsections(Arrays.asList(coreFeatures, advancedFeatures)).build();
+                    .subsections(Arrays.asList(coreFeatures, advancedFeatures))
+                    .build();
 
-            DocumentConfiguration config = DocumentConfiguration.builder().sections(Arrays.asList(featuresSection))
+            DocumentConfiguration config = DocumentConfiguration
+                    .builder()
+                    .sections(Arrays.asList(featuresSection))
                     .build();
 
             // When
@@ -556,16 +673,26 @@ class SectionValidatorTest {
                     These are advanced features.
                     """;
 
-            SectionConfig coreFeatures = SectionConfig.builder().name("core-features").level(2)
+            SectionConfig coreFeatures = SectionConfig
+                    .builder()
+                    .name("core-features")
+                    .level(2)
                     .occurrence(OccurrenceConfig.builder().min(1).max(1).build())
-                    .title(TitleConfig.builder().pattern("^Core Features$").severity(Severity.ERROR).build()).build();
+                    .title(TitleConfig.builder().pattern("^Core Features$").severity(Severity.ERROR).build())
+                    .build();
 
-            SectionConfig featuresSection = SectionConfig.builder().name("features").level(1)
+            SectionConfig featuresSection = SectionConfig
+                    .builder()
+                    .name("features")
+                    .level(1)
                     .occurrence(OccurrenceConfig.builder().min(1).max(1).build())
                     .title(TitleConfig.builder().pattern("^Features$").severity(Severity.ERROR).build())
-                    .subsections(Arrays.asList(coreFeatures)).build();
+                    .subsections(Arrays.asList(coreFeatures))
+                    .build();
 
-            DocumentConfiguration config = DocumentConfiguration.builder().sections(Arrays.asList(featuresSection))
+            DocumentConfiguration config = DocumentConfiguration
+                    .builder()
+                    .sections(Arrays.asList(featuresSection))
                     .build();
 
             // When
@@ -576,7 +703,8 @@ class SectionValidatorTest {
             // Then
             assertFalse(result.isValid());
 
-            // The validator finds a subsection at level 2 ("Advanced Features") but it doesn't match
+            // The validator finds a subsection at level 2 ("Advanced Features") but it
+            // doesn't match
             // the required pattern "^Core Features$", so it reports a pattern mismatch
             assertEquals(1, result.getMessages().size());
 
@@ -598,8 +726,12 @@ class SectionValidatorTest {
             // Given
             String content = "= Document Title\n";
 
-            SectionConfig section = SectionConfig.builder().name("introduction").level(1)
-                    .occurrence(OccurrenceConfig.builder().min(0).max(1).build()).build();
+            SectionConfig section = SectionConfig
+                    .builder()
+                    .name("introduction")
+                    .level(1)
+                    .occurrence(OccurrenceConfig.builder().min(0).max(1).build())
+                    .build();
 
             DocumentConfiguration config = DocumentConfiguration.builder().sections(Arrays.asList(section)).build();
 

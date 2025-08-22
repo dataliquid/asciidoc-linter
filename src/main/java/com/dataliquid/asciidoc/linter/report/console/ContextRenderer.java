@@ -68,7 +68,8 @@ public class ContextRenderer {
         // For section.min-occurrences errors, add an empty line for the missing section
         if ("section.min-occurrences".equals(message.getRuleId())
                 && message.getErrorType() == ErrorType.MISSING_VALUE) {
-            // Extract the section level from the placeholder hint (e.g., "== section" -> level 1)
+            // Extract the section level from the placeholder hint (e.g., "== section" ->
+            // level 1)
             String hint = message.getMissingValueHint();
             int sectionLevel = 0;
             if (hint != null) {
@@ -279,7 +280,8 @@ public class ContextRenderer {
             return createContextWithCaptionLine(contextLines, startLine, loc);
         }
 
-        // For example.caption.required errors, add an extra line before the example block
+        // For example.caption.required errors, add an extra line before the example
+        // block
         if ("example.caption.required".equals(message.getRuleId())
                 && message.getErrorType() == ErrorType.MISSING_VALUE) {
             // Insert empty line at the position where caption should be
@@ -291,7 +293,8 @@ public class ContextRenderer {
             return createContextWithCaptionLine(contextLines, startLine, loc);
         }
 
-        // For example.collapsible.required errors, add an extra line before the example block
+        // For example.collapsible.required errors, add an extra line before the example
+        // block
         if ("example.collapsible.required".equals(message.getRuleId())
                 && message.getErrorType() == ErrorType.MISSING_VALUE) {
             // Insert empty line at the position where collapsible attribute should be
@@ -303,7 +306,8 @@ public class ContextRenderer {
             return createContextWithCaptionLine(contextLines, startLine, loc);
         }
 
-        // For admonition.title.required errors, add an extra line before the admonition block
+        // For admonition.title.required errors, add an extra line before the admonition
+        // block
         if ("admonition.title.required".equals(message.getRuleId())
                 && message.getErrorType() == ErrorType.MISSING_VALUE) {
             // Insert empty line at the position where title should be (before [NOTE])
@@ -324,7 +328,8 @@ public class ContextRenderer {
             return new SourceContext(lines, loc);
         }
 
-        // For admonition.content.required errors, add an extra line inside the admonition block
+        // For admonition.content.required errors, add an extra line inside the
+        // admonition block
         if ("admonition.content.required".equals(message.getRuleId())
                 && message.getErrorType() == ErrorType.MISSING_VALUE) {
             // Find the line after the opening delimiter (====)
@@ -351,7 +356,8 @@ public class ContextRenderer {
             return new SourceContext(lines, loc);
         }
 
-        // For admonition.icon.required errors, add an extra line before the document content
+        // For admonition.icon.required errors, add an extra line before the document
+        // content
         if ("admonition.icon.required".equals(message.getRuleId())
                 && message.getErrorType() == ErrorType.MISSING_VALUE) {
             // Icon directive should go in the document header, after the title
@@ -387,7 +393,8 @@ public class ContextRenderer {
             return new SourceContext(lines, loc);
         }
 
-        // For sidebar.content.required errors, add an extra line inside the sidebar block
+        // For sidebar.content.required errors, add an extra line inside the sidebar
+        // block
         if ("sidebar.content.required".equals(message.getRuleId())
                 && message.getErrorType() == ErrorType.MISSING_VALUE) {
             // Find the line after the opening delimiter (****)
@@ -414,10 +421,12 @@ public class ContextRenderer {
             return new SourceContext(lines, loc);
         }
 
-        // For sidebar.position.required errors, add an extra line before the sidebar block
+        // For sidebar.position.required errors, add an extra line before the sidebar
+        // block
         if ("sidebar.position.required".equals(message.getRuleId())
                 && message.getErrorType() == ErrorType.MISSING_VALUE) {
-            // Insert empty line at the position where position attribute should be (before ****)
+            // Insert empty line at the position where position attribute should be (before
+            // ****)
             int sidebarLineIndex = loc.getStartLine() - startLine;
             if (sidebarLineIndex >= 0 && sidebarLineIndex <= contextLines.size()) {
                 contextLines.add(sidebarLineIndex, "");
@@ -447,7 +456,8 @@ public class ContextRenderer {
         }
 
         // For verse.author.required and verse.attribution.required errors,
-        // don't add extra lines - the placeholders will be inserted inline in the [verse] line
+        // don't add extra lines - the placeholders will be inserted inline in the
+        // [verse] line
 
         // For verse.content.required errors, add an extra line inside the verse block
         if ("verse.content.required".equals(message.getRuleId()) && message.getErrorType() == ErrorType.MISSING_VALUE) {
@@ -580,7 +590,8 @@ public class ContextRenderer {
             }
         }
 
-        // For quote.attribution.required or quote.citation.required, don't add extra lines
+        // For quote.attribution.required or quote.citation.required, don't add extra
+        // lines
         // The placeholders will be inserted inline in the existing [quote] line
 
         // For metadata.required errors, add an empty line for the missing attribute
@@ -648,8 +659,9 @@ public class ContextRenderer {
     }
 
     /**
-     * Creates a SourceContext with extra lines marked as error lines. Used for paragraph.lines.min errors where we need
-     * to show where the missing lines should be.
+     * Creates a SourceContext with extra lines marked as error lines. Used for
+     * paragraph.lines.min errors where we need to show where the missing lines
+     * should be.
      */
     private SourceContext createContextWithExtraLines(List<String> contextLines, int startLine, SourceLocation loc,
             int extraLineCount) {
@@ -678,8 +690,9 @@ public class ContextRenderer {
     }
 
     /**
-     * Creates a SourceContext with a caption line inserted before the video block. Used for video.caption.required
-     * errors where we need to show where the caption should be.
+     * Creates a SourceContext with a caption line inserted before the video block.
+     * Used for video.caption.required errors where we need to show where the
+     * caption should be.
      */
     private SourceContext createContextWithCaptionLine(List<String> contextLines, int startLine, SourceLocation loc) {
         List<SourceContext.ContextLine> lines = new ArrayList<>();

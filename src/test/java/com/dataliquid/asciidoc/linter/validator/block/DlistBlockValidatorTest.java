@@ -26,13 +26,12 @@ import org.asciidoctor.ast.Cursor;
 
 /**
  * Unit tests for {@link DlistBlockValidator}.
- *
  * <p>
- * This test class validates the behavior of the definition list block validator, which processes dlist blocks in
- * AsciiDoc documents. The tests cover all validation rules including term count, description validation, nesting level,
- * and delimiter style.
+ * This test class validates the behavior of the definition list block
+ * validator, which processes dlist blocks in AsciiDoc documents. The tests
+ * cover all validation rules including term count, description validation,
+ * nesting level, and delimiter style.
  * </p>
- *
  * <p>
  * Test structure follows a nested class pattern for better organization:
  * </p>
@@ -121,8 +120,11 @@ class DlistBlockValidatorTest {
             List<DescriptionListEntry> entries = Arrays.asList(createMockEntry("Term1", "Description1"));
             when(mockDlist.getItems()).thenReturn(entries);
 
-            DlistBlock config = DlistBlock.builder().severity(Severity.ERROR)
-                    .terms(DlistBlock.TermsConfig.builder().min(2).severity(Severity.WARN).build()).build();
+            DlistBlock config = DlistBlock
+                    .builder()
+                    .severity(Severity.ERROR)
+                    .terms(DlistBlock.TermsConfig.builder().min(2).severity(Severity.WARN).build())
+                    .build();
 
             // When
             List<ValidationMessage> messages = validator.validate(mockDlist, config, context);
@@ -141,13 +143,16 @@ class DlistBlockValidatorTest {
         @DisplayName("should validate maximum term count")
         void shouldValidateMaximumTermCount() {
             // Given
-            List<DescriptionListEntry> entries = Arrays.asList(createMockEntry("Term1", "Desc1"),
-                    createMockEntry("Term2", "Desc2"), createMockEntry("Term3", "Desc3"),
-                    createMockEntry("Term4", "Desc4"));
+            List<DescriptionListEntry> entries = Arrays
+                    .asList(createMockEntry("Term1", "Desc1"), createMockEntry("Term2", "Desc2"),
+                            createMockEntry("Term3", "Desc3"), createMockEntry("Term4", "Desc4"));
             when(mockDlist.getItems()).thenReturn(entries);
 
-            DlistBlock config = DlistBlock.builder().severity(Severity.ERROR)
-                    .terms(DlistBlock.TermsConfig.builder().max(3).build()).build();
+            DlistBlock config = DlistBlock
+                    .builder()
+                    .severity(Severity.ERROR)
+                    .terms(DlistBlock.TermsConfig.builder().max(3).build())
+                    .build();
 
             // When
             List<ValidationMessage> messages = validator.validate(mockDlist, config, context);
@@ -166,13 +171,16 @@ class DlistBlockValidatorTest {
         @DisplayName("should validate term pattern")
         void shouldValidateTermPattern() {
             // Given
-            List<DescriptionListEntry> entries = Arrays.asList(createMockEntry("term", "Description"), // lowercase,
-                                                                                                       // should fail
-                    createMockEntry("Term", "Description") // uppercase, should pass
-            );
+            List<DescriptionListEntry> entries = Arrays
+                    .asList(createMockEntry("term", "Description"), // lowercase,
+                                                                    // should fail
+                            createMockEntry("Term", "Description") // uppercase, should pass
+                    );
             when(mockDlist.getItems()).thenReturn(entries);
 
-            DlistBlock config = DlistBlock.builder().severity(Severity.ERROR)
+            DlistBlock config = DlistBlock
+                    .builder()
+                    .severity(Severity.ERROR)
                     .terms(DlistBlock.TermsConfig.builder().pattern("^[A-Z].*").severity(Severity.WARN).build())
                     .build();
 
@@ -204,7 +212,9 @@ class DlistBlockValidatorTest {
             when(mockCursor.getLineNumber()).thenReturn(53);
             when(mockDlist.getSourceLocation()).thenReturn(mockCursor);
 
-            DlistBlock config = DlistBlock.builder().severity(Severity.ERROR)
+            DlistBlock config = DlistBlock
+                    .builder()
+                    .severity(Severity.ERROR)
                     .terms(DlistBlock.TermsConfig.builder().pattern("^[A-Z].*").severity(Severity.WARN).build())
                     .build();
 
@@ -217,7 +227,8 @@ class DlistBlockValidatorTest {
             assertEquals("dlist.terms.pattern", message.getRuleId());
             assertEquals(Severity.WARN, message.getSeverity());
 
-            // Since we don't have actual file content in tests, the validator falls back to columns 1,1
+            // Since we don't have actual file content in tests, the validator falls back to
+            // columns 1,1
             assertEquals(1, message.getLocation().getStartColumn(), "Should point to start of term");
             assertEquals(1, message.getLocation().getEndColumn(), "Falls back to column 1 without file content");
             assertEquals(53, message.getLocation().getStartLine());
@@ -228,14 +239,18 @@ class DlistBlockValidatorTest {
         @DisplayName("should validate term length constraints")
         void shouldValidateTermLengthConstraints() {
             // Given
-            List<DescriptionListEntry> entries = Arrays.asList(createMockEntry("AB", "Description"), // too short
-                    createMockEntry("ABCDEF", "Description"), // ok
-                    createMockEntry("ABCDEFGHIJKLMNOP", "Description") // too long
-            );
+            List<DescriptionListEntry> entries = Arrays
+                    .asList(createMockEntry("AB", "Description"), // too short
+                            createMockEntry("ABCDEF", "Description"), // ok
+                            createMockEntry("ABCDEFGHIJKLMNOP", "Description") // too long
+                    );
             when(mockDlist.getItems()).thenReturn(entries);
 
-            DlistBlock config = DlistBlock.builder().severity(Severity.ERROR)
-                    .terms(DlistBlock.TermsConfig.builder().minLength(3).maxLength(10).build()).build();
+            DlistBlock config = DlistBlock
+                    .builder()
+                    .severity(Severity.ERROR)
+                    .terms(DlistBlock.TermsConfig.builder().minLength(3).maxLength(10).build())
+                    .build();
 
             // When
             List<ValidationMessage> messages = validator.validate(mockDlist, config, context);
@@ -244,14 +259,20 @@ class DlistBlockValidatorTest {
             assertEquals(2, messages.size());
 
             // Check too short message
-            ValidationMessage shortMessage = messages.stream()
-                    .filter(m -> m.getRuleId().equals("dlist.terms.minLength")).findFirst().orElse(null);
+            ValidationMessage shortMessage = messages
+                    .stream()
+                    .filter(m -> m.getRuleId().equals("dlist.terms.minLength"))
+                    .findFirst()
+                    .orElse(null);
             assertEquals("Definition list term is too short", shortMessage.getMessage());
             assertEquals("AB (length: 2)", shortMessage.getActualValue().orElse(null));
 
             // Check too long message
-            ValidationMessage longMessage = messages.stream().filter(m -> m.getRuleId().equals("dlist.terms.maxLength"))
-                    .findFirst().orElse(null);
+            ValidationMessage longMessage = messages
+                    .stream()
+                    .filter(m -> m.getRuleId().equals("dlist.terms.maxLength"))
+                    .findFirst()
+                    .orElse(null);
             assertEquals("Definition list term is too long", longMessage.getMessage());
             assertTrue(longMessage.getActualValue().orElse("").contains("length: 16"));
         }
@@ -269,7 +290,9 @@ class DlistBlockValidatorTest {
             List<DescriptionListEntry> entries = Arrays.asList(entryWithoutDesc);
             when(mockDlist.getItems()).thenReturn(entries);
 
-            DlistBlock config = DlistBlock.builder().severity(Severity.ERROR)
+            DlistBlock config = DlistBlock
+                    .builder()
+                    .severity(Severity.ERROR)
                     .descriptions(
                             DlistBlock.DescriptionsConfig.builder().required(true).severity(Severity.ERROR).build())
                     .build();
@@ -291,13 +314,19 @@ class DlistBlockValidatorTest {
         @DisplayName("should validate description pattern")
         void shouldValidateDescriptionPattern() {
             // Given
-            List<DescriptionListEntry> entries = Arrays.asList(createMockEntry("Term1", "Description without period"),
-                    createMockEntry("Term2", "Description with period."));
+            List<DescriptionListEntry> entries = Arrays
+                    .asList(createMockEntry("Term1", "Description without period"),
+                            createMockEntry("Term2", "Description with period."));
             when(mockDlist.getItems()).thenReturn(entries);
 
-            DlistBlock config = DlistBlock.builder().severity(Severity.ERROR)
-                    .descriptions(DlistBlock.DescriptionsConfig.builder().pattern(".*\\.$") // Must end with period
-                            .severity(Severity.WARN).build())
+            DlistBlock config = DlistBlock
+                    .builder()
+                    .severity(Severity.ERROR)
+                    .descriptions(DlistBlock.DescriptionsConfig
+                            .builder()
+                            .pattern(".*\\.$") // Must end with period
+                            .severity(Severity.WARN)
+                            .build())
                     .build();
 
             // When
@@ -334,7 +363,9 @@ class DlistBlockValidatorTest {
             when(mockDlist.getParent()).thenReturn(parent);
             when(mockDlist.getItems()).thenReturn(Arrays.asList());
 
-            DlistBlock config = DlistBlock.builder().severity(Severity.ERROR)
+            DlistBlock config = DlistBlock
+                    .builder()
+                    .severity(Severity.ERROR)
                     .nestingLevel(DlistBlock.NestingLevelConfig.builder().max(1).severity(Severity.WARN).build())
                     .build();
 
@@ -357,9 +388,14 @@ class DlistBlockValidatorTest {
             when(mockDlist.getAttribute("delimiter")).thenReturn("::::");
             when(mockDlist.getItems()).thenReturn(Arrays.asList());
 
-            DlistBlock config = DlistBlock.builder().severity(Severity.ERROR)
-                    .delimiterStyle(DlistBlock.DelimiterStyleConfig.builder()
-                            .allowedDelimiters(new String[]{"::", ":::"}).severity(Severity.ERROR).build())
+            DlistBlock config = DlistBlock
+                    .builder()
+                    .severity(Severity.ERROR)
+                    .delimiterStyle(DlistBlock.DelimiterStyleConfig
+                            .builder()
+                            .allowedDelimiters(new String[] { "::", ":::" })
+                            .severity(Severity.ERROR)
+                            .build())
                     .build();
 
             // When
@@ -376,8 +412,13 @@ class DlistBlockValidatorTest {
             when(mockDlist.getAttribute("delimiter")).thenReturn("::");
             when(mockDlist.getItems()).thenReturn(Arrays.asList());
 
-            DlistBlock config = DlistBlock.builder().severity(Severity.ERROR).delimiterStyle(
-                    DlistBlock.DelimiterStyleConfig.builder().allowedDelimiters(new String[]{"::", ":::"}).build())
+            DlistBlock config = DlistBlock
+                    .builder()
+                    .severity(Severity.ERROR)
+                    .delimiterStyle(DlistBlock.DelimiterStyleConfig
+                            .builder()
+                            .allowedDelimiters(new String[] { "::", ":::" })
+                            .build())
                     .build();
 
             // When
@@ -396,12 +437,15 @@ class DlistBlockValidatorTest {
         @DisplayName("should validate multiple rules together")
         void shouldValidateMultipleRulesTogether() {
             // Given
-            List<DescriptionListEntry> entries = Arrays.asList(createMockEntry("term", "Description"), // lowercase term
-                    createMockEntry("Term", null) // missing description
-            );
+            List<DescriptionListEntry> entries = Arrays
+                    .asList(createMockEntry("term", "Description"), // lowercase term
+                            createMockEntry("Term", null) // missing description
+                    );
             when(mockDlist.getItems()).thenReturn(entries);
 
-            DlistBlock config = DlistBlock.builder().severity(Severity.ERROR)
+            DlistBlock config = DlistBlock
+                    .builder()
+                    .severity(Severity.ERROR)
                     .terms(DlistBlock.TermsConfig.builder().pattern("^[A-Z].*").severity(Severity.WARN).build())
                     .descriptions(
                             DlistBlock.DescriptionsConfig.builder().required(true).severity(Severity.ERROR).build())
@@ -414,10 +458,13 @@ class DlistBlockValidatorTest {
             assertEquals(2, messages.size());
 
             // Verify we have one pattern violation and one required description violation
-            assertTrue(messages.stream()
+            assertTrue(messages
+                    .stream()
                     .anyMatch(m -> m.getRuleId().equals("dlist.terms.pattern") && m.getSeverity() == Severity.WARN));
-            assertTrue(messages.stream().anyMatch(
-                    m -> m.getRuleId().equals("dlist.descriptions.required") && m.getSeverity() == Severity.ERROR));
+            assertTrue(messages
+                    .stream()
+                    .anyMatch(m -> m.getRuleId().equals("dlist.descriptions.required")
+                            && m.getSeverity() == Severity.ERROR));
         }
 
         @Test
@@ -426,8 +473,11 @@ class DlistBlockValidatorTest {
             // Given
             when(mockDlist.getItems()).thenReturn(Arrays.asList());
 
-            DlistBlock config = DlistBlock.builder().severity(Severity.ERROR)
-                    .terms(DlistBlock.TermsConfig.builder().min(1).build()).build();
+            DlistBlock config = DlistBlock
+                    .builder()
+                    .severity(Severity.ERROR)
+                    .terms(DlistBlock.TermsConfig.builder().min(1).build())
+                    .build();
 
             // When
             List<ValidationMessage> messages = validator.validate(mockDlist, config, context);

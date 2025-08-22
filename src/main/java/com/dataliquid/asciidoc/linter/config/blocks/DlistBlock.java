@@ -24,8 +24,8 @@ import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.EMP
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
 /**
- * Configuration for definition list (dlist) blocks in AsciiDoc. Represents lists with term-description pairs using ::
- * delimiters.
+ * Configuration for definition list (dlist) blocks in AsciiDoc. Represents
+ * lists with term-description pairs using :: delimiters.
  */
 @JsonDeserialize(builder = DlistBlock.Builder.class)
 public final class DlistBlock extends AbstractBlock {

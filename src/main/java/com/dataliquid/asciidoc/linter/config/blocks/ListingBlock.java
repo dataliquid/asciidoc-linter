@@ -79,8 +79,7 @@ public final class ListingBlock extends AbstractBlock {
 
         private LanguageConfig(LanguageConfigBuilder builder) {
             this.required = builder.required;
-            this.allowed = builder.allowed != null
-                    ? Collections.unmodifiableList(new ArrayList<>(builder.allowed))
+            this.allowed = builder.allowed != null ? Collections.unmodifiableList(new ArrayList<>(builder.allowed))
                     : Collections.emptyList();
             this.severity = builder.severity;
         }
@@ -210,8 +209,10 @@ public final class ListingBlock extends AbstractBlock {
                 return true;
             if (!(o instanceof TitleConfig that))
                 return false;
-            return required == that.required && Objects.equals(pattern == null ? null : pattern.pattern(),
-                    that.pattern == null ? null : that.pattern.pattern()) && severity == that.severity;
+            return required == that.required && Objects
+                    .equals(pattern == null ? null : pattern.pattern(),
+                            that.pattern == null ? null : that.pattern.pattern())
+                    && severity == that.severity;
         }
 
         @Override

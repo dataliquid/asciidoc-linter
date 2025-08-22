@@ -18,17 +18,39 @@ class VerseBlockTest {
 
     @Test
     void testBuilder() {
-        VerseBlock.AuthorConfig authorRule = VerseBlock.AuthorConfig.builder().defaultValue("Carl Sandburg")
-                .required(true).minLength(3).maxLength(50).pattern("^[A-Z][a-zA-Z\\s\\.]+$").build();
+        VerseBlock.AuthorConfig authorRule = VerseBlock.AuthorConfig
+                .builder()
+                .defaultValue("Carl Sandburg")
+                .required(true)
+                .minLength(3)
+                .maxLength(50)
+                .pattern("^[A-Z][a-zA-Z\\s\\.]+$")
+                .build();
 
-        VerseBlock.AttributionConfig attributionRule = VerseBlock.AttributionConfig.builder().defaultValue("Fog")
-                .required(false).minLength(5).maxLength(100).pattern("^[A-Za-z0-9\\s,\\.]+$").build();
+        VerseBlock.AttributionConfig attributionRule = VerseBlock.AttributionConfig
+                .builder()
+                .defaultValue("Fog")
+                .required(false)
+                .minLength(5)
+                .maxLength(100)
+                .pattern("^[A-Za-z0-9\\s,\\.]+$")
+                .build();
 
-        VerseBlock.ContentConfig contentRule = VerseBlock.ContentConfig.builder().required(true).minLength(20)
-                .maxLength(500).pattern(".*\\n.*").build();
+        VerseBlock.ContentConfig contentRule = VerseBlock.ContentConfig
+                .builder()
+                .required(true)
+                .minLength(20)
+                .maxLength(500)
+                .pattern(".*\\n.*")
+                .build();
 
-        VerseBlock verse = VerseBlock.builder().severity(Severity.WARN).author(authorRule).attribution(attributionRule)
-                .content(contentRule).build();
+        VerseBlock verse = VerseBlock
+                .builder()
+                .severity(Severity.WARN)
+                .author(authorRule)
+                .attribution(attributionRule)
+                .content(contentRule)
+                .build();
 
         assertEquals(Severity.WARN, verse.getSeverity());
 
@@ -57,10 +79,16 @@ class VerseBlockTest {
     void testPatternStringConstructor() {
         VerseBlock.AuthorConfig authorRule = VerseBlock.AuthorConfig.builder().pattern("^[A-Z].*").build();
 
-        VerseBlock.AttributionConfig attributionRule = VerseBlock.AttributionConfig.builder()
-                .pattern(Pattern.compile("[0-9]+")).build();
+        VerseBlock.AttributionConfig attributionRule = VerseBlock.AttributionConfig
+                .builder()
+                .pattern(Pattern.compile("[0-9]+"))
+                .build();
 
-        VerseBlock verse = VerseBlock.builder().severity(Severity.ERROR).author(authorRule).attribution(attributionRule)
+        VerseBlock verse = VerseBlock
+                .builder()
+                .severity(Severity.ERROR)
+                .author(authorRule)
+                .attribution(attributionRule)
                 .build();
 
         assertNotNull(verse.getAuthor().getPattern());
@@ -73,10 +101,16 @@ class VerseBlockTest {
     void testNullPatterns() {
         VerseBlock.AuthorConfig authorRule = VerseBlock.AuthorConfig.builder().pattern((String) null).build();
 
-        VerseBlock.AttributionConfig attributionRule = VerseBlock.AttributionConfig.builder().pattern((Pattern) null)
+        VerseBlock.AttributionConfig attributionRule = VerseBlock.AttributionConfig
+                .builder()
+                .pattern((Pattern) null)
                 .build();
 
-        VerseBlock verse = VerseBlock.builder().severity(Severity.INFO).author(authorRule).attribution(attributionRule)
+        VerseBlock verse = VerseBlock
+                .builder()
+                .severity(Severity.INFO)
+                .author(authorRule)
+                .attribution(attributionRule)
                 .build();
 
         assertNull(verse.getAuthor().getPattern());
@@ -85,14 +119,32 @@ class VerseBlockTest {
 
     @Test
     void testEqualsAndHashCode() {
-        VerseBlock.AuthorConfig authorRule1 = VerseBlock.AuthorConfig.builder().defaultValue("Author1").required(true)
-                .minLength(5).maxLength(50).pattern("^[A-Z].*").build();
+        VerseBlock.AuthorConfig authorRule1 = VerseBlock.AuthorConfig
+                .builder()
+                .defaultValue("Author1")
+                .required(true)
+                .minLength(5)
+                .maxLength(50)
+                .pattern("^[A-Z].*")
+                .build();
 
-        VerseBlock.AuthorConfig authorRule2 = VerseBlock.AuthorConfig.builder().defaultValue("Author1").required(true)
-                .minLength(5).maxLength(50).pattern("^[A-Z].*").build();
+        VerseBlock.AuthorConfig authorRule2 = VerseBlock.AuthorConfig
+                .builder()
+                .defaultValue("Author1")
+                .required(true)
+                .minLength(5)
+                .maxLength(50)
+                .pattern("^[A-Z].*")
+                .build();
 
-        VerseBlock.AuthorConfig authorRule3 = VerseBlock.AuthorConfig.builder().defaultValue("Author2").required(true)
-                .minLength(5).maxLength(50).pattern("^[A-Z].*").build();
+        VerseBlock.AuthorConfig authorRule3 = VerseBlock.AuthorConfig
+                .builder()
+                .defaultValue("Author2")
+                .required(true)
+                .minLength(5)
+                .maxLength(50)
+                .pattern("^[A-Z].*")
+                .build();
 
         VerseBlock verse1 = VerseBlock.builder().severity(Severity.WARN).author(authorRule1).build();
 
@@ -115,17 +167,35 @@ class VerseBlockTest {
 
     @Test
     void testInnerClassEqualsAndHashCode() {
-        VerseBlock.AuthorConfig author1 = VerseBlock.AuthorConfig.builder().defaultValue("Test").required(true)
-                .minLength(5).maxLength(50).pattern("^[A-Z].*").build();
+        VerseBlock.AuthorConfig author1 = VerseBlock.AuthorConfig
+                .builder()
+                .defaultValue("Test")
+                .required(true)
+                .minLength(5)
+                .maxLength(50)
+                .pattern("^[A-Z].*")
+                .build();
 
-        VerseBlock.AuthorConfig author2 = VerseBlock.AuthorConfig.builder().defaultValue("Test").required(true)
-                .minLength(5).maxLength(50).pattern("^[A-Z].*").build();
+        VerseBlock.AuthorConfig author2 = VerseBlock.AuthorConfig
+                .builder()
+                .defaultValue("Test")
+                .required(true)
+                .minLength(5)
+                .maxLength(50)
+                .pattern("^[A-Z].*")
+                .build();
 
-        VerseBlock.AttributionConfig attr1 = VerseBlock.AttributionConfig.builder().defaultValue("Source")
-                .required(false).build();
+        VerseBlock.AttributionConfig attr1 = VerseBlock.AttributionConfig
+                .builder()
+                .defaultValue("Source")
+                .required(false)
+                .build();
 
-        VerseBlock.AttributionConfig attr2 = VerseBlock.AttributionConfig.builder().defaultValue("Source")
-                .required(false).build();
+        VerseBlock.AttributionConfig attr2 = VerseBlock.AttributionConfig
+                .builder()
+                .defaultValue("Source")
+                .required(false)
+                .build();
 
         VerseBlock.ContentConfig content1 = VerseBlock.ContentConfig.builder().required(true).minLength(10).build();
 

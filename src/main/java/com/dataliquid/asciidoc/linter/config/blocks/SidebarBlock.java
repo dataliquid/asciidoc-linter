@@ -25,9 +25,8 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
 /**
- * Configuration for sidebar blocks in AsciiDoc. Sidebar blocks are used for supplementary information displayed
- * alongside the main content.
- *
+ * Configuration for sidebar blocks in AsciiDoc. Sidebar blocks are used for
+ * supplementary information displayed alongside the main content.
  * <p>
  * Example usage:
  *
@@ -36,7 +35,6 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
  * Sidebar content here
  * ****
  * </pre>
- *
  * <p>
  * Validation is based on the YAML schema configuration for sidebar blocks.
  */
@@ -173,8 +171,9 @@ public final class SidebarBlock extends AbstractBlock {
                 return false;
             return required == that.required && Objects.equals(minLength, that.minLength)
                     && Objects.equals(maxLength, that.maxLength)
-                    && Objects.equals(pattern != null ? pattern.pattern() : null,
-                            that.pattern != null ? that.pattern.pattern() : null)
+                    && Objects
+                            .equals(pattern != null ? pattern.pattern() : null,
+                                    that.pattern != null ? that.pattern.pattern() : null)
                     && severity == that.severity;
         }
 

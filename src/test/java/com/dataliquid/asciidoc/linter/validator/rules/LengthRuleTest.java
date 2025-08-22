@@ -34,7 +34,9 @@ class LengthRuleTest {
         @DisplayName("should build rule with min and max constraints")
         void shouldBuildRuleWithMinAndMaxConstraints() {
             // Given
-            LengthRule.Builder builder = LengthRule.builder().addLengthConstraint("title", 5, 100, Severity.ERROR)
+            LengthRule.Builder builder = LengthRule
+                    .builder()
+                    .addLengthConstraint("title", 5, 100, Severity.ERROR)
                     .addLengthConstraint("author", 3, 50, Severity.ERROR);
 
             // When
@@ -51,8 +53,9 @@ class LengthRuleTest {
         @DisplayName("should build rule with only min constraint")
         void shouldBuildRuleWithOnlyMinConstraint() {
             // Given
-            LengthRule.Builder builder = LengthRule.builder().addLengthConstraint("description", 10, null,
-                    Severity.WARN);
+            LengthRule.Builder builder = LengthRule
+                    .builder()
+                    .addLengthConstraint("description", 10, null, Severity.WARN);
 
             // When
             LengthRule rule = builder.build();

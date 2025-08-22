@@ -8,8 +8,8 @@ import com.dataliquid.asciidoc.linter.cli.display.DisplayConstants;
 import com.dataliquid.asciidoc.linter.cli.display.TextWrapper;
 
 /**
- * Handles the display of configuration information for the AsciiDoc linter. Formats and presents the configuration in a
- * visually appealing ASCII box.
+ * Handles the display of configuration information for the AsciiDoc linter.
+ * Formats and presents the configuration in a visually appealing ASCII box.
  */
 public class ConfigurationDisplay {
 
@@ -28,10 +28,8 @@ public class ConfigurationDisplay {
     /**
      * Creates a new ConfigurationDisplay with custom dimensions.
      *
-     * @param boxWidth
-     *            the width of the display box
-     * @param labelWidth
-     *            the width allocated for labels
+     * @param boxWidth   the width of the display box
+     * @param labelWidth the width allocated for labels
      */
     public ConfigurationDisplay(int boxWidth, int labelWidth) {
         this.boxWidth = boxWidth;
@@ -43,8 +41,7 @@ public class ConfigurationDisplay {
     /**
      * Displays the configuration information in a formatted box.
      *
-     * @param config
-     *            the CLI configuration to display
+     * @param config the CLI configuration to display
      */
     public void display(CLIConfig config) {
         System.out.println(); // Empty line before box
@@ -65,8 +62,7 @@ public class ConfigurationDisplay {
     /**
      * Draws all configuration lines within the box.
      *
-     * @param config
-     *            the CLI configuration
+     * @param config the CLI configuration
      */
     private void drawConfigurationLines(CLIConfig config) {
         // Input patterns - always shown
@@ -103,10 +99,8 @@ public class ConfigurationDisplay {
     /**
      * Draws a single configuration line, handling text wrapping if necessary.
      *
-     * @param label
-     *            the configuration label
-     * @param value
-     *            the configuration value
+     * @param label the configuration label
+     * @param value the configuration value
      */
     private void drawConfigLine(String label, String value) {
         int valueWidth = boxWidth - 4 - labelWidth; // 4 for borders and padding
@@ -115,11 +109,12 @@ public class ConfigurationDisplay {
     }
 
     /**
-     * Creates a list of configuration entries for display. This method can be used for alternative display formats.
+     * Creates a list of configuration entries for display. This method can be used
+     * for alternative display formats.
      *
-     * @param config
-     *            the CLI configuration
-     * @return a list of configuration entries
+     * @param  config the CLI configuration
+     *
+     * @return        a list of configuration entries
      */
     public List<ConfigEntry> getConfigurationEntries(CLIConfig config) {
         List<ConfigEntry> entries = new ArrayList<>();

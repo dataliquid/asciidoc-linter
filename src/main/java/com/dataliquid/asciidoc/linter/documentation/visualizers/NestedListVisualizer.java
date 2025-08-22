@@ -141,42 +141,42 @@ public class NestedListVisualizer implements HierarchyVisualizer {
 
     private String getSeverityIcon(Severity severity) {
         return switch (severity) {
-            case ERROR -> "icon:times-circle[role=\"red\"]";
-            case WARN -> "icon:exclamation-triangle[role=\"yellow\"]";
-            case INFO -> "icon:info-circle[role=\"blue\"]";
+        case ERROR -> "icon:times-circle[role=\"red\"]";
+        case WARN -> "icon:exclamation-triangle[role=\"yellow\"]";
+        case INFO -> "icon:info-circle[role=\"blue\"]";
         };
     }
 
     private String getBlockIcon(Block block) {
         return switch (block.getType()) {
-            case PARAGRAPH -> "icon:paragraph[]";
-            case LISTING -> "icon:code[]";
-            case TABLE -> "icon:table[]";
-            case IMAGE -> "icon:image[]";
-            case VERSE -> "icon:quote-left[]";
-            case ADMONITION -> "icon:exclamation[]";
-            case PASS -> "icon:forward[]";
-            case LITERAL -> "icon:file-code[]";
-            default -> "icon:file[]";
+        case PARAGRAPH -> "icon:paragraph[]";
+        case LISTING -> "icon:code[]";
+        case TABLE -> "icon:table[]";
+        case IMAGE -> "icon:image[]";
+        case VERSE -> "icon:quote-left[]";
+        case ADMONITION -> "icon:exclamation[]";
+        case PASS -> "icon:forward[]";
+        case LITERAL -> "icon:file-code[]";
+        default -> "icon:file[]";
         };
     }
 
     private String getAttributeDescription(AttributeConfig attr) {
         return switch (attr.name()) {
-            case "title" -> "Document title";
-            case "author" -> "Author";
-            case "version" -> "Version number";
-            case "email" -> "Contact email";
-            default -> attr.name();
+        case "title" -> "Document title";
+        case "author" -> "Author";
+        case "version" -> "Version number";
+        case "email" -> "Contact email";
+        default -> attr.name();
         };
     }
 
     private String getSectionDescription(SectionConfig section) {
         return switch (section.name()) {
-            case "introduction" -> "Introduction section";
-            case "implementation" -> "Implementation details";
-            case "conclusion" -> "Summary";
-            default -> section.name();
+        case "introduction" -> "Introduction section";
+        case "implementation" -> "Implementation details";
+        case "conclusion" -> "Summary";
+        default -> section.name();
         };
     }
 }

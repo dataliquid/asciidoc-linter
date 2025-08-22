@@ -25,7 +25,8 @@ import com.dataliquid.asciidoc.linter.validator.block.BlockValidationContext;
 import com.dataliquid.asciidoc.linter.validator.block.BlockValidatorFactory;
 
 /**
- * Main validator for blocks within sections. Orchestrates block type validation and occurrence validation.
+ * Main validator for blocks within sections. Orchestrates block type validation
+ * and occurrence validation.
  */
 public final class BlockValidator {
 
@@ -42,13 +43,11 @@ public final class BlockValidator {
     /**
      * Validates all blocks at document level (level 0) against the configuration.
      *
-     * @param document
-     *            the AsciiDoc document to validate
-     * @param config
-     *            the section configuration containing block rules (level 0)
-     * @param filename
-     *            the filename for error reporting
-     * @return validation result containing all messages
+     * @param  document the AsciiDoc document to validate
+     * @param  config   the section configuration containing block rules (level 0)
+     * @param  filename the filename for error reporting
+     *
+     * @return          validation result containing all messages
      */
     public ValidationResult validate(Document document, SectionConfig config, String filename) {
         Objects.requireNonNull(document, "[" + getClass().getName() + "] document must not be null");
@@ -65,13 +64,11 @@ public final class BlockValidator {
     /**
      * Validates all blocks within a section against the configuration.
      *
-     * @param section
-     *            the AsciiDoc section to validate
-     * @param config
-     *            the section configuration containing block rules
-     * @param filename
-     *            the filename for error reporting
-     * @return validation result containing all messages
+     * @param  section  the AsciiDoc section to validate
+     * @param  config   the section configuration containing block rules
+     * @param  filename the filename for error reporting
+     *
+     * @return          validation result containing all messages
      */
     public ValidationResult validate(Section section, SectionConfig config, String filename) {
         Objects.requireNonNull(section, "[" + getClass().getName() + "] section must not be null");
@@ -109,7 +106,8 @@ public final class BlockValidator {
     }
 
     /**
-     * Validates individual blocks from the container and tracks them in the context.
+     * Validates individual blocks from the container and tracks them in the
+     * context.
      */
     private void validateContainerBlocks(BlockContainer container, SectionConfig config, BlockValidationContext context,
             List<ValidationMessage> messages) {
@@ -133,10 +131,16 @@ public final class BlockValidator {
 
                 if (actualType == null) {
                     // Unknown block type - add validation message
-                    messages.add(ValidationMessage.builder().severity(Severity.ERROR).ruleId(TYPE_UNKNOWN)
-                            .location(context.createLocation(block))
-                            .message("Unknown block type: " + block.getContext()).actualValue(block.getContext())
-                            .expectedValue("Valid AsciiDoc block type").build());
+                    messages
+                            .add(ValidationMessage
+                                    .builder()
+                                    .severity(Severity.ERROR)
+                                    .ruleId(TYPE_UNKNOWN)
+                                    .location(context.createLocation(block))
+                                    .message("Unknown block type: " + block.getContext())
+                                    .actualValue(block.getContext())
+                                    .expectedValue("Valid AsciiDoc block type")
+                                    .build());
                     continue;
                 }
 
@@ -145,11 +149,16 @@ public final class BlockValidator {
 
                 if (blockConfig == null) {
                     // Block type not allowed
-                    messages.add(ValidationMessage.builder().severity(Severity.ERROR).ruleId(TYPE_NOT_ALLOWED)
-                            .location(context.createLocation(block))
-                            .message("Block type not allowed in " + container.getContainerType())
-                            .actualValue(actualType.toString()).expectedValue("One of the allowed block types")
-                            .build());
+                    messages
+                            .add(ValidationMessage
+                                    .builder()
+                                    .severity(Severity.ERROR)
+                                    .ruleId(TYPE_NOT_ALLOWED)
+                                    .location(context.createLocation(block))
+                                    .message("Block type not allowed in " + container.getContainerType())
+                                    .actualValue(actualType.toString())
+                                    .expectedValue("One of the allowed block types")
+                                    .build());
                     continue;
                 }
 
@@ -166,19 +175,23 @@ public final class BlockValidator {
                 }
             } catch (Exception e) {
                 // Handle validation exceptions gracefully
-                messages.add(ValidationMessage.builder().severity(Severity.ERROR).ruleId(VALIDATION_ERROR)
-                        .location(context.createLocation(block)).message("Error validating block: " + e.getMessage())
-                        .build());
+                messages
+                        .add(ValidationMessage
+                                .builder()
+                                .severity(Severity.ERROR)
+                                .ruleId(VALIDATION_ERROR)
+                                .location(context.createLocation(block))
+                                .message("Error validating block: " + e.getMessage())
+                                .build());
             }
         }
     }
 
     /**
-     * Finds the configuration for a specific block.
-     *
-     * Matching logic: 1. If block has a name attribute, try to find config with matching name and type 2. Otherwise,
-     * find any config with matching type 3. Config names are for identification only and don't prevent matching unnamed
-     * blocks
+     * Finds the configuration for a specific block. Matching logic: 1. If block has
+     * a name attribute, try to find config with matching name and type 2.
+     * Otherwise, find any config with matching type 3. Config names are for
+     * identification only and don't prevent matching unnamed blocks
      */
     private Block findBlockConfig(BlockType type, StructuralNode block, List<Block> configs) {
         // First try to match by name attribute if block has one
@@ -203,8 +216,9 @@ public final class BlockValidator {
     }
 
     /**
-     * Special version of findBlockConfig that tracks which configs have already been matched. This ensures each config
-     * is only matched once when multiple blocks of the same type exist.
+     * Special version of findBlockConfig that tracks which configs have already
+     * been matched. This ensures each config is only matched once when multiple
+     * blocks of the same type exist.
      */
     private Block findBlockConfigForOrder(BlockType type, StructuralNode block, List<Block> configs,
             Set<Block> alreadyMatched) {
@@ -235,8 +249,12 @@ public final class BlockValidator {
      */
     private void validateBlockOrder(BlockContainer container, SectionConfig config, BlockValidationContext context,
             List<ValidationMessage> messages) {
-        List<Block> orderedBlocks = config.allowedBlocks().stream().filter(block -> block.getOrder() != null)
-                .sorted((b1, b2) -> b1.getOrder().compareTo(b2.getOrder())).collect(Collectors.toList());
+        List<Block> orderedBlocks = config
+                .allowedBlocks()
+                .stream()
+                .filter(block -> block.getOrder() != null)
+                .sorted((b1, b2) -> b1.getOrder().compareTo(b2.getOrder()))
+                .collect(Collectors.toList());
 
         if (orderedBlocks.isEmpty()) {
             return; // No order constraints
@@ -294,12 +312,17 @@ public final class BlockValidator {
                 String currentKey = current.getName() != null ? current.getName() : current.getType().toString();
                 String nextKey = next.getName() != null ? next.getName() : next.getType().toString();
 
-                messages.add(ValidationMessage.builder().severity(Severity.ERROR).ruleId(ORDER)
-                        .location(context.createLocation(blocks.get(currentBlockIndex)))
-                        .message("Block order violation: '" + currentKey + "' (order=" + current.getOrder()
-                                + ") appears after '" + nextKey + "' (order=" + next.getOrder() + ")")
-                        .actualValue(currentKey + " at position " + i)
-                        .expectedValue(currentKey + " should appear before " + nextKey).build());
+                messages
+                        .add(ValidationMessage
+                                .builder()
+                                .severity(Severity.ERROR)
+                                .ruleId(ORDER)
+                                .location(context.createLocation(blocks.get(currentBlockIndex)))
+                                .message("Block order violation: '" + currentKey + "' (order=" + current.getOrder()
+                                        + ") appears after '" + nextKey + "' (order=" + next.getOrder() + ")")
+                                .actualValue(currentKey + " at position " + i)
+                                .expectedValue(currentKey + " should appear before " + nextKey)
+                                .build());
             }
         }
     }

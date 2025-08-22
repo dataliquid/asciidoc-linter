@@ -38,36 +38,55 @@ public final class LengthRule implements AttributeRule {
             int length = value.length();
 
             if (config.hasMinLength() && length < config.getMinLength()) {
-                messages.add(ValidationMessage.builder().severity(config.getSeverity()).ruleId(LENGTH_MIN)
-                        .message("Attribute '" + attributeName + "' is too short: actual '" + value + "' (" + length
-                                + " characters), expected minimum " + config.getMinLength() + " characters")
-                        .location(location).attributeName(attributeName)
-                        .actualValue(value + " (" + length + " characters)")
-                        .expectedValue("Minimum " + config.getMinLength() + " characters")
-                        .errorType(ErrorType.OUT_OF_RANGE)
-                        .addSuggestion(Suggestion.builder().description("Provide a longer value for the attribute")
-                                .addExample("Add more descriptive content")
-                                .addExample("Expand the value to at least " + config.getMinLength() + " characters")
-                                .explanation("Attribute value must be at least " + config.getMinLength()
-                                        + " characters long")
-                                .build())
-                        .build());
+                messages
+                        .add(ValidationMessage
+                                .builder()
+                                .severity(config.getSeverity())
+                                .ruleId(LENGTH_MIN)
+                                .message("Attribute '" + attributeName + "' is too short: actual '" + value + "' ("
+                                        + length + " characters), expected minimum " + config.getMinLength()
+                                        + " characters")
+                                .location(location)
+                                .attributeName(attributeName)
+                                .actualValue(value + " (" + length + " characters)")
+                                .expectedValue("Minimum " + config.getMinLength() + " characters")
+                                .errorType(ErrorType.OUT_OF_RANGE)
+                                .addSuggestion(Suggestion
+                                        .builder()
+                                        .description("Provide a longer value for the attribute")
+                                        .addExample("Add more descriptive content")
+                                        .addExample(
+                                                "Expand the value to at least " + config.getMinLength() + " characters")
+                                        .explanation("Attribute value must be at least " + config.getMinLength()
+                                                + " characters long")
+                                        .build())
+                                .build());
             }
 
             if (config.hasMaxLength() && length > config.getMaxLength()) {
-                messages.add(ValidationMessage.builder().severity(config.getSeverity()).ruleId(LENGTH_MAX)
-                        .message("Attribute '" + attributeName + "' is too long: actual '" + value + "' (" + length
-                                + " characters), expected maximum " + config.getMaxLength() + " characters")
-                        .location(location).attributeName(attributeName)
-                        .actualValue(value + " (" + length + " characters)")
-                        .expectedValue("Maximum " + config.getMaxLength() + " characters")
-                        .errorType(ErrorType.OUT_OF_RANGE)
-                        .addSuggestion(Suggestion.builder().description("Shorten the attribute value")
-                                .addExample("Reduce to " + config.getMaxLength() + " characters or less")
-                                .addExample("Use more concise wording").addExample("Remove unnecessary details")
-                                .explanation("Attribute value must not exceed " + config.getMaxLength() + " characters")
-                                .build())
-                        .build());
+                messages
+                        .add(ValidationMessage
+                                .builder()
+                                .severity(config.getSeverity())
+                                .ruleId(LENGTH_MAX)
+                                .message("Attribute '" + attributeName + "' is too long: actual '" + value + "' ("
+                                        + length + " characters), expected maximum " + config.getMaxLength()
+                                        + " characters")
+                                .location(location)
+                                .attributeName(attributeName)
+                                .actualValue(value + " (" + length + " characters)")
+                                .expectedValue("Maximum " + config.getMaxLength() + " characters")
+                                .errorType(ErrorType.OUT_OF_RANGE)
+                                .addSuggestion(Suggestion
+                                        .builder()
+                                        .description("Shorten the attribute value")
+                                        .addExample("Reduce to " + config.getMaxLength() + " characters or less")
+                                        .addExample("Use more concise wording")
+                                        .addExample("Remove unnecessary details")
+                                        .explanation("Attribute value must not exceed " + config.getMaxLength()
+                                                + " characters")
+                                        .build())
+                                .build());
             }
         }
 

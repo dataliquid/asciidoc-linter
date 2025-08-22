@@ -56,8 +56,15 @@ class CLIConfigTest {
             Path reportOutput = Paths.get("report.json");
 
             // When
-            CLIConfig config = CLIConfig.builder().inputPatterns(patterns).baseDirectory(baseDir).configFile(configFile)
-                    .reportFormat("json").reportOutput(reportOutput).failLevel(Severity.WARN).build();
+            CLIConfig config = CLIConfig
+                    .builder()
+                    .inputPatterns(patterns)
+                    .baseDirectory(baseDir)
+                    .configFile(configFile)
+                    .reportFormat("json")
+                    .reportOutput(reportOutput)
+                    .failLevel(Severity.WARN)
+                    .build();
 
             // Then
             assertEquals(patterns, config.getInputPatterns());
@@ -112,8 +119,14 @@ class CLIConfigTest {
             Path configFile = Paths.get("config.yaml");
             Path reportOutput = Paths.get("output.json");
 
-            CLIConfig config = CLIConfig.builder().inputPatterns(patterns).configFile(configFile)
-                    .reportFormat("json-compact").reportOutput(reportOutput).failLevel(Severity.INFO).build();
+            CLIConfig config = CLIConfig
+                    .builder()
+                    .inputPatterns(patterns)
+                    .configFile(configFile)
+                    .reportFormat("json-compact")
+                    .reportOutput(reportOutput)
+                    .failLevel(Severity.INFO)
+                    .build();
 
             // Then
             assertEquals(patterns, config.getInputPatterns());

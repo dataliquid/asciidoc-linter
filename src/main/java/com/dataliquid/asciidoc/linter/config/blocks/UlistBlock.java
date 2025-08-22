@@ -17,7 +17,8 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
 /**
- * Configuration for unordered list (ulist) blocks in AsciiDoc. Represents bullet point lists with * or - markers.
+ * Configuration for unordered list (ulist) blocks in AsciiDoc. Represents
+ * bullet point lists with * or - markers.
  */
 @JsonDeserialize(builder = UlistBlock.Builder.class)
 public final class UlistBlock extends AbstractBlock {

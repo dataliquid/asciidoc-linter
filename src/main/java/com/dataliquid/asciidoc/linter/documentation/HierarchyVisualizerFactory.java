@@ -30,11 +30,11 @@ public class HierarchyVisualizerFactory {
     /**
      * Creates a visualizer for the specified style.
      *
-     * @param style
-     *            the visualization style
-     * @return the visualizer
-     * @throws IllegalArgumentException
-     *             if no visualizer exists for the style
+     * @param  style                    the visualization style
+     *
+     * @return                          the visualizer
+     *
+     * @throws IllegalArgumentException if no visualizer exists for the style
      */
     public HierarchyVisualizer create(VisualizationStyle style) {
         HierarchyVisualizer visualizer = visualizers.get(style);
@@ -47,9 +47,9 @@ public class HierarchyVisualizerFactory {
     /**
      * Checks if a visualizer is available for the specified style.
      *
-     * @param style
-     *            the visualization style
-     * @return true if a visualizer exists, false otherwise
+     * @param  style the visualization style
+     *
+     * @return       true if a visualizer exists, false otherwise
      */
     public boolean hasVisualizer(VisualizationStyle style) {
         return visualizers.containsKey(style);

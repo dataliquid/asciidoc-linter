@@ -28,11 +28,11 @@ public class FileDiscoveryService {
     /**
      * Discovers files based on the CLI configuration.
      *
-     * @param config
-     *            The CLI configuration
-     * @return List of paths to validate
-     * @throws IOException
-     *             if an I/O error occurs
+     * @param  config      The CLI configuration
+     *
+     * @return             List of paths to validate
+     *
+     * @throws IOException if an I/O error occurs
      */
     public List<Path> discoverFiles(CLIConfig config) throws IOException {
         return discoverFiles(config.getInputPatterns(), config.getBaseDirectory());
@@ -41,13 +41,12 @@ public class FileDiscoveryService {
     /**
      * Discovers files matching the given Ant patterns.
      *
-     * @param patterns
-     *            List of Ant patterns
-     * @param baseDir
-     *            Base directory for relative patterns
-     * @return List of matching file paths (duplicates removed)
-     * @throws IOException
-     *             if an I/O error occurs
+     * @param  patterns    List of Ant patterns
+     * @param  baseDir     Base directory for relative patterns
+     *
+     * @return             List of matching file paths (duplicates removed)
+     *
+     * @throws IOException if an I/O error occurs
      */
     public List<Path> discoverFiles(List<String> patterns, Path baseDir) throws IOException {
         Set<Path> matchedFiles = new LinkedHashSet<>(); // Use LinkedHashSet to maintain order and remove duplicates
@@ -242,28 +241,28 @@ public class FileDiscoveryService {
                 for (int i = 0; i < p.length(); i++) {
                     char c = p.charAt(i);
                     switch (c) {
-                        case '*' :
-                            regex.append(".*");
-                            break;
-                        case '?' :
-                            regex.append(".");
-                            break;
-                        case '.' :
-                        case '\\' :
-                        case '[' :
-                        case ']' :
-                        case '(' :
-                        case ')' :
-                        case '^' :
-                        case '$' :
-                        case '{' :
-                        case '}' :
-                        case '+' :
-                        case '|' :
-                            regex.append("\\").append(c);
-                            break;
-                        default :
-                            regex.append(c);
+                    case '*':
+                        regex.append(".*");
+                        break;
+                    case '?':
+                        regex.append(".");
+                        break;
+                    case '.':
+                    case '\\':
+                    case '[':
+                    case ']':
+                    case '(':
+                    case ')':
+                    case '^':
+                    case '$':
+                    case '{':
+                    case '}':
+                    case '+':
+                    case '|':
+                        regex.append("\\").append(c);
+                        break;
+                    default:
+                        regex.append(c);
                     }
                 }
                 regex.append("$");

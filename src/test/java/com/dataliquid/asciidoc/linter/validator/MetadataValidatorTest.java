@@ -27,9 +27,15 @@ class MetadataValidatorTest {
 
     @BeforeEach
     void setUp() {
-        testConfig = MetadataConfiguration.builder()
-                .attributes(Arrays.asList(
-                        AttributeConfig.builder().name("author").required(true).severity(Severity.ERROR).build()))
+        testConfig = MetadataConfiguration
+                .builder()
+                .attributes(Arrays
+                        .asList(AttributeConfig
+                                .builder()
+                                .name("author")
+                                .required(true)
+                                .severity(Severity.ERROR)
+                                .build()))
                 .build();
     }
 
@@ -80,8 +86,8 @@ class MetadataValidatorTest {
                 """;
         Path tempFile = Files.createTempFile("test", ".adoc");
         Files.writeString(tempFile, content);
-        Document document = asciidoctor.loadFile(tempFile.toFile(),
-                Options.builder().sourcemap(true).toFile(false).build());
+        Document document = asciidoctor
+                .loadFile(tempFile.toFile(), Options.builder().sourcemap(true).toFile(false).build());
         MetadataValidator validator = MetadataValidator.fromConfiguration(testConfig).build();
 
         // When
@@ -89,7 +95,9 @@ class MetadataValidatorTest {
 
         // Then
         assertTrue(result.hasErrors());
-        assertTrue(result.getMessages().stream()
+        assertTrue(result
+                .getMessages()
+                .stream()
                 .anyMatch(msg -> msg.getMessage().equals("Missing required attribute 'author'")));
 
         // Cleanup
@@ -109,10 +117,11 @@ class MetadataValidatorTest {
                 Content.
                 """;
         Document document = asciidoctor.load(content, Options.builder().sourcemap(true).toFile(false).build());
-        MetadataConfiguration config = MetadataConfiguration.builder()
-                .attributes(Arrays.asList(
-                        AttributeConfig.builder().name("author").order(1).severity(Severity.ERROR).build(),
-                        AttributeConfig.builder().name("version").order(2).severity(Severity.ERROR).build()))
+        MetadataConfiguration config = MetadataConfiguration
+                .builder()
+                .attributes(Arrays
+                        .asList(AttributeConfig.builder().name("author").order(1).severity(Severity.ERROR).build(),
+                                AttributeConfig.builder().name("version").order(2).severity(Severity.ERROR).build()))
                 .build();
         MetadataValidator validator = MetadataValidator.fromConfiguration(config).build();
 

@@ -29,8 +29,8 @@ public final class SectionValidator {
     private final FileContentCache fileCache;
 
     private SectionValidator(Builder builder) {
-        this.configuration = Objects.requireNonNull(builder.configuration,
-                "[" + getClass().getName() + "] configuration must not be null");
+        this.configuration = Objects
+                .requireNonNull(builder.configuration, "[" + getClass().getName() + "] configuration must not be null");
         this.sectionOccurrences = new HashMap<>();
         this.rootSections = configuration.sections() != null ? configuration.sections() : Collections.emptyList();
         this.fileCache = new FileContentCache();
@@ -48,7 +48,10 @@ public final class SectionValidator {
         // Validate document title as level 0 section
         validateDocumentTitle(document, filename, resultBuilder);
 
-        List<StructuralNode> sections = document.getBlocks().stream().filter(block -> block instanceof Section)
+        List<StructuralNode> sections = document
+                .getBlocks()
+                .stream()
+                .filter(block -> block instanceof Section)
                 .collect(Collectors.toList());
 
         validateRootSections(sections, filename, resultBuilder);
@@ -102,8 +105,10 @@ public final class SectionValidator {
             if (!levelConfigs.isEmpty()) {
                 // There are configs for this level, but title doesn't match any patterns
                 // Find the first config with a pattern to show in error message
-                SectionConfig configWithPattern = levelConfigs.stream()
-                        .filter(config -> config.title() != null && config.title().pattern() != null).findFirst()
+                SectionConfig configWithPattern = levelConfigs
+                        .stream()
+                        .filter(config -> config.title() != null && config.title().pattern() != null)
+                        .findFirst()
                         .orElse(levelConfigs.get(0));
 
                 String expectedPattern = null;
@@ -111,16 +116,21 @@ public final class SectionValidator {
                     expectedPattern = "Pattern: " + configWithPattern.title().pattern();
                 }
 
-                ValidationMessage message = ValidationMessage.builder()
+                ValidationMessage message = ValidationMessage
+                        .builder()
                         .severity(configWithPattern.title() != null && configWithPattern.title().severity() != null
                                 ? configWithPattern.title().severity()
                                 : Severity.ERROR)
-                        .ruleId(TITLE_PATTERN).location(location)
-                        .message("Section title does not match required pattern").actualValue(title)
+                        .ruleId(TITLE_PATTERN)
+                        .location(location)
+                        .message("Section title does not match required pattern")
+                        .actualValue(title)
                         .expectedValue(expectedPattern != null ? expectedPattern : "One of configured patterns")
-                        .addSuggestion(Suggestion.builder()
+                        .addSuggestion(Suggestion
+                                .builder()
                                 .description("Adjust section title to match required pattern")
-                                .addExample("== Introduction").addExample("== Getting Started")
+                                .addExample("== Introduction")
+                                .addExample("== Getting Started")
                                 .addExample("== Configuration")
                                 .explanation("Section titles must follow the configured naming pattern for consistency")
                                 .build())
@@ -128,10 +138,16 @@ public final class SectionValidator {
                 resultBuilder.addMessage(message);
             } else {
                 // No configs for this level at all
-                ValidationMessage message = ValidationMessage.builder().severity(Severity.ERROR).ruleId(UNEXPECTED)
-                        .location(location).message("Section not allowed at level " + level + ": '" + title + "'")
-                        .actualValue(title).expectedValue("No sections configured for level " + level)
-                        .addSuggestion(Suggestion.builder()
+                ValidationMessage message = ValidationMessage
+                        .builder()
+                        .severity(Severity.ERROR)
+                        .ruleId(UNEXPECTED)
+                        .location(location)
+                        .message("Section not allowed at level " + level + ": '" + title + "'")
+                        .actualValue(title)
+                        .expectedValue("No sections configured for level " + level)
+                        .addSuggestion(Suggestion
+                                .builder()
                                 .description("Remove unexpected section or move to appropriate level")
                                 .addExample("Remove this section if not needed")
                                 .addExample("Move section to a different document structure level")
@@ -151,7 +167,8 @@ public final class SectionValidator {
 
             validateLevel(section, matchingConfig, filename, resultBuilder);
         } else {
-            // Even without a pattern match, we need to track occurrences for min/max validation
+            // Even without a pattern match, we need to track occurrences for min/max
+            // validation
             SectionConfig configForTracking = findConfigForOccurrenceTracking(section, allowedConfigs);
             if (configForTracking != null) {
                 trackOccurrence(configForTracking);
@@ -159,7 +176,10 @@ public final class SectionValidator {
         }
 
         // Always validate subsections
-        List<StructuralNode> subsections = section.getBlocks().stream().filter(block -> block instanceof Section)
+        List<StructuralNode> subsections = section
+                .getBlocks()
+                .stream()
+                .filter(block -> block instanceof Section)
                 .collect(Collectors.toList());
 
         for (StructuralNode subsection : subsections) {
@@ -170,7 +190,8 @@ public final class SectionValidator {
                 // Use the subsections from the matching config
                 subsectionConfigs = matchingConfig.subsections();
             } else {
-                // Important: When parent doesn't match, we need to determine the right configs for subsections
+                // Important: When parent doesn't match, we need to determine the right configs
+                // for subsections
                 // Look for configs that have subsections defined and could be parent configs
                 subsectionConfigs = determineSubsectionConfigsFromParent(allowedConfigs, level);
             }
@@ -191,14 +212,22 @@ public final class SectionValidator {
         if (titleConfig.pattern() != null) {
             Pattern pattern = Pattern.compile(titleConfig.pattern());
             if (!pattern.matcher(title).matches()) {
-                ValidationMessage message = ValidationMessage.builder().severity(titleConfig.severity())
-                        .ruleId(TITLE_PATTERN).location(location)
-                        .message("Section title does not match required pattern").actualValue(title)
+                ValidationMessage message = ValidationMessage
+                        .builder()
+                        .severity(titleConfig.severity())
+                        .ruleId(TITLE_PATTERN)
+                        .location(location)
+                        .message("Section title does not match required pattern")
+                        .actualValue(title)
                         .expectedValue("Pattern: " + titleConfig.pattern())
-                        .addSuggestion(Suggestion.builder().description("Format section title to match pattern")
-                                .addExample("Use consistent capitalization").addExample("Follow naming conventions")
+                        .addSuggestion(Suggestion
+                                .builder()
+                                .description("Format section title to match pattern")
+                                .addExample("Use consistent capitalization")
+                                .addExample("Follow naming conventions")
                                 .addExample("Check pattern: " + titleConfig.pattern())
-                                .explanation("Section titles must match the configured regex pattern").build())
+                                .explanation("Section titles must match the configured regex pattern")
+                                .build())
                         .build();
                 resultBuilder.addMessage(message);
             }
@@ -212,10 +241,17 @@ public final class SectionValidator {
 
         if (actualLevel != expectedLevel) {
             SourceLocation location = createLocation(filename, section);
-            ValidationMessage message = ValidationMessage.builder().severity(Severity.ERROR).ruleId(LEVEL)
-                    .location(location).message("Section level mismatch").actualValue(String.valueOf(actualLevel))
+            ValidationMessage message = ValidationMessage
+                    .builder()
+                    .severity(Severity.ERROR)
+                    .ruleId(LEVEL)
+                    .location(location)
+                    .message("Section level mismatch")
+                    .actualValue(String.valueOf(actualLevel))
                     .expectedValue(String.valueOf(expectedLevel))
-                    .addSuggestion(Suggestion.builder().description("Adjust section heading level")
+                    .addSuggestion(Suggestion
+                            .builder()
+                            .description("Adjust section heading level")
                             .fixedValue("=".repeat(expectedLevel + 1) + " " + section.getTitle())
                             .addExample("=".repeat(expectedLevel + 1) + " Section Title")
                             .explanation("Section must be at level " + expectedLevel + " (use "
@@ -244,12 +280,18 @@ public final class SectionValidator {
         int occurrences = sectionOccurrences.getOrDefault(key, 0);
 
         if (config.occurrence() != null && occurrences < config.occurrence().min()) {
-            SourceLocation location = SourceLocation.builder().filename(filename).startLine(1).endLine(1).startColumn(0) // No
-                                                                                                                         // column
-                                                                                                                         // for
-                                                                                                                         // section
-                                                                                                                         // errors
-                    .endColumn(0).build();
+            SourceLocation location = SourceLocation
+                    .builder()
+                    .filename(filename)
+                    .startLine(1)
+                    .endLine(1)
+                    .startColumn(0) // No
+                                    // column
+                                    // for
+                                    // section
+                                    // errors
+                    .endColumn(0)
+                    .build();
 
             // Generate section placeholder based on level
             String sectionPlaceholder = "=".repeat(config.level() + 1) + " " + config.name();
@@ -260,18 +302,25 @@ public final class SectionValidator {
                 context = " (expected in " + parentConfig.name() + " at level " + parentConfig.level() + ")";
             }
 
-            ValidationMessage message = ValidationMessage.builder().severity(Severity.ERROR).ruleId(MIN_OCCURRENCES)
+            ValidationMessage message = ValidationMessage
+                    .builder()
+                    .severity(Severity.ERROR)
+                    .ruleId(MIN_OCCURRENCES)
                     .location(location)
                     .message("Missing required section '" + config.name() + "' at level " + config.level() + context)
                     .actualValue(String.valueOf(occurrences) + " occurrences")
                     .expectedValue("At least " + config.occurrence().min() + " occurrence(s)")
-                    .errorType(ErrorType.MISSING_VALUE).missingValueHint(sectionPlaceholder)
+                    .errorType(ErrorType.MISSING_VALUE)
+                    .missingValueHint(sectionPlaceholder)
                     .placeholderContext(
                             PlaceholderContext.builder().type(PlaceholderContext.PlaceholderType.INSERT_BEFORE).build())
-                    .addSuggestion(Suggestion.builder().description("Add required section")
+                    .addSuggestion(Suggestion
+                            .builder()
+                            .description("Add required section")
                             .fixedValue(sectionPlaceholder)
                             .addExample(sectionPlaceholder + "\nContent for " + config.name())
-                            .explanation("This section is required by the document structure configuration").build())
+                            .explanation("This section is required by the document structure configuration")
+                            .build())
                     .build();
             resultBuilder.addMessage(message);
         }
@@ -279,10 +328,17 @@ public final class SectionValidator {
         if (config.occurrence() != null && occurrences > config.occurrence().max()) {
             SourceLocation location = SourceLocation.builder().filename(filename).line(1).build();
 
-            ValidationMessage message = ValidationMessage.builder().severity(Severity.ERROR).ruleId(MAX_OCCURRENCES)
-                    .location(location).message("Too many occurrences of section: " + config.name())
-                    .actualValue(String.valueOf(occurrences)).expectedValue("At most " + config.occurrence().max())
-                    .addSuggestion(Suggestion.builder().description("Remove or consolidate duplicate sections")
+            ValidationMessage message = ValidationMessage
+                    .builder()
+                    .severity(Severity.ERROR)
+                    .ruleId(MAX_OCCURRENCES)
+                    .location(location)
+                    .message("Too many occurrences of section: " + config.name())
+                    .actualValue(String.valueOf(occurrences))
+                    .expectedValue("At most " + config.occurrence().max())
+                    .addSuggestion(Suggestion
+                            .builder()
+                            .description("Remove or consolidate duplicate sections")
                             .addExample("Merge duplicate '" + config.name() + "' sections")
                             .addExample("Remove unnecessary repetitions")
                             .explanation(
@@ -305,12 +361,19 @@ public final class SectionValidator {
         if (titleConfig.pattern() != null) {
             Pattern pattern = Pattern.compile(titleConfig.pattern());
             if (!pattern.matcher(title).matches()) {
-                ValidationMessage message = ValidationMessage.builder().severity(titleConfig.severity())
-                        .ruleId(TITLE_PATTERN).location(location)
-                        .message("Document title does not match required pattern").actualValue(title)
+                ValidationMessage message = ValidationMessage
+                        .builder()
+                        .severity(titleConfig.severity())
+                        .ruleId(TITLE_PATTERN)
+                        .location(location)
+                        .message("Document title does not match required pattern")
+                        .actualValue(title)
                         .expectedValue("Pattern: " + titleConfig.pattern())
-                        .addSuggestion(Suggestion.builder().description("Format document title to match pattern")
-                                .addExample("= Project Documentation").addExample("= User Guide")
+                        .addSuggestion(Suggestion
+                                .builder()
+                                .description("Format document title to match pattern")
+                                .addExample("= Project Documentation")
+                                .addExample("= User Guide")
                                 .addExample("= API Reference")
                                 .explanation(
                                         "Document title must match the configured pattern: " + titleConfig.pattern())
@@ -323,7 +386,10 @@ public final class SectionValidator {
 
     private void validateDocumentTitle(Document document, String filename, ValidationResult.Builder resultBuilder) {
         // Find level 0 section config (document title)
-        SectionConfig titleConfig = rootSections.stream().filter(config -> config.level() == 0).findFirst()
+        SectionConfig titleConfig = rootSections
+                .stream()
+                .filter(config -> config.level() == 0)
+                .findFirst()
                 .orElse(null);
 
         if (titleConfig == null) {
@@ -336,7 +402,8 @@ public final class SectionValidator {
         // Check if title is required
         if (titleConfig.occurrence() != null && titleConfig.occurrence().min() > 0
                 && (documentTitle == null || documentTitle.trim().isEmpty())) {
-            // If the config has a name, skip this validation - the min-occurrences check will handle it
+            // If the config has a name, skip this validation - the min-occurrences check
+            // will handle it
             // and provide a better error message with placeholder
             if (titleConfig.name() != null) {
                 String configKey = createOccurrenceKey(titleConfig);
@@ -345,16 +412,27 @@ public final class SectionValidator {
             }
 
             // Otherwise, use the original validation for backward compatibility
-            ValidationMessage message = ValidationMessage.builder().severity(Severity.ERROR).ruleId(LEVEL0_MISSING)
-                    .location(location).message("Document title is required").actualValue("No title")
-                    .expectedValue("Document title").errorType(ErrorType.MISSING_VALUE)
+            ValidationMessage message = ValidationMessage
+                    .builder()
+                    .severity(Severity.ERROR)
+                    .ruleId(LEVEL0_MISSING)
+                    .location(location)
+                    .message("Document title is required")
+                    .actualValue("No title")
+                    .expectedValue("Document title")
+                    .errorType(ErrorType.MISSING_VALUE)
                     .missingValueHint("= Document Title")
                     .placeholderContext(
                             PlaceholderContext.builder().type(PlaceholderContext.PlaceholderType.INSERT_BEFORE).build())
-                    .addSuggestion(Suggestion.builder().description("Add document title").fixedValue("= Document Title")
-                            .addExample("= User Guide").addExample("= API Documentation")
+                    .addSuggestion(Suggestion
+                            .builder()
+                            .description("Add document title")
+                            .fixedValue("= Document Title")
+                            .addExample("= User Guide")
+                            .addExample("= API Documentation")
                             .addExample("= Installation Guide")
-                            .explanation("Every AsciiDoc document should have a title at the beginning").build())
+                            .explanation("Every AsciiDoc document should have a title at the beginning")
+                            .build())
                     .build();
             resultBuilder.addMessage(message);
             return;
@@ -372,8 +450,11 @@ public final class SectionValidator {
 
     private void validateSectionOrder(List<StructuralNode> sections, String filename,
             ValidationResult.Builder resultBuilder) {
-        List<SectionConfig> orderedConfigs = rootSections.stream().filter(config -> config.order() != null)
-                .sorted(Comparator.comparing(SectionConfig::order)).collect(Collectors.toList());
+        List<SectionConfig> orderedConfigs = rootSections
+                .stream()
+                .filter(config -> config.order() != null)
+                .sorted(Comparator.comparing(SectionConfig::order))
+                .collect(Collectors.toList());
 
         if (orderedConfigs.isEmpty()) {
             return;
@@ -400,11 +481,17 @@ public final class SectionValidator {
             if (currentPos != null && nextPos != null && currentPos > nextPos) {
                 SourceLocation location = SourceLocation.builder().filename(filename).line(1).build();
 
-                ValidationMessage message = ValidationMessage.builder().severity(Severity.ERROR).ruleId(ORDER)
-                        .location(location).message("Section order violation")
+                ValidationMessage message = ValidationMessage
+                        .builder()
+                        .severity(Severity.ERROR)
+                        .ruleId(ORDER)
+                        .location(location)
+                        .message("Section order violation")
                         .actualValue(current.name() + " appears after " + next.name())
                         .expectedValue(current.name() + " should appear before " + next.name())
-                        .addSuggestion(Suggestion.builder().description("Reorder sections according to configuration")
+                        .addSuggestion(Suggestion
+                                .builder()
+                                .description("Reorder sections according to configuration")
                                 .addExample("Move '" + current.name() + "' before '" + next.name() + "'")
                                 .addExample("Rearrange sections to match expected order")
                                 .explanation("Sections must appear in the configured order for document consistency")
@@ -444,14 +531,19 @@ public final class SectionValidator {
     private SectionConfig findConfigForOccurrenceTracking(Section section, List<SectionConfig> configs) {
         int level = section.getLevel();
 
-        // Find the first config that matches the level and has a name (for occurrence tracking)
-        return configs.stream().filter(config -> config.level() == level && config.name() != null).findFirst()
+        // Find the first config that matches the level and has a name (for occurrence
+        // tracking)
+        return configs
+                .stream()
+                .filter(config -> config.level() == level && config.name() != null)
+                .findFirst()
                 .orElse(null);
     }
 
     private List<SectionConfig> determineSubsectionConfigsFromParent(List<SectionConfig> parentConfigs,
             int parentLevel) {
-        // When a parent section doesn't match its pattern, we still need to find the right configs for its subsections
+        // When a parent section doesn't match its pattern, we still need to find the
+        // right configs for its subsections
         // First, check if any of the parent-level configs have subsections defined
         for (SectionConfig config : parentConfigs) {
             if (config.level() == parentLevel && config.subsections() != null && !config.subsections().isEmpty()) {
@@ -459,7 +551,8 @@ public final class SectionValidator {
             }
         }
 
-        // If no subsections found in parent-level configs, return configs for the next level
+        // If no subsections found in parent-level configs, return configs for the next
+        // level
         int subsectionLevel = parentLevel + 1;
         List<SectionConfig> subsectionConfigs = findConfigsForLevel(subsectionLevel, parentConfigs);
 
@@ -503,9 +596,14 @@ public final class SectionValidator {
             int titleStart = 2; // After "= "
             int titleEnd = titleStart + title.length() - 1;
 
-            return SourceLocation.builder().filename(filename).startLine(1).endLine(1).startColumn(titleStart + 1) // Convert
-                                                                                                                   // to
-                                                                                                                   // 1-based
+            return SourceLocation
+                    .builder()
+                    .filename(filename)
+                    .startLine(1)
+                    .endLine(1)
+                    .startColumn(titleStart + 1) // Convert
+                                                 // to
+                                                 // 1-based
                     .endColumn(titleEnd + 1) // Convert to 1-based
                     .build();
         }
@@ -535,7 +633,11 @@ public final class SectionValidator {
             int titleStart = prefixIndex + prefix.length();
             int titleEnd = titleStart + title.length() - 1;
 
-            return SourceLocation.builder().filename(filename).startLine(lineNumber).endLine(lineNumber)
+            return SourceLocation
+                    .builder()
+                    .filename(filename)
+                    .startLine(lineNumber)
+                    .endLine(lineNumber)
                     .startColumn(titleStart + 1) // Convert to 1-based
                     .endColumn(titleEnd + 1) // Convert to 1-based
                     .build();

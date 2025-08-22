@@ -52,8 +52,13 @@ class OrderConfigTest {
         @DisplayName("should add individual fixed order items")
         void shouldAddIndividualFixedOrderItems() {
             // Given/When
-            OrderConfig config = OrderConfig.builder().addFixedOrder("first").addFixedOrder("second")
-                    .addFixedOrder("third").severity(Severity.INFO).build();
+            OrderConfig config = OrderConfig
+                    .builder()
+                    .addFixedOrder("first")
+                    .addFixedOrder("second")
+                    .addFixedOrder("third")
+                    .severity(Severity.INFO)
+                    .build();
 
             // Then
             assertEquals(Arrays.asList("first", "second", "third"), config.fixedOrder());
@@ -63,8 +68,12 @@ class OrderConfigTest {
         @DisplayName("should add before constraints")
         void shouldAddBeforeConstraints() {
             // Given/When
-            OrderConfig config = OrderConfig.builder().addBefore("intro", "body", Severity.ERROR)
-                    .addBefore("body", "conclusion", Severity.WARN).severity(Severity.INFO).build();
+            OrderConfig config = OrderConfig
+                    .builder()
+                    .addBefore("intro", "body", Severity.ERROR)
+                    .addBefore("body", "conclusion", Severity.WARN)
+                    .severity(Severity.INFO)
+                    .build();
 
             // Then
             assertEquals(2, config.before().size());
@@ -77,8 +86,11 @@ class OrderConfigTest {
         @DisplayName("should add after constraints")
         void shouldAddAfterConstraints() {
             // Given/When
-            OrderConfig config = OrderConfig.builder().addAfter("conclusion", "body", Severity.ERROR)
-                    .severity(Severity.INFO).build();
+            OrderConfig config = OrderConfig
+                    .builder()
+                    .addAfter("conclusion", "body", Severity.ERROR)
+                    .severity(Severity.INFO)
+                    .build();
 
             // Then
             assertEquals(1, config.after().size());
@@ -164,11 +176,19 @@ class OrderConfigTest {
         @DisplayName("should be equal for same values")
         void shouldBeEqualForSameValues() {
             // Given
-            OrderConfig config1 = OrderConfig.builder().addFixedOrder("intro")
-                    .addBefore("intro", "body", Severity.ERROR).severity(Severity.WARN).build();
+            OrderConfig config1 = OrderConfig
+                    .builder()
+                    .addFixedOrder("intro")
+                    .addBefore("intro", "body", Severity.ERROR)
+                    .severity(Severity.WARN)
+                    .build();
 
-            OrderConfig config2 = OrderConfig.builder().addFixedOrder("intro")
-                    .addBefore("intro", "body", Severity.ERROR).severity(Severity.WARN).build();
+            OrderConfig config2 = OrderConfig
+                    .builder()
+                    .addFixedOrder("intro")
+                    .addBefore("intro", "body", Severity.ERROR)
+                    .severity(Severity.WARN)
+                    .build();
 
             // When/Then
             assertEquals(config1, config2);

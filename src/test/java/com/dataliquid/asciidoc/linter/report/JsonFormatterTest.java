@@ -62,10 +62,13 @@ class JsonFormatterTest {
         @DisplayName("should format single message as valid JSON")
         void shouldFormatSingleMessageAsValidJson() {
             // Given
-            ValidationMessage message = ValidationMessage.builder().severity(Severity.ERROR)
+            ValidationMessage message = ValidationMessage
+                    .builder()
+                    .severity(Severity.ERROR)
                     .ruleId("required-attribute")
                     .location(SourceLocation.builder().filename("test.adoc").startLine(10).build())
-                    .message("Missing required attribute").build();
+                    .message("Missing required attribute")
+                    .build();
 
             ValidationResult result = ValidationResult.builder().addMessage(message).complete().build();
 
@@ -98,9 +101,13 @@ class JsonFormatterTest {
         @DisplayName("should escape special characters in messages")
         void shouldEscapeSpecialCharacters() {
             // Given
-            ValidationMessage message = ValidationMessage.builder().severity(Severity.WARN).ruleId("test-rule")
+            ValidationMessage message = ValidationMessage
+                    .builder()
+                    .severity(Severity.WARN)
+                    .ruleId("test-rule")
                     .location(SourceLocation.builder().filename("test.adoc").startLine(5).build())
-                    .message("Message with \"quotes\" and \nnewline").build();
+                    .message("Message with \"quotes\" and \nnewline")
+                    .build();
 
             ValidationResult result = ValidationResult.builder().addMessage(message).complete().build();
 
@@ -117,9 +124,13 @@ class JsonFormatterTest {
         @DisplayName("should escape backslashes")
         void shouldEscapeBackslashes() {
             // Given
-            ValidationMessage message = ValidationMessage.builder().severity(Severity.INFO).ruleId("test-rule")
+            ValidationMessage message = ValidationMessage
+                    .builder()
+                    .severity(Severity.INFO)
+                    .ruleId("test-rule")
                     .location(SourceLocation.builder().filename("C:\\path\\to\\file.adoc").startLine(1).build())
-                    .message("Path with backslashes").build();
+                    .message("Path with backslashes")
+                    .build();
 
             ValidationResult result = ValidationResult.builder().addMessage(message).complete().build();
 
@@ -141,9 +152,15 @@ class JsonFormatterTest {
         @DisplayName("should include optional fields when present")
         void shouldIncludeOptionalFields() {
             // Given
-            ValidationMessage message = ValidationMessage.builder().severity(Severity.ERROR).ruleId("value-check")
+            ValidationMessage message = ValidationMessage
+                    .builder()
+                    .severity(Severity.ERROR)
+                    .ruleId("value-check")
                     .location(SourceLocation.builder().filename("test.adoc").startLine(15).startColumn(20).build())
-                    .message("Invalid value").actualValue("100").expectedValue("80").build();
+                    .message("Invalid value")
+                    .actualValue("100")
+                    .expectedValue("80")
+                    .build();
 
             ValidationResult result = ValidationResult.builder().addMessage(message).complete().build();
 
@@ -168,13 +185,21 @@ class JsonFormatterTest {
         @DisplayName("should format multiple messages with proper commas")
         void shouldFormatMultipleMessagesWithProperCommas() {
             // Given
-            ValidationMessage msg1 = ValidationMessage.builder().severity(Severity.ERROR).ruleId("test-rule")
+            ValidationMessage msg1 = ValidationMessage
+                    .builder()
+                    .severity(Severity.ERROR)
+                    .ruleId("test-rule")
                     .location(SourceLocation.builder().filename("file1.adoc").startLine(10).build())
-                    .message("First error").build();
+                    .message("First error")
+                    .build();
 
-            ValidationMessage msg2 = ValidationMessage.builder().severity(Severity.WARN).ruleId("test-rule")
+            ValidationMessage msg2 = ValidationMessage
+                    .builder()
+                    .severity(Severity.WARN)
+                    .ruleId("test-rule")
                     .location(SourceLocation.builder().filename("file2.adoc").startLine(20).build())
-                    .message("Second warning").build();
+                    .message("Second warning")
+                    .build();
 
             ValidationResult result = ValidationResult.builder().addMessage(msg1).addMessage(msg2).complete().build();
 

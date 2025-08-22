@@ -29,8 +29,9 @@ import com.dataliquid.asciidoc.linter.report.ConsoleFormatter;
 import com.dataliquid.asciidoc.linter.validator.ValidationResult;
 
 /**
- * Integration test for underline highlighting in console output. Tests that validation errors properly underline
- * problematic text areas, especially for maxLength and minLength validation rules.
+ * Integration test for underline highlighting in console output. Tests that
+ * validation errors properly underline problematic text areas, especially for
+ * maxLength and minLength validation rules.
  */
 @DisplayName("Underline Highlight Integration Test")
 class UnderlineHighlightIntegrationTest {
@@ -57,16 +58,26 @@ class UnderlineHighlightIntegrationTest {
      * Creates the default output configuration for underline display.
      */
     private OutputConfiguration createDefaultOutputConfig() {
-        return OutputConfiguration.builder().format(OutputFormat.ENHANCED)
-                .display(DisplayConfig.builder().contextLines(3).useColors(false) // No colors for easier testing
-                        .showLineNumbers(true).showHeader(true) // Enable header to match expected output
+        return OutputConfiguration
+                .builder()
+                .format(OutputFormat.ENHANCED)
+                .display(DisplayConfig
+                        .builder()
+                        .contextLines(3)
+                        .useColors(false) // No colors for easier testing
+                        .showLineNumbers(true)
+                        .showHeader(true) // Enable header to match expected output
                         .highlightStyle(HighlightStyle.UNDERLINE) // Enable underline highlighting
-                        .maxLineWidth(120).build())
-                .suggestions(SuggestionsConfig.builder().enabled(false).build())
-                .errorGrouping(ErrorGroupingConfig.builder().enabled(false) // Disable error grouping for predictable
-                                                                            // output
+                        .maxLineWidth(120)
                         .build())
-                .summary(SummaryConfig.builder().enabled(false).build()).build();
+                .suggestions(SuggestionsConfig.builder().enabled(false).build())
+                .errorGrouping(ErrorGroupingConfig
+                        .builder()
+                        .enabled(false) // Disable error grouping for predictable
+                                        // output
+                        .build())
+                .summary(SummaryConfig.builder().enabled(false).build())
+                .build();
     }
 
     /**
@@ -128,8 +139,8 @@ class UnderlineHighlightIntegrationTest {
 
             // Then - Verify exact console output with underline
             Path testFile = tempDir.resolve("test.adoc");
-            String expectedOutput = String.format(
-                    """
+            String expectedOutput = String
+                    .format("""
                             +----------------------------------------------------------------------------------------------------------------------+
                             |                                                  Validation Report                                                   |
                             +----------------------------------------------------------------------------------------------------------------------+
@@ -151,7 +162,7 @@ class UnderlineHighlightIntegrationTest {
 
 
                             """,
-                    testFile.toString(), testFile.toString());
+                            testFile.toString(), testFile.toString());
 
             assertEquals(expectedOutput, actualOutput);
         }
@@ -188,8 +199,8 @@ class UnderlineHighlightIntegrationTest {
 
             // Then - Verify exact console output with underline
             Path testFile = tempDir.resolve("test.adoc");
-            String expectedOutput = String.format(
-                    """
+            String expectedOutput = String
+                    .format("""
                             +----------------------------------------------------------------------------------------------------------------------+
                             |                                                  Validation Report                                                   |
                             +----------------------------------------------------------------------------------------------------------------------+
@@ -223,7 +234,7 @@ class UnderlineHighlightIntegrationTest {
 
 
                             """,
-                    testFile.toString(), testFile.toString(), testFile.toString());
+                            testFile.toString(), testFile.toString(), testFile.toString());
 
             assertEquals(expectedOutput, actualOutput);
         }
@@ -263,8 +274,8 @@ class UnderlineHighlightIntegrationTest {
 
             // Then - Verify exact console output with underline
             Path testFile = tempDir.resolve("test.adoc");
-            String expectedOutput = String.format(
-                    """
+            String expectedOutput = String
+                    .format("""
                             +----------------------------------------------------------------------------------------------------------------------+
                             |                                                  Validation Report                                                   |
                             +----------------------------------------------------------------------------------------------------------------------+
@@ -298,7 +309,7 @@ class UnderlineHighlightIntegrationTest {
 
 
                             """,
-                    testFile.toString(), testFile.toString(), testFile.toString());
+                            testFile.toString(), testFile.toString(), testFile.toString());
 
             assertEquals(expectedOutput, actualOutput);
         }
@@ -340,8 +351,8 @@ class UnderlineHighlightIntegrationTest {
 
             // Then - Verify exact console output with underline
             Path testFile = tempDir.resolve("test.adoc");
-            String expectedOutput = String.format(
-                    """
+            String expectedOutput = String
+                    .format("""
                             +----------------------------------------------------------------------------------------------------------------------+
                             |                                                  Validation Report                                                   |
                             +----------------------------------------------------------------------------------------------------------------------+
@@ -376,7 +387,7 @@ class UnderlineHighlightIntegrationTest {
 
 
                             """,
-                    testFile.toString(), testFile.toString(), testFile.toString());
+                            testFile.toString(), testFile.toString(), testFile.toString());
 
             assertEquals(expectedOutput, actualOutput);
         }
@@ -413,8 +424,8 @@ class UnderlineHighlightIntegrationTest {
 
             // Then - Verify exact console output with underline
             Path testFile = tempDir.resolve("test.adoc");
-            String expectedOutput = String.format(
-                    """
+            String expectedOutput = String
+                    .format("""
                             +----------------------------------------------------------------------------------------------------------------------+
                             |                                                  Validation Report                                                   |
                             +----------------------------------------------------------------------------------------------------------------------+
@@ -447,7 +458,7 @@ class UnderlineHighlightIntegrationTest {
 
 
                             """,
-                    testFile.toString(), testFile.toString(), testFile.toString());
+                            testFile.toString(), testFile.toString(), testFile.toString());
 
             assertEquals(expectedOutput, actualOutput);
         }
@@ -484,8 +495,8 @@ class UnderlineHighlightIntegrationTest {
 
             // Then - Verify exact console output with underline
             Path testFile = tempDir.resolve("test.adoc");
-            String expectedOutput = String.format(
-                    """
+            String expectedOutput = String
+                    .format("""
                             +----------------------------------------------------------------------------------------------------------------------+
                             |                                                  Validation Report                                                   |
                             +----------------------------------------------------------------------------------------------------------------------+
@@ -518,7 +529,7 @@ class UnderlineHighlightIntegrationTest {
 
 
                             """,
-                    testFile.toString(), testFile.toString(), testFile.toString());
+                            testFile.toString(), testFile.toString(), testFile.toString());
 
             assertEquals(expectedOutput, actualOutput);
         }
@@ -560,8 +571,8 @@ class UnderlineHighlightIntegrationTest {
 
             // Then - Verify exact console output with underline
             Path testFile = tempDir.resolve("test.adoc");
-            String expectedOutput = String.format(
-                    """
+            String expectedOutput = String
+                    .format("""
                             +----------------------------------------------------------------------------------------------------------------------+
                             |                                                  Validation Report                                                   |
                             +----------------------------------------------------------------------------------------------------------------------+
@@ -596,7 +607,7 @@ class UnderlineHighlightIntegrationTest {
 
 
                             """,
-                    testFile.toString(), testFile.toString(), testFile.toString());
+                            testFile.toString(), testFile.toString(), testFile.toString());
 
             assertEquals(expectedOutput, actualOutput);
         }
@@ -633,8 +644,8 @@ class UnderlineHighlightIntegrationTest {
 
             // Then - Verify exact console output with underline
             Path testFile = tempDir.resolve("test.adoc");
-            String expectedOutput = String.format(
-                    """
+            String expectedOutput = String
+                    .format("""
                             +----------------------------------------------------------------------------------------------------------------------+
                             |                                                  Validation Report                                                   |
                             +----------------------------------------------------------------------------------------------------------------------+
@@ -669,7 +680,7 @@ class UnderlineHighlightIntegrationTest {
 
 
                             """,
-                    testFile.toString(), testFile.toString(), testFile.toString());
+                            testFile.toString(), testFile.toString(), testFile.toString());
 
             assertEquals(expectedOutput, actualOutput);
         }
@@ -709,8 +720,8 @@ class UnderlineHighlightIntegrationTest {
 
             // Then - Verify exact console output with underline
             Path testFile = tempDir.resolve("test.adoc");
-            String expectedOutput = String.format(
-                    """
+            String expectedOutput = String
+                    .format("""
                             +----------------------------------------------------------------------------------------------------------------------+
                             |                                                  Validation Report                                                   |
                             +----------------------------------------------------------------------------------------------------------------------+
@@ -744,7 +755,7 @@ class UnderlineHighlightIntegrationTest {
 
 
                             """,
-                    testFile.toString(), testFile.toString(), testFile.toString());
+                            testFile.toString(), testFile.toString(), testFile.toString());
 
             assertEquals(expectedOutput, actualOutput);
         }
@@ -784,8 +795,8 @@ class UnderlineHighlightIntegrationTest {
 
             // Then - Verify exact console output with underline
             Path testFile = tempDir.resolve("test.adoc");
-            String expectedOutput = String.format(
-                    """
+            String expectedOutput = String
+                    .format("""
                             +----------------------------------------------------------------------------------------------------------------------+
                             |                                                  Validation Report                                                   |
                             +----------------------------------------------------------------------------------------------------------------------+
@@ -819,7 +830,7 @@ class UnderlineHighlightIntegrationTest {
 
 
                             """,
-                    testFile.toString(), testFile.toString(), testFile.toString());
+                            testFile.toString(), testFile.toString(), testFile.toString());
 
             assertEquals(expectedOutput, actualOutput);
         }
@@ -874,8 +885,8 @@ class UnderlineHighlightIntegrationTest {
 
             // Then - Verify exact console output with underline
             Path testFile = tempDir.resolve("test.adoc");
-            String expectedOutput = String.format(
-                    """
+            String expectedOutput = String
+                    .format("""
                             +----------------------------------------------------------------------------------------------------------------------+
                             |                                                  Validation Report                                                   |
                             +----------------------------------------------------------------------------------------------------------------------+
@@ -926,7 +937,7 @@ class UnderlineHighlightIntegrationTest {
 
 
                             """,
-                    testFile.toString(), testFile.toString(), testFile.toString(), testFile.toString());
+                            testFile.toString(), testFile.toString(), testFile.toString(), testFile.toString());
 
             assertEquals(expectedOutput, actualOutput);
         }
@@ -982,8 +993,8 @@ class UnderlineHighlightIntegrationTest {
 
             // Then - Verify exact console output with underline
             Path testFile = tempDir.resolve("test.adoc");
-            String expectedOutput = String.format(
-                    """
+            String expectedOutput = String
+                    .format("""
                             +----------------------------------------------------------------------------------------------------------------------+
                             |                                                  Validation Report                                                   |
                             +----------------------------------------------------------------------------------------------------------------------+
@@ -1019,7 +1030,7 @@ class UnderlineHighlightIntegrationTest {
 
 
                             """,
-                    testFile.toString(), testFile.toString(), testFile.toString());
+                            testFile.toString(), testFile.toString(), testFile.toString());
 
             assertEquals(expectedOutput, actualOutput);
         }
@@ -1072,8 +1083,8 @@ class UnderlineHighlightIntegrationTest {
 
             // Then - Verify exact console output with underline
             Path testFile = tempDir.resolve("test.adoc");
-            String expectedOutput = String.format(
-                    """
+            String expectedOutput = String
+                    .format("""
                             +----------------------------------------------------------------------------------------------------------------------+
                             |                                                  Validation Report                                                   |
                             +----------------------------------------------------------------------------------------------------------------------+
@@ -1109,7 +1120,7 @@ class UnderlineHighlightIntegrationTest {
 
 
                             """,
-                    testFile.toString(), testFile.toString(), testFile.toString());
+                            testFile.toString(), testFile.toString(), testFile.toString());
 
             assertEquals(expectedOutput, actualOutput);
         }
@@ -1162,8 +1173,8 @@ class UnderlineHighlightIntegrationTest {
 
             // Then - Verify exact console output with underline
             Path testFile = tempDir.resolve("test.adoc");
-            String expectedOutput = String.format(
-                    """
+            String expectedOutput = String
+                    .format("""
                             +----------------------------------------------------------------------------------------------------------------------+
                             |                                                  Validation Report                                                   |
                             +----------------------------------------------------------------------------------------------------------------------+
@@ -1213,7 +1224,7 @@ class UnderlineHighlightIntegrationTest {
 
 
                             """,
-                    testFile.toString(), testFile.toString(), testFile.toString(), testFile.toString());
+                            testFile.toString(), testFile.toString(), testFile.toString(), testFile.toString());
 
             assertEquals(expectedOutput, actualOutput);
         }
@@ -1259,8 +1270,8 @@ class UnderlineHighlightIntegrationTest {
 
             // Then - Verify exact console output with underline
             Path testFile = tempDir.resolve("test.adoc");
-            String expectedOutput = String.format(
-                    """
+            String expectedOutput = String
+                    .format("""
                             +----------------------------------------------------------------------------------------------------------------------+
                             |                                                  Validation Report                                                   |
                             +----------------------------------------------------------------------------------------------------------------------+
@@ -1282,7 +1293,7 @@ class UnderlineHighlightIntegrationTest {
 
 
                             """,
-                    testFile.toString(), testFile.toString());
+                            testFile.toString(), testFile.toString());
 
             assertEquals(expectedOutput, actualOutput);
         }
@@ -1323,8 +1334,8 @@ class UnderlineHighlightIntegrationTest {
 
             // Then - Verify exact console output with underline
             Path testFile = tempDir.resolve("test.adoc");
-            String expectedOutput = String.format(
-                    """
+            String expectedOutput = String
+                    .format("""
                             +----------------------------------------------------------------------------------------------------------------------+
                             |                                                  Validation Report                                                   |
                             +----------------------------------------------------------------------------------------------------------------------+
@@ -1346,7 +1357,7 @@ class UnderlineHighlightIntegrationTest {
 
 
                             """,
-                    testFile.toString(), testFile.toString());
+                            testFile.toString(), testFile.toString());
 
             assertEquals(expectedOutput, actualOutput);
         }
@@ -1392,8 +1403,8 @@ class UnderlineHighlightIntegrationTest {
 
             // Then - Verify exact console output with underline
             Path testFile = tempDir.resolve("test.adoc");
-            String expectedOutput = String.format(
-                    """
+            String expectedOutput = String
+                    .format("""
                             +----------------------------------------------------------------------------------------------------------------------+
                             |                                                  Validation Report                                                   |
                             +----------------------------------------------------------------------------------------------------------------------+
@@ -1429,7 +1440,7 @@ class UnderlineHighlightIntegrationTest {
 
 
                             """,
-                    testFile.toString(), testFile.toString(), testFile.toString());
+                            testFile.toString(), testFile.toString(), testFile.toString());
 
             assertEquals(expectedOutput, actualOutput);
         }
@@ -1470,8 +1481,8 @@ class UnderlineHighlightIntegrationTest {
 
             // Then - Verify exact console output with underline
             Path testFile = tempDir.resolve("test.adoc");
-            String expectedOutput = String.format(
-                    """
+            String expectedOutput = String
+                    .format("""
                             +----------------------------------------------------------------------------------------------------------------------+
                             |                                                  Validation Report                                                   |
                             +----------------------------------------------------------------------------------------------------------------------+
@@ -1493,7 +1504,7 @@ class UnderlineHighlightIntegrationTest {
 
 
                             """,
-                    testFile.toString(), testFile.toString());
+                            testFile.toString(), testFile.toString());
 
             assertEquals(expectedOutput, actualOutput);
         }
@@ -1534,8 +1545,8 @@ class UnderlineHighlightIntegrationTest {
 
             // Then - Verify exact console output with underline
             Path testFile = tempDir.resolve("test.adoc");
-            String expectedOutput = String.format(
-                    """
+            String expectedOutput = String
+                    .format("""
                             +----------------------------------------------------------------------------------------------------------------------+
                             |                                                  Validation Report                                                   |
                             +----------------------------------------------------------------------------------------------------------------------+
@@ -1557,7 +1568,7 @@ class UnderlineHighlightIntegrationTest {
 
 
                             """,
-                    testFile.toString(), testFile.toString());
+                            testFile.toString(), testFile.toString());
 
             assertEquals(expectedOutput, actualOutput);
         }
@@ -1598,8 +1609,8 @@ class UnderlineHighlightIntegrationTest {
 
             // Then - Verify exact console output with underline
             Path testFile = tempDir.resolve("test.adoc");
-            String expectedOutput = String.format(
-                    """
+            String expectedOutput = String
+                    .format("""
                             +----------------------------------------------------------------------------------------------------------------------+
                             |                                                  Validation Report                                                   |
                             +----------------------------------------------------------------------------------------------------------------------+
@@ -1622,7 +1633,7 @@ class UnderlineHighlightIntegrationTest {
 
 
                             """,
-                    testFile.toString(), testFile.toString());
+                            testFile.toString(), testFile.toString());
 
             assertEquals(expectedOutput, actualOutput);
         }
@@ -1673,8 +1684,8 @@ class UnderlineHighlightIntegrationTest {
 
             // Then - Verify exact console output with underline
             Path testFile = tempDir.resolve("test.adoc");
-            String expectedOutput = String.format(
-                    """
+            String expectedOutput = String
+                    .format("""
                             +----------------------------------------------------------------------------------------------------------------------+
                             |                                                  Validation Report                                                   |
                             +----------------------------------------------------------------------------------------------------------------------+
@@ -1710,7 +1721,7 @@ class UnderlineHighlightIntegrationTest {
 
 
                             """,
-                    testFile.toString(), testFile.toString(), testFile.toString());
+                            testFile.toString(), testFile.toString(), testFile.toString());
 
             assertEquals(expectedOutput, actualOutput);
         }
@@ -1751,8 +1762,8 @@ class UnderlineHighlightIntegrationTest {
 
             // Then - Verify exact console output with underline
             Path testFile = tempDir.resolve("test.adoc");
-            String expectedOutput = String.format(
-                    """
+            String expectedOutput = String
+                    .format("""
                             +----------------------------------------------------------------------------------------------------------------------+
                             |                                                  Validation Report                                                   |
                             +----------------------------------------------------------------------------------------------------------------------+
@@ -1775,7 +1786,7 @@ class UnderlineHighlightIntegrationTest {
 
 
                             """,
-                    testFile.toString(), testFile.toString());
+                            testFile.toString(), testFile.toString());
 
             assertEquals(expectedOutput, actualOutput);
         }
@@ -1821,8 +1832,8 @@ class UnderlineHighlightIntegrationTest {
 
             // Then - Verify exact console output with underline
             Path testFile = tempDir.resolve("test.adoc");
-            String expectedOutput = String.format(
-                    """
+            String expectedOutput = String
+                    .format("""
                             +----------------------------------------------------------------------------------------------------------------------+
                             |                                                  Validation Report                                                   |
                             +----------------------------------------------------------------------------------------------------------------------+
@@ -1857,7 +1868,7 @@ class UnderlineHighlightIntegrationTest {
 
 
                             """,
-                    testFile.toString(), testFile.toString(), testFile.toString());
+                            testFile.toString(), testFile.toString(), testFile.toString());
 
             assertEquals(expectedOutput, actualOutput);
         }
@@ -1903,8 +1914,8 @@ class UnderlineHighlightIntegrationTest {
 
             // Then - Verify exact console output with underline
             Path testFile = tempDir.resolve("test.adoc");
-            String expectedOutput = String.format(
-                    """
+            String expectedOutput = String
+                    .format("""
                             +----------------------------------------------------------------------------------------------------------------------+
                             |                                                  Validation Report                                                   |
                             +----------------------------------------------------------------------------------------------------------------------+
@@ -1940,7 +1951,7 @@ class UnderlineHighlightIntegrationTest {
 
 
                             """,
-                    testFile.toString(), testFile.toString(), testFile.toString());
+                            testFile.toString(), testFile.toString(), testFile.toString());
 
             assertEquals(expectedOutput, actualOutput);
         }
@@ -1986,8 +1997,8 @@ class UnderlineHighlightIntegrationTest {
 
             // Then - Verify exact console output with underline
             Path testFile = tempDir.resolve("test.adoc");
-            String expectedOutput = String.format(
-                    """
+            String expectedOutput = String
+                    .format("""
                             +----------------------------------------------------------------------------------------------------------------------+
                             |                                                  Validation Report                                                   |
                             +----------------------------------------------------------------------------------------------------------------------+
@@ -2023,7 +2034,7 @@ class UnderlineHighlightIntegrationTest {
 
 
                             """,
-                    testFile.toString(), testFile.toString(), testFile.toString());
+                            testFile.toString(), testFile.toString(), testFile.toString());
 
             assertEquals(expectedOutput, actualOutput);
         }
@@ -2068,8 +2079,8 @@ class UnderlineHighlightIntegrationTest {
 
             // Then - Verify exact console output with underline
             Path testFile = tempDir.resolve("test.adoc");
-            String expectedOutput = String.format(
-                    """
+            String expectedOutput = String
+                    .format("""
                             +----------------------------------------------------------------------------------------------------------------------+
                             |                                                  Validation Report                                                   |
                             +----------------------------------------------------------------------------------------------------------------------+
@@ -2102,7 +2113,7 @@ class UnderlineHighlightIntegrationTest {
 
 
                             """,
-                    testFile.toString(), testFile.toString(), testFile.toString());
+                            testFile.toString(), testFile.toString(), testFile.toString());
 
             assertEquals(expectedOutput, actualOutput);
         }
@@ -2140,8 +2151,8 @@ class UnderlineHighlightIntegrationTest {
 
             // Then - Verify exact console output with underline
             Path testFile = tempDir.resolve("test.adoc");
-            String expectedOutput = String.format(
-                    """
+            String expectedOutput = String
+                    .format("""
                             +----------------------------------------------------------------------------------------------------------------------+
                             |                                                  Validation Report                                                   |
                             +----------------------------------------------------------------------------------------------------------------------+
@@ -2174,7 +2185,7 @@ class UnderlineHighlightIntegrationTest {
 
 
                             """,
-                    testFile.toString(), testFile.toString(), testFile.toString());
+                            testFile.toString(), testFile.toString(), testFile.toString());
 
             assertEquals(expectedOutput, actualOutput);
         }
@@ -2225,8 +2236,8 @@ class UnderlineHighlightIntegrationTest {
 
             // Then - Verify exact console output with underline
             Path testFile = tempDir.resolve("test.adoc");
-            String expectedOutput = String.format(
-                    """
+            String expectedOutput = String
+                    .format("""
                             +----------------------------------------------------------------------------------------------------------------------+
                             |                                                  Validation Report                                                   |
                             +----------------------------------------------------------------------------------------------------------------------+
@@ -2262,7 +2273,7 @@ class UnderlineHighlightIntegrationTest {
 
 
                             """,
-                    testFile.toString(), testFile.toString(), testFile.toString());
+                            testFile.toString(), testFile.toString(), testFile.toString());
 
             assertEquals(expectedOutput, actualOutput);
         }
@@ -2308,8 +2319,8 @@ class UnderlineHighlightIntegrationTest {
 
             // Then - Verify exact console output with underline
             Path testFile = tempDir.resolve("test.adoc");
-            String expectedOutput = String.format(
-                    """
+            String expectedOutput = String
+                    .format("""
                             +----------------------------------------------------------------------------------------------------------------------+
                             |                                                  Validation Report                                                   |
                             +----------------------------------------------------------------------------------------------------------------------+
@@ -2345,7 +2356,7 @@ class UnderlineHighlightIntegrationTest {
 
 
                             """,
-                    testFile.toString(), testFile.toString(), testFile.toString());
+                            testFile.toString(), testFile.toString(), testFile.toString());
 
             assertEquals(expectedOutput, actualOutput);
         }
@@ -2405,8 +2416,8 @@ class UnderlineHighlightIntegrationTest {
 
             // Then - Verify exact console output with underline
             Path testFile = tempDir.resolve("test.adoc");
-            String expectedOutput = String.format(
-                    """
+            String expectedOutput = String
+                    .format("""
                             +----------------------------------------------------------------------------------------------------------------------+
                             |                                                  Validation Report                                                   |
                             +----------------------------------------------------------------------------------------------------------------------+
@@ -2442,7 +2453,7 @@ class UnderlineHighlightIntegrationTest {
 
 
                             """,
-                    testFile.toString(), testFile.toString(), testFile.toString());
+                            testFile.toString(), testFile.toString(), testFile.toString());
 
             assertEquals(expectedOutput, actualOutput);
         }
@@ -2477,8 +2488,8 @@ class UnderlineHighlightIntegrationTest {
 
             // Then - Verify exact console output with underline
             Path testFile = tempDir.resolve("test.adoc");
-            String expectedOutput = String.format(
-                    """
+            String expectedOutput = String
+                    .format("""
                             +----------------------------------------------------------------------------------------------------------------------+
                             |                                                  Validation Report                                                   |
                             +----------------------------------------------------------------------------------------------------------------------+
@@ -2498,7 +2509,7 @@ class UnderlineHighlightIntegrationTest {
 
 
                             """,
-                    testFile.toString(), testFile.toString());
+                            testFile.toString(), testFile.toString());
 
             assertEquals(expectedOutput, actualOutput);
         }
@@ -2537,8 +2548,8 @@ class UnderlineHighlightIntegrationTest {
 
             // Then - Verify exact console output with underline
             Path testFile = tempDir.resolve("test.adoc");
-            String expectedOutput = String.format(
-                    """
+            String expectedOutput = String
+                    .format("""
                             +----------------------------------------------------------------------------------------------------------------------+
                             |                                                  Validation Report                                                   |
                             +----------------------------------------------------------------------------------------------------------------------+
@@ -2559,7 +2570,7 @@ class UnderlineHighlightIntegrationTest {
 
 
                             """,
-                    testFile.toString(), testFile.toString());
+                            testFile.toString(), testFile.toString());
 
             assertEquals(expectedOutput, actualOutput);
         }
@@ -2617,8 +2628,8 @@ class UnderlineHighlightIntegrationTest {
 
             // Then - Verify exact console output with underline
             Path testFile = tempDir.resolve("test.adoc");
-            String expectedOutput = String.format(
-                    """
+            String expectedOutput = String
+                    .format("""
                             +----------------------------------------------------------------------------------------------------------------------+
                             |                                                  Validation Report                                                   |
                             +----------------------------------------------------------------------------------------------------------------------+
@@ -2678,8 +2689,8 @@ class UnderlineHighlightIntegrationTest {
 
 
                             """,
-                    testFile.toString(), testFile.toString(), testFile.toString(), testFile.toString(),
-                    testFile.toString());
+                            testFile.toString(), testFile.toString(), testFile.toString(), testFile.toString(),
+                            testFile.toString());
 
             assertEquals(expectedOutput, actualOutput);
         }
@@ -2725,8 +2736,8 @@ class UnderlineHighlightIntegrationTest {
 
             // Then - Verify exact console output with underline
             Path testFile = tempDir.resolve("test.adoc");
-            String expectedOutput = String.format(
-                    """
+            String expectedOutput = String
+                    .format("""
                             +----------------------------------------------------------------------------------------------------------------------+
                             |                                                  Validation Report                                                   |
                             +----------------------------------------------------------------------------------------------------------------------+
@@ -2760,7 +2771,7 @@ class UnderlineHighlightIntegrationTest {
 
 
                             """,
-                    testFile.toString(), testFile.toString(), testFile.toString());
+                            testFile.toString(), testFile.toString(), testFile.toString());
 
             assertEquals(expectedOutput, actualOutput);
         }
@@ -2800,8 +2811,8 @@ class UnderlineHighlightIntegrationTest {
 
             // Then - Verify exact console output with underline
             Path testFile = tempDir.resolve("test.adoc");
-            String expectedOutput = String.format(
-                    """
+            String expectedOutput = String
+                    .format("""
                             +----------------------------------------------------------------------------------------------------------------------+
                             |                                                  Validation Report                                                   |
                             +----------------------------------------------------------------------------------------------------------------------+
@@ -2835,7 +2846,7 @@ class UnderlineHighlightIntegrationTest {
 
 
                             """,
-                    testFile.toString(), testFile.toString(), testFile.toString());
+                            testFile.toString(), testFile.toString(), testFile.toString());
 
             assertEquals(expectedOutput, actualOutput);
         }
@@ -2875,8 +2886,8 @@ class UnderlineHighlightIntegrationTest {
 
             // Then - Verify exact console output with underline
             Path testFile = tempDir.resolve("test.adoc");
-            String expectedOutput = String.format(
-                    """
+            String expectedOutput = String
+                    .format("""
                             +----------------------------------------------------------------------------------------------------------------------+
                             |                                                  Validation Report                                                   |
                             +----------------------------------------------------------------------------------------------------------------------+
@@ -2910,7 +2921,7 @@ class UnderlineHighlightIntegrationTest {
 
 
                             """,
-                    testFile.toString(), testFile.toString(), testFile.toString());
+                            testFile.toString(), testFile.toString(), testFile.toString());
 
             assertEquals(expectedOutput, actualOutput);
         }
@@ -2950,8 +2961,8 @@ class UnderlineHighlightIntegrationTest {
 
             // Then - Verify exact console output with underline
             Path testFile = tempDir.resolve("test.adoc");
-            String expectedOutput = String.format(
-                    """
+            String expectedOutput = String
+                    .format("""
                             +----------------------------------------------------------------------------------------------------------------------+
                             |                                                  Validation Report                                                   |
                             +----------------------------------------------------------------------------------------------------------------------+
@@ -2985,7 +2996,7 @@ class UnderlineHighlightIntegrationTest {
 
 
                             """,
-                    testFile.toString(), testFile.toString(), testFile.toString());
+                            testFile.toString(), testFile.toString(), testFile.toString());
 
             assertEquals(expectedOutput, actualOutput);
         }
@@ -3022,8 +3033,8 @@ class UnderlineHighlightIntegrationTest {
 
             // Then - Verify exact console output with underline
             Path testFile = tempDir.resolve("test.adoc");
-            String expectedOutput = String.format(
-                    """
+            String expectedOutput = String
+                    .format("""
                             +----------------------------------------------------------------------------------------------------------------------+
                             |                                                  Validation Report                                                   |
                             +----------------------------------------------------------------------------------------------------------------------+
@@ -3056,7 +3067,7 @@ class UnderlineHighlightIntegrationTest {
 
 
                             """,
-                    testFile.toString(), testFile.toString(), testFile.toString());
+                            testFile.toString(), testFile.toString(), testFile.toString());
 
             assertEquals(expectedOutput, actualOutput);
         }
@@ -3093,8 +3104,8 @@ class UnderlineHighlightIntegrationTest {
 
             // Then - Verify exact console output with underline
             Path testFile = tempDir.resolve("test.adoc");
-            String expectedOutput = String.format(
-                    """
+            String expectedOutput = String
+                    .format("""
                             +----------------------------------------------------------------------------------------------------------------------+
                             |                                                  Validation Report                                                   |
                             +----------------------------------------------------------------------------------------------------------------------+
@@ -3127,7 +3138,7 @@ class UnderlineHighlightIntegrationTest {
 
 
                             """,
-                    testFile.toString(), testFile.toString(), testFile.toString());
+                            testFile.toString(), testFile.toString(), testFile.toString());
 
             assertEquals(expectedOutput, actualOutput);
         }
@@ -3173,8 +3184,8 @@ class UnderlineHighlightIntegrationTest {
 
             // Then - Verify exact console output with underline
             Path testFile = tempDir.resolve("test.adoc");
-            String expectedOutput = String.format(
-                    """
+            String expectedOutput = String
+                    .format("""
                             +----------------------------------------------------------------------------------------------------------------------+
                             |                                                  Validation Report                                                   |
                             +----------------------------------------------------------------------------------------------------------------------+
@@ -3210,7 +3221,7 @@ class UnderlineHighlightIntegrationTest {
 
 
                             """,
-                    testFile.toString(), testFile.toString(), testFile.toString());
+                            testFile.toString(), testFile.toString(), testFile.toString());
 
             assertEquals(expectedOutput, actualOutput);
         }
@@ -3272,8 +3283,8 @@ class UnderlineHighlightIntegrationTest {
 
             // Then - Verify exact console output with underline
             Path testFile = tempDir.resolve("test.adoc");
-            String expectedOutput = String.format(
-                    """
+            String expectedOutput = String
+                    .format("""
                             +----------------------------------------------------------------------------------------------------------------------+
                             |                                                  Validation Report                                                   |
                             +----------------------------------------------------------------------------------------------------------------------+
@@ -3310,7 +3321,7 @@ class UnderlineHighlightIntegrationTest {
 
 
                             """,
-                    testFile.toString(), testFile.toString(), testFile.toString());
+                            testFile.toString(), testFile.toString(), testFile.toString());
 
             assertEquals(expectedOutput, actualOutput);
         }
@@ -3367,8 +3378,8 @@ class UnderlineHighlightIntegrationTest {
 
             // Then - Verify exact console output with underline
             Path testFile = tempDir.resolve("test.adoc");
-            String expectedOutput = String.format(
-                    """
+            String expectedOutput = String
+                    .format("""
                             +----------------------------------------------------------------------------------------------------------------------+
                             |                                                  Validation Report                                                   |
                             +----------------------------------------------------------------------------------------------------------------------+
@@ -3404,7 +3415,7 @@ class UnderlineHighlightIntegrationTest {
 
 
                             """,
-                    testFile.toString(), testFile.toString(), testFile.toString());
+                            testFile.toString(), testFile.toString(), testFile.toString());
 
             assertEquals(expectedOutput, actualOutput);
         }
@@ -3441,8 +3452,8 @@ class UnderlineHighlightIntegrationTest {
 
             // Then - Verify exact console output with underline
             Path testFile = tempDir.resolve("test.adoc");
-            String expectedOutput = String.format(
-                    """
+            String expectedOutput = String
+                    .format("""
                             +----------------------------------------------------------------------------------------------------------------------+
                             |                                                  Validation Report                                                   |
                             +----------------------------------------------------------------------------------------------------------------------+
@@ -3463,7 +3474,7 @@ class UnderlineHighlightIntegrationTest {
 
 
                             """,
-                    testFile.toString(), testFile.toString());
+                            testFile.toString(), testFile.toString());
 
             assertEquals(expectedOutput, actualOutput);
         }
@@ -3495,8 +3506,8 @@ class UnderlineHighlightIntegrationTest {
 
             // Then - Verify exact console output with underline
             Path testFile = tempDir.resolve("test.adoc");
-            String expectedOutput = String.format(
-                    """
+            String expectedOutput = String
+                    .format("""
                             +----------------------------------------------------------------------------------------------------------------------+
                             |                                                  Validation Report                                                   |
                             +----------------------------------------------------------------------------------------------------------------------+
@@ -3517,7 +3528,7 @@ class UnderlineHighlightIntegrationTest {
 
 
                             """,
-                    testFile.toString(), testFile.toString());
+                            testFile.toString(), testFile.toString());
 
             assertEquals(expectedOutput, actualOutput);
         }
@@ -3549,8 +3560,8 @@ class UnderlineHighlightIntegrationTest {
 
             // Then - Verify exact console output with underline
             Path testFile = tempDir.resolve("test.adoc");
-            String expectedOutput = String.format(
-                    """
+            String expectedOutput = String
+                    .format("""
                             +----------------------------------------------------------------------------------------------------------------------+
                             |                                                  Validation Report                                                   |
                             +----------------------------------------------------------------------------------------------------------------------+
@@ -3571,7 +3582,7 @@ class UnderlineHighlightIntegrationTest {
 
 
                             """,
-                    testFile.toString(), testFile.toString());
+                            testFile.toString(), testFile.toString());
 
             assertEquals(expectedOutput, actualOutput);
         }
@@ -3603,8 +3614,8 @@ class UnderlineHighlightIntegrationTest {
 
             // Then - Verify exact console output with underline at correct position
             Path testFile = tempDir.resolve("test.adoc");
-            String expectedOutput = String.format(
-                    """
+            String expectedOutput = String
+                    .format("""
                             +----------------------------------------------------------------------------------------------------------------------+
                             |                                                  Validation Report                                                   |
                             +----------------------------------------------------------------------------------------------------------------------+
@@ -3625,7 +3636,7 @@ class UnderlineHighlightIntegrationTest {
 
 
                             """,
-                    testFile.toString(), testFile.toString());
+                            testFile.toString(), testFile.toString());
 
             assertEquals(expectedOutput, actualOutput);
         }
@@ -3662,8 +3673,8 @@ class UnderlineHighlightIntegrationTest {
 
             // Then - Verify exact console output with underlines for both violations
             Path testFile = tempDir.resolve("test.adoc");
-            String expectedOutput = String.format(
-                    """
+            String expectedOutput = String
+                    .format("""
                             +----------------------------------------------------------------------------------------------------------------------+
                             |                                                  Validation Report                                                   |
                             +----------------------------------------------------------------------------------------------------------------------+
@@ -3709,7 +3720,7 @@ class UnderlineHighlightIntegrationTest {
 
 
                             """,
-                    testFile.toString(), testFile.toString(), testFile.toString(), testFile.toString());
+                            testFile.toString(), testFile.toString(), testFile.toString(), testFile.toString());
 
             assertEquals(expectedOutput, actualOutput);
         }

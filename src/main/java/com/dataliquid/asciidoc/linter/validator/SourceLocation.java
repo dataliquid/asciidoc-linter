@@ -11,8 +11,8 @@ public final class SourceLocation {
     private final String sourceLine;
 
     private SourceLocation(Builder builder) {
-        this.filename = Objects.requireNonNull(builder.filename,
-                "[" + getClass().getName() + "] filename must not be null");
+        this.filename = Objects
+                .requireNonNull(builder.filename, "[" + getClass().getName() + "] filename must not be null");
         this.startLine = builder.startLine;
         this.startColumn = builder.startColumn;
         this.endLine = builder.endLine;

@@ -1,8 +1,9 @@
 package com.dataliquid.asciidoc.linter.validator;
 
 /**
- * Central repository for all validation rule IDs. This class provides constants for rule IDs used across all validators
- * to ensure consistency and maintainability.
+ * Central repository for all validation rule IDs. This class provides constants
+ * for rule IDs used across all validators to ensure consistency and
+ * maintainability.
  */
 public final class RuleIds {
 

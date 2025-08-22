@@ -35,19 +35,32 @@ public final class RequiredRule implements AttributeRule {
 
         RequiredAttribute config = requiredAttributes.get(attributeName);
         if (config != null && config.isRequired() && value == null) {
-            messages.add(ValidationMessage.builder().severity(config.getSeverity()).ruleId(getRuleId())
-                    .message("Missing required attribute '" + attributeName + "'").location(location)
-                    .attributeName(attributeName).actualValue(null).expectedValue("Attribute must be present")
-                    .errorType(ErrorType.MISSING_VALUE).missingValueHint(getPlaceholderHint(attributeName))
-                    .placeholderContext(
-                            PlaceholderContext.builder().type(PlaceholderContext.PlaceholderType.INSERT_BEFORE).build())
-                    .addSuggestion(Suggestion.builder().description("Add required attribute")
-                            .fixedValue(":" + attributeName + ": value")
-                            .addExample(":" + attributeName + ": example-value")
-                            .addExample(":" + attributeName + ": ${defaultValue}")
-                            .explanation("This attribute is required and must be defined in the document header")
-                            .build())
-                    .build());
+            messages
+                    .add(ValidationMessage
+                            .builder()
+                            .severity(config.getSeverity())
+                            .ruleId(getRuleId())
+                            .message("Missing required attribute '" + attributeName + "'")
+                            .location(location)
+                            .attributeName(attributeName)
+                            .actualValue(null)
+                            .expectedValue("Attribute must be present")
+                            .errorType(ErrorType.MISSING_VALUE)
+                            .missingValueHint(getPlaceholderHint(attributeName))
+                            .placeholderContext(PlaceholderContext
+                                    .builder()
+                                    .type(PlaceholderContext.PlaceholderType.INSERT_BEFORE)
+                                    .build())
+                            .addSuggestion(Suggestion
+                                    .builder()
+                                    .description("Add required attribute")
+                                    .fixedValue(":" + attributeName + ": value")
+                                    .addExample(":" + attributeName + ": example-value")
+                                    .addExample(":" + attributeName + ": ${defaultValue}")
+                                    .explanation(
+                                            "This attribute is required and must be defined in the document header")
+                                    .build())
+                            .build());
         }
 
         return messages;
@@ -67,17 +80,31 @@ public final class RequiredRule implements AttributeRule {
             RequiredAttribute config = entry.getValue();
 
             if (config.isRequired() && !presentAttributes.contains(attrName)) {
-                messages.add(ValidationMessage.builder().severity(config.getSeverity()).ruleId(getRuleId())
-                        .message("Missing required attribute '" + attrName + "'").location(documentLocation)
-                        .attributeName(attrName).actualValue(null).expectedValue("Attribute must be present")
-                        .errorType(ErrorType.MISSING_VALUE).missingValueHint(getPlaceholderHint(attrName))
-                        .placeholderContext(PlaceholderContext.builder()
-                                .type(PlaceholderContext.PlaceholderType.INSERT_BEFORE).build())
-                        .addSuggestion(Suggestion.builder().description("Add required attribute to document header")
-                                .fixedValue(":" + attrName + ": value").addExample(":" + attrName + ": example-value")
-                                .addExample(":" + attrName + ": ${defaultValue}")
-                                .explanation("Required attributes must be defined in the document header").build())
-                        .build());
+                messages
+                        .add(ValidationMessage
+                                .builder()
+                                .severity(config.getSeverity())
+                                .ruleId(getRuleId())
+                                .message("Missing required attribute '" + attrName + "'")
+                                .location(documentLocation)
+                                .attributeName(attrName)
+                                .actualValue(null)
+                                .expectedValue("Attribute must be present")
+                                .errorType(ErrorType.MISSING_VALUE)
+                                .missingValueHint(getPlaceholderHint(attrName))
+                                .placeholderContext(PlaceholderContext
+                                        .builder()
+                                        .type(PlaceholderContext.PlaceholderType.INSERT_BEFORE)
+                                        .build())
+                                .addSuggestion(Suggestion
+                                        .builder()
+                                        .description("Add required attribute to document header")
+                                        .fixedValue(":" + attrName + ": value")
+                                        .addExample(":" + attrName + ": example-value")
+                                        .addExample(":" + attrName + ": ${defaultValue}")
+                                        .explanation("Required attributes must be defined in the document header")
+                                        .build())
+                                .build());
             }
         }
 

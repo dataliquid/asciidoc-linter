@@ -14,9 +14,9 @@ public final class BlockTypeDetector {
     /**
      * Detects the block type from an AsciidoctorJ StructuralNode.
      *
-     * @param node
-     *            the node to analyze
-     * @return the detected block type, or null if type cannot be determined
+     * @param  node the node to analyze
+     *
+     * @return      the detected block type, or null if type cannot be determined
      */
     public BlockType detectType(StructuralNode node) {
         if (node == null) {
@@ -32,59 +32,59 @@ public final class BlockTypeDetector {
 
             // Map AsciidoctorJ contexts to our BlockTypes
             switch (context) {
-                case "paragraph" :
-                    return BlockType.PARAGRAPH;
+            case "paragraph":
+                return BlockType.PARAGRAPH;
 
-                case "listing" :
-                    return BlockType.LISTING;
+            case "listing":
+                return BlockType.LISTING;
 
-                case "literal" :
-                    return BlockType.LITERAL;
+            case "literal":
+                return BlockType.LITERAL;
 
-                case "table" :
-                    return BlockType.TABLE;
+            case "table":
+                return BlockType.TABLE;
 
-                case "image" :
-                    return BlockType.IMAGE;
+            case "image":
+                return BlockType.IMAGE;
 
-                case "verse" :
-                case "quote" :
-                    return detectVerseOrQuote(node);
+            case "verse":
+            case "quote":
+                return detectVerseOrQuote(node);
 
-                case "admonition" :
-                    return BlockType.ADMONITION;
+            case "admonition":
+                return BlockType.ADMONITION;
 
-                case "pass" :
-                    return BlockType.PASS;
+            case "pass":
+                return BlockType.PASS;
 
-                case "sidebar" :
-                    return BlockType.SIDEBAR;
+            case "sidebar":
+                return BlockType.SIDEBAR;
 
-                case "audio" :
-                    return BlockType.AUDIO;
+            case "audio":
+                return BlockType.AUDIO;
 
-                case "video" :
-                    return BlockType.VIDEO;
+            case "video":
+                return BlockType.VIDEO;
 
-                case "example" :
-                    return BlockType.EXAMPLE;
+            case "example":
+                return BlockType.EXAMPLE;
 
-                case "open" :
-                    // These could contain other blocks, check content
-                    return detectFromContent(node);
+            case "open":
+                // These could contain other blocks, check content
+                return detectFromContent(node);
 
-                case "preamble" :
-                    // Preamble is a container, not a block itself
-                    return null;
+            case "preamble":
+                // Preamble is a container, not a block itself
+                return null;
 
-                case "ulist" :
-                    return BlockType.ULIST;
+            case "ulist":
+                return BlockType.ULIST;
 
-                case "dlist" :
-                    return BlockType.DLIST;
+            case "dlist":
+                return BlockType.DLIST;
 
-                default :
-                    return null;
+            default:
+                return null;
             }
         } catch (Exception e) {
             // Handle any exceptions gracefully
@@ -129,11 +129,11 @@ public final class BlockTypeDetector {
         String style = node.getStyle();
         if (style != null) {
             switch (style) {
-                case "source" :
-                case "listing" :
-                    return BlockType.LISTING;
-                case "verse" :
-                    return BlockType.VERSE;
+            case "source":
+            case "listing":
+                return BlockType.LISTING;
+            case "verse":
+                return BlockType.VERSE;
             }
         }
 

@@ -20,11 +20,11 @@ import com.dataliquid.asciidoc.linter.config.loader.ConfigurationException;
 import com.dataliquid.asciidoc.linter.config.loader.ConfigurationLoader;
 
 /**
- * Comprehensive schema validation tests for all block types. These tests ensure that schema validation is working
- * correctly and catching errors.
- *
- * IMPORTANT: This test class uses ConfigurationLoader() with schema validation ENABLED. This is different from most
- * other test classes which skip validation for performance.
+ * Comprehensive schema validation tests for all block types. These tests ensure
+ * that schema validation is working correctly and catching errors. IMPORTANT:
+ * This test class uses ConfigurationLoader() with schema validation ENABLED.
+ * This is different from most other test classes which skip validation for
+ * performance.
  */
 @DisplayName("Comprehensive Schema Validation Tests")
 class ComprehensiveSchemaValidationTest {

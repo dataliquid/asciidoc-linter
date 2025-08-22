@@ -21,9 +21,8 @@ import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.EMP
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
 /**
- * Configuration for EXAMPLE blocks.
- *
- * Validates example blocks with optional numbering and caption format. Based on the YAML schema definition for the
+ * Configuration for EXAMPLE blocks. Validates example blocks with optional
+ * numbering and caption format. Based on the YAML schema definition for the
  * linter.
  */
 @JsonDeserialize(builder = ExampleBlock.Builder.class)
@@ -102,7 +101,8 @@ public class ExampleBlock extends AbstractBlock {
     }
 
     /**
-     * Configuration for the caption of an example block. Based on the YAML schema requiring specific format.
+     * Configuration for the caption of an example block. Based on the YAML schema
+     * requiring specific format.
      */
     @JsonDeserialize(builder = CaptionConfig.Builder.class)
     public static class CaptionConfig {
@@ -148,8 +148,9 @@ public class ExampleBlock extends AbstractBlock {
                 return false;
             CaptionConfig that = (CaptionConfig) o;
             return required == that.required
-                    && Objects.equals(pattern == null ? null : pattern.pattern(),
-                            that.pattern == null ? null : that.pattern.pattern())
+                    && Objects
+                            .equals(pattern == null ? null : pattern.pattern(),
+                                    that.pattern == null ? null : that.pattern.pattern())
                     && Objects.equals(minLength, that.minLength) && Objects.equals(maxLength, that.maxLength)
                     && severity == that.severity;
         }
@@ -215,8 +216,8 @@ public class ExampleBlock extends AbstractBlock {
     }
 
     /**
-     * Configuration for the collapsible attribute of an example block. Based on the YAML schema allowing true/false
-     * values.
+     * Configuration for the collapsible attribute of an example block. Based on the
+     * YAML schema allowing true/false values.
      */
     @JsonDeserialize(builder = CollapsibleConfig.Builder.class)
     public static class CollapsibleConfig {

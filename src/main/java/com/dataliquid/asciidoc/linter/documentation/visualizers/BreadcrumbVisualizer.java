@@ -95,8 +95,7 @@ public class BreadcrumbVisualizer implements HierarchyVisualizer {
     private void collectSectionPaths(SectionConfig section, String parentPath, List<RulePath> paths) {
         String sectionPath = parentPath + " > " + section.name();
         String description = getSectionDescription(section) + " (Level " + section.level() + ")";
-        Severity severity = (section.occurrence() != null && section.occurrence().min() > 0)
-                ? Severity.ERROR
+        Severity severity = (section.occurrence() != null && section.occurrence().min() > 0) ? Severity.ERROR
                 : Severity.INFO;
 
         paths.add(new RulePath(sectionPath, severity, description));
@@ -143,8 +142,7 @@ public class BreadcrumbVisualizer implements HierarchyVisualizer {
         if (block.getOccurrence() != null) {
             String occurrencePath = blockPath + " > occurrence";
             String description = "Occurrence constraints";
-            Severity severity = block.getOccurrence().severity() != null
-                    ? block.getOccurrence().severity()
+            Severity severity = block.getOccurrence().severity() != null ? block.getOccurrence().severity()
                     : block.getSeverity();
             paths.add(new RulePath(occurrencePath, severity, description));
         }
@@ -152,34 +150,34 @@ public class BreadcrumbVisualizer implements HierarchyVisualizer {
 
     private String getAttributeDescription(AttributeConfig attr) {
         return switch (attr.name()) {
-            case "title" -> "Document title";
-            case "author" -> "Author";
-            case "version" -> "Version number";
-            case "email" -> "Contact email";
-            default -> attr.name();
+        case "title" -> "Document title";
+        case "author" -> "Author";
+        case "version" -> "Version number";
+        case "email" -> "Contact email";
+        default -> attr.name();
         };
     }
 
     private String getSectionDescription(SectionConfig section) {
         return switch (section.name()) {
-            case "introduction" -> "Introduction section";
-            case "implementation" -> "Implementation details";
-            case "conclusion" -> "Summary";
-            default -> section.name();
+        case "introduction" -> "Introduction section";
+        case "implementation" -> "Implementation details";
+        case "conclusion" -> "Summary";
+        default -> section.name();
         };
     }
 
     private String getBlockDescription(Block block) {
         String desc = switch (block.getType()) {
-            case PARAGRAPH -> "Text paragraphs";
-            case LISTING -> "Code blocks";
-            case TABLE -> "Tables";
-            case IMAGE -> "Images";
-            case VERSE -> "Quotes/Verses";
-            case ADMONITION -> "Notes/Warnings";
-            case PASS -> "Pass-through blocks";
-            case LITERAL -> "Literal blocks";
-            default -> "Block type " + block.getType().toValue();
+        case PARAGRAPH -> "Text paragraphs";
+        case LISTING -> "Code blocks";
+        case TABLE -> "Tables";
+        case IMAGE -> "Images";
+        case VERSE -> "Quotes/Verses";
+        case ADMONITION -> "Notes/Warnings";
+        case PASS -> "Pass-through blocks";
+        case LITERAL -> "Literal blocks";
+        default -> "Block type " + block.getType().toValue();
         };
 
         if (block.getName() != null) {

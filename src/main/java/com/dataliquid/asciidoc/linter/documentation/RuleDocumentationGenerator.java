@@ -5,11 +5,11 @@ import java.io.PrintWriter;
 import com.dataliquid.asciidoc.linter.config.LinterConfiguration;
 
 /**
- * Interface for generating human-readable documentation from linter configuration rules.
- *
+ * Interface for generating human-readable documentation from linter
+ * configuration rules.
  * <p>
- * Implementations of this interface convert YAML-based linter rules into documentation formats suitable for content
- * authors.
+ * Implementations of this interface convert YAML-based linter rules into
+ * documentation formats suitable for content authors.
  * </p>
  */
 public interface RuleDocumentationGenerator {
@@ -17,10 +17,8 @@ public interface RuleDocumentationGenerator {
     /**
      * Generates documentation from the given linter configuration.
      *
-     * @param config
-     *            the linter configuration containing all rules
-     * @param writer
-     *            the writer to output the documentation to
+     * @param config the linter configuration containing all rules
+     * @param writer the writer to output the documentation to
      */
     void generate(LinterConfiguration config, PrintWriter writer);
 

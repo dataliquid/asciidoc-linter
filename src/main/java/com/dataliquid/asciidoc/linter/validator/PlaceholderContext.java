@@ -1,8 +1,8 @@
 package com.dataliquid.asciidoc.linter.validator;
 
 /**
- * Context information for placeholder insertion in error messages. This helps the renderer determine the correct syntax
- * for placeholders.
+ * Context information for placeholder insertion in error messages. This helps
+ * the renderer determine the correct syntax for placeholders.
  */
 public class PlaceholderContext {
 
@@ -45,26 +45,26 @@ public class PlaceholderContext {
     /**
      * Generates the complete placeholder string based on context.
      *
-     * @param value
-     *            The placeholder value (without delimiters)
-     * @return The complete placeholder with appropriate syntax
+     * @param  value The placeholder value (without delimiters)
+     *
+     * @return       The complete placeholder with appropriate syntax
      */
     public String generatePlaceholder(String value) {
         String placeholder = "«" + value + "»";
 
         switch (type) {
-            case ATTRIBUTE_VALUE :
-                return attributeName + "=" + placeholder;
+        case ATTRIBUTE_VALUE:
+            return attributeName + "=" + placeholder;
 
-            case ATTRIBUTE_IN_LIST :
-                return "," + attributeName + "=" + placeholder;
+        case ATTRIBUTE_IN_LIST:
+            return "," + attributeName + "=" + placeholder;
 
-            case LIST_VALUE :
-                return "," + placeholder;
+        case LIST_VALUE:
+            return "," + placeholder;
 
-            case SIMPLE_VALUE :
-            default :
-                return placeholder;
+        case SIMPLE_VALUE:
+        default:
+            return placeholder;
         }
     }
 

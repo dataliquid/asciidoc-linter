@@ -25,13 +25,13 @@ public final class ValidationMessage {
     private final Throwable cause;
 
     private ValidationMessage(Builder builder) {
-        this.severity = Objects.requireNonNull(builder.severity,
-                "[" + getClass().getName() + "] severity must not be null");
+        this.severity = Objects
+                .requireNonNull(builder.severity, "[" + getClass().getName() + "] severity must not be null");
         this.ruleId = Objects.requireNonNull(builder.ruleId, "[" + getClass().getName() + "] ruleId must not be null");
-        this.message = Objects.requireNonNull(builder.message,
-                "[" + getClass().getName() + "] message must not be null");
-        this.location = Objects.requireNonNull(builder.location,
-                "[" + getClass().getName() + "] location must not be null");
+        this.message = Objects
+                .requireNonNull(builder.message, "[" + getClass().getName() + "] message must not be null");
+        this.location = Objects
+                .requireNonNull(builder.location, "[" + getClass().getName() + "] location must not be null");
         this.attributeName = builder.attributeName;
         this.actualValue = builder.actualValue;
         this.expectedValue = builder.expectedValue;
@@ -137,8 +137,9 @@ public final class ValidationMessage {
 
     @Override
     public int hashCode() {
-        return Objects.hash(severity, ruleId, message, location, attributeName, actualValue, expectedValue, errorType,
-                missingValueHint, placeholderContext, suggestions, contextLines, cause);
+        return Objects
+                .hash(severity, ruleId, message, location, attributeName, actualValue, expectedValue, errorType,
+                        missingValueHint, placeholderContext, suggestions, contextLines, cause);
     }
 
     @Override

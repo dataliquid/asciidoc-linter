@@ -47,8 +47,8 @@ public final class MetadataValidator {
 
             SourceLocation docLocation = findLocationForMissingAttributes(filename);
 
-            List<ValidationMessage> missingMessages = requiredRule.validateMissingAttributes(presentAttributes,
-                    docLocation);
+            List<ValidationMessage> missingMessages = requiredRule
+                    .validateMissingAttributes(presentAttributes, docLocation);
             missingMessages.forEach(resultBuilder::addMessage);
         }
 
@@ -139,9 +139,14 @@ public final class MetadataValidator {
                     }
                 }
 
-                return SourceLocation.builder().filename(filename).line(i + 1) // Line numbers are 1-based
+                return SourceLocation
+                        .builder()
+                        .filename(filename)
+                        .line(i + 1) // Line numbers are 1-based
                         .startColumn(valueStartIndex + 1) // Columns are 1-based
-                        .endColumn(valueEndIndex + 1).sourceLine(line).build();
+                        .endColumn(valueEndIndex + 1)
+                        .sourceLine(line)
+                        .build();
             }
         }
 
@@ -230,12 +235,20 @@ public final class MetadataValidator {
     }
 
     private RequiredRule findRequiredRule() {
-        return rules.stream().filter(rule -> rule instanceof RequiredRule).map(rule -> (RequiredRule) rule).findFirst()
+        return rules
+                .stream()
+                .filter(rule -> rule instanceof RequiredRule)
+                .map(rule -> (RequiredRule) rule)
+                .findFirst()
                 .orElse(null);
     }
 
     private OrderRule findOrderRule() {
-        return rules.stream().filter(rule -> rule instanceof OrderRule).map(rule -> (OrderRule) rule).findFirst()
+        return rules
+                .stream()
+                .filter(rule -> rule instanceof OrderRule)
+                .map(rule -> (OrderRule) rule)
+                .findFirst()
                 .orElse(null);
     }
 
@@ -271,7 +284,10 @@ public final class MetadataValidator {
             }
         }
 
-        return builder.addRule(requiredBuilder.build()).addRule(patternBuilder.build()).addRule(lengthBuilder.build())
+        return builder
+                .addRule(requiredBuilder.build())
+                .addRule(patternBuilder.build())
+                .addRule(lengthBuilder.build())
                 .addRule(orderBuilder.build());
     }
 

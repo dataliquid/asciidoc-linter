@@ -66,11 +66,11 @@ public class OutputConfigurationLoader {
     /**
      * Loads a predefined output configuration from resources.
      *
-     * @param format
-     *            The output format to load configuration for
-     * @return The loaded output configuration
-     * @throws IOException
-     *             if the configuration cannot be loaded
+     * @param  format      The output format to load configuration for
+     *
+     * @return             The loaded output configuration
+     *
+     * @throws IOException if the configuration cannot be loaded
      */
     public OutputConfiguration loadPredefinedConfiguration(OutputFormat format) throws IOException {
         String resourcePath = "/output-configs/" + format.getValue() + ".yaml";

@@ -65,8 +65,11 @@ class LiteralBlockValidatorTest {
             // Given
             when(mockBlock.getTitle()).thenReturn(null);
 
-            LiteralBlock config = LiteralBlock.builder().severity(Severity.INFO)
-                    .title(TitleConfig.builder().required(true).severity(Severity.ERROR).build()).build();
+            LiteralBlock config = LiteralBlock
+                    .builder()
+                    .severity(Severity.INFO)
+                    .title(TitleConfig.builder().required(true).severity(Severity.ERROR).build())
+                    .build();
 
             // When
             List<ValidationMessage> messages = validator.validate(mockBlock, config, mockContext);
@@ -85,8 +88,11 @@ class LiteralBlockValidatorTest {
             // Given
             when(mockBlock.getTitle()).thenReturn("Hi");
 
-            LiteralBlock config = LiteralBlock.builder().severity(Severity.INFO)
-                    .title(TitleConfig.builder().required(false).minLength(5).severity(Severity.WARN).build()).build();
+            LiteralBlock config = LiteralBlock
+                    .builder()
+                    .severity(Severity.INFO)
+                    .title(TitleConfig.builder().required(false).minLength(5).severity(Severity.WARN).build())
+                    .build();
 
             // When
             List<ValidationMessage> messages = validator.validate(mockBlock, config, mockContext);
@@ -106,8 +112,11 @@ class LiteralBlockValidatorTest {
             // Given
             when(mockBlock.getTitle()).thenReturn("This is a very long title that exceeds the maximum allowed length");
 
-            LiteralBlock config = LiteralBlock.builder().severity(Severity.INFO)
-                    .title(TitleConfig.builder().maxLength(50).severity(Severity.INFO).build()).build();
+            LiteralBlock config = LiteralBlock
+                    .builder()
+                    .severity(Severity.INFO)
+                    .title(TitleConfig.builder().maxLength(50).severity(Severity.INFO).build())
+                    .build();
 
             // When
             List<ValidationMessage> messages = validator.validate(mockBlock, config, mockContext);
@@ -125,8 +134,16 @@ class LiteralBlockValidatorTest {
             // Given
             when(mockBlock.getTitle()).thenReturn("Valid Title");
 
-            LiteralBlock config = LiteralBlock.builder().severity(Severity.INFO).title(
-                    TitleConfig.builder().required(false).minLength(5).maxLength(50).severity(Severity.INFO).build())
+            LiteralBlock config = LiteralBlock
+                    .builder()
+                    .severity(Severity.INFO)
+                    .title(TitleConfig
+                            .builder()
+                            .required(false)
+                            .minLength(5)
+                            .maxLength(50)
+                            .severity(Severity.INFO)
+                            .build())
                     .build();
 
             // When
@@ -142,8 +159,13 @@ class LiteralBlockValidatorTest {
             // Given
             when(mockBlock.getTitle()).thenReturn(null);
 
-            LiteralBlock config = LiteralBlock.builder().severity(Severity.WARN)
-                    .title(TitleConfig.builder().required(true).severity(null) // No severity specified
+            LiteralBlock config = LiteralBlock
+                    .builder()
+                    .severity(Severity.WARN)
+                    .title(TitleConfig
+                            .builder()
+                            .required(true)
+                            .severity(null) // No severity specified
                             .build())
                     .build();
 
@@ -166,8 +188,11 @@ class LiteralBlockValidatorTest {
             // Given
             when(mockBlock.getContent()).thenReturn("Line 1");
 
-            LiteralBlock config = LiteralBlock.builder().severity(Severity.INFO)
-                    .lines(LinesConfig.builder().min(3).severity(Severity.ERROR).build()).build();
+            LiteralBlock config = LiteralBlock
+                    .builder()
+                    .severity(Severity.INFO)
+                    .lines(LinesConfig.builder().min(3).severity(Severity.ERROR).build())
+                    .build();
 
             // When
             List<ValidationMessage> messages = validator.validate(mockBlock, config, mockContext);
@@ -194,8 +219,11 @@ class LiteralBlockValidatorTest {
             }
             when(mockBlock.getContent()).thenReturn(sb.toString());
 
-            LiteralBlock config = LiteralBlock.builder().severity(Severity.INFO)
-                    .lines(LinesConfig.builder().max(50).severity(Severity.WARN).build()).build();
+            LiteralBlock config = LiteralBlock
+                    .builder()
+                    .severity(Severity.INFO)
+                    .lines(LinesConfig.builder().max(50).severity(Severity.WARN).build())
+                    .build();
 
             // When
             List<ValidationMessage> messages = validator.validate(mockBlock, config, mockContext);
@@ -215,8 +243,11 @@ class LiteralBlockValidatorTest {
             // Given
             when(mockBlock.getContent()).thenReturn("Line 1\nLine 2\nLine 3");
 
-            LiteralBlock config = LiteralBlock.builder().severity(Severity.INFO)
-                    .lines(LinesConfig.builder().min(1).max(5).severity(Severity.INFO).build()).build();
+            LiteralBlock config = LiteralBlock
+                    .builder()
+                    .severity(Severity.INFO)
+                    .lines(LinesConfig.builder().min(1).max(5).severity(Severity.INFO).build())
+                    .build();
 
             // When
             List<ValidationMessage> messages = validator.validate(mockBlock, config, mockContext);
@@ -236,8 +267,15 @@ class LiteralBlockValidatorTest {
             // Given
             when(mockBlock.getContent()).thenReturn("  Line 1\n    Line 2");
 
-            LiteralBlock config = LiteralBlock.builder().severity(Severity.INFO).indentation(
-                    IndentationConfig.builder().required(false).consistent(true).severity(Severity.ERROR).build())
+            LiteralBlock config = LiteralBlock
+                    .builder()
+                    .severity(Severity.INFO)
+                    .indentation(IndentationConfig
+                            .builder()
+                            .required(false)
+                            .consistent(true)
+                            .severity(Severity.ERROR)
+                            .build())
                     .build();
 
             // When
@@ -254,7 +292,9 @@ class LiteralBlockValidatorTest {
             // Given
             when(mockBlock.getContent()).thenReturn("Line 1\n  Line 2");
 
-            LiteralBlock config = LiteralBlock.builder().severity(Severity.INFO)
+            LiteralBlock config = LiteralBlock
+                    .builder()
+                    .severity(Severity.INFO)
                     .indentation(
                             IndentationConfig.builder().required(true).minSpaces(2).severity(Severity.WARN).build())
                     .build();
@@ -280,7 +320,9 @@ class LiteralBlockValidatorTest {
             // Given
             when(mockBlock.getContent()).thenReturn("    Line 1\n          Line 2");
 
-            LiteralBlock config = LiteralBlock.builder().severity(Severity.INFO)
+            LiteralBlock config = LiteralBlock
+                    .builder()
+                    .severity(Severity.INFO)
                     .indentation(
                             IndentationConfig.builder().required(true).maxSpaces(8).severity(Severity.ERROR).build())
                     .build();
@@ -305,7 +347,9 @@ class LiteralBlockValidatorTest {
             when(mockBlock.getContent()).thenReturn("  Line 1\n" + "  Line 2\n" + "    Line 3\n" + // Inconsistent
                     "  Line 4");
 
-            LiteralBlock config = LiteralBlock.builder().severity(Severity.INFO)
+            LiteralBlock config = LiteralBlock
+                    .builder()
+                    .severity(Severity.INFO)
                     .indentation(
                             IndentationConfig.builder().required(true).consistent(true).severity(Severity.INFO).build())
                     .build();
@@ -331,8 +375,15 @@ class LiteralBlockValidatorTest {
                     "  Line 2\n" + "   \n" + // Whitespace only
                     "  Line 3");
 
-            LiteralBlock config = LiteralBlock.builder().severity(Severity.INFO).indentation(
-                    IndentationConfig.builder().required(true).consistent(true).severity(Severity.ERROR).build())
+            LiteralBlock config = LiteralBlock
+                    .builder()
+                    .severity(Severity.INFO)
+                    .indentation(IndentationConfig
+                            .builder()
+                            .required(true)
+                            .consistent(true)
+                            .severity(Severity.ERROR)
+                            .build())
                     .build();
 
             // When
@@ -350,8 +401,18 @@ class LiteralBlockValidatorTest {
                     "    Line 2" // 4 spaces
             );
 
-            LiteralBlock config = LiteralBlock.builder().severity(Severity.INFO).indentation(IndentationConfig.builder()
-                    .required(true).consistent(true).minSpaces(4).maxSpaces(4).severity(Severity.WARN).build()).build();
+            LiteralBlock config = LiteralBlock
+                    .builder()
+                    .severity(Severity.INFO)
+                    .indentation(IndentationConfig
+                            .builder()
+                            .required(true)
+                            .consistent(true)
+                            .minSpaces(4)
+                            .maxSpaces(4)
+                            .severity(Severity.WARN)
+                            .build())
+                    .build();
 
             // When
             List<ValidationMessage> messages = validator.validate(mockBlock, config, mockContext);
@@ -373,12 +434,26 @@ class LiteralBlockValidatorTest {
             when(mockBlock.getContent())
                     .thenReturn("  server:\n" + "    host: localhost\n" + "    port: 8080\n" + "    timeout: 30s");
 
-            LiteralBlock config = LiteralBlock.builder().name("Literal Block").severity(Severity.INFO)
-                    .title(TitleConfig.builder().required(false).minLength(5).maxLength(50).severity(Severity.INFO)
+            LiteralBlock config = LiteralBlock
+                    .builder()
+                    .name("Literal Block")
+                    .severity(Severity.INFO)
+                    .title(TitleConfig
+                            .builder()
+                            .required(false)
+                            .minLength(5)
+                            .maxLength(50)
+                            .severity(Severity.INFO)
                             .build())
                     .lines(LinesConfig.builder().min(1).max(50).severity(Severity.WARN).build())
-                    .indentation(IndentationConfig.builder().required(false).consistent(true).minSpaces(0).maxSpaces(8)
-                            .severity(Severity.INFO).build())
+                    .indentation(IndentationConfig
+                            .builder()
+                            .required(false)
+                            .consistent(true)
+                            .minSpaces(0)
+                            .maxSpaces(8)
+                            .severity(Severity.INFO)
+                            .build())
                     .build();
 
             // When
@@ -395,7 +470,9 @@ class LiteralBlockValidatorTest {
             when(mockBlock.getTitle()).thenReturn("Hi"); // Too short
             when(mockBlock.getContent()).thenReturn("Line"); // Too few lines
 
-            LiteralBlock config = LiteralBlock.builder().severity(Severity.INFO)
+            LiteralBlock config = LiteralBlock
+                    .builder()
+                    .severity(Severity.INFO)
                     .title(TitleConfig.builder().minLength(5).severity(Severity.ERROR).build())
                     .lines(LinesConfig.builder().min(3).severity(Severity.WARN).build())
                     .indentation(
@@ -426,13 +503,25 @@ class LiteralBlockValidatorTest {
             when(mockBlock.getTitle()).thenReturn("Hi");
             when(mockBlock.getContent()).thenReturn("Line");
 
-            LiteralBlock config = LiteralBlock.builder().severity(Severity.ERROR) // Block severity
-                    .title(TitleConfig.builder().minLength(5).severity(Severity.INFO) // Override with INFO
+            LiteralBlock config = LiteralBlock
+                    .builder()
+                    .severity(Severity.ERROR) // Block severity
+                    .title(TitleConfig
+                            .builder()
+                            .minLength(5)
+                            .severity(Severity.INFO) // Override with INFO
                             .build())
-                    .lines(LinesConfig.builder().min(2).severity(Severity.WARN) // Override with WARN
+                    .lines(LinesConfig
+                            .builder()
+                            .min(2)
+                            .severity(Severity.WARN) // Override with WARN
                             .build())
-                    .indentation(IndentationConfig.builder().required(true).minSpaces(2).severity(Severity.ERROR) // Keep
-                                                                                                                  // ERROR
+                    .indentation(IndentationConfig
+                            .builder()
+                            .required(true)
+                            .minSpaces(2)
+                            .severity(Severity.ERROR) // Keep
+                                                      // ERROR
                             .build())
                     .build();
 
@@ -443,18 +532,27 @@ class LiteralBlockValidatorTest {
             assertEquals(3, messages.size());
 
             // Title validation should use INFO
-            ValidationMessage titleMessage = messages.stream()
-                    .filter(m -> m.getRuleId().equals("literal.title.minLength")).findFirst().orElseThrow();
+            ValidationMessage titleMessage = messages
+                    .stream()
+                    .filter(m -> m.getRuleId().equals("literal.title.minLength"))
+                    .findFirst()
+                    .orElseThrow();
             assertEquals(Severity.INFO, titleMessage.getSeverity());
 
             // Lines validation should use WARN
-            ValidationMessage linesMessage = messages.stream().filter(m -> m.getRuleId().equals("literal.lines.min"))
-                    .findFirst().orElseThrow();
+            ValidationMessage linesMessage = messages
+                    .stream()
+                    .filter(m -> m.getRuleId().equals("literal.lines.min"))
+                    .findFirst()
+                    .orElseThrow();
             assertEquals(Severity.WARN, linesMessage.getSeverity());
 
             // Indentation validation should use ERROR
-            ValidationMessage indentMessage = messages.stream()
-                    .filter(m -> m.getRuleId().equals("literal.indentation.minSpaces")).findFirst().orElseThrow();
+            ValidationMessage indentMessage = messages
+                    .stream()
+                    .filter(m -> m.getRuleId().equals("literal.indentation.minSpaces"))
+                    .findFirst()
+                    .orElseThrow();
             assertEquals(Severity.ERROR, indentMessage.getSeverity());
         }
 
@@ -465,13 +563,25 @@ class LiteralBlockValidatorTest {
             when(mockBlock.getTitle()).thenReturn(null);
             when(mockBlock.getContent()).thenReturn("Line");
 
-            LiteralBlock config = LiteralBlock.builder().severity(Severity.WARN) // Block severity
-                    .title(TitleConfig.builder().required(true).severity(null) // No severity specified
+            LiteralBlock config = LiteralBlock
+                    .builder()
+                    .severity(Severity.WARN) // Block severity
+                    .title(TitleConfig
+                            .builder()
+                            .required(true)
+                            .severity(null) // No severity specified
                             .build())
-                    .lines(LinesConfig.builder().min(2).severity(null) // No severity specified
+                    .lines(LinesConfig
+                            .builder()
+                            .min(2)
+                            .severity(null) // No severity specified
                             .build())
-                    .indentation(IndentationConfig.builder().required(true).minSpaces(2).severity(null) // No severity
-                                                                                                        // specified
+                    .indentation(IndentationConfig
+                            .builder()
+                            .required(true)
+                            .minSpaces(2)
+                            .severity(null) // No severity
+                                            // specified
                             .build())
                     .build();
 

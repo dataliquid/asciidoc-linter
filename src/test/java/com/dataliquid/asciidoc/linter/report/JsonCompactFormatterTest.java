@@ -23,10 +23,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Unit tests for JSON compact formatting.
- *
  * <p>
- * This test class validates the behavior of the JSON compact formatter, which produces single-line JSON output suitable
- * for log processing and pipeline integration.
+ * This test class validates the behavior of the JSON compact formatter, which
+ * produces single-line JSON output suitable for log processing and pipeline
+ * integration.
  * </p>
  *
  * @see JsonFormatter
@@ -61,7 +61,10 @@ class JsonCompactFormatterTest {
     @DisplayName("should format empty result as single-line JSON")
     void shouldFormatEmptyResultAsSingleLineJson() throws IOException {
         // Given
-        ValidationResult result = ValidationResult.builder().startTime(System.currentTimeMillis() - 100).complete()
+        ValidationResult result = ValidationResult
+                .builder()
+                .startTime(System.currentTimeMillis() - 100)
+                .complete()
                 .build();
 
         // When
@@ -95,20 +98,40 @@ class JsonCompactFormatterTest {
     @DisplayName("should format result with messages as single-line JSON")
     void shouldFormatResultWithMessagesAsSingleLineJson() throws IOException {
         // Given
-        ValidationResult result = ValidationResult.builder().startTime(System.currentTimeMillis() - 250)
-                .addMessages(Arrays.asList(
-                        ValidationMessage.builder().severity(Severity.ERROR).ruleId("metadata.required")
-                                .location(SourceLocation.builder().filename("test.adoc").startLine(1).startColumn(5)
+        ValidationResult result = ValidationResult
+                .builder()
+                .startTime(System.currentTimeMillis() - 250)
+                .addMessages(Arrays
+                        .asList(ValidationMessage
+                                .builder()
+                                .severity(Severity.ERROR)
+                                .ruleId("metadata.required")
+                                .location(SourceLocation
+                                        .builder()
+                                        .filename("test.adoc")
+                                        .startLine(1)
+                                        .startColumn(5)
                                         .build())
-                                .message("Missing required attribute: title").actualValue("null")
-                                .expectedValue("non-empty string").build(),
-                        ValidationMessage.builder().severity(Severity.WARN).ruleId("section.order")
-                                .location(SourceLocation.builder().filename("test.adoc").startLine(10).build())
-                                .message("Section order violation").build(),
-                        ValidationMessage.builder().severity(Severity.INFO).ruleId("general.info")
-                                .location(SourceLocation.builder().filename("test.adoc").startLine(20).build())
-                                .message("Consider adding description").build()))
-                .complete().build();
+                                .message("Missing required attribute: title")
+                                .actualValue("null")
+                                .expectedValue("non-empty string")
+                                .build(),
+                                ValidationMessage
+                                        .builder()
+                                        .severity(Severity.WARN)
+                                        .ruleId("section.order")
+                                        .location(SourceLocation.builder().filename("test.adoc").startLine(10).build())
+                                        .message("Section order violation")
+                                        .build(),
+                                ValidationMessage
+                                        .builder()
+                                        .severity(Severity.INFO)
+                                        .ruleId("general.info")
+                                        .location(SourceLocation.builder().filename("test.adoc").startLine(20).build())
+                                        .message("Consider adding description")
+                                        .build()))
+                .complete()
+                .build();
 
         // When
         formatter.format(result, printWriter);
@@ -163,7 +186,10 @@ class JsonCompactFormatterTest {
     @DisplayName("should format duration correctly")
     void shouldFormatDurationCorrectly() throws IOException {
         // Given - test with milliseconds
-        ValidationResult result1 = ValidationResult.builder().startTime(System.currentTimeMillis() - 999).complete()
+        ValidationResult result1 = ValidationResult
+                .builder()
+                .startTime(System.currentTimeMillis() - 999)
+                .complete()
                 .build();
 
         // When
@@ -177,7 +203,10 @@ class JsonCompactFormatterTest {
         // Given - test with seconds
         stringWriter = new StringWriter();
         printWriter = new PrintWriter(stringWriter);
-        ValidationResult result2 = ValidationResult.builder().startTime(System.currentTimeMillis() - 1500).complete()
+        ValidationResult result2 = ValidationResult
+                .builder()
+                .startTime(System.currentTimeMillis() - 1500)
+                .complete()
                 .build();
 
         // When
@@ -193,11 +222,19 @@ class JsonCompactFormatterTest {
     @DisplayName("should handle messages without optional fields")
     void shouldHandleMessagesWithoutOptionalFields() throws IOException {
         // Given
-        ValidationResult result = ValidationResult.builder().startTime(System.currentTimeMillis() - 50)
-                .addMessages(Arrays.asList(ValidationMessage.builder().severity(Severity.ERROR).ruleId("basic.error")
-                        .location(SourceLocation.builder().filename("test.adoc").startLine(1).build())
-                        .message("Basic error").build()))
-                .complete().build();
+        ValidationResult result = ValidationResult
+                .builder()
+                .startTime(System.currentTimeMillis() - 50)
+                .addMessages(Arrays
+                        .asList(ValidationMessage
+                                .builder()
+                                .severity(Severity.ERROR)
+                                .ruleId("basic.error")
+                                .location(SourceLocation.builder().filename("test.adoc").startLine(1).build())
+                                .message("Basic error")
+                                .build()))
+                .complete()
+                .build();
 
         // When
         formatter.format(result, printWriter);
@@ -225,11 +262,23 @@ class JsonCompactFormatterTest {
     @DisplayName("should escape special characters properly")
     void shouldEscapeSpecialCharactersProperly() throws IOException {
         // Given
-        ValidationResult result = ValidationResult.builder().startTime(System.currentTimeMillis() - 100)
-                .addMessages(Arrays.asList(ValidationMessage.builder().severity(Severity.ERROR).ruleId("test.escape")
-                        .location(SourceLocation.builder().filename("test/with\"quotes\".adoc").startLine(1).build())
-                        .message("Message with \"quotes\" and backslash\\").build()))
-                .complete().build();
+        ValidationResult result = ValidationResult
+                .builder()
+                .startTime(System.currentTimeMillis() - 100)
+                .addMessages(Arrays
+                        .asList(ValidationMessage
+                                .builder()
+                                .severity(Severity.ERROR)
+                                .ruleId("test.escape")
+                                .location(SourceLocation
+                                        .builder()
+                                        .filename("test/with\"quotes\".adoc")
+                                        .startLine(1)
+                                        .build())
+                                .message("Message with \"quotes\" and backslash\\")
+                                .build()))
+                .complete()
+                .build();
 
         // When
         formatter.format(result, printWriter);

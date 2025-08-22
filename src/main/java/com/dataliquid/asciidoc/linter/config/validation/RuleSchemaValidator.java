@@ -47,11 +47,15 @@ public class RuleSchemaValidator {
             String baseClasspathUrl = getClass().getResource("/schemas/").toString();
 
             // Configure JsonSchemaFactory for JSON Schema 2020-12 with schema mappings
-            JsonSchemaFactory factory = JsonSchemaFactory.builder()
-                    .defaultMetaSchemaIri(JsonMetaSchema.getV202012().getIri()).schemaMappers(schemaMappers -> {
+            JsonSchemaFactory factory = JsonSchemaFactory
+                    .builder()
+                    .defaultMetaSchemaIri(JsonMetaSchema.getV202012().getIri())
+                    .schemaMappers(schemaMappers -> {
                         // Map HTTPS references to actual classpath URLs
                         schemaMappers.mapPrefix("https://dataliquid.com/asciidoc/linter/schemas/", baseClasspathUrl);
-                    }).metaSchema(JsonMetaSchema.getV202012()).build();
+                    })
+                    .metaSchema(JsonMetaSchema.getV202012())
+                    .build();
 
             // Configure validators
             SchemaValidatorsConfig config = SchemaValidatorsConfig.builder().pathType(PathType.JSON_POINTER).build();
@@ -68,10 +72,9 @@ public class RuleSchemaValidator {
     /**
      * Validates a user configuration file against the schema.
      *
-     * @param userConfigFile
-     *            the user's configuration file
-     * @throws RuleValidationException
-     *             if validation fails
+     * @param  userConfigFile          the user's configuration file
+     *
+     * @throws RuleValidationException if validation fails
      */
     public void validateUserConfig(Path userConfigFile) throws RuleValidationException {
         if (!Files.exists(userConfigFile)) {
@@ -89,10 +92,9 @@ public class RuleSchemaValidator {
     /**
      * Validates a user configuration JsonNode against the schema.
      *
-     * @param userConfigNode
-     *            the configuration as JsonNode
-     * @throws RuleValidationException
-     *             if validation fails
+     * @param  userConfigNode          the configuration as JsonNode
+     *
+     * @throws RuleValidationException if validation fails
      */
     public void validateUserConfig(JsonNode userConfigNode) throws RuleValidationException {
         Set<ValidationMessage> messages = schema.validate(userConfigNode);
@@ -105,10 +107,9 @@ public class RuleSchemaValidator {
     /**
      * Validates a user configuration from an InputStream.
      *
-     * @param yamlStream
-     *            the YAML configuration stream
-     * @throws RuleValidationException
-     *             if validation fails
+     * @param  yamlStream              the YAML configuration stream
+     *
+     * @throws RuleValidationException if validation fails
      */
     public void validateUserConfig(InputStream yamlStream) throws RuleValidationException {
         try {
@@ -122,10 +123,9 @@ public class RuleSchemaValidator {
     /**
      * Validates a user configuration from a YAML string.
      *
-     * @param yamlContent
-     *            the YAML configuration as string
-     * @throws RuleValidationException
-     *             if validation fails
+     * @param  yamlContent             the YAML configuration as string
+     *
+     * @throws RuleValidationException if validation fails
      */
     public void validateYamlString(String yamlContent) throws RuleValidationException {
         try {

@@ -63,8 +63,8 @@ class VideoBlockValidatorTest {
     @DisplayName("should return empty list for non-VideoBlock config")
     void shouldReturnEmptyListForNonVideoBlockConfig() {
         // When
-        var messages = validator.validate(node, ParagraphBlock.builder().name("test").severity(Severity.WARN).build(),
-                context);
+        var messages = validator
+                .validate(node, ParagraphBlock.builder().name("test").severity(Severity.WARN).build(), context);
 
         // Then
         assertTrue(messages.isEmpty());
@@ -77,8 +77,12 @@ class VideoBlockValidatorTest {
         @Test
         @DisplayName("should report error when required URL is missing")
         void shouldReportErrorWhenRequiredUrlMissing() {
-            VideoBlock config = VideoBlock.builder().name("test").severity(Severity.WARN)
-                    .url(VideoBlock.UrlConfig.builder().required(true).severity(Severity.ERROR).build()).build();
+            VideoBlock config = VideoBlock
+                    .builder()
+                    .name("test")
+                    .severity(Severity.WARN)
+                    .url(VideoBlock.UrlConfig.builder().required(true).severity(Severity.ERROR).build())
+                    .build();
 
             when(node.getAttribute("target")).thenReturn(null);
 
@@ -96,8 +100,12 @@ class VideoBlockValidatorTest {
         @Test
         @DisplayName("should report error when URL doesn't match pattern")
         void shouldReportErrorWhenUrlDoesntMatchPattern() {
-            VideoBlock config = VideoBlock.builder().name("test").severity(Severity.WARN)
-                    .url(VideoBlock.UrlConfig.builder().pattern("^https?://.*\\.(mp4|webm)$").build()).build();
+            VideoBlock config = VideoBlock
+                    .builder()
+                    .name("test")
+                    .severity(Severity.WARN)
+                    .url(VideoBlock.UrlConfig.builder().pattern("^https?://.*\\.(mp4|webm)$").build())
+                    .build();
 
             when(node.getAttribute("target")).thenReturn("https://dataliquid.com/video.avi");
 
@@ -116,8 +124,12 @@ class VideoBlockValidatorTest {
         @Test
         @DisplayName("should use nested severity when available")
         void shouldUseNestedSeverityWhenAvailable() {
-            VideoBlock config = VideoBlock.builder().name("test").severity(Severity.WARN)
-                    .url(VideoBlock.UrlConfig.builder().required(true).severity(Severity.INFO).build()).build();
+            VideoBlock config = VideoBlock
+                    .builder()
+                    .name("test")
+                    .severity(Severity.WARN)
+                    .url(VideoBlock.UrlConfig.builder().required(true).severity(Severity.INFO).build())
+                    .build();
 
             when(node.getAttribute("target")).thenReturn(null);
 
@@ -135,8 +147,12 @@ class VideoBlockValidatorTest {
         @Test
         @DisplayName("should report error when width is below minimum")
         void shouldReportErrorWhenWidthBelowMinimum() {
-            VideoBlock config = VideoBlock.builder().name("test").severity(Severity.WARN)
-                    .width(VideoBlock.DimensionConfig.builder().minValue(320).maxValue(1920).build()).build();
+            VideoBlock config = VideoBlock
+                    .builder()
+                    .name("test")
+                    .severity(Severity.WARN)
+                    .width(VideoBlock.DimensionConfig.builder().minValue(320).maxValue(1920).build())
+                    .build();
 
             when(node.getAttribute("width")).thenReturn("200");
 
@@ -154,7 +170,10 @@ class VideoBlockValidatorTest {
         @Test
         @DisplayName("should report error when height exceeds maximum")
         void shouldReportErrorWhenHeightExceedsMaximum() {
-            VideoBlock config = VideoBlock.builder().name("test").severity(Severity.ERROR)
+            VideoBlock config = VideoBlock
+                    .builder()
+                    .name("test")
+                    .severity(Severity.ERROR)
                     .height(VideoBlock.DimensionConfig.builder().maxValue(1080).severity(Severity.INFO).build())
                     .build();
 
@@ -175,8 +194,12 @@ class VideoBlockValidatorTest {
         @Test
         @DisplayName("should report error for invalid dimension value")
         void shouldReportErrorForInvalidDimensionValue() {
-            VideoBlock config = VideoBlock.builder().name("test").severity(Severity.ERROR)
-                    .width(VideoBlock.DimensionConfig.builder().minValue(320).build()).build();
+            VideoBlock config = VideoBlock
+                    .builder()
+                    .name("test")
+                    .severity(Severity.ERROR)
+                    .width(VideoBlock.DimensionConfig.builder().minValue(320).build())
+                    .build();
 
             when(node.getAttribute("width")).thenReturn("invalid");
 
@@ -199,8 +222,12 @@ class VideoBlockValidatorTest {
         @Test
         @DisplayName("should report error when poster doesn't match pattern")
         void shouldReportErrorWhenPosterDoesntMatchPattern() {
-            VideoBlock config = VideoBlock.builder().name("test").severity(Severity.WARN)
-                    .poster(VideoBlock.PosterConfig.builder().pattern(".*\\.(jpg|jpeg|png)$").build()).build();
+            VideoBlock config = VideoBlock
+                    .builder()
+                    .name("test")
+                    .severity(Severity.WARN)
+                    .poster(VideoBlock.PosterConfig.builder().pattern(".*\\.(jpg|jpeg|png)$").build())
+                    .build();
 
             when(node.getAttribute("poster")).thenReturn("poster.gif");
 
@@ -223,8 +250,12 @@ class VideoBlockValidatorTest {
         @Test
         @DisplayName("should report error when controls are required but not enabled")
         void shouldReportErrorWhenControlsRequiredButNotEnabled() {
-            VideoBlock config = VideoBlock.builder().name("test").severity(Severity.WARN)
-                    .options(VideoBlock.OptionsConfig.builder()
+            VideoBlock config = VideoBlock
+                    .builder()
+                    .name("test")
+                    .severity(Severity.WARN)
+                    .options(VideoBlock.OptionsConfig
+                            .builder()
                             .controls(
                                     VideoBlock.ControlsConfig.builder().required(true).severity(Severity.ERROR).build())
                             .build())
@@ -248,9 +279,14 @@ class VideoBlockValidatorTest {
         @Test
         @DisplayName("should pass when controls are enabled")
         void shouldPassWhenControlsAreEnabled() {
-            VideoBlock config = VideoBlock.builder().name("test").severity(Severity.WARN)
-                    .options(VideoBlock.OptionsConfig.builder()
-                            .controls(VideoBlock.ControlsConfig.builder().required(true).build()).build())
+            VideoBlock config = VideoBlock
+                    .builder()
+                    .name("test")
+                    .severity(Severity.WARN)
+                    .options(VideoBlock.OptionsConfig
+                            .builder()
+                            .controls(VideoBlock.ControlsConfig.builder().required(true).build())
+                            .build())
                     .build();
 
             when(node.getAttribute("options")).thenReturn("controls,loop");
@@ -268,8 +304,12 @@ class VideoBlockValidatorTest {
         @Test
         @DisplayName("should report error when caption is too short")
         void shouldReportErrorWhenCaptionTooShort() {
-            VideoBlock config = VideoBlock.builder().name("test").severity(Severity.WARN)
-                    .caption(VideoBlock.CaptionConfig.builder().minLength(15).severity(Severity.WARN).build()).build();
+            VideoBlock config = VideoBlock
+                    .builder()
+                    .name("test")
+                    .severity(Severity.WARN)
+                    .caption(VideoBlock.CaptionConfig.builder().minLength(15).severity(Severity.WARN).build())
+                    .build();
 
             when(node.getAttribute("caption")).thenReturn("Short");
 
@@ -288,8 +328,12 @@ class VideoBlockValidatorTest {
         @Test
         @DisplayName("should report error when caption is too long")
         void shouldReportErrorWhenCaptionTooLong() {
-            VideoBlock config = VideoBlock.builder().name("test").severity(Severity.WARN)
-                    .caption(VideoBlock.CaptionConfig.builder().maxLength(50).build()).build();
+            VideoBlock config = VideoBlock
+                    .builder()
+                    .name("test")
+                    .severity(Severity.WARN)
+                    .caption(VideoBlock.CaptionConfig.builder().maxLength(50).build())
+                    .build();
 
             String longCaption = "This is a very long caption that definitely exceeds the maximum allowed length";
             when(node.getAttribute("caption")).thenReturn(longCaption);
@@ -308,8 +352,12 @@ class VideoBlockValidatorTest {
         @Test
         @DisplayName("should use title when caption attribute is null")
         void shouldUseTitleWhenCaptionAttributeIsNull() {
-            VideoBlock config = VideoBlock.builder().name("test").severity(Severity.WARN)
-                    .caption(VideoBlock.CaptionConfig.builder().required(true).build()).build();
+            VideoBlock config = VideoBlock
+                    .builder()
+                    .name("test")
+                    .severity(Severity.WARN)
+                    .caption(VideoBlock.CaptionConfig.builder().required(true).build())
+                    .build();
 
             when(node.getAttribute("caption")).thenReturn(null);
             when(node.getTitle()).thenReturn("Video Title");
@@ -327,10 +375,14 @@ class VideoBlockValidatorTest {
         @Test
         @DisplayName("should validate all configured rules")
         void shouldValidateAllConfiguredRules() {
-            VideoBlock config = VideoBlock.builder().name("test").severity(Severity.WARN)
+            VideoBlock config = VideoBlock
+                    .builder()
+                    .name("test")
+                    .severity(Severity.WARN)
                     .url(VideoBlock.UrlConfig.builder().required(true).pattern("^https://.*\\.(mp4|webm)$").build())
                     .width(VideoBlock.DimensionConfig.builder().minValue(320).maxValue(1920).build())
-                    .caption(VideoBlock.CaptionConfig.builder().required(true).minLength(10).build()).build();
+                    .caption(VideoBlock.CaptionConfig.builder().required(true).minLength(10).build())
+                    .build();
 
             // Invalid URL
             when(node.getAttribute("target")).thenReturn("http://example.com/video.avi");

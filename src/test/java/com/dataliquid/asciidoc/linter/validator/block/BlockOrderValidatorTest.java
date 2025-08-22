@@ -84,8 +84,11 @@ class BlockOrderValidatorTest {
         @DisplayName("should validate correct fixed order")
         void shouldValidateCorrectFixedOrder() {
             // Given
-            OrderConfig orderConfig = OrderConfig.builder().fixedOrder(Arrays.asList("intro", "content", "summary"))
-                    .severity(Severity.ERROR).build();
+            OrderConfig orderConfig = OrderConfig
+                    .builder()
+                    .fixedOrder(Arrays.asList("intro", "content", "summary"))
+                    .severity(Severity.ERROR)
+                    .build();
 
             // Add blocks in correct order
             ParagraphBlock introBlock = ParagraphBlock.builder().name("intro").severity(Severity.ERROR).build();
@@ -111,8 +114,11 @@ class BlockOrderValidatorTest {
         @DisplayName("should validate incorrect fixed order")
         void shouldValidateIncorrectFixedOrder() {
             // Given
-            OrderConfig orderConfig = OrderConfig.builder().fixedOrder(Arrays.asList("intro", "content", "summary"))
-                    .severity(Severity.ERROR).build();
+            OrderConfig orderConfig = OrderConfig
+                    .builder()
+                    .fixedOrder(Arrays.asList("intro", "content", "summary"))
+                    .severity(Severity.ERROR)
+                    .build();
 
             // Add blocks in wrong order (content before intro)
             ParagraphBlock introBlock = ParagraphBlock.builder().name("intro").severity(Severity.ERROR).build();
@@ -141,8 +147,11 @@ class BlockOrderValidatorTest {
         @DisplayName("should handle partial fixed order")
         void shouldHandlePartialFixedOrder() {
             // Given
-            OrderConfig orderConfig = OrderConfig.builder().fixedOrder(Arrays.asList("header", "content"))
-                    .severity(Severity.WARN).build();
+            OrderConfig orderConfig = OrderConfig
+                    .builder()
+                    .fixedOrder(Arrays.asList("header", "content"))
+                    .severity(Severity.WARN)
+                    .build();
 
             // Add blocks including some not in fixed order
             ParagraphBlock headerBlock = ParagraphBlock.builder().name("header").severity(Severity.ERROR).build();
@@ -173,14 +182,20 @@ class BlockOrderValidatorTest {
         @DisplayName("should validate satisfied before constraint")
         void shouldValidateSatisfiedBeforeConstraint() {
             // Given
-            OrderConfig.OrderConstraint constraint = OrderConfig.OrderConstraint.of("introduction", "conclusion",
-                    Severity.ERROR);
-            OrderConfig orderConfig = OrderConfig.builder().before(Arrays.asList(constraint)).severity(Severity.ERROR)
+            OrderConfig.OrderConstraint constraint = OrderConfig.OrderConstraint
+                    .of("introduction", "conclusion", Severity.ERROR);
+            OrderConfig orderConfig = OrderConfig
+                    .builder()
+                    .before(Arrays.asList(constraint))
+                    .severity(Severity.ERROR)
                     .build();
 
             // Add blocks in correct order
             ParagraphBlock introBlock = ParagraphBlock.builder().name("introduction").severity(Severity.ERROR).build();
-            ParagraphBlock conclusionBlock = ParagraphBlock.builder().name("conclusion").severity(Severity.ERROR)
+            ParagraphBlock conclusionBlock = ParagraphBlock
+                    .builder()
+                    .name("conclusion")
+                    .severity(Severity.ERROR)
                     .build();
 
             StructuralNode node1 = mock(StructuralNode.class);
@@ -200,14 +215,20 @@ class BlockOrderValidatorTest {
         @DisplayName("should validate violated before constraint")
         void shouldValidateViolatedBeforeConstraint() {
             // Given
-            OrderConfig.OrderConstraint constraint = OrderConfig.OrderConstraint.of("introduction", "conclusion",
-                    Severity.ERROR);
-            OrderConfig orderConfig = OrderConfig.builder().before(Arrays.asList(constraint)).severity(Severity.ERROR)
+            OrderConfig.OrderConstraint constraint = OrderConfig.OrderConstraint
+                    .of("introduction", "conclusion", Severity.ERROR);
+            OrderConfig orderConfig = OrderConfig
+                    .builder()
+                    .before(Arrays.asList(constraint))
+                    .severity(Severity.ERROR)
                     .build();
 
             // Add blocks in wrong order
             ParagraphBlock introBlock = ParagraphBlock.builder().name("introduction").severity(Severity.ERROR).build();
-            ParagraphBlock conclusionBlock = ParagraphBlock.builder().name("conclusion").severity(Severity.ERROR)
+            ParagraphBlock conclusionBlock = ParagraphBlock
+                    .builder()
+                    .name("conclusion")
+                    .severity(Severity.ERROR)
                     .build();
 
             StructuralNode node1 = mock(StructuralNode.class);
@@ -233,9 +254,12 @@ class BlockOrderValidatorTest {
         @DisplayName("should handle missing blocks in before constraint")
         void shouldHandleMissingBlocksInBeforeConstraint() {
             // Given
-            OrderConfig.OrderConstraint constraint = OrderConfig.OrderConstraint.of("introduction", "conclusion",
-                    Severity.WARN);
-            OrderConfig orderConfig = OrderConfig.builder().before(Arrays.asList(constraint)).severity(Severity.ERROR)
+            OrderConfig.OrderConstraint constraint = OrderConfig.OrderConstraint
+                    .of("introduction", "conclusion", Severity.WARN);
+            OrderConfig orderConfig = OrderConfig
+                    .builder()
+                    .before(Arrays.asList(constraint))
+                    .severity(Severity.ERROR)
                     .build();
 
             // Add only one of the blocks
@@ -260,9 +284,12 @@ class BlockOrderValidatorTest {
         @DisplayName("should validate satisfied after constraint")
         void shouldValidateSatisfiedAfterConstraint() {
             // Given
-            OrderConfig.OrderConstraint constraint = OrderConfig.OrderConstraint.of("summary", "header",
-                    Severity.ERROR);
-            OrderConfig orderConfig = OrderConfig.builder().after(Arrays.asList(constraint)).severity(Severity.ERROR)
+            OrderConfig.OrderConstraint constraint = OrderConfig.OrderConstraint
+                    .of("summary", "header", Severity.ERROR);
+            OrderConfig orderConfig = OrderConfig
+                    .builder()
+                    .after(Arrays.asList(constraint))
+                    .severity(Severity.ERROR)
                     .build();
 
             // Add blocks in correct order (summary after header)
@@ -287,7 +314,10 @@ class BlockOrderValidatorTest {
         void shouldValidateViolatedAfterConstraint() {
             // Given
             OrderConfig.OrderConstraint constraint = OrderConfig.OrderConstraint.of("summary", "header", Severity.INFO);
-            OrderConfig orderConfig = OrderConfig.builder().after(Arrays.asList(constraint)).severity(Severity.ERROR)
+            OrderConfig orderConfig = OrderConfig
+                    .builder()
+                    .after(Arrays.asList(constraint))
+                    .severity(Severity.ERROR)
                     .build();
 
             // Add blocks in wrong order (summary before header)
@@ -320,13 +350,17 @@ class BlockOrderValidatorTest {
         @DisplayName("should validate multiple constraints together")
         void shouldValidateMultipleConstraintsTogether() {
             // Given
-            OrderConfig.OrderConstraint beforeConstraint = OrderConfig.OrderConstraint.of("header", "footer",
-                    Severity.ERROR);
-            OrderConfig.OrderConstraint afterConstraint = OrderConfig.OrderConstraint.of("content", "header",
-                    Severity.WARN);
-            OrderConfig orderConfig = OrderConfig.builder().fixedOrder(Arrays.asList("header", "content"))
-                    .before(Arrays.asList(beforeConstraint)).after(Arrays.asList(afterConstraint))
-                    .severity(Severity.ERROR).build();
+            OrderConfig.OrderConstraint beforeConstraint = OrderConfig.OrderConstraint
+                    .of("header", "footer", Severity.ERROR);
+            OrderConfig.OrderConstraint afterConstraint = OrderConfig.OrderConstraint
+                    .of("content", "header", Severity.WARN);
+            OrderConfig orderConfig = OrderConfig
+                    .builder()
+                    .fixedOrder(Arrays.asList("header", "content"))
+                    .before(Arrays.asList(beforeConstraint))
+                    .after(Arrays.asList(afterConstraint))
+                    .severity(Severity.ERROR)
+                    .build();
 
             // Add blocks violating multiple constraints
             ParagraphBlock headerBlock = ParagraphBlock.builder().name("header").severity(Severity.ERROR).build();
@@ -355,9 +389,12 @@ class BlockOrderValidatorTest {
         @DisplayName("should use block type when name is not available")
         void shouldUseBlockTypeWhenNameIsNotAvailable() {
             // Given
-            OrderConfig.OrderConstraint constraint = OrderConfig.OrderConstraint.of("paragraph", "table",
-                    Severity.ERROR);
-            OrderConfig orderConfig = OrderConfig.builder().before(Arrays.asList(constraint)).severity(Severity.ERROR)
+            OrderConfig.OrderConstraint constraint = OrderConfig.OrderConstraint
+                    .of("paragraph", "table", Severity.ERROR);
+            OrderConfig orderConfig = OrderConfig
+                    .builder()
+                    .before(Arrays.asList(constraint))
+                    .severity(Severity.ERROR)
                     .build();
 
             // Add blocks without names (uses type)

@@ -129,8 +129,9 @@ public final class AudioBlock extends AbstractBlock {
             if (!(o instanceof UrlConfig that))
                 return false;
             return required == that.required
-                    && Objects.equals(pattern == null ? null : pattern.pattern(),
-                            that.pattern == null ? null : that.pattern.pattern())
+                    && Objects
+                            .equals(pattern == null ? null : pattern.pattern(),
+                                    that.pattern == null ? null : that.pattern.pattern())
                     && Objects.equals(severity, that.severity);
         }
 

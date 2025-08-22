@@ -23,27 +23,26 @@ import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
 
 /**
  * Unit tests for {@link AudioBlockValidator}.
- *
  * <p>
- * This test class validates the behavior of the audio block validator, which processes audio elements in AsciiDoc
- * documents. The tests cover validation rules for audio URLs, playback options, and titles.
+ * This test class validates the behavior of the audio block validator, which
+ * processes audio elements in AsciiDoc documents. The tests cover validation
+ * rules for audio URLs, playback options, and titles.
  * </p>
- *
  * <p>
  * Test structure follows a nested class pattern for better organization:
  * </p>
  * <ul>
  * <li>Validate - Basic validator functionality and type checking</li>
- * <li>UrlValidation - URL requirements and pattern matching with severity support</li>
+ * <li>UrlValidation - URL requirements and pattern matching with severity
+ * support</li>
  * <li>OptionsValidation - Autoplay, controls, and loop option constraints</li>
  * <li>TitleValidation - Title requirements and length constraints</li>
  * <li>SeverityHierarchy - Nested severity support for all configurations</li>
  * <li>ComplexScenarios - Combined validation scenarios</li>
  * </ul>
- *
  * <p>
- * Note: AudioBlock supports individual severity levels for all nested rules. If not specified, they fall back to the
- * block-level severity.
+ * Note: AudioBlock supports individual severity levels for all nested rules. If
+ * not specified, they fall back to the block-level severity.
  * </p>
  *
  * @see AudioBlockValidator
@@ -162,7 +161,10 @@ class AudioBlockValidatorTest {
         @DisplayName("should use URL-specific severity when configured")
         void shouldUseUrlSpecificSeverity() {
             // Given
-            AudioBlock.UrlConfig urlConfig = AudioBlock.UrlConfig.builder().required(true).severity(Severity.ERROR)
+            AudioBlock.UrlConfig urlConfig = AudioBlock.UrlConfig
+                    .builder()
+                    .required(true)
+                    .severity(Severity.ERROR)
                     .build();
 
             AudioBlock config = AudioBlock.builder().severity(Severity.INFO).url(urlConfig).build();
@@ -186,10 +188,15 @@ class AudioBlockValidatorTest {
         @DisplayName("should validate autoplay not allowed")
         void shouldValidateAutoplayNotAllowed() {
             // Given
-            AudioBlock.AutoplayConfig autoplayConfig = AudioBlock.AutoplayConfig.builder().allowed(false)
-                    .severity(Severity.ERROR).build();
+            AudioBlock.AutoplayConfig autoplayConfig = AudioBlock.AutoplayConfig
+                    .builder()
+                    .allowed(false)
+                    .severity(Severity.ERROR)
+                    .build();
 
-            AudioBlock.OptionsConfig optionsConfig = AudioBlock.OptionsConfig.builder().autoplay(autoplayConfig)
+            AudioBlock.OptionsConfig optionsConfig = AudioBlock.OptionsConfig
+                    .builder()
+                    .autoplay(autoplayConfig)
                     .build();
 
             AudioBlock config = AudioBlock.builder().severity(Severity.INFO).options(optionsConfig).build();
@@ -213,7 +220,9 @@ class AudioBlockValidatorTest {
             // Given
             AudioBlock.ControlsConfig controlsConfig = AudioBlock.ControlsConfig.builder().required(true).build();
 
-            AudioBlock.OptionsConfig optionsConfig = AudioBlock.OptionsConfig.builder().controls(controlsConfig)
+            AudioBlock.OptionsConfig optionsConfig = AudioBlock.OptionsConfig
+                    .builder()
+                    .controls(controlsConfig)
                     .build();
 
             AudioBlock config = AudioBlock.builder().severity(Severity.WARN).options(optionsConfig).build();
@@ -235,7 +244,10 @@ class AudioBlockValidatorTest {
         @DisplayName("should validate loop allowed")
         void shouldValidateLoopAllowed() {
             // Given
-            AudioBlock.LoopConfig loopConfig = AudioBlock.LoopConfig.builder().allowed(true).severity(Severity.INFO)
+            AudioBlock.LoopConfig loopConfig = AudioBlock.LoopConfig
+                    .builder()
+                    .allowed(true)
+                    .severity(Severity.INFO)
                     .build();
 
             AudioBlock.OptionsConfig optionsConfig = AudioBlock.OptionsConfig.builder().loop(loopConfig).build();
@@ -260,7 +272,10 @@ class AudioBlockValidatorTest {
         @DisplayName("should validate required title")
         void shouldValidateRequiredTitle() {
             // Given
-            AudioBlock.TitleConfig titleConfig = AudioBlock.TitleConfig.builder().required(true).severity(Severity.WARN)
+            AudioBlock.TitleConfig titleConfig = AudioBlock.TitleConfig
+                    .builder()
+                    .required(true)
+                    .severity(Severity.WARN)
                     .build();
 
             AudioBlock config = AudioBlock.builder().severity(Severity.ERROR).title(titleConfig).build();
@@ -283,8 +298,12 @@ class AudioBlockValidatorTest {
         @DisplayName("should validate title length constraints")
         void shouldValidateTitleLengthConstraints() {
             // Given
-            AudioBlock.TitleConfig titleConfig = AudioBlock.TitleConfig.builder().required(true).minLength(10)
-                    .maxLength(100).build();
+            AudioBlock.TitleConfig titleConfig = AudioBlock.TitleConfig
+                    .builder()
+                    .required(true)
+                    .minLength(10)
+                    .maxLength(100)
+                    .build();
 
             AudioBlock config = AudioBlock.builder().severity(Severity.INFO).title(titleConfig).build();
 
@@ -330,8 +349,11 @@ class AudioBlockValidatorTest {
         @DisplayName("should prefer nested severity over block severity")
         void shouldPreferNestedSeverityOverBlockSeverity() {
             // Given
-            AudioBlock.TitleConfig titleConfig = AudioBlock.TitleConfig.builder().required(true)
-                    .severity(Severity.ERROR).build();
+            AudioBlock.TitleConfig titleConfig = AudioBlock.TitleConfig
+                    .builder()
+                    .required(true)
+                    .severity(Severity.ERROR)
+                    .build();
 
             AudioBlock config = AudioBlock.builder().severity(Severity.INFO).title(titleConfig).build();
 
@@ -354,16 +376,27 @@ class AudioBlockValidatorTest {
         @DisplayName("should validate all configured rules")
         void shouldValidateAllConfiguredRules() {
             // Given
-            AudioBlock config = AudioBlock.builder().severity(Severity.INFO)
-                    .url(AudioBlock.UrlConfig.builder().required(true).pattern("^https?://.*\\.mp3$")
-                            .severity(Severity.ERROR).build())
-                    .options(AudioBlock.OptionsConfig.builder()
+            AudioBlock config = AudioBlock
+                    .builder()
+                    .severity(Severity.INFO)
+                    .url(AudioBlock.UrlConfig
+                            .builder()
+                            .required(true)
+                            .pattern("^https?://.*\\.mp3$")
+                            .severity(Severity.ERROR)
+                            .build())
+                    .options(AudioBlock.OptionsConfig
+                            .builder()
                             .autoplay(
                                     AudioBlock.AutoplayConfig.builder().allowed(false).severity(Severity.ERROR).build())
                             .controls(
                                     AudioBlock.ControlsConfig.builder().required(true).severity(Severity.ERROR).build())
                             .build())
-                    .title(AudioBlock.TitleConfig.builder().required(true).minLength(10).severity(Severity.WARN)
+                    .title(AudioBlock.TitleConfig
+                            .builder()
+                            .required(true)
+                            .minLength(10)
+                            .severity(Severity.WARN)
                             .build())
                     .build();
 
@@ -378,20 +411,28 @@ class AudioBlockValidatorTest {
             assertEquals(4, messages.size());
 
             // URL pattern validation
-            assertTrue(messages.stream().anyMatch(
-                    m -> "audio.url.pattern".equals(m.getRuleId()) && Severity.ERROR.equals(m.getSeverity())));
+            assertTrue(messages
+                    .stream()
+                    .anyMatch(
+                            m -> "audio.url.pattern".equals(m.getRuleId()) && Severity.ERROR.equals(m.getSeverity())));
 
             // Autoplay not allowed
-            assertTrue(messages.stream().anyMatch(m -> "audio.options.autoplay.notAllowed".equals(m.getRuleId())
-                    && Severity.ERROR.equals(m.getSeverity())));
+            assertTrue(messages
+                    .stream()
+                    .anyMatch(m -> "audio.options.autoplay.notAllowed".equals(m.getRuleId())
+                            && Severity.ERROR.equals(m.getSeverity())));
 
             // Controls required
-            assertTrue(messages.stream().anyMatch(m -> "audio.options.controls.required".equals(m.getRuleId())
-                    && Severity.ERROR.equals(m.getSeverity())));
+            assertTrue(messages
+                    .stream()
+                    .anyMatch(m -> "audio.options.controls.required".equals(m.getRuleId())
+                            && Severity.ERROR.equals(m.getSeverity())));
 
             // Title too short
-            assertTrue(messages.stream().anyMatch(
-                    m -> "audio.title.minLength".equals(m.getRuleId()) && Severity.WARN.equals(m.getSeverity())));
+            assertTrue(messages
+                    .stream()
+                    .anyMatch(m -> "audio.title.minLength".equals(m.getRuleId())
+                            && Severity.WARN.equals(m.getSeverity())));
         }
     }
 }

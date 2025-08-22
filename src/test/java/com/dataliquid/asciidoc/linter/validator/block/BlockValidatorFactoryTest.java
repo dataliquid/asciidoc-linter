@@ -140,8 +140,8 @@ class BlockValidatorFactoryTest {
         @DisplayName("should return true for supported types")
         void shouldReturnTrueForSupportedTypes() {
             // Given
-            BlockType[] supportedTypes = {BlockType.PARAGRAPH, BlockType.TABLE, BlockType.IMAGE, BlockType.LISTING,
-                    BlockType.VERSE};
+            BlockType[] supportedTypes = { BlockType.PARAGRAPH, BlockType.TABLE, BlockType.IMAGE, BlockType.LISTING,
+                    BlockType.VERSE };
 
             // When/Then
             for (BlockType type : supportedTypes) {

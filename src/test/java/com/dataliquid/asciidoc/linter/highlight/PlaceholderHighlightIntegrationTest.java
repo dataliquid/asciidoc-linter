@@ -28,8 +28,8 @@ import com.dataliquid.asciidoc.linter.report.ConsoleFormatter;
 import com.dataliquid.asciidoc.linter.validator.ValidationResult;
 
 /**
- * Integration test for placeholder highlighting in console output. Tests the enhanced error display with placeholders
- * for missing values.
+ * Integration test for placeholder highlighting in console output. Tests the
+ * enhanced error display with placeholders for missing values.
  */
 @DisplayName("Placeholder Highlight Integration Test")
 class PlaceholderHighlightIntegrationTest {
@@ -63,16 +63,27 @@ class PlaceholderHighlightIntegrationTest {
      * Creates output configuration with specified context lines.
      */
     private OutputConfiguration createDefaultOutputConfig(int contextLines) {
-        return OutputConfiguration.builder().format(OutputFormat.ENHANCED)
-                .display(DisplayConfig.builder().contextLines(contextLines).useColors(false) // No colors for easier
-                                                                                             // testing
-                        .showLineNumbers(true).showHeader(true) // Enable header to match expected output
-                        .highlightStyle(HighlightStyle.UNDERLINE).maxLineWidth(120).build())
-                .errorGrouping(ErrorGroupingConfig.builder().enabled(false) // Disable grouping for tests to show each
-                                                                            // error individually
+        return OutputConfiguration
+                .builder()
+                .format(OutputFormat.ENHANCED)
+                .display(DisplayConfig
+                        .builder()
+                        .contextLines(contextLines)
+                        .useColors(false) // No colors for easier
+                                          // testing
+                        .showLineNumbers(true)
+                        .showHeader(true) // Enable header to match expected output
+                        .highlightStyle(HighlightStyle.UNDERLINE)
+                        .maxLineWidth(120)
+                        .build())
+                .errorGrouping(ErrorGroupingConfig
+                        .builder()
+                        .enabled(false) // Disable grouping for tests to show each
+                                        // error individually
                         .build())
                 .suggestions(SuggestionsConfig.builder().enabled(false).build())
-                .summary(SummaryConfig.builder().enabled(false).build()).build();
+                .summary(SummaryConfig.builder().enabled(false).build())
+                .build();
     }
 
     /**
@@ -83,7 +94,8 @@ class PlaceholderHighlightIntegrationTest {
     }
 
     /**
-     * Validates content and returns the formatted console output with custom config.
+     * Validates content and returns the formatted console output with custom
+     * config.
      */
     private String validateAndFormat(String rules, String adocContent, Path tempDir, OutputConfiguration outputConfig)
             throws IOException {
@@ -139,8 +151,8 @@ class PlaceholderHighlightIntegrationTest {
 
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
-        String expectedOutput = String.format(
-                """
+        String expectedOutput = String
+                .format("""
                         +----------------------------------------------------------------------------------------------------------------------+
                         |                                                  Validation Report                                                   |
                         +----------------------------------------------------------------------------------------------------------------------+
@@ -161,12 +173,13 @@ class PlaceholderHighlightIntegrationTest {
 
 
                         """,
-                testFile.toString(), testFile.toString());
+                        testFile.toString(), testFile.toString());
 
         assertEquals(expectedOutput, actualOutput);
     }
 
-    // TODO: Check later - Asciidoctor doesn't recognize image::[] as an image block when URL is empty
+    // TODO: Check later - Asciidoctor doesn't recognize image::[] as an image block
+    // when URL is empty
     // @Test
     @DisplayName("should show placeholder for missing image URL")
     void shouldShowPlaceholderForMissingImageUrl(@TempDir Path tempDir) throws IOException {
@@ -195,8 +208,8 @@ class PlaceholderHighlightIntegrationTest {
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
 
-        String expectedOutput = String.format(
-                """
+        String expectedOutput = String
+                .format("""
                         +----------------------------------------------------------------------------------------------------------------------+
                         |                                                  Validation Report                                                   |
                         +----------------------------------------------------------------------------------------------------------------------+
@@ -212,7 +225,7 @@ class PlaceholderHighlightIntegrationTest {
 
 
                         """,
-                testFile.toString(), testFile.toString());
+                        testFile.toString(), testFile.toString());
 
         assertEquals(expectedOutput, actualOutput);
     }
@@ -244,8 +257,8 @@ class PlaceholderHighlightIntegrationTest {
 
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
-        String expectedOutput = String.format(
-                """
+        String expectedOutput = String
+                .format("""
                         +----------------------------------------------------------------------------------------------------------------------+
                         |                                                  Validation Report                                                   |
                         +----------------------------------------------------------------------------------------------------------------------+
@@ -263,7 +276,7 @@ class PlaceholderHighlightIntegrationTest {
 
 
                         """,
-                testFile.toString(), testFile.toString());
+                        testFile.toString(), testFile.toString());
 
         assertEquals(expectedOutput, actualOutput);
     }
@@ -295,8 +308,8 @@ class PlaceholderHighlightIntegrationTest {
 
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
-        String expectedOutput = String.format(
-                """
+        String expectedOutput = String
+                .format("""
                         +----------------------------------------------------------------------------------------------------------------------+
                         |                                                  Validation Report                                                   |
                         +----------------------------------------------------------------------------------------------------------------------+
@@ -314,7 +327,7 @@ class PlaceholderHighlightIntegrationTest {
 
 
                         """,
-                testFile.toString(), testFile.toString());
+                        testFile.toString(), testFile.toString());
 
         assertEquals(expectedOutput, actualOutput);
     }
@@ -346,8 +359,8 @@ class PlaceholderHighlightIntegrationTest {
 
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
-        String expectedOutput = String.format(
-                """
+        String expectedOutput = String
+                .format("""
                         +----------------------------------------------------------------------------------------------------------------------+
                         |                                                  Validation Report                                                   |
                         +----------------------------------------------------------------------------------------------------------------------+
@@ -365,7 +378,7 @@ class PlaceholderHighlightIntegrationTest {
 
 
                         """,
-                testFile.toString(), testFile.toString());
+                        testFile.toString(), testFile.toString());
 
         assertEquals(expectedOutput, actualOutput);
     }
@@ -399,8 +412,8 @@ class PlaceholderHighlightIntegrationTest {
 
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
-        String expectedOutput = String.format(
-                """
+        String expectedOutput = String
+                .format("""
                         +----------------------------------------------------------------------------------------------------------------------+
                         |                                                  Validation Report                                                   |
                         +----------------------------------------------------------------------------------------------------------------------+
@@ -418,7 +431,7 @@ class PlaceholderHighlightIntegrationTest {
 
 
                         """,
-                testFile.toString(), testFile.toString());
+                        testFile.toString(), testFile.toString());
 
         assertEquals(expectedOutput, actualOutput);
     }
@@ -452,8 +465,8 @@ class PlaceholderHighlightIntegrationTest {
 
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
-        String expectedOutput = String.format(
-                """
+        String expectedOutput = String
+                .format("""
                         +----------------------------------------------------------------------------------------------------------------------+
                         |                                                  Validation Report                                                   |
                         +----------------------------------------------------------------------------------------------------------------------+
@@ -471,7 +484,7 @@ class PlaceholderHighlightIntegrationTest {
 
 
                         """,
-                testFile.toString(), testFile.toString());
+                        testFile.toString(), testFile.toString());
 
         assertEquals(expectedOutput, actualOutput);
     }
@@ -505,8 +518,8 @@ class PlaceholderHighlightIntegrationTest {
 
         // Then - Verify exact console output with placeholder before punctuation
         Path testFile = tempDir.resolve("test.adoc");
-        String expectedOutput = String.format(
-                """
+        String expectedOutput = String
+                .format("""
                         +----------------------------------------------------------------------------------------------------------------------+
                         |                                                  Validation Report                                                   |
                         +----------------------------------------------------------------------------------------------------------------------+
@@ -524,7 +537,7 @@ class PlaceholderHighlightIntegrationTest {
 
 
                         """,
-                testFile.toString(), testFile.toString());
+                        testFile.toString(), testFile.toString());
 
         assertEquals(expectedOutput, actualOutput);
     }
@@ -558,8 +571,8 @@ class PlaceholderHighlightIntegrationTest {
 
         // Then - Verify exact console output with placeholder before question mark
         Path testFile = tempDir.resolve("test.adoc");
-        String expectedOutput = String.format(
-                """
+        String expectedOutput = String
+                .format("""
                         +----------------------------------------------------------------------------------------------------------------------+
                         |                                                  Validation Report                                                   |
                         +----------------------------------------------------------------------------------------------------------------------+
@@ -577,7 +590,7 @@ class PlaceholderHighlightIntegrationTest {
 
 
                         """,
-                testFile.toString(), testFile.toString());
+                        testFile.toString(), testFile.toString());
 
         assertEquals(expectedOutput, actualOutput);
     }
@@ -611,8 +624,8 @@ class PlaceholderHighlightIntegrationTest {
 
         // Then - Verify exact console output with placeholder before exclamation mark
         Path testFile = tempDir.resolve("test.adoc");
-        String expectedOutput = String.format(
-                """
+        String expectedOutput = String
+                .format("""
                         +----------------------------------------------------------------------------------------------------------------------+
                         |                                                  Validation Report                                                   |
                         +----------------------------------------------------------------------------------------------------------------------+
@@ -630,7 +643,7 @@ class PlaceholderHighlightIntegrationTest {
 
 
                         """,
-                testFile.toString(), testFile.toString());
+                        testFile.toString(), testFile.toString());
 
         assertEquals(expectedOutput, actualOutput);
     }
@@ -664,8 +677,8 @@ class PlaceholderHighlightIntegrationTest {
 
         // Then - Verify exact console output with placeholders for each short sentence
         Path testFile = tempDir.resolve("test.adoc");
-        String expectedOutput = String.format(
-                """
+        String expectedOutput = String
+                .format("""
                         +----------------------------------------------------------------------------------------------------------------------+
                         |                                                  Validation Report                                                   |
                         +----------------------------------------------------------------------------------------------------------------------+
@@ -692,7 +705,7 @@ class PlaceholderHighlightIntegrationTest {
 
 
                         """,
-                testFile.toString(), testFile.toString(), testFile.toString());
+                        testFile.toString(), testFile.toString(), testFile.toString());
 
         assertEquals(expectedOutput, actualOutput);
     }
@@ -725,8 +738,8 @@ class PlaceholderHighlightIntegrationTest {
 
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
-        String expectedOutput = String.format(
-                """
+        String expectedOutput = String
+                .format("""
                         +----------------------------------------------------------------------------------------------------------------------+
                         |                                                  Validation Report                                                   |
                         +----------------------------------------------------------------------------------------------------------------------+
@@ -745,7 +758,7 @@ class PlaceholderHighlightIntegrationTest {
 
 
                         """,
-                testFile.toString(), testFile.toString());
+                        testFile.toString(), testFile.toString());
 
         assertEquals(expectedOutput, actualOutput);
     }
@@ -779,8 +792,8 @@ class PlaceholderHighlightIntegrationTest {
 
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
-        String expectedOutput = String.format(
-                """
+        String expectedOutput = String
+                .format("""
                         +----------------------------------------------------------------------------------------------------------------------+
                         |                                                  Validation Report                                                   |
                         +----------------------------------------------------------------------------------------------------------------------+
@@ -800,7 +813,7 @@ class PlaceholderHighlightIntegrationTest {
 
 
                         """,
-                testFile.toString(), testFile.toString());
+                        testFile.toString(), testFile.toString());
 
         assertEquals(expectedOutput, actualOutput);
     }
@@ -833,8 +846,8 @@ class PlaceholderHighlightIntegrationTest {
 
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
-        String expectedOutput = String.format(
-                """
+        String expectedOutput = String
+                .format("""
                         +----------------------------------------------------------------------------------------------------------------------+
                         |                                                  Validation Report                                                   |
                         +----------------------------------------------------------------------------------------------------------------------+
@@ -854,7 +867,7 @@ class PlaceholderHighlightIntegrationTest {
 
 
                         """,
-                testFile.toString(), testFile.toString());
+                        testFile.toString(), testFile.toString());
 
         assertEquals(expectedOutput, actualOutput);
     }
@@ -886,8 +899,8 @@ class PlaceholderHighlightIntegrationTest {
 
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
-        String expectedOutput = String.format(
-                """
+        String expectedOutput = String
+                .format("""
                         +----------------------------------------------------------------------------------------------------------------------+
                         |                                                  Validation Report                                                   |
                         +----------------------------------------------------------------------------------------------------------------------+
@@ -903,7 +916,7 @@ class PlaceholderHighlightIntegrationTest {
 
 
                         """,
-                testFile.toString(), testFile.toString());
+                        testFile.toString(), testFile.toString());
 
         assertEquals(expectedOutput, actualOutput);
     }
@@ -935,8 +948,8 @@ class PlaceholderHighlightIntegrationTest {
 
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
-        String expectedOutput = String.format(
-                """
+        String expectedOutput = String
+                .format("""
                         +----------------------------------------------------------------------------------------------------------------------+
                         |                                                  Validation Report                                                   |
                         +----------------------------------------------------------------------------------------------------------------------+
@@ -952,7 +965,7 @@ class PlaceholderHighlightIntegrationTest {
 
 
                         """,
-                testFile.toString(), testFile.toString());
+                        testFile.toString(), testFile.toString());
 
         assertEquals(expectedOutput, actualOutput);
     }
@@ -984,8 +997,8 @@ class PlaceholderHighlightIntegrationTest {
 
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
-        String expectedOutput = String.format(
-                """
+        String expectedOutput = String
+                .format("""
                         +----------------------------------------------------------------------------------------------------------------------+
                         |                                                  Validation Report                                                   |
                         +----------------------------------------------------------------------------------------------------------------------+
@@ -1001,7 +1014,7 @@ class PlaceholderHighlightIntegrationTest {
 
 
                         """,
-                testFile.toString(), testFile.toString());
+                        testFile.toString(), testFile.toString());
 
         assertEquals(expectedOutput, actualOutput);
     }
@@ -1033,8 +1046,8 @@ class PlaceholderHighlightIntegrationTest {
 
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
-        String expectedOutput = String.format(
-                """
+        String expectedOutput = String
+                .format("""
                         +----------------------------------------------------------------------------------------------------------------------+
                         |                                                  Validation Report                                                   |
                         +----------------------------------------------------------------------------------------------------------------------+
@@ -1050,7 +1063,7 @@ class PlaceholderHighlightIntegrationTest {
 
 
                         """,
-                testFile.toString(), testFile.toString());
+                        testFile.toString(), testFile.toString());
 
         assertEquals(expectedOutput, actualOutput);
     }
@@ -1083,8 +1096,8 @@ class PlaceholderHighlightIntegrationTest {
 
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
-        String expectedOutput = String.format(
-                """
+        String expectedOutput = String
+                .format("""
                         +----------------------------------------------------------------------------------------------------------------------+
                         |                                                  Validation Report                                                   |
                         +----------------------------------------------------------------------------------------------------------------------+
@@ -1101,7 +1114,7 @@ class PlaceholderHighlightIntegrationTest {
 
 
                         """,
-                testFile.toString(), testFile.toString());
+                        testFile.toString(), testFile.toString());
 
         assertEquals(expectedOutput, actualOutput);
     }
@@ -1133,8 +1146,8 @@ class PlaceholderHighlightIntegrationTest {
 
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
-        String expectedOutput = String.format(
-                """
+        String expectedOutput = String
+                .format("""
                         +----------------------------------------------------------------------------------------------------------------------+
                         |                                                  Validation Report                                                   |
                         +----------------------------------------------------------------------------------------------------------------------+
@@ -1151,7 +1164,7 @@ class PlaceholderHighlightIntegrationTest {
 
 
                         """,
-                testFile.toString(), testFile.toString());
+                        testFile.toString(), testFile.toString());
 
         assertEquals(expectedOutput, actualOutput);
     }
@@ -1183,8 +1196,8 @@ class PlaceholderHighlightIntegrationTest {
 
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
-        String expectedOutput = String.format(
-                """
+        String expectedOutput = String
+                .format("""
                         +----------------------------------------------------------------------------------------------------------------------+
                         |                                                  Validation Report                                                   |
                         +----------------------------------------------------------------------------------------------------------------------+
@@ -1200,7 +1213,7 @@ class PlaceholderHighlightIntegrationTest {
 
 
                         """,
-                testFile.toString(), testFile.toString());
+                        testFile.toString(), testFile.toString());
 
         assertEquals(expectedOutput, actualOutput);
     }
@@ -1232,8 +1245,8 @@ class PlaceholderHighlightIntegrationTest {
 
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
-        String expectedOutput = String.format(
-                """
+        String expectedOutput = String
+                .format("""
                         +----------------------------------------------------------------------------------------------------------------------+
                         |                                                  Validation Report                                                   |
                         +----------------------------------------------------------------------------------------------------------------------+
@@ -1250,7 +1263,7 @@ class PlaceholderHighlightIntegrationTest {
 
 
                         """,
-                testFile.toString(), testFile.toString());
+                        testFile.toString(), testFile.toString());
 
         assertEquals(expectedOutput, actualOutput);
     }
@@ -1283,8 +1296,8 @@ class PlaceholderHighlightIntegrationTest {
 
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
-        String expectedOutput = String.format(
-                """
+        String expectedOutput = String
+                .format("""
                         +----------------------------------------------------------------------------------------------------------------------+
                         |                                                  Validation Report                                                   |
                         +----------------------------------------------------------------------------------------------------------------------+
@@ -1300,7 +1313,7 @@ class PlaceholderHighlightIntegrationTest {
 
 
                         """,
-                testFile.toString(), testFile.toString());
+                        testFile.toString(), testFile.toString());
 
         assertEquals(expectedOutput, actualOutput);
     }
@@ -1333,8 +1346,8 @@ class PlaceholderHighlightIntegrationTest {
 
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
-        String expectedOutput = String.format(
-                """
+        String expectedOutput = String
+                .format("""
                         +----------------------------------------------------------------------------------------------------------------------+
                         |                                                  Validation Report                                                   |
                         +----------------------------------------------------------------------------------------------------------------------+
@@ -1350,7 +1363,7 @@ class PlaceholderHighlightIntegrationTest {
 
 
                         """,
-                testFile.toString(), testFile.toString());
+                        testFile.toString(), testFile.toString());
 
         assertEquals(expectedOutput, actualOutput);
     }
@@ -1383,8 +1396,8 @@ class PlaceholderHighlightIntegrationTest {
 
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
-        String expectedOutput = String.format(
-                """
+        String expectedOutput = String
+                .format("""
                         +----------------------------------------------------------------------------------------------------------------------+
                         |                                                  Validation Report                                                   |
                         +----------------------------------------------------------------------------------------------------------------------+
@@ -1400,7 +1413,7 @@ class PlaceholderHighlightIntegrationTest {
 
 
                         """,
-                testFile.toString(), testFile.toString());
+                        testFile.toString(), testFile.toString());
 
         assertEquals(expectedOutput, actualOutput);
     }
@@ -1436,8 +1449,8 @@ class PlaceholderHighlightIntegrationTest {
 
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
-        String expectedOutput = String.format(
-                """
+        String expectedOutput = String
+                .format("""
                         +----------------------------------------------------------------------------------------------------------------------+
                         |                                                  Validation Report                                                   |
                         +----------------------------------------------------------------------------------------------------------------------+
@@ -1457,7 +1470,7 @@ class PlaceholderHighlightIntegrationTest {
 
 
                         """,
-                testFile.toString(), testFile.toString());
+                        testFile.toString(), testFile.toString());
 
         assertEquals(expectedOutput, actualOutput);
     }
@@ -1493,8 +1506,8 @@ class PlaceholderHighlightIntegrationTest {
 
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
-        String expectedOutput = String.format(
-                """
+        String expectedOutput = String
+                .format("""
                         +----------------------------------------------------------------------------------------------------------------------+
                         |                                                  Validation Report                                                   |
                         +----------------------------------------------------------------------------------------------------------------------+
@@ -1514,7 +1527,7 @@ class PlaceholderHighlightIntegrationTest {
 
 
                         """,
-                testFile.toString(), testFile.toString());
+                        testFile.toString(), testFile.toString());
 
         assertEquals(expectedOutput, actualOutput);
     }
@@ -1549,8 +1562,8 @@ class PlaceholderHighlightIntegrationTest {
 
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
-        String expectedOutput = String.format(
-                """
+        String expectedOutput = String
+                .format("""
                         +----------------------------------------------------------------------------------------------------------------------+
                         |                                                  Validation Report                                                   |
                         +----------------------------------------------------------------------------------------------------------------------+
@@ -1569,7 +1582,7 @@ class PlaceholderHighlightIntegrationTest {
 
 
                         """,
-                testFile.toString(), testFile.toString());
+                        testFile.toString(), testFile.toString());
 
         assertEquals(expectedOutput, actualOutput);
     }
@@ -1604,8 +1617,8 @@ class PlaceholderHighlightIntegrationTest {
 
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
-        String expectedOutput = String.format(
-                """
+        String expectedOutput = String
+                .format("""
                         +----------------------------------------------------------------------------------------------------------------------+
                         |                                                  Validation Report                                                   |
                         +----------------------------------------------------------------------------------------------------------------------+
@@ -1625,7 +1638,7 @@ class PlaceholderHighlightIntegrationTest {
 
 
                         """,
-                testFile.toString(), testFile.toString());
+                        testFile.toString(), testFile.toString());
 
         assertEquals(expectedOutput, actualOutput);
     }
@@ -1660,8 +1673,8 @@ class PlaceholderHighlightIntegrationTest {
 
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
-        String expectedOutput = String.format(
-                """
+        String expectedOutput = String
+                .format("""
                         +----------------------------------------------------------------------------------------------------------------------+
                         |                                                  Validation Report                                                   |
                         +----------------------------------------------------------------------------------------------------------------------+
@@ -1680,7 +1693,7 @@ class PlaceholderHighlightIntegrationTest {
 
 
                         """,
-                testFile.toString(), testFile.toString());
+                        testFile.toString(), testFile.toString());
 
         assertEquals(expectedOutput, actualOutput);
     }
@@ -1713,8 +1726,8 @@ class PlaceholderHighlightIntegrationTest {
 
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
-        String expectedOutput = String.format(
-                """
+        String expectedOutput = String
+                .format("""
                         +----------------------------------------------------------------------------------------------------------------------+
                         |                                                  Validation Report                                                   |
                         +----------------------------------------------------------------------------------------------------------------------+
@@ -1731,7 +1744,7 @@ class PlaceholderHighlightIntegrationTest {
 
 
                         """,
-                testFile.toString(), testFile.toString());
+                        testFile.toString(), testFile.toString());
 
         assertEquals(expectedOutput, actualOutput);
     }
@@ -1761,7 +1774,8 @@ class PlaceholderHighlightIntegrationTest {
                                         max: 1
                 """;
 
-        // Given - AsciiDoc content with nested sections but missing the required level 4 section
+        // Given - AsciiDoc content with nested sections but missing the required level
+        // 4 section
         String adocContent = """
                 = Test Document
 
@@ -1774,13 +1788,14 @@ class PlaceholderHighlightIntegrationTest {
                 Some content here but missing the required implementation section.
                 """;
 
-        // When - Validate and format output (with more context lines to show the full structure)
+        // When - Validate and format output (with more context lines to show the full
+        // structure)
         String actualOutput = validateAndFormat(rules, adocContent, tempDir, createDefaultOutputConfig(10));
 
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
-        String expectedOutput = String.format(
-                """
+        String expectedOutput = String
+                .format("""
                         +----------------------------------------------------------------------------------------------------------------------+
                         |                                                  Validation Report                                                   |
                         +----------------------------------------------------------------------------------------------------------------------+
@@ -1805,7 +1820,7 @@ class PlaceholderHighlightIntegrationTest {
 
 
                         """,
-                testFile.toString(), testFile.toString());
+                        testFile.toString(), testFile.toString());
 
         assertEquals(expectedOutput, actualOutput);
     }
@@ -1841,8 +1856,8 @@ class PlaceholderHighlightIntegrationTest {
 
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
-        String expectedOutput = String.format(
-                """
+        String expectedOutput = String
+                .format("""
                         +----------------------------------------------------------------------------------------------------------------------+
                         |                                                  Validation Report                                                   |
                         +----------------------------------------------------------------------------------------------------------------------+
@@ -1861,7 +1876,7 @@ class PlaceholderHighlightIntegrationTest {
 
 
                         """,
-                testFile.toString(), testFile.toString());
+                        testFile.toString(), testFile.toString());
 
         assertEquals(expectedOutput, actualOutput);
     }
@@ -1897,8 +1912,8 @@ class PlaceholderHighlightIntegrationTest {
 
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
-        String expectedOutput = String.format(
-                """
+        String expectedOutput = String
+                .format("""
                         +----------------------------------------------------------------------------------------------------------------------+
                         |                                                  Validation Report                                                   |
                         +----------------------------------------------------------------------------------------------------------------------+
@@ -1917,7 +1932,7 @@ class PlaceholderHighlightIntegrationTest {
 
 
                         """,
-                testFile.toString(), testFile.toString());
+                        testFile.toString(), testFile.toString());
 
         assertEquals(expectedOutput, actualOutput);
     }
@@ -1952,8 +1967,8 @@ class PlaceholderHighlightIntegrationTest {
 
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
-        String expectedOutput = String.format(
-                """
+        String expectedOutput = String
+                .format("""
                         +----------------------------------------------------------------------------------------------------------------------+
                         |                                                  Validation Report                                                   |
                         +----------------------------------------------------------------------------------------------------------------------+
@@ -1972,7 +1987,7 @@ class PlaceholderHighlightIntegrationTest {
 
 
                         """,
-                testFile.toString(), testFile.toString());
+                        testFile.toString(), testFile.toString());
 
         assertEquals(expectedOutput, actualOutput);
     }
@@ -2007,8 +2022,8 @@ class PlaceholderHighlightIntegrationTest {
 
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
-        String expectedOutput = String.format(
-                """
+        String expectedOutput = String
+                .format("""
                         +----------------------------------------------------------------------------------------------------------------------+
                         |                                                  Validation Report                                                   |
                         +----------------------------------------------------------------------------------------------------------------------+
@@ -2027,7 +2042,7 @@ class PlaceholderHighlightIntegrationTest {
 
 
                         """,
-                testFile.toString(), testFile.toString());
+                        testFile.toString(), testFile.toString());
 
         assertEquals(expectedOutput, actualOutput);
     }
@@ -2063,8 +2078,8 @@ class PlaceholderHighlightIntegrationTest {
 
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
-        String expectedOutput = String.format(
-                """
+        String expectedOutput = String
+                .format("""
                         +----------------------------------------------------------------------------------------------------------------------+
                         |                                                  Validation Report                                                   |
                         +----------------------------------------------------------------------------------------------------------------------+
@@ -2083,7 +2098,7 @@ class PlaceholderHighlightIntegrationTest {
 
 
                         """,
-                testFile.toString(), testFile.toString());
+                        testFile.toString(), testFile.toString());
 
         assertEquals(expectedOutput, actualOutput);
     }
@@ -2120,8 +2135,8 @@ class PlaceholderHighlightIntegrationTest {
 
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
-        String expectedOutput = String.format(
-                """
+        String expectedOutput = String
+                .format("""
                         +----------------------------------------------------------------------------------------------------------------------+
                         |                                                  Validation Report                                                   |
                         +----------------------------------------------------------------------------------------------------------------------+
@@ -2141,7 +2156,7 @@ class PlaceholderHighlightIntegrationTest {
 
 
                         """,
-                testFile.toString(), testFile.toString());
+                        testFile.toString(), testFile.toString());
 
         assertEquals(expectedOutput, actualOutput);
     }
@@ -2176,8 +2191,8 @@ class PlaceholderHighlightIntegrationTest {
 
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
-        String expectedOutput = String.format(
-                """
+        String expectedOutput = String
+                .format("""
                         +----------------------------------------------------------------------------------------------------------------------+
                         |                                                  Validation Report                                                   |
                         +----------------------------------------------------------------------------------------------------------------------+
@@ -2197,7 +2212,7 @@ class PlaceholderHighlightIntegrationTest {
 
 
                         """,
-                testFile.toString(), testFile.toString());
+                        testFile.toString(), testFile.toString());
 
         assertEquals(expectedOutput, actualOutput);
     }
@@ -2231,8 +2246,8 @@ class PlaceholderHighlightIntegrationTest {
 
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
-        String expectedOutput = String.format(
-                """
+        String expectedOutput = String
+                .format("""
                         +----------------------------------------------------------------------------------------------------------------------+
                         |                                                  Validation Report                                                   |
                         +----------------------------------------------------------------------------------------------------------------------+
@@ -2252,7 +2267,7 @@ class PlaceholderHighlightIntegrationTest {
 
 
                         """,
-                testFile.toString(), testFile.toString());
+                        testFile.toString(), testFile.toString());
 
         assertEquals(expectedOutput, actualOutput);
     }
@@ -2285,8 +2300,8 @@ class PlaceholderHighlightIntegrationTest {
 
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
-        String expectedOutput = String.format(
-                """
+        String expectedOutput = String
+                .format("""
                         +----------------------------------------------------------------------------------------------------------------------+
                         |                                                  Validation Report                                                   |
                         +----------------------------------------------------------------------------------------------------------------------+
@@ -2306,7 +2321,7 @@ class PlaceholderHighlightIntegrationTest {
 
 
                         """,
-                testFile.toString(), testFile.toString());
+                        testFile.toString(), testFile.toString());
 
         assertEquals(expectedOutput, actualOutput);
     }
@@ -2340,8 +2355,8 @@ class PlaceholderHighlightIntegrationTest {
 
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
-        String expectedOutput = String.format(
-                """
+        String expectedOutput = String
+                .format("""
                         +----------------------------------------------------------------------------------------------------------------------+
                         |                                                  Validation Report                                                   |
                         +----------------------------------------------------------------------------------------------------------------------+
@@ -2362,7 +2377,7 @@ class PlaceholderHighlightIntegrationTest {
 
 
                         """,
-                testFile.toString(), testFile.toString());
+                        testFile.toString(), testFile.toString());
 
         assertEquals(expectedOutput, actualOutput);
     }
@@ -2398,8 +2413,8 @@ class PlaceholderHighlightIntegrationTest {
 
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
-        String expectedOutput = String.format(
-                """
+        String expectedOutput = String
+                .format("""
                         +----------------------------------------------------------------------------------------------------------------------+
                         |                                                  Validation Report                                                   |
                         +----------------------------------------------------------------------------------------------------------------------+
@@ -2421,7 +2436,7 @@ class PlaceholderHighlightIntegrationTest {
 
 
                         """,
-                testFile.toString(), testFile.toString());
+                        testFile.toString(), testFile.toString());
 
         assertEquals(expectedOutput, actualOutput);
     }
@@ -2457,8 +2472,8 @@ class PlaceholderHighlightIntegrationTest {
 
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
-        String expectedOutput = String.format(
-                """
+        String expectedOutput = String
+                .format("""
                         +----------------------------------------------------------------------------------------------------------------------+
                         |                                                  Validation Report                                                   |
                         +----------------------------------------------------------------------------------------------------------------------+
@@ -2480,7 +2495,7 @@ class PlaceholderHighlightIntegrationTest {
 
 
                         """,
-                testFile.toString(), testFile.toString());
+                        testFile.toString(), testFile.toString());
 
         assertEquals(expectedOutput, actualOutput);
     }
@@ -2514,8 +2529,8 @@ class PlaceholderHighlightIntegrationTest {
 
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
-        String expectedOutput = String.format(
-                """
+        String expectedOutput = String
+                .format("""
                         +----------------------------------------------------------------------------------------------------------------------+
                         |                                                  Validation Report                                                   |
                         +----------------------------------------------------------------------------------------------------------------------+
@@ -2536,7 +2551,7 @@ class PlaceholderHighlightIntegrationTest {
 
 
                         """,
-                testFile.toString(), testFile.toString());
+                        testFile.toString(), testFile.toString());
 
         assertEquals(expectedOutput, actualOutput);
     }
@@ -2571,8 +2586,8 @@ class PlaceholderHighlightIntegrationTest {
 
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
-        String expectedOutput = String.format(
-                """
+        String expectedOutput = String
+                .format("""
                         +----------------------------------------------------------------------------------------------------------------------+
                         |                                                  Validation Report                                                   |
                         +----------------------------------------------------------------------------------------------------------------------+
@@ -2593,7 +2608,7 @@ class PlaceholderHighlightIntegrationTest {
 
 
                         """,
-                testFile.toString(), testFile.toString());
+                        testFile.toString(), testFile.toString());
 
         assertEquals(expectedOutput, actualOutput);
     }
@@ -2626,8 +2641,8 @@ class PlaceholderHighlightIntegrationTest {
 
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
-        String expectedOutput = String.format(
-                """
+        String expectedOutput = String
+                .format("""
                         +----------------------------------------------------------------------------------------------------------------------+
                         |                                                  Validation Report                                                   |
                         +----------------------------------------------------------------------------------------------------------------------+
@@ -2647,7 +2662,7 @@ class PlaceholderHighlightIntegrationTest {
 
 
                         """,
-                testFile.toString(), testFile.toString());
+                        testFile.toString(), testFile.toString());
 
         assertEquals(expectedOutput, actualOutput);
     }
@@ -2681,8 +2696,8 @@ class PlaceholderHighlightIntegrationTest {
 
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
-        String expectedOutput = String.format(
-                """
+        String expectedOutput = String
+                .format("""
                         +----------------------------------------------------------------------------------------------------------------------+
                         |                                                  Validation Report                                                   |
                         +----------------------------------------------------------------------------------------------------------------------+
@@ -2703,7 +2718,7 @@ class PlaceholderHighlightIntegrationTest {
 
 
                         """,
-                testFile.toString(), testFile.toString());
+                        testFile.toString(), testFile.toString());
 
         assertEquals(expectedOutput, actualOutput);
     }
@@ -2736,8 +2751,8 @@ class PlaceholderHighlightIntegrationTest {
 
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
-        String expectedOutput = String.format(
-                """
+        String expectedOutput = String
+                .format("""
                         +----------------------------------------------------------------------------------------------------------------------+
                         |                                                  Validation Report                                                   |
                         +----------------------------------------------------------------------------------------------------------------------+
@@ -2756,7 +2771,7 @@ class PlaceholderHighlightIntegrationTest {
 
 
                         """,
-                testFile.toString(), testFile.toString());
+                        testFile.toString(), testFile.toString());
 
         assertEquals(expectedOutput, actualOutput);
     }
@@ -2790,8 +2805,8 @@ class PlaceholderHighlightIntegrationTest {
 
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
-        String expectedOutput = String.format(
-                """
+        String expectedOutput = String
+                .format("""
                         +----------------------------------------------------------------------------------------------------------------------+
                         |                                                  Validation Report                                                   |
                         +----------------------------------------------------------------------------------------------------------------------+
@@ -2810,7 +2825,7 @@ class PlaceholderHighlightIntegrationTest {
 
 
                         """,
-                testFile.toString(), testFile.toString());
+                        testFile.toString(), testFile.toString());
 
         assertEquals(expectedOutput, actualOutput);
     }
@@ -2846,8 +2861,8 @@ class PlaceholderHighlightIntegrationTest {
 
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
-        String expectedOutput = String.format(
-                """
+        String expectedOutput = String
+                .format("""
                         +----------------------------------------------------------------------------------------------------------------------+
                         |                                                  Validation Report                                                   |
                         +----------------------------------------------------------------------------------------------------------------------+
@@ -2868,7 +2883,7 @@ class PlaceholderHighlightIntegrationTest {
 
 
                         """,
-                testFile.toString(), testFile.toString());
+                        testFile.toString(), testFile.toString());
 
         assertEquals(expectedOutput, actualOutput);
     }
@@ -2901,8 +2916,8 @@ class PlaceholderHighlightIntegrationTest {
 
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
-        String expectedOutput = String.format(
-                """
+        String expectedOutput = String
+                .format("""
                         +----------------------------------------------------------------------------------------------------------------------+
                         |                                                  Validation Report                                                   |
                         +----------------------------------------------------------------------------------------------------------------------+
@@ -2922,7 +2937,7 @@ class PlaceholderHighlightIntegrationTest {
 
 
                         """,
-                testFile.toString(), testFile.toString());
+                        testFile.toString(), testFile.toString());
 
         assertEquals(expectedOutput, actualOutput);
     }
@@ -2960,8 +2975,8 @@ class PlaceholderHighlightIntegrationTest {
 
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
-        String expectedOutput = String.format(
-                """
+        String expectedOutput = String
+                .format("""
                         +----------------------------------------------------------------------------------------------------------------------+
                         |                                                  Validation Report                                                   |
                         +----------------------------------------------------------------------------------------------------------------------+
@@ -2978,7 +2993,7 @@ class PlaceholderHighlightIntegrationTest {
 
 
                         """,
-                testFile.toString(), testFile.toString());
+                        testFile.toString(), testFile.toString());
 
         assertEquals(expectedOutput, actualOutput);
     }
@@ -3013,8 +3028,8 @@ class PlaceholderHighlightIntegrationTest {
         String actualOutput = validateAndFormat(rules, adocContent, tempDir);
 
         // Then - Verify multi-line table placeholder with full output comparison
-        String expectedOutput = String.format(
-                """
+        String expectedOutput = String
+                .format("""
                         +----------------------------------------------------------------------------------------------------------------------+
                         |                                                  Validation Report                                                   |
                         +----------------------------------------------------------------------------------------------------------------------+
@@ -3034,7 +3049,7 @@ class PlaceholderHighlightIntegrationTest {
 
 
                         """,
-                testFile.toString(), testFile.toString());
+                        testFile.toString(), testFile.toString());
 
         assertEquals(expectedOutput, actualOutput);
     }
@@ -3043,7 +3058,8 @@ class PlaceholderHighlightIntegrationTest {
     @DisplayName("should show placeholder at correct position for missing block in nested sections")
     void shouldShowPlaceholderAtCorrectPositionForMissingBlockInNestedSections(@TempDir Path tempDir)
             throws IOException {
-        // Given - YAML rules with nested sections where listing block is required in level 2
+        // Given - YAML rules with nested sections where listing block is required in
+        // level 2
         String rules = """
                 document:
                   sections:
@@ -3091,7 +3107,8 @@ class PlaceholderHighlightIntegrationTest {
                                   severity: error
                 """;
 
-        // Given - AsciiDoc content missing the listing block in subsection and paragraph in main section
+        // Given - AsciiDoc content missing the listing block in subsection and
+        // paragraph in main section
         String adocContent = """
                 = My Document
 
@@ -3109,8 +3126,8 @@ class PlaceholderHighlightIntegrationTest {
 
         // Then - Verify the placeholder appears after the subsection paragraph
         Path testFile = tempDir.resolve("test.adoc");
-        String expectedOutput = String.format(
-                """
+        String expectedOutput = String
+                .format("""
                         +----------------------------------------------------------------------------------------------------------------------+
                         |                                                  Validation Report                                                   |
                         +----------------------------------------------------------------------------------------------------------------------+
@@ -3146,7 +3163,7 @@ class PlaceholderHighlightIntegrationTest {
 
 
                         """,
-                testFile.toString(), testFile.toString(), testFile.toString());
+                        testFile.toString(), testFile.toString(), testFile.toString());
 
         assertEquals(expectedOutput, actualOutput);
     }
@@ -3200,8 +3217,8 @@ class PlaceholderHighlightIntegrationTest {
 
         // Then - Verify exact console output with placeholder at correct position
         Path testFile = tempDir.resolve("test.adoc");
-        String expectedOutput = String.format(
-                """
+        String expectedOutput = String
+                .format("""
                         +----------------------------------------------------------------------------------------------------------------------+
                         |                                                  Validation Report                                                   |
                         +----------------------------------------------------------------------------------------------------------------------+
@@ -3244,7 +3261,7 @@ class PlaceholderHighlightIntegrationTest {
 
 
                         """,
-                testFile.toString(), testFile.toString(), testFile.toString(), testFile.toString());
+                        testFile.toString(), testFile.toString(), testFile.toString(), testFile.toString());
 
         assertEquals(expectedOutput, actualOutput);
     }
@@ -3275,8 +3292,8 @@ class PlaceholderHighlightIntegrationTest {
 
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
-        String expectedOutput = String.format(
-                """
+        String expectedOutput = String
+                .format("""
                         +----------------------------------------------------------------------------------------------------------------------+
                         |                                                  Validation Report                                                   |
                         +----------------------------------------------------------------------------------------------------------------------+
@@ -3295,7 +3312,7 @@ class PlaceholderHighlightIntegrationTest {
 
 
                         """,
-                testFile.toString(), testFile.toString());
+                        testFile.toString(), testFile.toString());
 
         assertEquals(expectedOutput, actualOutput);
     }
@@ -3325,8 +3342,8 @@ class PlaceholderHighlightIntegrationTest {
 
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
-        String expectedOutput = String.format(
-                """
+        String expectedOutput = String
+                .format("""
                         +----------------------------------------------------------------------------------------------------------------------+
                         |                                                  Validation Report                                                   |
                         +----------------------------------------------------------------------------------------------------------------------+
@@ -3344,7 +3361,7 @@ class PlaceholderHighlightIntegrationTest {
 
 
                         """,
-                testFile.toString(), testFile.toString());
+                        testFile.toString(), testFile.toString());
 
         assertEquals(expectedOutput, actualOutput);
     }
@@ -3379,8 +3396,8 @@ class PlaceholderHighlightIntegrationTest {
 
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
-        String expectedOutput = String.format(
-                """
+        String expectedOutput = String
+                .format("""
                         +----------------------------------------------------------------------------------------------------------------------+
                         |                                                  Validation Report                                                   |
                         +----------------------------------------------------------------------------------------------------------------------+
@@ -3401,7 +3418,7 @@ class PlaceholderHighlightIntegrationTest {
 
 
                         """,
-                testFile.toString(), testFile.toString());
+                        testFile.toString(), testFile.toString());
 
         assertEquals(expectedOutput, actualOutput);
     }
@@ -3427,8 +3444,8 @@ class PlaceholderHighlightIntegrationTest {
 
         // Then - Verify exact console output with placeholder
         Path testFile = tempDir.resolve("test.adoc");
-        String expectedOutput = String.format(
-                """
+        String expectedOutput = String
+                .format("""
                         +----------------------------------------------------------------------------------------------------------------------+
                         |                                                  Validation Report                                                   |
                         +----------------------------------------------------------------------------------------------------------------------+
@@ -3443,7 +3460,7 @@ class PlaceholderHighlightIntegrationTest {
 
 
                         """,
-                testFile.toString(), testFile.toString());
+                        testFile.toString(), testFile.toString());
 
         assertEquals(expectedOutput, actualOutput);
     }
@@ -3479,8 +3496,8 @@ class PlaceholderHighlightIntegrationTest {
 
         // Then - Verify exact console output with placeholders
         Path testFile = tempDir.resolve("test.adoc");
-        String expectedOutput = String.format(
-                """
+        String expectedOutput = String
+                .format("""
                         +----------------------------------------------------------------------------------------------------------------------+
                         |                                                  Validation Report                                                   |
                         +----------------------------------------------------------------------------------------------------------------------+
@@ -3516,7 +3533,7 @@ class PlaceholderHighlightIntegrationTest {
 
 
                         """,
-                testFile.toString(), testFile.toString(), testFile.toString(), testFile.toString());
+                        testFile.toString(), testFile.toString(), testFile.toString(), testFile.toString());
 
         assertEquals(expectedOutput, actualOutput);
     }

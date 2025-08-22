@@ -18,18 +18,17 @@ import com.dataliquid.asciidoc.linter.validator.Suggestion;
 
 /**
  * Validator for literal blocks in AsciiDoc documents.
- *
  * <p>
- * This validator validates literal blocks based on the YAML schema structure defined in
- * {@code src/main/resources/schemas/blocks/literal-block.yaml}. The YAML configuration is parsed into
- * {@link LiteralBlock} objects which define the validation rules.
+ * This validator validates literal blocks based on the YAML schema structure
+ * defined in {@code src/main/resources/schemas/blocks/literal-block.yaml}. The
+ * YAML configuration is parsed into {@link LiteralBlock} objects which define
+ * the validation rules.
  * </p>
- *
  * <p>
- * Literal blocks use .... delimiters and display preformatted text without syntax highlighting. They are commonly used
- * for configuration files, console output, or other plain text content.
+ * Literal blocks use .... delimiters and display preformatted text without
+ * syntax highlighting. They are commonly used for configuration files, console
+ * output, or other plain text content.
  * </p>
- *
  * <p>
  * Example usage in AsciiDoc:
  * </p>
@@ -43,20 +42,19 @@ import com.dataliquid.asciidoc.linter.validator.Suggestion;
  *   timeout: 30s
  * ....
  * </pre>
- *
  * <p>
  * Supported validation rules from YAML schema:
  * </p>
  * <ul>
- * <li><b>title</b>: Validates optional title (required, minLength, maxLength)</li>
+ * <li><b>title</b>: Validates optional title (required, minLength,
+ * maxLength)</li>
  * <li><b>lines</b>: Validates line count (min, max)</li>
- * <li><b>indentation</b>: Validates indentation consistency and constraints (required, consistent, minSpaces,
- * maxSpaces)</li>
+ * <li><b>indentation</b>: Validates indentation consistency and constraints
+ * (required, consistent, minSpaces, maxSpaces)</li>
  * </ul>
- *
  * <p>
- * Each nested configuration can optionally define its own severity level. If not specified, the block-level severity is
- * used as fallback.
+ * Each nested configuration can optionally define its own severity level. If
+ * not specified, the block-level severity is used as fallback.
  * </p>
  *
  * @see LiteralBlock
@@ -129,18 +127,31 @@ public final class LiteralBlockValidator extends AbstractBlockValidator<LiteralB
         // Check if title is required
         if (config.isRequired() && (title == null || title.trim().isEmpty())) {
             SourcePosition pos = findTitlePosition(block, context);
-            messages.add(ValidationMessage.builder().severity(severity).ruleId(TITLE_REQUIRED)
-                    .location(SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
-                    .message("Literal block requires a title").errorType(ErrorType.MISSING_VALUE)
-                    .missingValueHint(".Title")
-                    .placeholderContext(
-                            PlaceholderContext.builder().type(PlaceholderContext.PlaceholderType.INSERT_BEFORE).build())
-                    .addSuggestion(Suggestion.builder().description("Add title to literal block")
-                            .fixedValue(".Configuration Example").addExample(".Sample Output")
-                            .addExample(".Code Listing").addExample(".Log Example")
-                            .explanation("Literal blocks should have descriptive titles to explain their content")
-                            .build())
-                    .build());
+            messages
+                    .add(ValidationMessage
+                            .builder()
+                            .severity(severity)
+                            .ruleId(TITLE_REQUIRED)
+                            .location(
+                                    SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
+                            .message("Literal block requires a title")
+                            .errorType(ErrorType.MISSING_VALUE)
+                            .missingValueHint(".Title")
+                            .placeholderContext(PlaceholderContext
+                                    .builder()
+                                    .type(PlaceholderContext.PlaceholderType.INSERT_BEFORE)
+                                    .build())
+                            .addSuggestion(Suggestion
+                                    .builder()
+                                    .description("Add title to literal block")
+                                    .fixedValue(".Configuration Example")
+                                    .addExample(".Sample Output")
+                                    .addExample(".Code Listing")
+                                    .addExample(".Log Example")
+                                    .explanation(
+                                            "Literal blocks should have descriptive titles to explain their content")
+                                    .build())
+                            .build());
             return;
         }
 
@@ -199,38 +210,65 @@ public final class LiteralBlockValidator extends AbstractBlockValidator<LiteralB
                 int currentLineNum = block.getSourceLocation() != null
                         ? block.getSourceLocation().getLineNumber() + lineNumber
                         : lineNumber;
-                messages.add(ValidationMessage.builder().severity(severity).ruleId(INDENTATION_MIN_SPACES)
-                        .location(SourceLocation.builder().filename(context.getFilename()).startLine(currentLineNum)
-                                .endLine(currentLineNum).startColumn(1).endColumn(1).build())
-                        .message("Literal block requires minimum indentation of " + config.getMinSpaces() + " spaces")
-                        .errorType(ErrorType.MISSING_VALUE).actualValue(indentSpaces + " spaces")
-                        .expectedValue("At least " + config.getMinSpaces() + " spaces")
-                        .missingValueHint(indentPlaceholder)
-                        .placeholderContext(PlaceholderContext.builder()
-                                .type(PlaceholderContext.PlaceholderType.SIMPLE_VALUE).build())
-                        .addSuggestion(Suggestion.builder()
-                                .description("Add proper indentation to literal block content")
-                                .fixedValue(" ".repeat(config.getMinSpaces())).addExample("    // 4 spaces indentation")
-                                .addExample("  // 2 spaces indentation").addExample("        // 8 spaces indentation")
-                                .explanation("Literal blocks should maintain consistent indentation for readability")
-                                .build())
-                        .build());
+                messages
+                        .add(ValidationMessage
+                                .builder()
+                                .severity(severity)
+                                .ruleId(INDENTATION_MIN_SPACES)
+                                .location(SourceLocation
+                                        .builder()
+                                        .filename(context.getFilename())
+                                        .startLine(currentLineNum)
+                                        .endLine(currentLineNum)
+                                        .startColumn(1)
+                                        .endColumn(1)
+                                        .build())
+                                .message("Literal block requires minimum indentation of " + config.getMinSpaces()
+                                        + " spaces")
+                                .errorType(ErrorType.MISSING_VALUE)
+                                .actualValue(indentSpaces + " spaces")
+                                .expectedValue("At least " + config.getMinSpaces() + " spaces")
+                                .missingValueHint(indentPlaceholder)
+                                .placeholderContext(PlaceholderContext
+                                        .builder()
+                                        .type(PlaceholderContext.PlaceholderType.SIMPLE_VALUE)
+                                        .build())
+                                .addSuggestion(Suggestion
+                                        .builder()
+                                        .description("Add proper indentation to literal block content")
+                                        .fixedValue(" ".repeat(config.getMinSpaces()))
+                                        .addExample("    // 4 spaces indentation")
+                                        .addExample("  // 2 spaces indentation")
+                                        .addExample("        // 8 spaces indentation")
+                                        .explanation(
+                                                "Literal blocks should maintain consistent indentation for readability")
+                                        .build())
+                                .build());
                 break; // Only report the first line with insufficient indentation
             }
 
             // Check maximum spaces
             if (config.getMaxSpaces() != null && indentSpaces > config.getMaxSpaces()) {
-                messages.add(ValidationMessage.builder().severity(severity).ruleId(INDENTATION_MAX_SPACES)
-                        .location(context.createLocation(block))
-                        .message("Line " + lineNumber + " has excessive indentation")
-                        .actualValue(indentSpaces + " spaces")
-                        .expectedValue("At most " + config.getMaxSpaces() + " spaces")
-                        .addSuggestion(Suggestion.builder().description("Reduce indentation to maximum allowed")
-                                .fixedValue(" ".repeat(config.getMaxSpaces())).addExample("Remove extra spaces")
-                                .addExample("Use consistent indentation").addExample("Align with other lines")
-                                .explanation("Literal block indentation should not exceed the maximum allowed spaces")
-                                .build())
-                        .build());
+                messages
+                        .add(ValidationMessage
+                                .builder()
+                                .severity(severity)
+                                .ruleId(INDENTATION_MAX_SPACES)
+                                .location(context.createLocation(block))
+                                .message("Line " + lineNumber + " has excessive indentation")
+                                .actualValue(indentSpaces + " spaces")
+                                .expectedValue("At most " + config.getMaxSpaces() + " spaces")
+                                .addSuggestion(Suggestion
+                                        .builder()
+                                        .description("Reduce indentation to maximum allowed")
+                                        .fixedValue(" ".repeat(config.getMaxSpaces()))
+                                        .addExample("Remove extra spaces")
+                                        .addExample("Use consistent indentation")
+                                        .addExample("Align with other lines")
+                                        .explanation(
+                                                "Literal block indentation should not exceed the maximum allowed spaces")
+                                        .build())
+                                .build());
             }
 
             // Check consistency
@@ -238,13 +276,17 @@ public final class LiteralBlockValidator extends AbstractBlockValidator<LiteralB
                 if (firstIndentation == null) {
                     firstIndentation = indentSpaces;
                 } else if (indentSpaces != firstIndentation) {
-                    messages.add(
-                            ValidationMessage.builder().severity(severity).ruleId(INDENTATION_CONSISTENT)
+                    messages
+                            .add(ValidationMessage
+                                    .builder()
+                                    .severity(severity)
+                                    .ruleId(INDENTATION_CONSISTENT)
                                     .location(context.createLocation(block))
                                     .message("Line " + lineNumber + " has inconsistent indentation")
                                     .actualValue(indentSpaces + " spaces")
                                     .expectedValue(firstIndentation + " spaces (consistent with first non-empty line)")
-                                    .addSuggestion(Suggestion.builder()
+                                    .addSuggestion(Suggestion
+                                            .builder()
                                             .description("Make indentation consistent across all lines")
                                             .fixedValue(" ".repeat(firstIndentation))
                                             .addExample("Align with first line indentation")

@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Utility class for drawing ASCII box borders and content. Provides methods to create well-formatted text boxes for
- * console output.
+ * Utility class for drawing ASCII box borders and content. Provides methods to
+ * create well-formatted text boxes for console output.
  */
 public class AsciiBoxDrawer {
 
@@ -16,8 +16,7 @@ public class AsciiBoxDrawer {
     /**
      * Creates a new AsciiBoxDrawer with the specified width.
      *
-     * @param width
-     *            the total width of the box including borders
+     * @param width the total width of the box including borders
      */
     public AsciiBoxDrawer(int width) {
         this(width, new PrintWriter(System.out, true));
@@ -26,10 +25,8 @@ public class AsciiBoxDrawer {
     /**
      * Creates a new AsciiBoxDrawer with the specified width and print writer.
      *
-     * @param width
-     *            the total width of the box including borders
-     * @param writer
-     *            the print writer to write to
+     * @param width  the total width of the box including borders
+     * @param writer the print writer to write to
      */
     public AsciiBoxDrawer(int width, PrintWriter writer) {
         if (width < 4) {
@@ -70,8 +67,7 @@ public class AsciiBoxDrawer {
     /**
      * Draws a centered title within the box.
      *
-     * @param title
-     *            the title text to center
+     * @param title the title text to center
      */
     public void drawTitle(String title) {
         if (title == null) {
@@ -93,8 +89,7 @@ public class AsciiBoxDrawer {
     /**
      * Draws a simple content line with padding.
      *
-     * @param content
-     *            the content to draw
+     * @param content the content to draw
      */
     public void drawLine(String content) {
         if (content == null) {
@@ -112,12 +107,9 @@ public class AsciiBoxDrawer {
     /**
      * Draws a labeled content line with proper alignment.
      *
-     * @param label
-     *            the label text
-     * @param value
-     *            the value text
-     * @param labelWidth
-     *            the width allocated for the label
+     * @param label      the label text
+     * @param value      the value text
+     * @param labelWidth the width allocated for the label
      */
     public void drawLabeledLine(String label, String value, int labelWidth) {
         if (label == null)
@@ -138,12 +130,9 @@ public class AsciiBoxDrawer {
     /**
      * Draws multiple lines for labeled content, handling wrapped text.
      *
-     * @param label
-     *            the label text (only shown on first line)
-     * @param lines
-     *            the wrapped content lines
-     * @param labelWidth
-     *            the width allocated for the label
+     * @param label      the label text (only shown on first line)
+     * @param lines      the wrapped content lines
+     * @param labelWidth the width allocated for the label
      */
     public void drawLabeledLines(String label, List<String> lines, int labelWidth) {
         if (lines == null || lines.isEmpty()) {

@@ -28,9 +28,9 @@ public class ColorScheme {
         }
 
         return switch (severity) {
-            case ERROR -> ANSI_RED + text + ANSI_RESET;
-            case WARN -> ANSI_YELLOW + text + ANSI_RESET;
-            case INFO -> ANSI_BLUE + text + ANSI_RESET;
+        case ERROR -> ANSI_RED + text + ANSI_RESET;
+        case WARN -> ANSI_YELLOW + text + ANSI_RESET;
+        case INFO -> ANSI_BLUE + text + ANSI_RESET;
         };
     }
 

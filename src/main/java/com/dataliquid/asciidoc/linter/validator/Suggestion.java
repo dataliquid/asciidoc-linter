@@ -15,8 +15,8 @@ public final class Suggestion {
     private final List<String> examples;
 
     private Suggestion(Builder builder) {
-        this.description = Objects.requireNonNull(builder.description,
-                "[" + getClass().getName() + "] description must not be null");
+        this.description = Objects
+                .requireNonNull(builder.description, "[" + getClass().getName() + "] description must not be null");
         this.fixedValue = builder.fixedValue;
         this.explanation = builder.explanation;
         this.preferred = builder.preferred;

@@ -29,8 +29,11 @@ class CLIRunnerOutputConfigTest {
         CLIRunner runner = new CLIRunner();
 
         // Test with predefined name
-        CLIConfig config = CLIConfig.builder().inputPatterns(java.util.List.of("*.adoc"))
-                .outputConfigFormat(OutputFormat.SIMPLE).build();
+        CLIConfig config = CLIConfig
+                .builder()
+                .inputPatterns(java.util.List.of("*.adoc"))
+                .outputConfigFormat(OutputFormat.SIMPLE)
+                .build();
 
         // Use reflection to access private method
         OutputConfiguration outputConfig = invokeLoadOutputConfiguration(runner, config);
@@ -53,7 +56,10 @@ class CLIRunnerOutputConfigTest {
                     useColors: false
                 """);
 
-        CLIConfig config = CLIConfig.builder().inputPatterns(java.util.List.of("*.adoc")).outputConfigFile(customConfig)
+        CLIConfig config = CLIConfig
+                .builder()
+                .inputPatterns(java.util.List.of("*.adoc"))
+                .outputConfigFile(customConfig)
                 .build();
 
         OutputConfiguration outputConfig = invokeLoadOutputConfiguration(runner, config);
@@ -83,8 +89,11 @@ class CLIRunnerOutputConfigTest {
         CLIRunner runner = new CLIRunner();
 
         Path nonExistentFile = Paths.get("non-existent-config.yaml");
-        CLIConfig config = CLIConfig.builder().inputPatterns(java.util.List.of("*.adoc"))
-                .outputConfigFile(nonExistentFile).build();
+        CLIConfig config = CLIConfig
+                .builder()
+                .inputPatterns(java.util.List.of("*.adoc"))
+                .outputConfigFile(nonExistentFile)
+                .build();
 
         IOException exception = assertThrows(IOException.class, () -> invokeLoadOutputConfiguration(runner, config));
 

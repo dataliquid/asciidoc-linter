@@ -36,18 +36,27 @@ public final class PatternRule implements AttributeRule {
         PatternConfig config = patternConfigs.get(attributeName);
         if (config != null && value != null && !value.isEmpty()) {
             if (!config.getPattern().matcher(value).matches()) {
-                messages.add(ValidationMessage.builder().severity(config.getSeverity()).ruleId(getRuleId())
-                        .message("Attribute '" + attributeName + "' does not match required pattern: actual '" + value
-                                + "', expected pattern '" + config.getPatternString() + "'")
-                        .location(location).attributeName(attributeName).actualValue(value)
-                        .expectedValue("Pattern '" + config.getPatternString() + "'")
-                        .errorType(ErrorType.INVALID_PATTERN)
-                        .addSuggestion(Suggestion.builder().description("Format attribute value to match pattern")
-                                .addExample(":" + attributeName + ": [value matching pattern]")
-                                .addExample("Check pattern: " + config.getPatternString())
-                                .explanation("Attribute value must match the configured regex pattern for validation")
-                                .build())
-                        .build());
+                messages
+                        .add(ValidationMessage
+                                .builder()
+                                .severity(config.getSeverity())
+                                .ruleId(getRuleId())
+                                .message("Attribute '" + attributeName + "' does not match required pattern: actual '"
+                                        + value + "', expected pattern '" + config.getPatternString() + "'")
+                                .location(location)
+                                .attributeName(attributeName)
+                                .actualValue(value)
+                                .expectedValue("Pattern '" + config.getPatternString() + "'")
+                                .errorType(ErrorType.INVALID_PATTERN)
+                                .addSuggestion(Suggestion
+                                        .builder()
+                                        .description("Format attribute value to match pattern")
+                                        .addExample(":" + attributeName + ": [value matching pattern]")
+                                        .addExample("Check pattern: " + config.getPatternString())
+                                        .explanation(
+                                                "Attribute value must match the configured regex pattern for validation")
+                                        .build())
+                                .build());
             }
         }
 

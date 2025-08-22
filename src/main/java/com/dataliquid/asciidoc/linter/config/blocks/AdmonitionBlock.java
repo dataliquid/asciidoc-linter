@@ -81,8 +81,7 @@ public final class AdmonitionBlock extends AbstractBlock {
 
         private TypeConfig(TypeConfigBuilder builder) {
             this.required = builder.required;
-            this.allowed = builder.allowed != null
-                    ? Collections.unmodifiableList(new ArrayList<>(builder.allowed))
+            this.allowed = builder.allowed != null ? Collections.unmodifiableList(new ArrayList<>(builder.allowed))
                     : Collections.emptyList();
             this.severity = builder.severity;
         }
@@ -239,8 +238,9 @@ public final class AdmonitionBlock extends AbstractBlock {
             if (!(o instanceof TitleConfig that))
                 return false;
             return required == that.required
-                    && Objects.equals(pattern == null ? null : pattern.pattern(),
-                            that.pattern == null ? null : that.pattern.pattern())
+                    && Objects
+                            .equals(pattern == null ? null : pattern.pattern(),
+                                    that.pattern == null ? null : that.pattern.pattern())
                     && Objects.equals(minLength, that.minLength) && Objects.equals(maxLength, that.maxLength)
                     && severity == that.severity;
         }
@@ -419,8 +419,10 @@ public final class AdmonitionBlock extends AbstractBlock {
                 return true;
             if (!(o instanceof IconConfig that))
                 return false;
-            return required == that.required && Objects.equals(pattern == null ? null : pattern.pattern(),
-                    that.pattern == null ? null : that.pattern.pattern()) && severity == that.severity;
+            return required == that.required && Objects
+                    .equals(pattern == null ? null : pattern.pattern(),
+                            that.pattern == null ? null : that.pattern.pattern())
+                    && severity == that.severity;
         }
 
         @Override

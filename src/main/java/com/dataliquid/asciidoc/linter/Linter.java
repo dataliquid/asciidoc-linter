@@ -34,7 +34,8 @@ import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
 import com.dataliquid.asciidoc.linter.validator.ValidationResult;
 
 /**
- * Main entry point for the AsciiDoc linter. Provides methods to validate AsciiDoc files against a configuration.
+ * Main entry point for the AsciiDoc linter. Provides methods to validate
+ * AsciiDoc files against a configuration.
  */
 public class Linter {
 
@@ -49,13 +50,12 @@ public class Linter {
     /**
      * Validates a single AsciiDoc file.
      *
-     * @param file
-     *            the file to validate
-     * @param config
-     *            the linter configuration
-     * @return validation result
-     * @throws IOException
-     *             if the file cannot be read
+     * @param  file        the file to validate
+     * @param  config      the linter configuration
+     *
+     * @return             validation result
+     *
+     * @throws IOException if the file cannot be read
      */
     public ValidationResult validateFile(Path file, LinterConfiguration config) throws IOException {
         Objects.requireNonNull(file, "[" + getClass().getName() + "] file must not be null");
@@ -75,11 +75,10 @@ public class Linter {
     /**
      * Validates multiple AsciiDoc files.
      *
-     * @param files
-     *            the files to validate
-     * @param config
-     *            the linter configuration
-     * @return map of file to validation result
+     * @param  files  the files to validate
+     * @param  config the linter configuration
+     *
+     * @return        map of file to validation result
      */
     public Map<Path, ValidationResult> validateFiles(List<Path> files, LinterConfiguration config) {
         Objects.requireNonNull(files, "[" + getClass().getName() + "] files must not be null");
@@ -104,17 +103,14 @@ public class Linter {
     /**
      * Validates all matching files in a directory.
      *
-     * @param directory
-     *            the directory to scan
-     * @param pattern
-     *            file pattern (e.g., "*.adoc")
-     * @param recursive
-     *            whether to scan subdirectories
-     * @param config
-     *            the linter configuration
-     * @return map of file to validation result
-     * @throws IOException
-     *             if the directory cannot be read
+     * @param  directory   the directory to scan
+     * @param  pattern     file pattern (e.g., "*.adoc")
+     * @param  recursive   whether to scan subdirectories
+     * @param  config      the linter configuration
+     *
+     * @return             map of file to validation result
+     *
+     * @throws IOException if the directory cannot be read
      */
     public Map<Path, ValidationResult> validateDirectory(Path directory, String pattern, boolean recursive,
             LinterConfiguration config) throws IOException {
@@ -133,11 +129,10 @@ public class Linter {
     /**
      * Validates AsciiDoc content from a string.
      *
-     * @param content
-     *            the AsciiDoc content to validate
-     * @param config
-     *            the linter configuration
-     * @return validation result
+     * @param  content the AsciiDoc content to validate
+     * @param  config  the linter configuration
+     *
+     * @return         validation result
      */
     public ValidationResult validateContent(String content, LinterConfiguration config) {
         Objects.requireNonNull(content, "[" + getClass().getName() + "] content must not be null");
@@ -150,9 +145,12 @@ public class Linter {
             // Enable AsciidoctorJ's built-in front matter handling
             Attributes documentAttributes = Attributes.builder().skipFrontMatter(true).build();
 
-            Options options = Options.builder().sourcemap(true) // Enable source location tracking
+            Options options = Options
+                    .builder()
+                    .sourcemap(true) // Enable source location tracking
                     .toFile(false) // Don't write output file
-                    .attributes(documentAttributes).build();
+                    .attributes(documentAttributes)
+                    .build();
             Document document = asciidoctor.load(content, options);
 
             // Extract filename from document title if available
@@ -163,8 +161,12 @@ public class Linter {
             return performValidation(document, filename, config);
         } catch (Exception e) {
             // Create error result for parse failure
-            return ValidationResult.builder().addScannedFile(filename).addMessage(createParseErrorMessage(filename, e))
-                    .complete().build();
+            return ValidationResult
+                    .builder()
+                    .addScannedFile(filename)
+                    .addMessage(createParseErrorMessage(filename, e))
+                    .complete()
+                    .build();
         }
     }
 
@@ -183,16 +185,23 @@ public class Linter {
             // Enable AsciidoctorJ's built-in front matter handling
             Attributes documentAttributes = Attributes.builder().skipFrontMatter(true).build();
 
-            Options options = Options.builder().sourcemap(true) // Enable source location tracking
+            Options options = Options
+                    .builder()
+                    .sourcemap(true) // Enable source location tracking
                     .toFile(false) // Don't write output file
-                    .attributes(documentAttributes).build();
+                    .attributes(documentAttributes)
+                    .build();
             Document document = asciidoctor.loadFile(file.toFile(), options);
 
             return performValidation(document, file.toString(), config);
         } catch (Exception e) {
             // Create error result for parse failure
-            return ValidationResult.builder().addScannedFile(file.toString())
-                    .addMessage(createParseErrorMessage(file, e)).complete().build();
+            return ValidationResult
+                    .builder()
+                    .addScannedFile(file.toString())
+                    .addMessage(createParseErrorMessage(file, e))
+                    .complete()
+                    .build();
         }
     }
 
@@ -205,7 +214,8 @@ public class Linter {
         if (config.document() != null) {
             // Metadata validation
             if (config.document().metadata() != null) {
-                MetadataValidator metadataValidator = MetadataValidator.fromConfiguration(config.document().metadata())
+                MetadataValidator metadataValidator = MetadataValidator
+                        .fromConfiguration(config.document().metadata())
                         .build();
                 ValidationResult metadataResult = metadataValidator.validate(document, filename);
                 messages.addAll(metadataResult.getMessages());
@@ -238,8 +248,9 @@ public class Linter {
         List<SectionConfig> configsForLevel1Sections = determineConfigsForLevel1Sections(level0Configs, sectionConfigs);
 
         // Debug logging
-        logger.debug("validateBlocks: level0Configs.size()={}, configsForLevel1Sections.size()={}",
-                level0Configs.size(), configsForLevel1Sections.size());
+        logger
+                .debug("validateBlocks: level0Configs.size()={}, configsForLevel1Sections.size()={}",
+                        level0Configs.size(), configsForLevel1Sections.size());
 
         // Validate document-level blocks (only if Level 0 config exists)
         if (!level0Configs.isEmpty()) {
@@ -290,10 +301,12 @@ public class Linter {
                 validateSectionBlocks(section, sectionConfigs, blockValidator, filename, messages);
             } else {
                 // Debug: Log what we're skipping
-                logger.debug("validateDocumentSections: Skipping non-section node: context={}, nodeName={}",
-                        node.getContext(), node.getNodeName());
+                logger
+                        .debug("validateDocumentSections: Skipping non-section node: context={}, nodeName={}",
+                                node.getContext(), node.getNodeName());
             }
-            // Note: Document-level blocks (preamble) are handled by validateDocumentLevelBlocks
+            // Note: Document-level blocks (preamble) are handled by
+            // validateDocumentLevelBlocks
         }
     }
 
@@ -319,7 +332,9 @@ public class Linter {
 
     private Optional<SectionConfig> findMatchingSectionConfig(org.asciidoctor.ast.Section section,
             List<SectionConfig> sectionConfigs) {
-        return sectionConfigs.stream().filter(config -> config.level() != 0 && matchesSection(section, config))
+        return sectionConfigs
+                .stream()
+                .filter(config -> config.level() != 0 && matchesSection(section, config))
                 .findFirst();
     }
 
@@ -394,12 +409,19 @@ public class Linter {
     }
 
     private ValidationResult createIOErrorResult(Path file, IOException e) {
-        return ValidationResult.builder().addScannedFile(file.toString())
-                .addMessage(ValidationMessage.builder()
-                        .severity(com.dataliquid.asciidoc.linter.config.common.Severity.ERROR).ruleId("io-error")
+        return ValidationResult
+                .builder()
+                .addScannedFile(file.toString())
+                .addMessage(ValidationMessage
+                        .builder()
+                        .severity(com.dataliquid.asciidoc.linter.config.common.Severity.ERROR)
+                        .ruleId("io-error")
                         .location(SourceLocation.builder().filename(file.toString()).startLine(1).build())
-                        .message("I/O error: " + e.getMessage()).cause(e).build())
-                .complete().build();
+                        .message("I/O error: " + e.getMessage())
+                        .cause(e)
+                        .build())
+                .complete()
+                .build();
     }
 
     private ValidationMessage createParseErrorMessage(Path file, Exception e) {
@@ -407,8 +429,13 @@ public class Linter {
     }
 
     private ValidationMessage createParseErrorMessage(String filename, Exception e) {
-        return ValidationMessage.builder().severity(com.dataliquid.asciidoc.linter.config.common.Severity.ERROR)
-                .ruleId("parse-error").location(SourceLocation.builder().filename(filename).startLine(1).build())
-                .message("Failed to parse AsciiDoc file: " + e.getMessage()).cause(e).build();
+        return ValidationMessage
+                .builder()
+                .severity(com.dataliquid.asciidoc.linter.config.common.Severity.ERROR)
+                .ruleId("parse-error")
+                .location(SourceLocation.builder().filename(filename).startLine(1).build())
+                .message("Failed to parse AsciiDoc file: " + e.getMessage())
+                .cause(e)
+                .build();
     }
 }

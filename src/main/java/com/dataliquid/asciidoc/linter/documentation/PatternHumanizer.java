@@ -35,16 +35,17 @@ public class PatternHumanizer {
         knownPatterns.put("^Figure \\d+:.*", "Must start with 'Figure' followed by a number and colon");
 
         // Language patterns
-        knownPatterns.put("^(java|python|javascript|yaml|json|xml)$",
-                "Allowed languages: java, python, javascript, yaml, json, xml");
+        knownPatterns
+                .put("^(java|python|javascript|yaml|json|xml)$",
+                        "Allowed languages: java, python, javascript, yaml, json, xml");
     }
 
     /**
      * Converts a regex pattern to a human-readable description.
      *
-     * @param pattern
-     *            the pattern to humanize
-     * @return a human-readable description
+     * @param  pattern the pattern to humanize
+     *
+     * @return         a human-readable description
      */
     public String humanize(Pattern pattern) {
         if (pattern == null) {
@@ -56,9 +57,9 @@ public class PatternHumanizer {
     /**
      * Converts a regex pattern string to a human-readable description.
      *
-     * @param patternString
-     *            the pattern string to humanize
-     * @return a human-readable description
+     * @param  patternString the pattern string to humanize
+     *
+     * @return               a human-readable description
      */
     public String humanize(String patternString) {
         if (patternString == null || patternString.isEmpty()) {
@@ -84,8 +85,10 @@ public class PatternHumanizer {
     private String generateDescription(String pattern) {
         // Handle file extensions
         if (pattern.matches(".*\\\\\\.(\\w+\\|)*\\w+\\)\\$")) {
-            String extensions = pattern.replaceAll(".*\\\\\\.(\\()?", "").replaceAll("\\)\\$", "").replaceAll("\\|",
-                    ", ");
+            String extensions = pattern
+                    .replaceAll(".*\\\\\\.(\\()?", "")
+                    .replaceAll("\\)\\$", "")
+                    .replaceAll("\\|", ", ");
             return "File extension must be: " + extensions.toUpperCase();
         }
 
@@ -130,10 +133,8 @@ public class PatternHumanizer {
     /**
      * Registers a custom pattern description.
      *
-     * @param pattern
-     *            the regex pattern
-     * @param description
-     *            the human-readable description
+     * @param pattern     the regex pattern
+     * @param description the human-readable description
      */
     public void registerPattern(String pattern, String description) {
         knownPatterns.put(pattern, description);

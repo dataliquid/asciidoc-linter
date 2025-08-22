@@ -35,8 +35,11 @@ class RequiredRuleTest {
         @DisplayName("should build rule with required attributes")
         void shouldBuildRuleWithRequiredAttributes() {
             // Given
-            RequiredRule.Builder builder = RequiredRule.builder().addAttribute("title", true, Severity.ERROR)
-                    .addAttribute("author", true, Severity.ERROR).addAttribute("email", false, Severity.WARN);
+            RequiredRule.Builder builder = RequiredRule
+                    .builder()
+                    .addAttribute("title", true, Severity.ERROR)
+                    .addAttribute("author", true, Severity.ERROR)
+                    .addAttribute("email", false, Severity.WARN);
 
             // When
             RequiredRule rule = builder.build();
@@ -132,9 +135,13 @@ class RequiredRuleTest {
         @DisplayName("should detect all missing required attributes")
         void shouldDetectAllMissingRequiredAttributes() {
             // Given
-            RequiredRule rule = RequiredRule.builder().addAttribute("title", true, Severity.ERROR)
-                    .addAttribute("author", true, Severity.ERROR).addAttribute("version", true, Severity.ERROR)
-                    .addAttribute("email", false, Severity.WARN).build();
+            RequiredRule rule = RequiredRule
+                    .builder()
+                    .addAttribute("title", true, Severity.ERROR)
+                    .addAttribute("author", true, Severity.ERROR)
+                    .addAttribute("version", true, Severity.ERROR)
+                    .addAttribute("email", false, Severity.WARN)
+                    .build();
 
             Set<String> presentAttributes = new HashSet<>();
             presentAttributes.add("title");
@@ -153,8 +160,11 @@ class RequiredRuleTest {
         @DisplayName("should return empty list when all required attributes present")
         void shouldReturnEmptyListWhenAllRequiredAttributesPresent() {
             // Given
-            RequiredRule rule = RequiredRule.builder().addAttribute("title", true, Severity.ERROR)
-                    .addAttribute("author", true, Severity.ERROR).build();
+            RequiredRule rule = RequiredRule
+                    .builder()
+                    .addAttribute("title", true, Severity.ERROR)
+                    .addAttribute("author", true, Severity.ERROR)
+                    .build();
 
             Set<String> presentAttributes = new HashSet<>();
             presentAttributes.add("title");

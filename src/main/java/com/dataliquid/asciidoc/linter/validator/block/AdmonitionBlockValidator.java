@@ -20,26 +20,26 @@ import com.dataliquid.asciidoc.linter.validator.Suggestion;
 
 /**
  * Validator for admonition blocks in AsciiDoc documents.
- *
  * <p>
- * This validator validates admonition blocks (NOTE, TIP, IMPORTANT, WARNING, CAUTION) based on the YAML schema
- * structure defined in {@code src/main/resources/schemas/blocks/admonition-block.yaml}. The YAML configuration is
- * parsed into {@link AdmonitionBlock} objects which define the validation rules.
+ * This validator validates admonition blocks (NOTE, TIP, IMPORTANT, WARNING,
+ * CAUTION) based on the YAML schema structure defined in
+ * {@code src/main/resources/schemas/blocks/admonition-block.yaml}. The YAML
+ * configuration is parsed into {@link AdmonitionBlock} objects which define the
+ * validation rules.
  * </p>
- *
  * <p>
  * Supported validation rules from YAML schema:
  * </p>
  * <ul>
  * <li><b>type</b>: Validates admonition type (required, allowed types)</li>
- * <li><b>title</b>: Validates block title (required, pattern, min/max length)</li>
+ * <li><b>title</b>: Validates block title (required, pattern, min/max
+ * length)</li>
  * <li><b>content</b>: Validates content (required, min/max length, lines)</li>
  * <li><b>icon</b>: Validates icon settings (required, pattern)</li>
  * </ul>
- *
  * <p>
- * Each nested configuration can optionally define its own severity level. If not specified, the block-level severity is
- * used as fallback.
+ * Each nested configuration can optionally define its own severity level. If
+ * not specified, the block-level severity is used as fallback.
  * </p>
  *
  * @see AdmonitionBlock
@@ -128,14 +128,25 @@ public final class AdmonitionBlockValidator extends AbstractBlockValidator<Admon
 
         // Check if type is required
         if (config.isRequired() && (admonitionType == null || admonitionType.trim().isEmpty())) {
-            messages.add(ValidationMessage.builder().severity(severity).ruleId(TYPE_REQUIRED)
-                    .location(context.createLocation(block)).message("Admonition block must have a type")
-                    .actualValue("No type").expectedValue("Type required")
-                    .addSuggestion(Suggestion.builder().description("Add an admonition type")
-                            .addExample("NOTE: For general information").addExample("TIP: For helpful tips")
-                            .addExample("IMPORTANT: For important information").addExample("WARNING: For warnings")
-                            .addExample("CAUTION: For potential dangers").build())
-                    .build());
+            messages
+                    .add(ValidationMessage
+                            .builder()
+                            .severity(severity)
+                            .ruleId(TYPE_REQUIRED)
+                            .location(context.createLocation(block))
+                            .message("Admonition block must have a type")
+                            .actualValue("No type")
+                            .expectedValue("Type required")
+                            .addSuggestion(Suggestion
+                                    .builder()
+                                    .description("Add an admonition type")
+                                    .addExample("NOTE: For general information")
+                                    .addExample("TIP: For helpful tips")
+                                    .addExample("IMPORTANT: For important information")
+                                    .addExample("WARNING: For warnings")
+                                    .addExample("CAUTION: For potential dangers")
+                                    .build())
+                            .build());
             return;
         }
 
@@ -143,14 +154,26 @@ public final class AdmonitionBlockValidator extends AbstractBlockValidator<Admon
         if (admonitionType != null && config.getAllowed() != null && !config.getAllowed().isEmpty()) {
             if (!config.getAllowed().contains(admonitionType)) {
                 SourcePosition pos = findTypePosition(block, context, admonitionType);
-                messages.add(ValidationMessage.builder().severity(severity).ruleId(TYPE_ALLOWED)
-                        .location(SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
-                        .message("Admonition type '" + admonitionType + "' is not allowed").actualValue(admonitionType)
-                        .expectedValue("One of: " + String.join(", ", config.getAllowed()))
-                        .addSuggestion(Suggestion.builder().description("Use one of the allowed admonition types")
-                                .fixedValue(config.getAllowed().get(0))
-                                .addExample(String.join(", ", config.getAllowed())).build())
-                        .build());
+                messages
+                        .add(ValidationMessage
+                                .builder()
+                                .severity(severity)
+                                .ruleId(TYPE_ALLOWED)
+                                .location(SourceLocation
+                                        .builder()
+                                        .filename(context.getFilename())
+                                        .fromPosition(pos)
+                                        .build())
+                                .message("Admonition type '" + admonitionType + "' is not allowed")
+                                .actualValue(admonitionType)
+                                .expectedValue("One of: " + String.join(", ", config.getAllowed()))
+                                .addSuggestion(Suggestion
+                                        .builder()
+                                        .description("Use one of the allowed admonition types")
+                                        .fixedValue(config.getAllowed().get(0))
+                                        .addExample(String.join(", ", config.getAllowed()))
+                                        .build())
+                                .build());
             }
         }
     }
@@ -162,17 +185,29 @@ public final class AdmonitionBlockValidator extends AbstractBlockValidator<Admon
         Severity severity = resolveSeverity(config.getSeverity(), blockConfig.getSeverity());
 
         if (config.isRequired() && (title == null || title.trim().isEmpty())) {
-            messages.add(ValidationMessage.builder().severity(severity).ruleId(TITLE_REQUIRED)
-                    .location(context.createLocation(block)).message("Admonition block requires a title")
-                    .actualValue("No title").expectedValue("Title required").errorType(ErrorType.MISSING_VALUE)
-                    .missingValueHint(".Title")
-                    .placeholderContext(
-                            PlaceholderContext.builder().type(PlaceholderContext.PlaceholderType.INSERT_BEFORE).build())
-                    .addSuggestion(Suggestion.builder().description("Add a title before the admonition")
-                            .addExample(".Security Note\nNOTE: Always use HTTPS for API calls")
-                            .addExample(".Pro Tip\nTIP: Use keyboard shortcuts to save time")
-                            .explanation("Titles help readers quickly identify the content").build())
-                    .build());
+            messages
+                    .add(ValidationMessage
+                            .builder()
+                            .severity(severity)
+                            .ruleId(TITLE_REQUIRED)
+                            .location(context.createLocation(block))
+                            .message("Admonition block requires a title")
+                            .actualValue("No title")
+                            .expectedValue("Title required")
+                            .errorType(ErrorType.MISSING_VALUE)
+                            .missingValueHint(".Title")
+                            .placeholderContext(PlaceholderContext
+                                    .builder()
+                                    .type(PlaceholderContext.PlaceholderType.INSERT_BEFORE)
+                                    .build())
+                            .addSuggestion(Suggestion
+                                    .builder()
+                                    .description("Add a title before the admonition")
+                                    .addExample(".Security Note\nNOTE: Always use HTTPS for API calls")
+                                    .addExample(".Pro Tip\nTIP: Use keyboard shortcuts to save time")
+                                    .explanation("Titles help readers quickly identify the content")
+                                    .build())
+                            .build());
             return;
         }
 
@@ -180,40 +215,75 @@ public final class AdmonitionBlockValidator extends AbstractBlockValidator<Admon
             // Validate pattern
             if (config.getPattern() != null && !config.getPattern().matcher(title).matches()) {
                 SourcePosition pos = findTitlePosition(block, context, title);
-                messages.add(ValidationMessage.builder().severity(severity).ruleId(TITLE_PATTERN)
-                        .location(SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
-                        .message("Admonition title does not match required pattern").actualValue(title)
-                        .expectedValue("Pattern: " + config.getPattern().pattern())
-                        .addSuggestion(Suggestion.builder().description("Adjust title to match the required pattern")
-                                .addExample("Pattern: " + config.getPattern().pattern()).build())
-                        .build());
+                messages
+                        .add(ValidationMessage
+                                .builder()
+                                .severity(severity)
+                                .ruleId(TITLE_PATTERN)
+                                .location(SourceLocation
+                                        .builder()
+                                        .filename(context.getFilename())
+                                        .fromPosition(pos)
+                                        .build())
+                                .message("Admonition title does not match required pattern")
+                                .actualValue(title)
+                                .expectedValue("Pattern: " + config.getPattern().pattern())
+                                .addSuggestion(Suggestion
+                                        .builder()
+                                        .description("Adjust title to match the required pattern")
+                                        .addExample("Pattern: " + config.getPattern().pattern())
+                                        .build())
+                                .build());
             }
 
             // Validate min length
             if (config.getMinLength() != null && title.length() < config.getMinLength()) {
                 SourcePosition pos = findTitlePosition(block, context, title);
-                messages.add(ValidationMessage.builder().severity(severity).ruleId(TITLE_MIN_LENGTH)
-                        .location(SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
-                        .message("Admonition title is too short").actualValue(title.length() + " characters")
-                        .expectedValue("At least " + config.getMinLength() + " characters")
-                        .addSuggestion(Suggestion.builder().description("Provide a more descriptive title")
-                                .addExample("Instead of 'Note', use 'Security Considerations'")
-                                .addExample("Instead of 'Tip', use 'Performance Optimization Tip'").build())
-                        .build());
+                messages
+                        .add(ValidationMessage
+                                .builder()
+                                .severity(severity)
+                                .ruleId(TITLE_MIN_LENGTH)
+                                .location(SourceLocation
+                                        .builder()
+                                        .filename(context.getFilename())
+                                        .fromPosition(pos)
+                                        .build())
+                                .message("Admonition title is too short")
+                                .actualValue(title.length() + " characters")
+                                .expectedValue("At least " + config.getMinLength() + " characters")
+                                .addSuggestion(Suggestion
+                                        .builder()
+                                        .description("Provide a more descriptive title")
+                                        .addExample("Instead of 'Note', use 'Security Considerations'")
+                                        .addExample("Instead of 'Tip', use 'Performance Optimization Tip'")
+                                        .build())
+                                .build());
             }
 
             // Validate max length
             if (config.getMaxLength() != null && title.length() > config.getMaxLength()) {
                 SourcePosition pos = findTitlePosition(block, context, title);
-                messages.add(ValidationMessage.builder().severity(severity).ruleId(TITLE_MAX_LENGTH)
-                        .location(SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
-                        .message("Admonition title is too long").actualValue(title.length() + " characters")
-                        .expectedValue("At most " + config.getMaxLength() + " characters")
-                        .addSuggestion(Suggestion.builder()
-                                .description("Shorten the title while keeping it descriptive")
-                                .addExample(String.format("Keep title under %d characters", config.getMaxLength()))
-                                .build())
-                        .build());
+                messages
+                        .add(ValidationMessage
+                                .builder()
+                                .severity(severity)
+                                .ruleId(TITLE_MAX_LENGTH)
+                                .location(SourceLocation
+                                        .builder()
+                                        .filename(context.getFilename())
+                                        .fromPosition(pos)
+                                        .build())
+                                .message("Admonition title is too long")
+                                .actualValue(title.length() + " characters")
+                                .expectedValue("At most " + config.getMaxLength() + " characters")
+                                .addSuggestion(Suggestion
+                                        .builder()
+                                        .description("Shorten the title while keeping it descriptive")
+                                        .addExample(
+                                                String.format("Keep title under %d characters", config.getMaxLength()))
+                                        .build())
+                                .build());
             }
         }
     }
@@ -226,16 +296,28 @@ public final class AdmonitionBlockValidator extends AbstractBlockValidator<Admon
 
         // Check if content is required
         if (config.isRequired() && (content == null || content.trim().isEmpty())) {
-            messages.add(ValidationMessage.builder().severity(severity).ruleId(CONTENT_REQUIRED)
-                    .location(context.createLocation(block)).message("Admonition block requires content")
-                    .actualValue("No content").expectedValue("Content required").errorType(ErrorType.MISSING_VALUE)
-                    .missingValueHint("Content")
-                    .placeholderContext(
-                            PlaceholderContext.builder().type(PlaceholderContext.PlaceholderType.INSERT_BEFORE).build())
-                    .addSuggestion(Suggestion.builder().description("Add content after the admonition type")
-                            .addExample("NOTE: This is the content of the note")
-                            .addExample("TIP: You can use multiple lines\nfor longer content").build())
-                    .build());
+            messages
+                    .add(ValidationMessage
+                            .builder()
+                            .severity(severity)
+                            .ruleId(CONTENT_REQUIRED)
+                            .location(context.createLocation(block))
+                            .message("Admonition block requires content")
+                            .actualValue("No content")
+                            .expectedValue("Content required")
+                            .errorType(ErrorType.MISSING_VALUE)
+                            .missingValueHint("Content")
+                            .placeholderContext(PlaceholderContext
+                                    .builder()
+                                    .type(PlaceholderContext.PlaceholderType.INSERT_BEFORE)
+                                    .build())
+                            .addSuggestion(Suggestion
+                                    .builder()
+                                    .description("Add content after the admonition type")
+                                    .addExample("NOTE: This is the content of the note")
+                                    .addExample("TIP: You can use multiple lines\nfor longer content")
+                                    .build())
+                            .build());
             return;
         }
 
@@ -244,27 +326,44 @@ public final class AdmonitionBlockValidator extends AbstractBlockValidator<Admon
         // Validate min length
         if (config.getMinLength() != null && contentLength < config.getMinLength()) {
             SourcePosition pos = findContentPosition(block, context);
-            messages.add(ValidationMessage.builder().severity(severity).ruleId(CONTENT_MIN_LENGTH)
-                    .location(SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
-                    .message("Admonition content is too short").actualValue(contentLength + " characters")
-                    .expectedValue("At least " + config.getMinLength() + " characters")
-                    .addSuggestion(Suggestion.builder().description("Provide more detailed information")
-                            .addExample("Add context and details to make the admonition more useful")
-                            .explanation("Detailed admonitions provide better value to readers").build())
-                    .build());
+            messages
+                    .add(ValidationMessage
+                            .builder()
+                            .severity(severity)
+                            .ruleId(CONTENT_MIN_LENGTH)
+                            .location(
+                                    SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
+                            .message("Admonition content is too short")
+                            .actualValue(contentLength + " characters")
+                            .expectedValue("At least " + config.getMinLength() + " characters")
+                            .addSuggestion(Suggestion
+                                    .builder()
+                                    .description("Provide more detailed information")
+                                    .addExample("Add context and details to make the admonition more useful")
+                                    .explanation("Detailed admonitions provide better value to readers")
+                                    .build())
+                            .build());
         }
 
         // Validate max length
         if (config.getMaxLength() != null && contentLength > config.getMaxLength()) {
             SourcePosition pos = findContentPosition(block, context);
-            messages.add(ValidationMessage.builder().severity(severity).ruleId(CONTENT_MAX_LENGTH)
-                    .location(SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
-                    .message("Admonition content is too long").actualValue(contentLength + " characters")
-                    .expectedValue("At most " + config.getMaxLength() + " characters")
-                    .addSuggestion(Suggestion.builder()
-                            .description("Condense the content or split into multiple admonitions")
-                            .addExample("Consider breaking long admonitions into smaller, focused ones").build())
-                    .build());
+            messages
+                    .add(ValidationMessage
+                            .builder()
+                            .severity(severity)
+                            .ruleId(CONTENT_MAX_LENGTH)
+                            .location(
+                                    SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
+                            .message("Admonition content is too long")
+                            .actualValue(contentLength + " characters")
+                            .expectedValue("At most " + config.getMaxLength() + " characters")
+                            .addSuggestion(Suggestion
+                                    .builder()
+                                    .description("Condense the content or split into multiple admonitions")
+                                    .addExample("Consider breaking long admonitions into smaller, focused ones")
+                                    .build())
+                            .build());
         }
 
         // Validate lines if configured
@@ -278,8 +377,7 @@ public final class AdmonitionBlockValidator extends AbstractBlockValidator<Admon
             StructuralNode block, List<ValidationMessage> messages) {
 
         // Get severity with fallback to content config severity, then block severity
-        Severity severity = config.severity() != null
-                ? config.severity()
+        Severity severity = config.severity() != null ? config.severity()
                 : (contentConfig.getSeverity() != null ? contentConfig.getSeverity() : blockConfig.getSeverity());
 
         // Count lines
@@ -287,24 +385,40 @@ public final class AdmonitionBlockValidator extends AbstractBlockValidator<Admon
 
         // Validate min lines
         if (config.min() != null && lineCount < config.min()) {
-            messages.add(
-                    ValidationMessage.builder().severity(severity).ruleId(CONTENT_LINES_MIN)
-                            .location(context.createLocation(block)).message("Admonition block has too few lines")
-                            .actualValue(String.valueOf(lineCount)).expectedValue("At least " + config.min() + " lines")
-                            .addSuggestion(Suggestion.builder().description("Add more lines to the admonition")
-                                    .addExample("Split content into multiple lines for better readability").build())
+            messages
+                    .add(ValidationMessage
+                            .builder()
+                            .severity(severity)
+                            .ruleId(CONTENT_LINES_MIN)
+                            .location(context.createLocation(block))
+                            .message("Admonition block has too few lines")
+                            .actualValue(String.valueOf(lineCount))
+                            .expectedValue("At least " + config.min() + " lines")
+                            .addSuggestion(Suggestion
+                                    .builder()
+                                    .description("Add more lines to the admonition")
+                                    .addExample("Split content into multiple lines for better readability")
+                                    .build())
                             .build());
         }
 
         // Validate max lines
         if (config.max() != null && lineCount > config.max()) {
-            messages.add(ValidationMessage.builder().severity(severity).ruleId(CONTENT_LINES_MAX)
-                    .location(context.createLocation(block)).message("Admonition block has too many lines")
-                    .actualValue(String.valueOf(lineCount)).expectedValue("At most " + config.max() + " lines")
-                    .addSuggestion(Suggestion.builder()
-                            .description("Reduce the number of lines or split into multiple admonitions")
-                            .addExample("Keep admonitions concise and focused").build())
-                    .build());
+            messages
+                    .add(ValidationMessage
+                            .builder()
+                            .severity(severity)
+                            .ruleId(CONTENT_LINES_MAX)
+                            .location(context.createLocation(block))
+                            .message("Admonition block has too many lines")
+                            .actualValue(String.valueOf(lineCount))
+                            .expectedValue("At most " + config.max() + " lines")
+                            .addSuggestion(Suggestion
+                                    .builder()
+                                    .description("Reduce the number of lines or split into multiple admonitions")
+                                    .addExample("Keep admonitions concise and focused")
+                                    .build())
+                            .build());
         }
     }
 
@@ -315,16 +429,28 @@ public final class AdmonitionBlockValidator extends AbstractBlockValidator<Admon
         Severity severity = resolveSeverity(config.getSeverity(), blockConfig.getSeverity());
 
         if (config.isRequired() && !hasIcon) {
-            messages.add(ValidationMessage.builder().severity(severity).ruleId(ICON_REQUIRED)
-                    .location(context.createLocation(block)).message("Admonition block requires an icon")
-                    .actualValue("No icon").expectedValue("Icon required").errorType(ErrorType.MISSING_VALUE)
-                    .missingValueHint(":icons: font")
-                    .placeholderContext(
-                            PlaceholderContext.builder().type(PlaceholderContext.PlaceholderType.INSERT_BEFORE).build())
-                    .addSuggestion(Suggestion.builder().description("Enable icons for admonitions")
-                            .addExample(":icons: font\n\nNOTE: This note will have an icon")
-                            .explanation("Icons make admonitions more visually distinct").build())
-                    .build());
+            messages
+                    .add(ValidationMessage
+                            .builder()
+                            .severity(severity)
+                            .ruleId(ICON_REQUIRED)
+                            .location(context.createLocation(block))
+                            .message("Admonition block requires an icon")
+                            .actualValue("No icon")
+                            .expectedValue("Icon required")
+                            .errorType(ErrorType.MISSING_VALUE)
+                            .missingValueHint(":icons: font")
+                            .placeholderContext(PlaceholderContext
+                                    .builder()
+                                    .type(PlaceholderContext.PlaceholderType.INSERT_BEFORE)
+                                    .build())
+                            .addSuggestion(Suggestion
+                                    .builder()
+                                    .description("Enable icons for admonitions")
+                                    .addExample(":icons: font\n\nNOTE: This note will have an icon")
+                                    .explanation("Icons make admonitions more visually distinct")
+                                    .build())
+                            .build());
         }
 
         // Validate icon pattern if present and pattern is configured
@@ -332,13 +458,25 @@ public final class AdmonitionBlockValidator extends AbstractBlockValidator<Admon
             String iconValue = getIconValue(block);
             if (iconValue != null && !config.getPattern().matcher(iconValue).matches()) {
                 SourcePosition pos = findIconPosition(block, context);
-                messages.add(ValidationMessage.builder().severity(severity).ruleId(ICON_PATTERN)
-                        .location(SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
-                        .message("Admonition icon does not match required pattern").actualValue(iconValue)
-                        .expectedValue("Pattern: " + config.getPattern().pattern())
-                        .addSuggestion(Suggestion.builder().description("Use an icon matching the required pattern")
-                                .addExample("Common icon options: font, image, or custom icon name").build())
-                        .build());
+                messages
+                        .add(ValidationMessage
+                                .builder()
+                                .severity(severity)
+                                .ruleId(ICON_PATTERN)
+                                .location(SourceLocation
+                                        .builder()
+                                        .filename(context.getFilename())
+                                        .fromPosition(pos)
+                                        .build())
+                                .message("Admonition icon does not match required pattern")
+                                .actualValue(iconValue)
+                                .expectedValue("Pattern: " + config.getPattern().pattern())
+                                .addSuggestion(Suggestion
+                                        .builder()
+                                        .description("Use an icon matching the required pattern")
+                                        .addExample("Common icon options: font, image, or custom icon name")
+                                        .build())
+                                .build());
             }
         }
     }
@@ -360,7 +498,8 @@ public final class AdmonitionBlockValidator extends AbstractBlockValidator<Admon
 
         int blockLineNum = block.getSourceLocation().getLineNumber();
 
-        // Admonition titles are typically on the line before the admonition keyword (NOTE:, TIP:, etc.)
+        // Admonition titles are typically on the line before the admonition keyword
+        // (NOTE:, TIP:, etc.)
         // Example:
         // .My Title
         // NOTE: Content here
@@ -396,7 +535,7 @@ public final class AdmonitionBlockValidator extends AbstractBlockValidator<Admon
         if (blockLineNum > 0 && blockLineNum <= fileLines.size()) {
             String line = fileLines.get(blockLineNum - 1);
             // Look for admonition keywords: NOTE:, TIP:, IMPORTANT:, WARNING:, CAUTION:
-            for (String keyword : new String[]{"NOTE:", "TIP:", "IMPORTANT:", "WARNING:", "CAUTION:"}) {
+            for (String keyword : new String[] { "NOTE:", "TIP:", "IMPORTANT:", "WARNING:", "CAUTION:" }) {
                 int keywordPos = line.indexOf(keyword);
                 if (keywordPos >= 0) {
                     // Content starts after the keyword and space
@@ -462,7 +601,8 @@ public final class AdmonitionBlockValidator extends AbstractBlockValidator<Admon
         int blockLineNum = block.getSourceLocation().getLineNumber();
         String iconValue = getIconValue(block);
 
-        // Look for the [NOTE,icon=...] or [NOTE,icon:...] line before the block delimiter
+        // Look for the [NOTE,icon=...] or [NOTE,icon:...] line before the block
+        // delimiter
         for (int offset = -2; offset <= 0; offset++) {
             int checkLine = blockLineNum + offset;
             if (checkLine > 0 && checkLine <= fileLines.size()) {

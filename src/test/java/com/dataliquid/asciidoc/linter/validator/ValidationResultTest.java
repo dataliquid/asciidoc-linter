@@ -34,14 +34,31 @@ class ValidationResultTest {
 
         location2 = SourceLocation.builder().filename("test2.adoc").startLine(20).build();
 
-        errorMessage = ValidationMessage.builder().severity(Severity.ERROR).ruleId("test.error").location(location1)
-                .message("Test error message").actualValue("actual").expectedValue("expected").build();
+        errorMessage = ValidationMessage
+                .builder()
+                .severity(Severity.ERROR)
+                .ruleId("test.error")
+                .location(location1)
+                .message("Test error message")
+                .actualValue("actual")
+                .expectedValue("expected")
+                .build();
 
-        warnMessage = ValidationMessage.builder().severity(Severity.WARN).ruleId("test.warn").location(location2)
-                .message("Test warning message").build();
+        warnMessage = ValidationMessage
+                .builder()
+                .severity(Severity.WARN)
+                .ruleId("test.warn")
+                .location(location2)
+                .message("Test warning message")
+                .build();
 
-        infoMessage = ValidationMessage.builder().severity(Severity.INFO).ruleId("test.info").location(location1)
-                .message("Test info message").build();
+        infoMessage = ValidationMessage
+                .builder()
+                .severity(Severity.INFO)
+                .ruleId("test.info")
+                .location(location1)
+                .message("Test info message")
+                .build();
     }
 
     @Nested
@@ -159,8 +176,12 @@ class ValidationResultTest {
         @DisplayName("should handle duplicate scanned files")
         void shouldHandleDuplicateScannedFiles() {
             // When
-            ValidationResult result = ValidationResult.builder().addScannedFile("test.adoc").addScannedFile("test.adoc")
-                    .addScannedFile("other.adoc").build();
+            ValidationResult result = ValidationResult
+                    .builder()
+                    .addScannedFile("test.adoc")
+                    .addScannedFile("test.adoc")
+                    .addScannedFile("other.adoc")
+                    .build();
 
             // Then
             assertEquals(2, result.getScannedFileCount());
@@ -191,7 +212,11 @@ class ValidationResultTest {
 
         @BeforeEach
         void setUp() {
-            result = ValidationResult.builder().addMessage(errorMessage).addMessage(warnMessage).addMessage(infoMessage)
+            result = ValidationResult
+                    .builder()
+                    .addMessage(errorMessage)
+                    .addMessage(warnMessage)
+                    .addMessage(infoMessage)
                     .build();
         }
 
@@ -245,15 +270,29 @@ class ValidationResultTest {
 
         @BeforeEach
         void setUp() {
-            anotherErrorInFile1 = ValidationMessage.builder().severity(Severity.ERROR).ruleId("another.error")
+            anotherErrorInFile1 = ValidationMessage
+                    .builder()
+                    .severity(Severity.ERROR)
+                    .ruleId("another.error")
                     .location(SourceLocation.builder().filename("test1.adoc").startLine(15).build())
-                    .message("Another error").build();
+                    .message("Another error")
+                    .build();
 
-            errorInFile2 = ValidationMessage.builder().severity(Severity.ERROR).ruleId("file2.error")
-                    .location(location2).message("Error in file 2").build();
+            errorInFile2 = ValidationMessage
+                    .builder()
+                    .severity(Severity.ERROR)
+                    .ruleId("file2.error")
+                    .location(location2)
+                    .message("Error in file 2")
+                    .build();
 
-            result = ValidationResult.builder().addMessage(errorMessage).addMessage(anotherErrorInFile1)
-                    .addMessage(errorInFile2).addMessage(infoMessage).build();
+            result = ValidationResult
+                    .builder()
+                    .addMessage(errorMessage)
+                    .addMessage(anotherErrorInFile1)
+                    .addMessage(errorInFile2)
+                    .addMessage(infoMessage)
+                    .build();
         }
 
         @Test
@@ -324,7 +363,10 @@ class ValidationResultTest {
         @DisplayName("should detect errors")
         void shouldDetectErrors() {
             // Given
-            ValidationResult result = ValidationResult.builder().addMessage(errorMessage).addMessage(warnMessage)
+            ValidationResult result = ValidationResult
+                    .builder()
+                    .addMessage(errorMessage)
+                    .addMessage(warnMessage)
                     .build();
 
             // Then
@@ -336,7 +378,10 @@ class ValidationResultTest {
         @DisplayName("should detect warnings without errors")
         void shouldDetectWarningsWithoutErrors() {
             // Given
-            ValidationResult result = ValidationResult.builder().addMessage(warnMessage).addMessage(infoMessage)
+            ValidationResult result = ValidationResult
+                    .builder()
+                    .addMessage(warnMessage)
+                    .addMessage(infoMessage)
                     .build();
 
             // Then
@@ -364,14 +409,30 @@ class ValidationResultTest {
 
         @BeforeEach
         void setUp() {
-            ValidationMessage anotherError = ValidationMessage.builder().severity(Severity.ERROR)
-                    .ruleId("another.error").location(location1).message("Another error").build();
+            ValidationMessage anotherError = ValidationMessage
+                    .builder()
+                    .severity(Severity.ERROR)
+                    .ruleId("another.error")
+                    .location(location1)
+                    .message("Another error")
+                    .build();
 
-            ValidationMessage anotherWarn = ValidationMessage.builder().severity(Severity.WARN).ruleId("another.warn")
-                    .location(location2).message("Another warning").build();
+            ValidationMessage anotherWarn = ValidationMessage
+                    .builder()
+                    .severity(Severity.WARN)
+                    .ruleId("another.warn")
+                    .location(location2)
+                    .message("Another warning")
+                    .build();
 
-            result = ValidationResult.builder().addMessage(errorMessage).addMessage(anotherError)
-                    .addMessage(warnMessage).addMessage(anotherWarn).addMessage(infoMessage).build();
+            result = ValidationResult
+                    .builder()
+                    .addMessage(errorMessage)
+                    .addMessage(anotherError)
+                    .addMessage(warnMessage)
+                    .addMessage(anotherWarn)
+                    .addMessage(infoMessage)
+                    .build();
         }
 
         @Test
@@ -437,8 +498,12 @@ class ValidationResultTest {
         @DisplayName("should print report with messages")
         void shouldPrintReportWithMessages() {
             // Given
-            ValidationResult result = ValidationResult.builder().addMessage(errorMessage).addMessage(warnMessage)
-                    .addMessage(infoMessage).build();
+            ValidationResult result = ValidationResult
+                    .builder()
+                    .addMessage(errorMessage)
+                    .addMessage(warnMessage)
+                    .addMessage(infoMessage)
+                    .build();
 
             // When
             result.printReport();
@@ -458,7 +523,10 @@ class ValidationResultTest {
         @DisplayName("should include timing in report")
         void shouldIncludeTimingInReport() {
             // Given
-            ValidationResult result = ValidationResult.builder().startTime(System.currentTimeMillis() - 500).complete()
+            ValidationResult result = ValidationResult
+                    .builder()
+                    .startTime(System.currentTimeMillis() - 500)
+                    .complete()
                     .build();
 
             // When
@@ -494,8 +562,13 @@ class ValidationResultTest {
         @DisplayName("should handle result with messages and scanned files")
         void shouldHandleResultWithMessagesAndScannedFiles() {
             // When
-            ValidationResult result = ValidationResult.builder().addScannedFile("file1.adoc")
-                    .addScannedFile("file2.adoc").addMessage(errorMessage).addMessage(warnMessage).build();
+            ValidationResult result = ValidationResult
+                    .builder()
+                    .addScannedFile("file1.adoc")
+                    .addScannedFile("file2.adoc")
+                    .addMessage(errorMessage)
+                    .addMessage(warnMessage)
+                    .build();
 
             // Then
             assertEquals(2, result.getScannedFileCount());

@@ -20,7 +20,8 @@ import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
 import com.dataliquid.asciidoc.linter.validator.Suggestion;
 
 /**
- * Validator for quote blocks. Based on the YAML schema structure for validating AsciiDoc quote blocks.
+ * Validator for quote blocks. Based on the YAML schema structure for validating
+ * AsciiDoc quote blocks.
  */
 public final class QuoteBlockValidator extends AbstractBlockValidator<QuoteBlock> {
     @Override
@@ -63,60 +64,100 @@ public final class QuoteBlockValidator extends AbstractBlockValidator<QuoteBlock
 
         if (config.isRequired() && (attribution == null || attribution.trim().isEmpty())) {
             SourcePosition pos = findSourcePosition(node, context);
-            results.add(ValidationMessage.builder().severity(severity).ruleId(ATTRIBUTION_REQUIRED)
-                    .message("Quote attribution is required but not provided")
-                    .location(SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
-                    .errorType(ErrorType.MISSING_VALUE).missingValueHint("attribution")
-                    .placeholderContext(
-                            PlaceholderContext.builder().type(PlaceholderContext.PlaceholderType.LIST_VALUE).build())
-                    .addSuggestion(
-                            Suggestion.builder().description("Add quote attribution").addExample("[quote, Einstein]")
+            results
+                    .add(ValidationMessage
+                            .builder()
+                            .severity(severity)
+                            .ruleId(ATTRIBUTION_REQUIRED)
+                            .message("Quote attribution is required but not provided")
+                            .location(
+                                    SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
+                            .errorType(ErrorType.MISSING_VALUE)
+                            .missingValueHint("attribution")
+                            .placeholderContext(PlaceholderContext
+                                    .builder()
+                                    .type(PlaceholderContext.PlaceholderType.LIST_VALUE)
+                                    .build())
+                            .addSuggestion(Suggestion
+                                    .builder()
+                                    .description("Add quote attribution")
+                                    .addExample("[quote, Einstein]")
                                     .addExample("[quote, \"Albert Einstein\", \"Relativity Theory\"]")
-                                    .addExample("[quote, Author Name]").build())
-                    .build());
+                                    .addExample("[quote, Author Name]")
+                                    .build())
+                            .build());
             return;
         }
 
         if (attribution != null && !attribution.trim().isEmpty()) {
             // Validate minLength
             if (config.getMinLength() != null && attribution.length() < config.getMinLength()) {
-                results.add(ValidationMessage.builder().severity(severity).ruleId(ATTRIBUTION_MIN_LENGTH)
-                        .message(String.format("Quote attribution is too short (minimum %d characters, found %d)",
-                                config.getMinLength(), attribution.length()))
-                        .location(context.createLocation(node))
-                        .addSuggestion(Suggestion.builder().description("Use longer attribution")
-                                .addExample("Use full name: Albert Einstein")
-                                .addExample("Include title: Dr. John Smith")
-                                .explanation("Attribution needs at least " + config.getMinLength() + " characters")
-                                .build())
-                        .build());
+                results
+                        .add(ValidationMessage
+                                .builder()
+                                .severity(severity)
+                                .ruleId(ATTRIBUTION_MIN_LENGTH)
+                                .message(String
+                                        .format("Quote attribution is too short (minimum %d characters, found %d)",
+                                                config.getMinLength(), attribution.length()))
+                                .location(context.createLocation(node))
+                                .addSuggestion(Suggestion
+                                        .builder()
+                                        .description("Use longer attribution")
+                                        .addExample("Use full name: Albert Einstein")
+                                        .addExample("Include title: Dr. John Smith")
+                                        .explanation(
+                                                "Attribution needs at least " + config.getMinLength() + " characters")
+                                        .build())
+                                .build());
             }
 
             // Validate maxLength
             if (config.getMaxLength() != null && attribution.length() > config.getMaxLength()) {
-                results.add(ValidationMessage.builder().severity(severity).ruleId(ATTRIBUTION_MAX_LENGTH)
-                        .message(String.format("Quote attribution is too long (maximum %d characters, found %d)",
-                                config.getMaxLength(), attribution.length()))
-                        .location(context.createLocation(node))
-                        .addSuggestion(Suggestion.builder().description("Shorten attribution")
-                                .addExample("Use initials: A. Einstein").addExample("Use last name only")
-                                .explanation("Attribution must be at most " + config.getMaxLength() + " characters")
-                                .build())
-                        .build());
+                results
+                        .add(ValidationMessage
+                                .builder()
+                                .severity(severity)
+                                .ruleId(ATTRIBUTION_MAX_LENGTH)
+                                .message(String
+                                        .format("Quote attribution is too long (maximum %d characters, found %d)",
+                                                config.getMaxLength(), attribution.length()))
+                                .location(context.createLocation(node))
+                                .addSuggestion(Suggestion
+                                        .builder()
+                                        .description("Shorten attribution")
+                                        .addExample("Use initials: A. Einstein")
+                                        .addExample("Use last name only")
+                                        .explanation(
+                                                "Attribution must be at most " + config.getMaxLength() + " characters")
+                                        .build())
+                                .build());
             }
 
             // Validate pattern
             if (config.getPattern() != null && !config.getPattern().matcher(attribution).matches()) {
                 SourcePosition pos = findSourcePosition(node, context);
-                results.add(ValidationMessage.builder().severity(severity).ruleId(ATTRIBUTION_PATTERN)
-                        .message("Quote attribution does not match required pattern").actualValue(attribution)
-                        .expectedValue("Pattern: " + config.getPattern().pattern())
-                        .location(SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
-                        .addSuggestion(Suggestion.builder().description("Follow attribution pattern")
-                                .addExample("Match the required format").addExample("Example: Last Name, First Name")
-                                .explanation("Attribution must match pattern: " + config.getPattern().pattern())
-                                .build())
-                        .build());
+                results
+                        .add(ValidationMessage
+                                .builder()
+                                .severity(severity)
+                                .ruleId(ATTRIBUTION_PATTERN)
+                                .message("Quote attribution does not match required pattern")
+                                .actualValue(attribution)
+                                .expectedValue("Pattern: " + config.getPattern().pattern())
+                                .location(SourceLocation
+                                        .builder()
+                                        .filename(context.getFilename())
+                                        .fromPosition(pos)
+                                        .build())
+                                .addSuggestion(Suggestion
+                                        .builder()
+                                        .description("Follow attribution pattern")
+                                        .addExample("Match the required format")
+                                        .addExample("Example: Last Name, First Name")
+                                        .explanation("Attribution must match pattern: " + config.getPattern().pattern())
+                                        .build())
+                                .build());
             }
         }
     }
@@ -128,43 +169,69 @@ public final class QuoteBlockValidator extends AbstractBlockValidator<QuoteBlock
 
         if (config.isRequired() && (citation == null || citation.trim().isEmpty())) {
             SourcePosition pos = findCitationPosition(node, context);
-            results.add(ValidationMessage.builder().severity(severity).ruleId(CITATION_REQUIRED)
-                    .message("Quote citation is required but not provided")
-                    .location(SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
-                    .errorType(ErrorType.MISSING_VALUE).missingValueHint("citation")
-                    .placeholderContext(
-                            PlaceholderContext.builder().type(PlaceholderContext.PlaceholderType.LIST_VALUE).build())
-                    .addSuggestion(Suggestion.builder().description("Add quote citation")
-                            .addExample("[quote, Einstein, \"Special Relativity\"]")
-                            .addExample("[quote, Author, \"Book Title\"]")
-                            .addExample("[quote, Speaker, \"Speech Title\"]").build())
-                    .build());
+            results
+                    .add(ValidationMessage
+                            .builder()
+                            .severity(severity)
+                            .ruleId(CITATION_REQUIRED)
+                            .message("Quote citation is required but not provided")
+                            .location(
+                                    SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
+                            .errorType(ErrorType.MISSING_VALUE)
+                            .missingValueHint("citation")
+                            .placeholderContext(PlaceholderContext
+                                    .builder()
+                                    .type(PlaceholderContext.PlaceholderType.LIST_VALUE)
+                                    .build())
+                            .addSuggestion(Suggestion
+                                    .builder()
+                                    .description("Add quote citation")
+                                    .addExample("[quote, Einstein, \"Special Relativity\"]")
+                                    .addExample("[quote, Author, \"Book Title\"]")
+                                    .addExample("[quote, Speaker, \"Speech Title\"]")
+                                    .build())
+                            .build());
             return;
         }
 
         if (citation != null && !citation.trim().isEmpty()) {
             // Validate minLength
             if (config.getMinLength() != null && citation.length() < config.getMinLength()) {
-                results.add(ValidationMessage.builder().severity(severity).ruleId(CITATION_MIN_LENGTH)
-                        .message(String.format("Quote citation is too short (minimum %d characters, found %d)",
-                                config.getMinLength(), citation.length()))
-                        .location(context.createLocation(node))
-                        .addSuggestion(Suggestion.builder().description("Use longer citation")
-                                .addExample("Include full book/article title").addExample("Add publication year")
-                                .explanation("Citation needs at least " + config.getMinLength() + " characters")
-                                .build())
-                        .build());
+                results
+                        .add(ValidationMessage
+                                .builder()
+                                .severity(severity)
+                                .ruleId(CITATION_MIN_LENGTH)
+                                .message(String
+                                        .format("Quote citation is too short (minimum %d characters, found %d)",
+                                                config.getMinLength(), citation.length()))
+                                .location(context.createLocation(node))
+                                .addSuggestion(Suggestion
+                                        .builder()
+                                        .description("Use longer citation")
+                                        .addExample("Include full book/article title")
+                                        .addExample("Add publication year")
+                                        .explanation("Citation needs at least " + config.getMinLength() + " characters")
+                                        .build())
+                                .build());
             }
 
             // Validate maxLength
             if (config.getMaxLength() != null && citation.length() > config.getMaxLength()) {
-                results.add(
-                        ValidationMessage.builder().severity(severity).ruleId(CITATION_MAX_LENGTH)
-                                .message(String.format("Quote citation is too long (maximum %d characters, found %d)",
-                                        config.getMaxLength(), citation.length()))
+                results
+                        .add(ValidationMessage
+                                .builder()
+                                .severity(severity)
+                                .ruleId(CITATION_MAX_LENGTH)
+                                .message(String
+                                        .format("Quote citation is too long (maximum %d characters, found %d)",
+                                                config.getMaxLength(), citation.length()))
                                 .location(context.createLocation(node))
-                                .addSuggestion(Suggestion.builder().description("Shorten citation")
-                                        .addExample("Use abbreviated title").addExample("Remove unnecessary details")
+                                .addSuggestion(Suggestion
+                                        .builder()
+                                        .description("Shorten citation")
+                                        .addExample("Use abbreviated title")
+                                        .addExample("Remove unnecessary details")
                                         .explanation(
                                                 "Citation must be at most " + config.getMaxLength() + " characters")
                                         .build())
@@ -174,14 +241,27 @@ public final class QuoteBlockValidator extends AbstractBlockValidator<QuoteBlock
             // Validate pattern
             if (config.getPattern() != null && !config.getPattern().matcher(citation).matches()) {
                 SourcePosition pos = findCitationPosition(node, context);
-                results.add(ValidationMessage.builder().severity(severity).ruleId(CITATION_PATTERN)
-                        .message("Quote citation does not match required pattern").actualValue(citation)
-                        .expectedValue("Pattern: " + config.getPattern().pattern())
-                        .location(SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
-                        .addSuggestion(Suggestion.builder().description("Follow citation pattern")
-                                .addExample("Use proper citation format").addExample("Example: Title, Year")
-                                .explanation("Citation must match pattern: " + config.getPattern().pattern()).build())
-                        .build());
+                results
+                        .add(ValidationMessage
+                                .builder()
+                                .severity(severity)
+                                .ruleId(CITATION_PATTERN)
+                                .message("Quote citation does not match required pattern")
+                                .actualValue(citation)
+                                .expectedValue("Pattern: " + config.getPattern().pattern())
+                                .location(SourceLocation
+                                        .builder()
+                                        .filename(context.getFilename())
+                                        .fromPosition(pos)
+                                        .build())
+                                .addSuggestion(Suggestion
+                                        .builder()
+                                        .description("Follow citation pattern")
+                                        .addExample("Use proper citation format")
+                                        .addExample("Example: Title, Year")
+                                        .explanation("Citation must match pattern: " + config.getPattern().pattern())
+                                        .build())
+                                .build());
             }
         }
     }
@@ -191,39 +271,66 @@ public final class QuoteBlockValidator extends AbstractBlockValidator<QuoteBlock
         String content = extractContent(node);
 
         if (config.isRequired() && (content == null || content.trim().isEmpty())) {
-            results.add(ValidationMessage.builder().severity(blockSeverity).ruleId(CONTENT_REQUIRED)
-                    .message("Quote block requires content").location(context.createLocation(node))
-                    .addSuggestion(Suggestion.builder().description("Add quote content").addExample("[quote]")
-                            .addExample("____").addExample("Your meaningful quote content goes here.")
-                            .addExample("____").build())
-                    .build());
+            results
+                    .add(ValidationMessage
+                            .builder()
+                            .severity(blockSeverity)
+                            .ruleId(CONTENT_REQUIRED)
+                            .message("Quote block requires content")
+                            .location(context.createLocation(node))
+                            .addSuggestion(Suggestion
+                                    .builder()
+                                    .description("Add quote content")
+                                    .addExample("[quote]")
+                                    .addExample("____")
+                                    .addExample("Your meaningful quote content goes here.")
+                                    .addExample("____")
+                                    .build())
+                            .build());
             return;
         }
 
         if (content != null && !content.trim().isEmpty()) {
             // Validate minLength
             if (config.getMinLength() != null && content.length() < config.getMinLength()) {
-                results.add(ValidationMessage.builder().severity(blockSeverity).ruleId(CONTENT_MIN_LENGTH)
-                        .message(String.format("Quote content is too short (minimum %d characters, found %d)",
-                                config.getMinLength(), content.length()))
-                        .location(context.createLocation(node))
-                        .addSuggestion(Suggestion.builder().description("Expand quote content")
-                                .addExample("Add more context to the quote").addExample("Include complete thoughts")
-                                .explanation("Content needs at least " + config.getMinLength() + " characters").build())
-                        .build());
+                results
+                        .add(ValidationMessage
+                                .builder()
+                                .severity(blockSeverity)
+                                .ruleId(CONTENT_MIN_LENGTH)
+                                .message(String
+                                        .format("Quote content is too short (minimum %d characters, found %d)",
+                                                config.getMinLength(), content.length()))
+                                .location(context.createLocation(node))
+                                .addSuggestion(Suggestion
+                                        .builder()
+                                        .description("Expand quote content")
+                                        .addExample("Add more context to the quote")
+                                        .addExample("Include complete thoughts")
+                                        .explanation("Content needs at least " + config.getMinLength() + " characters")
+                                        .build())
+                                .build());
             }
 
             // Validate maxLength
             if (config.getMaxLength() != null && content.length() > config.getMaxLength()) {
-                results.add(ValidationMessage.builder().severity(blockSeverity).ruleId(CONTENT_MAX_LENGTH)
-                        .message(String.format("Quote content is too long (maximum %d characters, found %d)",
-                                config.getMaxLength(), content.length()))
-                        .location(context.createLocation(node))
-                        .addSuggestion(Suggestion.builder().description("Shorten quote content")
-                                .addExample("Use ellipsis for shortened quotes").addExample("Focus on key message")
-                                .explanation("Content must be at most " + config.getMaxLength() + " characters")
-                                .build())
-                        .build());
+                results
+                        .add(ValidationMessage
+                                .builder()
+                                .severity(blockSeverity)
+                                .ruleId(CONTENT_MAX_LENGTH)
+                                .message(String
+                                        .format("Quote content is too long (maximum %d characters, found %d)",
+                                                config.getMaxLength(), content.length()))
+                                .location(context.createLocation(node))
+                                .addSuggestion(Suggestion
+                                        .builder()
+                                        .description("Shorten quote content")
+                                        .addExample("Use ellipsis for shortened quotes")
+                                        .addExample("Focus on key message")
+                                        .explanation("Content must be at most " + config.getMaxLength() + " characters")
+                                        .build())
+                                .build());
             }
 
             // Validate lines
@@ -240,25 +347,43 @@ public final class QuoteBlockValidator extends AbstractBlockValidator<QuoteBlock
         Severity severity = resolveSeverity(config.getSeverity(), blockSeverity);
 
         if (config.getMin() != null && lineCount < config.getMin()) {
-            results.add(ValidationMessage.builder().severity(severity).ruleId(CONTENT_LINES_MIN)
-                    .message(String.format("Quote content has too few lines (minimum %d, found %d)", config.getMin(),
-                            lineCount))
-                    .location(context.createLocation(node))
-                    .addSuggestion(Suggestion.builder().description("Add more lines to quote")
-                            .addExample("Break long sentences across lines").addExample("Add context or explanation")
-                            .explanation("Quote needs at least " + config.getMin() + " lines").build())
-                    .build());
+            results
+                    .add(ValidationMessage
+                            .builder()
+                            .severity(severity)
+                            .ruleId(CONTENT_LINES_MIN)
+                            .message(String
+                                    .format("Quote content has too few lines (minimum %d, found %d)", config.getMin(),
+                                            lineCount))
+                            .location(context.createLocation(node))
+                            .addSuggestion(Suggestion
+                                    .builder()
+                                    .description("Add more lines to quote")
+                                    .addExample("Break long sentences across lines")
+                                    .addExample("Add context or explanation")
+                                    .explanation("Quote needs at least " + config.getMin() + " lines")
+                                    .build())
+                            .build());
         }
 
         if (config.getMax() != null && lineCount > config.getMax()) {
-            results.add(ValidationMessage.builder().severity(severity).ruleId(CONTENT_LINES_MAX)
-                    .message(String.format("Quote content has too many lines (maximum %d, found %d)", config.getMax(),
-                            lineCount))
-                    .location(context.createLocation(node))
-                    .addSuggestion(Suggestion.builder().description("Reduce quote lines")
-                            .addExample("Combine related sentences").addExample("Remove less essential parts")
-                            .explanation("Quote should have at most " + config.getMax() + " lines").build())
-                    .build());
+            results
+                    .add(ValidationMessage
+                            .builder()
+                            .severity(severity)
+                            .ruleId(CONTENT_LINES_MAX)
+                            .message(String
+                                    .format("Quote content has too many lines (maximum %d, found %d)", config.getMax(),
+                                            lineCount))
+                            .location(context.createLocation(node))
+                            .addSuggestion(Suggestion
+                                    .builder()
+                                    .description("Reduce quote lines")
+                                    .addExample("Combine related sentences")
+                                    .addExample("Remove less essential parts")
+                                    .explanation("Quote should have at most " + config.getMax() + " lines")
+                                    .build())
+                            .build());
         }
     }
 

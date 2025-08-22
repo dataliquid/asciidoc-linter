@@ -21,11 +21,10 @@ import com.dataliquid.asciidoc.linter.validator.Suggestion;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
 
 /**
- * Validator for video blocks in AsciiDoc documents.
- *
- * Validates video blocks based on the YAML schema configuration including: - URL validation (required and pattern
- * matching) - Dimension constraints (width and height) - Poster image validation - Controls requirement - Caption
- * validation
+ * Validator for video blocks in AsciiDoc documents. Validates video blocks
+ * based on the YAML schema configuration including: - URL validation (required
+ * and pattern matching) - Dimension constraints (width and height) - Poster
+ * image validation - Controls requirement - Caption validation
  */
 public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock> {
     @Override
@@ -86,16 +85,27 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
         // Check if required
         if (Boolean.TRUE.equals(urlConfig.getRequired()) && (url == null || url.trim().isEmpty())) {
             SourcePosition pos = findSourcePosition(node, context, url);
-            messages.add(ValidationMessage.builder().severity(severity).ruleId(URL_REQUIRED)
-                    .message("Video URL is required but not provided")
-                    .location(SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
-                    .errorType(ErrorType.MISSING_VALUE).missingValueHint("target")
-                    .placeholderContext(
-                            PlaceholderContext.builder().type(PlaceholderContext.PlaceholderType.SIMPLE_VALUE).build())
-                    .addSuggestion(Suggestion.builder().description("Add a video URL using the target attribute")
-                            .addExample("video::https://www.youtube.com/embed/VIDEO_ID[width=640,height=360]")
-                            .addExample("video::path/to/video.mp4[]").build())
-                    .build());
+            messages
+                    .add(ValidationMessage
+                            .builder()
+                            .severity(severity)
+                            .ruleId(URL_REQUIRED)
+                            .message("Video URL is required but not provided")
+                            .location(
+                                    SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
+                            .errorType(ErrorType.MISSING_VALUE)
+                            .missingValueHint("target")
+                            .placeholderContext(PlaceholderContext
+                                    .builder()
+                                    .type(PlaceholderContext.PlaceholderType.SIMPLE_VALUE)
+                                    .build())
+                            .addSuggestion(Suggestion
+                                    .builder()
+                                    .description("Add a video URL using the target attribute")
+                                    .addExample("video::https://www.youtube.com/embed/VIDEO_ID[width=640,height=360]")
+                                    .addExample("video::path/to/video.mp4[]")
+                                    .build())
+                            .build());
             return;
         }
 
@@ -104,15 +114,28 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
             Pattern pattern = urlConfig.getPattern();
             if (!pattern.matcher(url).matches()) {
                 SourcePosition pos = findSourcePosition(node, context, url);
-                messages.add(ValidationMessage.builder().severity(severity).ruleId(URL_PATTERN)
-                        .message("Video URL does not match required pattern")
-                        .location(SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
-                        .errorType(ErrorType.INVALID_PATTERN).actualValue(url).expectedValue(pattern.pattern())
-                        .addSuggestion(Suggestion.builder().description("Use a URL matching the required pattern")
-                                .addExample("For YouTube: https://www.youtube.com/embed/VIDEO_ID")
-                                .addExample("For Vimeo: https://player.vimeo.com/video/VIDEO_ID")
-                                .addExample("For local files: path/to/video.mp4").build())
-                        .build());
+                messages
+                        .add(ValidationMessage
+                                .builder()
+                                .severity(severity)
+                                .ruleId(URL_PATTERN)
+                                .message("Video URL does not match required pattern")
+                                .location(SourceLocation
+                                        .builder()
+                                        .filename(context.getFilename())
+                                        .fromPosition(pos)
+                                        .build())
+                                .errorType(ErrorType.INVALID_PATTERN)
+                                .actualValue(url)
+                                .expectedValue(pattern.pattern())
+                                .addSuggestion(Suggestion
+                                        .builder()
+                                        .description("Use a URL matching the required pattern")
+                                        .addExample("For YouTube: https://www.youtube.com/embed/VIDEO_ID")
+                                        .addExample("For Vimeo: https://player.vimeo.com/video/VIDEO_ID")
+                                        .addExample("For local files: path/to/video.mp4")
+                                        .build())
+                                .build());
             }
         }
     }
@@ -140,22 +163,30 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
                         || node.getAttribute(OPTIONS) != null;
             }
 
-            messages.add(ValidationMessage.builder().severity(severity)
-                    .ruleId(dimensionType.equals(WIDTH) ? WIDTH_REQUIRED : HEIGHT_REQUIRED)
-                    .message(String.format("Video %s is required but not provided", dimensionType))
-                    .location(SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
-                    .errorType(ErrorType.MISSING_VALUE).missingValueHint(dimensionType.equals(WIDTH) ? "640" : "360")
-                    .placeholderContext(PlaceholderContext.builder()
-                            .type(hasOtherAttributes
-                                    ? PlaceholderContext.PlaceholderType.ATTRIBUTE_IN_LIST
-                                    : PlaceholderContext.PlaceholderType.ATTRIBUTE_VALUE)
-                            .attributeName(dimensionType).hasExistingAttributes(hasOtherAttributes).build())
-                    .addSuggestion(Suggestion.builder()
-                            .description(String.format("Add %s attribute to video block", dimensionType))
-                            .addExample(String.format("video::video.mp4[%s=640]", dimensionType))
-                            .addExample("Common 16:9 dimensions: width=640,height=360 or width=1280,height=720")
-                            .build())
-                    .build());
+            messages
+                    .add(ValidationMessage
+                            .builder()
+                            .severity(severity)
+                            .ruleId(dimensionType.equals(WIDTH) ? WIDTH_REQUIRED : HEIGHT_REQUIRED)
+                            .message(String.format("Video %s is required but not provided", dimensionType))
+                            .location(
+                                    SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
+                            .errorType(ErrorType.MISSING_VALUE)
+                            .missingValueHint(dimensionType.equals(WIDTH) ? "640" : "360")
+                            .placeholderContext(PlaceholderContext
+                                    .builder()
+                                    .type(hasOtherAttributes ? PlaceholderContext.PlaceholderType.ATTRIBUTE_IN_LIST
+                                            : PlaceholderContext.PlaceholderType.ATTRIBUTE_VALUE)
+                                    .attributeName(dimensionType)
+                                    .hasExistingAttributes(hasOtherAttributes)
+                                    .build())
+                            .addSuggestion(Suggestion
+                                    .builder()
+                                    .description(String.format("Add %s attribute to video block", dimensionType))
+                                    .addExample(String.format("video::video.mp4[%s=640]", dimensionType))
+                                    .addExample("Common 16:9 dimensions: width=640,height=360 or width=1280,height=720")
+                                    .build())
+                            .build());
             return;
         }
 
@@ -165,44 +196,65 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
                 int value = Integer.parseInt(dimensionStr);
 
                 if (dimensionConfig.getMinValue() != null && value < dimensionConfig.getMinValue()) {
-                    messages.add(ValidationMessage.builder().severity(severity)
-                            .ruleId(dimensionType.equals(WIDTH) ? WIDTH_MIN : HEIGHT_MIN)
-                            .message(String.format("Video %s is below minimum value", dimensionType))
-                            .location(context.createLocation(node)).errorType(ErrorType.OUT_OF_RANGE)
-                            .actualValue(String.valueOf(value))
-                            .expectedValue(String.format(">= %d", dimensionConfig.getMinValue()))
-                            .addSuggestion(Suggestion.builder()
-                                    .description(String.format("Increase %s to at least %d pixels", dimensionType,
-                                            dimensionConfig.getMinValue()))
-                                    .addExample(String.format("%s=%d", dimensionType, dimensionConfig.getMinValue()))
-                                    .build())
-                            .build());
+                    messages
+                            .add(ValidationMessage
+                                    .builder()
+                                    .severity(severity)
+                                    .ruleId(dimensionType.equals(WIDTH) ? WIDTH_MIN : HEIGHT_MIN)
+                                    .message(String.format("Video %s is below minimum value", dimensionType))
+                                    .location(context.createLocation(node))
+                                    .errorType(ErrorType.OUT_OF_RANGE)
+                                    .actualValue(String.valueOf(value))
+                                    .expectedValue(String.format(">= %d", dimensionConfig.getMinValue()))
+                                    .addSuggestion(Suggestion
+                                            .builder()
+                                            .description(String
+                                                    .format("Increase %s to at least %d pixels", dimensionType,
+                                                            dimensionConfig.getMinValue()))
+                                            .addExample(String
+                                                    .format("%s=%d", dimensionType, dimensionConfig.getMinValue()))
+                                            .build())
+                                    .build());
                 }
 
                 if (dimensionConfig.getMaxValue() != null && value > dimensionConfig.getMaxValue()) {
-                    messages.add(ValidationMessage.builder().severity(severity)
-                            .ruleId(dimensionType.equals(WIDTH) ? WIDTH_MAX : HEIGHT_MAX)
-                            .message(String.format("Video %s exceeds maximum value", dimensionType))
-                            .location(context.createLocation(node)).errorType(ErrorType.OUT_OF_RANGE)
-                            .actualValue(String.valueOf(value))
-                            .expectedValue(String.format("<= %d", dimensionConfig.getMaxValue()))
-                            .addSuggestion(Suggestion.builder()
-                                    .description(String.format("Reduce %s to at most %d pixels", dimensionType,
-                                            dimensionConfig.getMaxValue()))
-                                    .addExample(String.format("%s=%d", dimensionType, dimensionConfig.getMaxValue()))
-                                    .build())
-                            .build());
+                    messages
+                            .add(ValidationMessage
+                                    .builder()
+                                    .severity(severity)
+                                    .ruleId(dimensionType.equals(WIDTH) ? WIDTH_MAX : HEIGHT_MAX)
+                                    .message(String.format("Video %s exceeds maximum value", dimensionType))
+                                    .location(context.createLocation(node))
+                                    .errorType(ErrorType.OUT_OF_RANGE)
+                                    .actualValue(String.valueOf(value))
+                                    .expectedValue(String.format("<= %d", dimensionConfig.getMaxValue()))
+                                    .addSuggestion(Suggestion
+                                            .builder()
+                                            .description(String
+                                                    .format("Reduce %s to at most %d pixels", dimensionType,
+                                                            dimensionConfig.getMaxValue()))
+                                            .addExample(String
+                                                    .format("%s=%d", dimensionType, dimensionConfig.getMaxValue()))
+                                            .build())
+                                    .build());
                 }
             } catch (NumberFormatException e) {
-                messages.add(ValidationMessage.builder().severity(severity)
-                        .ruleId(dimensionType.equals(WIDTH) ? WIDTH_INVALID : HEIGHT_INVALID)
-                        .message(String.format("Video %s is not a valid number", dimensionType))
-                        .location(context.createLocation(node)).errorType(ErrorType.INVALID_PATTERN)
-                        .actualValue(dimensionStr).expectedValue("numeric value")
-                        .addSuggestion(Suggestion.builder()
-                                .description(String.format("Use a numeric value for %s", dimensionType))
-                                .addExample(String.format("%s=640", dimensionType)).build())
-                        .build());
+                messages
+                        .add(ValidationMessage
+                                .builder()
+                                .severity(severity)
+                                .ruleId(dimensionType.equals(WIDTH) ? WIDTH_INVALID : HEIGHT_INVALID)
+                                .message(String.format("Video %s is not a valid number", dimensionType))
+                                .location(context.createLocation(node))
+                                .errorType(ErrorType.INVALID_PATTERN)
+                                .actualValue(dimensionStr)
+                                .expectedValue("numeric value")
+                                .addSuggestion(Suggestion
+                                        .builder()
+                                        .description(String.format("Use a numeric value for %s", dimensionType))
+                                        .addExample(String.format("%s=640", dimensionType))
+                                        .build())
+                                .build());
             }
         }
     }
@@ -223,19 +275,30 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
             boolean hasOtherAttributes = node.getAttribute(WIDTH) != null || node.getAttribute(HEIGHT) != null
                     || node.getAttribute(OPTIONS) != null;
 
-            messages.add(ValidationMessage.builder().severity(severity).ruleId(POSTER_REQUIRED)
-                    .message("Video poster image is required but not provided")
-                    .location(SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
-                    .errorType(ErrorType.MISSING_VALUE).missingValueHint("thumbnail.jpg")
-                    .placeholderContext(PlaceholderContext.builder()
-                            .type(hasOtherAttributes
-                                    ? PlaceholderContext.PlaceholderType.ATTRIBUTE_IN_LIST
-                                    : PlaceholderContext.PlaceholderType.ATTRIBUTE_VALUE)
-                            .attributeName("poster").hasExistingAttributes(hasOtherAttributes).build())
-                    .addSuggestion(Suggestion.builder().description("Add a poster image for the video")
-                            .addExample("video::video.mp4[poster=thumbnail.jpg]")
-                            .addExample("poster=images/video-preview.png").build())
-                    .build());
+            messages
+                    .add(ValidationMessage
+                            .builder()
+                            .severity(severity)
+                            .ruleId(POSTER_REQUIRED)
+                            .message("Video poster image is required but not provided")
+                            .location(
+                                    SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
+                            .errorType(ErrorType.MISSING_VALUE)
+                            .missingValueHint("thumbnail.jpg")
+                            .placeholderContext(PlaceholderContext
+                                    .builder()
+                                    .type(hasOtherAttributes ? PlaceholderContext.PlaceholderType.ATTRIBUTE_IN_LIST
+                                            : PlaceholderContext.PlaceholderType.ATTRIBUTE_VALUE)
+                                    .attributeName("poster")
+                                    .hasExistingAttributes(hasOtherAttributes)
+                                    .build())
+                            .addSuggestion(Suggestion
+                                    .builder()
+                                    .description("Add a poster image for the video")
+                                    .addExample("video::video.mp4[poster=thumbnail.jpg]")
+                                    .addExample("poster=images/video-preview.png")
+                                    .build())
+                            .build());
             return;
         }
 
@@ -244,14 +307,26 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
             Pattern pattern = posterConfig.getPattern();
             if (!pattern.matcher(poster).matches()) {
                 SourcePosition pos = findPosterPosition(node, context, poster);
-                messages.add(ValidationMessage.builder().severity(severity).ruleId(POSTER_PATTERN)
-                        .message("Video poster does not match required pattern")
-                        .location(SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
-                        .errorType(ErrorType.INVALID_PATTERN).actualValue(poster).expectedValue(pattern.pattern())
-                        .addSuggestion(Suggestion.builder()
-                                .description("Use a poster image path matching the required pattern")
-                                .addExample("Common image formats: .jpg, .jpeg, .png, .webp").build())
-                        .build());
+                messages
+                        .add(ValidationMessage
+                                .builder()
+                                .severity(severity)
+                                .ruleId(POSTER_PATTERN)
+                                .message("Video poster does not match required pattern")
+                                .location(SourceLocation
+                                        .builder()
+                                        .filename(context.getFilename())
+                                        .fromPosition(pos)
+                                        .build())
+                                .errorType(ErrorType.INVALID_PATTERN)
+                                .actualValue(poster)
+                                .expectedValue(pattern.pattern())
+                                .addSuggestion(Suggestion
+                                        .builder()
+                                        .description("Use a poster image path matching the required pattern")
+                                        .addExample("Common image formats: .jpg, .jpeg, .png, .webp")
+                                        .build())
+                                .build());
             }
         }
     }
@@ -275,20 +350,35 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
                 boolean hasOtherAttributes = node.getAttribute(WIDTH) != null || node.getAttribute(HEIGHT) != null
                         || node.getAttribute(POSTER) != null;
 
-                messages.add(ValidationMessage.builder().severity(severity).ruleId(CONTROLS_REQUIRED)
-                        .message("Video controls are required but not enabled")
-                        .location(SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
-                        .errorType(ErrorType.MISSING_VALUE).missingValueHint("controls")
-                        .placeholderContext(PlaceholderContext.builder()
-                                .type(hasOtherAttributes
-                                        ? PlaceholderContext.PlaceholderType.ATTRIBUTE_IN_LIST
-                                        : PlaceholderContext.PlaceholderType.ATTRIBUTE_VALUE)
-                                .attributeName("options").hasExistingAttributes(hasOtherAttributes).build())
-                        .actualValue(controlsAttr).expectedValue("controls")
-                        .addSuggestion(Suggestion.builder().description("Enable video player controls")
-                                .addExample("video::video.mp4[options=controls]")
-                                .addExample("video::video.mp4[opts=controls]").build())
-                        .build());
+                messages
+                        .add(ValidationMessage
+                                .builder()
+                                .severity(severity)
+                                .ruleId(CONTROLS_REQUIRED)
+                                .message("Video controls are required but not enabled")
+                                .location(SourceLocation
+                                        .builder()
+                                        .filename(context.getFilename())
+                                        .fromPosition(pos)
+                                        .build())
+                                .errorType(ErrorType.MISSING_VALUE)
+                                .missingValueHint("controls")
+                                .placeholderContext(PlaceholderContext
+                                        .builder()
+                                        .type(hasOtherAttributes ? PlaceholderContext.PlaceholderType.ATTRIBUTE_IN_LIST
+                                                : PlaceholderContext.PlaceholderType.ATTRIBUTE_VALUE)
+                                        .attributeName("options")
+                                        .hasExistingAttributes(hasOtherAttributes)
+                                        .build())
+                                .actualValue(controlsAttr)
+                                .expectedValue("controls")
+                                .addSuggestion(Suggestion
+                                        .builder()
+                                        .description("Enable video player controls")
+                                        .addExample("video::video.mp4[options=controls]")
+                                        .addExample("video::video.mp4[opts=controls]")
+                                        .build())
+                                .build());
             }
         }
     }
@@ -309,16 +399,27 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
         // Check if required
         if (Boolean.TRUE.equals(captionConfig.getRequired()) && (caption == null || caption.trim().isEmpty())) {
             SourcePosition pos = findCaptionPosition(node, context);
-            messages.add(ValidationMessage.builder().severity(severity).ruleId(CAPTION_REQUIRED)
-                    .message("Video caption is required but not provided")
-                    .location(SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
-                    .errorType(ErrorType.MISSING_VALUE).missingValueHint(".Video Title")
-                    .placeholderContext(
-                            PlaceholderContext.builder().type(PlaceholderContext.PlaceholderType.INSERT_BEFORE).build())
-                    .addSuggestion(Suggestion.builder().description("Add a caption or title to the video")
-                            .addExample(".Video Title\nvideo::video.mp4[]")
-                            .addExample("video::video.mp4[caption=\"My Video\"]").build())
-                    .build());
+            messages
+                    .add(ValidationMessage
+                            .builder()
+                            .severity(severity)
+                            .ruleId(CAPTION_REQUIRED)
+                            .message("Video caption is required but not provided")
+                            .location(
+                                    SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
+                            .errorType(ErrorType.MISSING_VALUE)
+                            .missingValueHint(".Video Title")
+                            .placeholderContext(PlaceholderContext
+                                    .builder()
+                                    .type(PlaceholderContext.PlaceholderType.INSERT_BEFORE)
+                                    .build())
+                            .addSuggestion(Suggestion
+                                    .builder()
+                                    .description("Add a caption or title to the video")
+                                    .addExample(".Video Title\nvideo::video.mp4[]")
+                                    .addExample("video::video.mp4[caption=\"My Video\"]")
+                                    .build())
+                            .build());
             return;
         }
 
@@ -328,30 +429,54 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
 
             if (captionConfig.getMinLength() != null && length < captionConfig.getMinLength()) {
                 SourcePosition pos = findCaptionPosition(node, context);
-                messages.add(ValidationMessage.builder().severity(severity).ruleId(CAPTION_MIN_LENGTH)
-                        .message("Video caption is too short")
-                        .location(SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
-                        .errorType(ErrorType.OUT_OF_RANGE).actualValue(String.format("%d characters", length))
-                        .expectedValue(String.format(">= %d characters", captionConfig.getMinLength()))
-                        .addSuggestion(Suggestion.builder().description("Provide a more descriptive caption")
-                                .addExample(String.format("Caption should be at least %d characters",
-                                        captionConfig.getMinLength()))
-                                .build())
-                        .build());
+                messages
+                        .add(ValidationMessage
+                                .builder()
+                                .severity(severity)
+                                .ruleId(CAPTION_MIN_LENGTH)
+                                .message("Video caption is too short")
+                                .location(SourceLocation
+                                        .builder()
+                                        .filename(context.getFilename())
+                                        .fromPosition(pos)
+                                        .build())
+                                .errorType(ErrorType.OUT_OF_RANGE)
+                                .actualValue(String.format("%d characters", length))
+                                .expectedValue(String.format(">= %d characters", captionConfig.getMinLength()))
+                                .addSuggestion(Suggestion
+                                        .builder()
+                                        .description("Provide a more descriptive caption")
+                                        .addExample(String
+                                                .format("Caption should be at least %d characters",
+                                                        captionConfig.getMinLength()))
+                                        .build())
+                                .build());
             }
 
             if (captionConfig.getMaxLength() != null && length > captionConfig.getMaxLength()) {
                 SourcePosition pos = findCaptionPosition(node, context);
-                messages.add(ValidationMessage.builder().severity(severity).ruleId(CAPTION_MAX_LENGTH)
-                        .message("Video caption is too long")
-                        .location(SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
-                        .errorType(ErrorType.OUT_OF_RANGE).actualValue(String.format("%d characters", length))
-                        .expectedValue(String.format("<= %d characters", captionConfig.getMaxLength()))
-                        .addSuggestion(Suggestion.builder().description("Shorten the caption to fit the limit")
-                                .addExample(String.format("Caption should be at most %d characters",
-                                        captionConfig.getMaxLength()))
-                                .build())
-                        .build());
+                messages
+                        .add(ValidationMessage
+                                .builder()
+                                .severity(severity)
+                                .ruleId(CAPTION_MAX_LENGTH)
+                                .message("Video caption is too long")
+                                .location(SourceLocation
+                                        .builder()
+                                        .filename(context.getFilename())
+                                        .fromPosition(pos)
+                                        .build())
+                                .errorType(ErrorType.OUT_OF_RANGE)
+                                .actualValue(String.format("%d characters", length))
+                                .expectedValue(String.format("<= %d characters", captionConfig.getMaxLength()))
+                                .addSuggestion(Suggestion
+                                        .builder()
+                                        .description("Shorten the caption to fit the limit")
+                                        .addExample(String
+                                                .format("Caption should be at most %d characters",
+                                                        captionConfig.getMaxLength()))
+                                        .build())
+                                .build());
             }
         }
     }
@@ -397,7 +522,8 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
     }
 
     /**
-     * Finds the column position of a dimension attribute (width/height) in video macro.
+     * Finds the column position of a dimension attribute (width/height) in video
+     * macro.
      */
     private SourcePosition findSourcePosition(StructuralNode block, BlockValidationContext context,
             String dimensionType, String dimensionValue) {

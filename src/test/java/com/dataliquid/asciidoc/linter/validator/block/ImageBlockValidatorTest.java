@@ -25,12 +25,11 @@ import org.asciidoctor.ast.Cursor;
 
 /**
  * Unit tests for {@link ImageBlockValidator}.
- *
  * <p>
- * This test class validates the behavior of the image block validator, which processes image elements in AsciiDoc
- * documents. The tests cover validation rules for image URLs, dimensions, and alternative text.
+ * This test class validates the behavior of the image block validator, which
+ * processes image elements in AsciiDoc documents. The tests cover validation
+ * rules for image URLs, dimensions, and alternative text.
  * </p>
- *
  * <p>
  * Test structure follows a nested class pattern for better organization:
  * </p>
@@ -38,14 +37,16 @@ import org.asciidoctor.ast.Cursor;
  * <li>Validate - Basic validator functionality and type checking</li>
  * <li>UrlValidation - URL requirements and pattern matching</li>
  * <li>DimensionsValidation - Width and height constraints</li>
- * <li>AltTextValidation - Alternative text requirements and length constraints</li>
- * <li>SeverityHierarchy - Block-level severity usage (no nested severity support)</li>
+ * <li>AltTextValidation - Alternative text requirements and length
+ * constraints</li>
+ * <li>SeverityHierarchy - Block-level severity usage (no nested severity
+ * support)</li>
  * <li>ComplexScenarios - Combined validation scenarios</li>
  * </ul>
- *
  * <p>
- * Note: Unlike other block validators, ImageBlock configurations do not support individual severity levels for nested
- * rules. All validations use the block-level severity.
+ * Note: Unlike other block validators, ImageBlock configurations do not support
+ * individual severity levels for nested rules. All validations use the
+ * block-level severity.
  * </p>
  *
  * @see ImageBlockValidator
@@ -140,8 +141,10 @@ class ImageBlockValidatorTest {
         @DisplayName("should validate URL pattern")
         void shouldValidateUrlPattern() {
             // Given
-            ImageBlock.UrlConfig urlConfig = ImageBlock.UrlConfig.builder()
-                    .pattern(Pattern.compile("^images/.*\\.png$")).build();
+            ImageBlock.UrlConfig urlConfig = ImageBlock.UrlConfig
+                    .builder()
+                    .pattern(Pattern.compile("^images/.*\\.png$"))
+                    .build();
             ImageBlock config = ImageBlock.builder().url(urlConfig).severity(Severity.ERROR).build();
 
             when(mockBlock.hasAttribute("target")).thenReturn(true);
@@ -197,8 +200,10 @@ class ImageBlockValidatorTest {
             // Given
             BlockValidationContext testContext = new BlockValidationContext(mockSection, "test.adoc");
 
-            ImageBlock.UrlConfig urlConfig = ImageBlock.UrlConfig.builder()
-                    .pattern(Pattern.compile("^[a-zA-Z0-9/_-]+\\.(png|jpg|jpeg|gif|svg)$")).build();
+            ImageBlock.UrlConfig urlConfig = ImageBlock.UrlConfig
+                    .builder()
+                    .pattern(Pattern.compile("^[a-zA-Z0-9/_-]+\\.(png|jpg|jpeg|gif|svg)$"))
+                    .build();
             ImageBlock config = ImageBlock.builder().url(urlConfig).severity(Severity.ERROR).build();
 
             // Mock source location
@@ -367,7 +372,10 @@ class ImageBlockValidatorTest {
         @DisplayName("should validate height")
         void shouldValidateHeight() {
             // Given
-            ImageBlock.DimensionConfig heightConfig = ImageBlock.DimensionConfig.builder().minValue(50).maxValue(600)
+            ImageBlock.DimensionConfig heightConfig = ImageBlock.DimensionConfig
+                    .builder()
+                    .minValue(50)
+                    .maxValue(600)
                     .build();
             ImageBlock config = ImageBlock.builder().height(heightConfig).severity(Severity.ERROR).build();
 
@@ -497,7 +505,10 @@ class ImageBlockValidatorTest {
         void shouldAlwaysUseBlockSeverityForUrl() {
             // Given - ImageBlock.UrlConfig has no severity field
             ImageBlock.UrlConfig urlConfig = ImageBlock.UrlConfig.builder().required(true).build();
-            ImageBlock config = ImageBlock.builder().url(urlConfig).severity(Severity.INFO) // Block severity
+            ImageBlock config = ImageBlock
+                    .builder()
+                    .url(urlConfig)
+                    .severity(Severity.INFO) // Block severity
                     .build();
 
             when(mockBlock.hasAttribute("target")).thenReturn(false);
@@ -518,7 +529,10 @@ class ImageBlockValidatorTest {
         void shouldAlwaysUseBlockSeverityForDimension() {
             // Given - ImageBlock.DimensionConfig has no severity field
             ImageBlock.DimensionConfig widthConfig = ImageBlock.DimensionConfig.builder().required(true).build();
-            ImageBlock config = ImageBlock.builder().width(widthConfig).severity(Severity.WARN) // Block severity
+            ImageBlock config = ImageBlock
+                    .builder()
+                    .width(widthConfig)
+                    .severity(Severity.WARN) // Block severity
                     .build();
 
             when(mockBlock.hasAttribute("width")).thenReturn(false);
@@ -539,7 +553,10 @@ class ImageBlockValidatorTest {
         void shouldAlwaysUseBlockSeverityForAltText() {
             // Given - ImageBlock.AltTextConfig has no severity field
             ImageBlock.AltTextConfig altConfig = ImageBlock.AltTextConfig.builder().required(true).build();
-            ImageBlock config = ImageBlock.builder().alt(altConfig).severity(Severity.ERROR) // Block severity
+            ImageBlock config = ImageBlock
+                    .builder()
+                    .alt(altConfig)
+                    .severity(Severity.ERROR) // Block severity
                     .build();
 
             when(mockBlock.hasAttribute("alt")).thenReturn(false);
@@ -564,10 +581,12 @@ class ImageBlockValidatorTest {
         @DisplayName("should validate multiple rules together")
         void shouldValidateMultipleRules() {
             // Given
-            ImageBlock config = ImageBlock.builder()
+            ImageBlock config = ImageBlock
+                    .builder()
                     .url(ImageBlock.UrlConfig.builder().required(true).pattern(Pattern.compile("^images/.*")).build())
                     .alt(ImageBlock.AltTextConfig.builder().required(true).minLength(5).build())
-                    .severity(Severity.ERROR).build();
+                    .severity(Severity.ERROR)
+                    .build();
 
             when(mockBlock.hasAttribute("target")).thenReturn(true);
             when(mockBlock.getAttribute("target")).thenReturn("assets/logo.png");

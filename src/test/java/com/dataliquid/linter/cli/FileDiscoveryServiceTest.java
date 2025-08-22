@@ -44,7 +44,10 @@ class FileDiscoveryServiceTest {
             Path file = tempDir.resolve("README.adoc");
             Files.createFile(file);
 
-            CLIConfig config = CLIConfig.builder().inputPatterns(Arrays.asList("README.adoc")).baseDirectory(tempDir)
+            CLIConfig config = CLIConfig
+                    .builder()
+                    .inputPatterns(Arrays.asList("README.adoc"))
+                    .baseDirectory(tempDir)
                     .build();
 
             // When
@@ -63,7 +66,10 @@ class FileDiscoveryServiceTest {
             Files.createFile(tempDir.resolve("doc2.adoc"));
             Files.createFile(tempDir.resolve("readme.txt"));
 
-            CLIConfig config = CLIConfig.builder().inputPatterns(Arrays.asList("*.adoc")).baseDirectory(tempDir)
+            CLIConfig config = CLIConfig
+                    .builder()
+                    .inputPatterns(Arrays.asList("*.adoc"))
+                    .baseDirectory(tempDir)
                     .build();
 
             // When
@@ -94,7 +100,10 @@ class FileDiscoveryServiceTest {
             Files.createFile(deepDir.resolve("deep.adoc"));
             Files.createFile(tempDir.resolve("readme.txt"));
 
-            CLIConfig config = CLIConfig.builder().inputPatterns(Arrays.asList("**/*.adoc")).baseDirectory(tempDir)
+            CLIConfig config = CLIConfig
+                    .builder()
+                    .inputPatterns(Arrays.asList("**/*.adoc"))
+                    .baseDirectory(tempDir)
                     .build();
 
             // When
@@ -102,7 +111,9 @@ class FileDiscoveryServiceTest {
 
             // Then
             assertEquals(3, files.size());
-            List<String> relativePaths = files.stream().map(p -> tempDir.relativize(p).toString())
+            List<String> relativePaths = files
+                    .stream()
+                    .map(p -> tempDir.relativize(p).toString())
                     .collect(Collectors.toList());
             assertTrue(relativePaths.contains("root.adoc"));
             assertTrue(relativePaths.contains("subdir/sub.adoc".replace('/', java.io.File.separatorChar)));
@@ -124,7 +135,10 @@ class FileDiscoveryServiceTest {
             Files.createFile(docsSubDir.resolve("api.adoc"));
             Files.createFile(srcDir.resolve("code.adoc"));
 
-            CLIConfig config = CLIConfig.builder().inputPatterns(Arrays.asList("docs/**/*.adoc")).baseDirectory(tempDir)
+            CLIConfig config = CLIConfig
+                    .builder()
+                    .inputPatterns(Arrays.asList("docs/**/*.adoc"))
+                    .baseDirectory(tempDir)
                     .build();
 
             // When
@@ -132,7 +146,9 @@ class FileDiscoveryServiceTest {
 
             // Then
             assertEquals(2, files.size());
-            List<String> relativePaths = files.stream().map(p -> tempDir.relativize(p).toString())
+            List<String> relativePaths = files
+                    .stream()
+                    .map(p -> tempDir.relativize(p).toString())
                     .collect(Collectors.toList());
             assertTrue(relativePaths.contains("docs/manual.adoc".replace('/', java.io.File.separatorChar)));
             assertTrue(relativePaths.contains("docs/api/api.adoc".replace('/', java.io.File.separatorChar)));
@@ -153,8 +169,11 @@ class FileDiscoveryServiceTest {
             Files.createFile(tempDir.resolve("guide.asciidoc"));
             Files.createFile(tempDir.resolve("manual.txt"));
 
-            CLIConfig config = CLIConfig.builder().inputPatterns(Arrays.asList("*.adoc", "*.asciidoc"))
-                    .baseDirectory(tempDir).build();
+            CLIConfig config = CLIConfig
+                    .builder()
+                    .inputPatterns(Arrays.asList("*.adoc", "*.asciidoc"))
+                    .baseDirectory(tempDir)
+                    .build();
 
             // When
             List<Path> files = service.discoverFiles(config);
@@ -172,8 +191,11 @@ class FileDiscoveryServiceTest {
             // Given
             Files.createFile(tempDir.resolve("doc.adoc"));
 
-            CLIConfig config = CLIConfig.builder().inputPatterns(Arrays.asList("*.adoc", "doc.*", "**/*.adoc"))
-                    .baseDirectory(tempDir).build();
+            CLIConfig config = CLIConfig
+                    .builder()
+                    .inputPatterns(Arrays.asList("*.adoc", "doc.*", "**/*.adoc"))
+                    .baseDirectory(tempDir)
+                    .build();
 
             // When
             List<Path> files = service.discoverFiles(config);
@@ -196,9 +218,11 @@ class FileDiscoveryServiceTest {
             Files.createFile(docsDir.resolve("guide.adoc"));
             Files.createFile(examplesDir.resolve("example.asciidoc"));
 
-            CLIConfig config = CLIConfig.builder()
+            CLIConfig config = CLIConfig
+                    .builder()
                     .inputPatterns(Arrays.asList("docs/**/*.adoc", "examples/**/*.asciidoc", "README.adoc"))
-                    .baseDirectory(tempDir).build();
+                    .baseDirectory(tempDir)
+                    .build();
 
             // When
             List<Path> files = service.discoverFiles(config);
@@ -220,7 +244,10 @@ class FileDiscoveryServiceTest {
             Files.createFile(tempDir.resolve("doc2.adoc"));
             Files.createFile(tempDir.resolve("docs.adoc"));
 
-            CLIConfig config = CLIConfig.builder().inputPatterns(Arrays.asList("doc?.adoc")).baseDirectory(tempDir)
+            CLIConfig config = CLIConfig
+                    .builder()
+                    .inputPatterns(Arrays.asList("doc?.adoc"))
+                    .baseDirectory(tempDir)
                     .build();
 
             // When
@@ -246,8 +273,11 @@ class FileDiscoveryServiceTest {
             Files.createFile(moduleA.resolve("guide.adoc"));
             Files.createFile(moduleB.resolve("guide.adoc"));
 
-            CLIConfig config = CLIConfig.builder().inputPatterns(Arrays.asList("module-*/docs/*.adoc"))
-                    .baseDirectory(tempDir).build();
+            CLIConfig config = CLIConfig
+                    .builder()
+                    .inputPatterns(Arrays.asList("module-*/docs/*.adoc"))
+                    .baseDirectory(tempDir)
+                    .build();
 
             // When
             List<Path> files = service.discoverFiles(config);
@@ -267,7 +297,10 @@ class FileDiscoveryServiceTest {
             // Given
             Files.createFile(tempDir.resolve("readme.txt"));
 
-            CLIConfig config = CLIConfig.builder().inputPatterns(Arrays.asList("*.adoc")).baseDirectory(tempDir)
+            CLIConfig config = CLIConfig
+                    .builder()
+                    .inputPatterns(Arrays.asList("*.adoc"))
+                    .baseDirectory(tempDir)
                     .build();
 
             // When
@@ -284,8 +317,11 @@ class FileDiscoveryServiceTest {
             Path file = tempDir.resolve("test.adoc");
             Files.createFile(file);
 
-            CLIConfig config = CLIConfig.builder().inputPatterns(Arrays.asList(file.toAbsolutePath().toString()))
-                    .baseDirectory(tempDir).build();
+            CLIConfig config = CLIConfig
+                    .builder()
+                    .inputPatterns(Arrays.asList(file.toAbsolutePath().toString()))
+                    .baseDirectory(tempDir)
+                    .build();
 
             // When
             List<Path> files = service.discoverFiles(config);
@@ -299,7 +335,10 @@ class FileDiscoveryServiceTest {
         @DisplayName("should handle empty directory")
         void shouldHandleEmptyDirectory() throws IOException {
             // Given
-            CLIConfig config = CLIConfig.builder().inputPatterns(Arrays.asList("**/*.adoc")).baseDirectory(tempDir)
+            CLIConfig config = CLIConfig
+                    .builder()
+                    .inputPatterns(Arrays.asList("**/*.adoc"))
+                    .baseDirectory(tempDir)
                     .build();
 
             // When

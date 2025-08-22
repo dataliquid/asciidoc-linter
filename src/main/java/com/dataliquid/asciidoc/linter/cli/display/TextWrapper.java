@@ -4,20 +4,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Utility class for wrapping text to fit within a specified width. Provides different strategies for wrapping based on
- * content type.
+ * Utility class for wrapping text to fit within a specified width. Provides
+ * different strategies for wrapping based on content type.
  */
 public class TextWrapper {
 
     /**
-     * Wraps text to fit within the specified maximum width. Automatically detects the best wrapping strategy based on
-     * content.
+     * Wraps text to fit within the specified maximum width. Automatically detects
+     * the best wrapping strategy based on content.
      *
-     * @param text
-     *            the text to wrap
-     * @param maxWidth
-     *            the maximum width for each line
-     * @return a list of wrapped lines
+     * @param  text     the text to wrap
+     * @param  maxWidth the maximum width for each line
+     *
+     * @return          a list of wrapped lines
      */
     public List<String> wrap(String text, int maxWidth) {
         if (text == null || text.isEmpty()) {
@@ -39,13 +38,13 @@ public class TextWrapper {
     }
 
     /**
-     * Wraps comma-separated text, breaking at commas when possible. Useful for lists of items.
+     * Wraps comma-separated text, breaking at commas when possible. Useful for
+     * lists of items.
      *
-     * @param text
-     *            the comma-separated text to wrap
-     * @param maxWidth
-     *            the maximum width for each line
-     * @return a list of wrapped lines
+     * @param  text     the comma-separated text to wrap
+     * @param  maxWidth the maximum width for each line
+     *
+     * @return          a list of wrapped lines
      */
     public List<String> wrapByComma(String text, int maxWidth) {
         List<String> lines = new ArrayList<>();
@@ -74,13 +73,13 @@ public class TextWrapper {
     }
 
     /**
-     * Wraps file paths, breaking at path separators when possible. Preserves path structure for readability.
+     * Wraps file paths, breaking at path separators when possible. Preserves path
+     * structure for readability.
      *
-     * @param text
-     *            the path text to wrap
-     * @param maxWidth
-     *            the maximum width for each line
-     * @return a list of wrapped lines
+     * @param  text     the path text to wrap
+     * @param  maxWidth the maximum width for each line
+     *
+     * @return          a list of wrapped lines
      */
     public List<String> wrapByPath(String text, int maxWidth) {
         List<String> lines = new ArrayList<>();
@@ -108,13 +107,13 @@ public class TextWrapper {
     }
 
     /**
-     * Wraps text by words, breaking at spaces when possible. Standard word wrapping algorithm.
+     * Wraps text by words, breaking at spaces when possible. Standard word wrapping
+     * algorithm.
      *
-     * @param text
-     *            the text to wrap
-     * @param maxWidth
-     *            the maximum width for each line
-     * @return a list of wrapped lines
+     * @param  text     the text to wrap
+     * @param  maxWidth the maximum width for each line
+     *
+     * @return          a list of wrapped lines
      */
     public List<String> wrapByWords(String text, int maxWidth) {
         List<String> lines = new ArrayList<>();
@@ -142,11 +141,10 @@ public class TextWrapper {
     /**
      * Finds the last path separator (/ or \) within the specified limit.
      *
-     * @param text
-     *            the text to search
-     * @param limit
-     *            the maximum index to search up to
-     * @return the index of the last path separator, or -1 if not found
+     * @param  text  the text to search
+     * @param  limit the maximum index to search up to
+     *
+     * @return       the index of the last path separator, or -1 if not found
      */
     private int findLastPathSeparator(String text, int limit) {
         int lastSlash = text.lastIndexOf('/', limit);

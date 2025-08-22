@@ -21,27 +21,30 @@ import com.dataliquid.asciidoc.linter.validator.Suggestion;
 
 /**
  * Validator for audio blocks in AsciiDoc documents.
- *
  * <p>
- * This validator validates audio blocks based on the YAML schema structure defined in
- * {@code src/main/resources/schemas/blocks/audio-block.yaml}. The YAML configuration is parsed into {@link AudioBlock}
- * objects which define the validation rules.
+ * This validator validates audio blocks based on the YAML schema structure
+ * defined in {@code src/main/resources/schemas/blocks/audio-block.yaml}. The
+ * YAML configuration is parsed into {@link AudioBlock} objects which define the
+ * validation rules.
  * </p>
- *
  * <p>
  * Supported validation rules from YAML schema:
  * </p>
  * <ul>
- * <li><b>url</b>: Validates audio URL/path (required, pattern matching, severity support)</li>
- * <li><b>options.autoplay</b>: Validates autoplay option (allowed/disallowed, severity support)</li>
- * <li><b>options.controls</b>: Validates controls requirement (required, severity support)</li>
- * <li><b>options.loop</b>: Validates loop option (allowed/disallowed, severity support)</li>
- * <li><b>title</b>: Validates title/description (required, length constraints, severity support)</li>
+ * <li><b>url</b>: Validates audio URL/path (required, pattern matching,
+ * severity support)</li>
+ * <li><b>options.autoplay</b>: Validates autoplay option (allowed/disallowed,
+ * severity support)</li>
+ * <li><b>options.controls</b>: Validates controls requirement (required,
+ * severity support)</li>
+ * <li><b>options.loop</b>: Validates loop option (allowed/disallowed, severity
+ * support)</li>
+ * <li><b>title</b>: Validates title/description (required, length constraints,
+ * severity support)</li>
  * </ul>
- *
  * <p>
- * Note: Audio block nested configurations support individual severity levels. If not specified, they fall back to the
- * block-level severity.
+ * Note: Audio block nested configurations support individual severity levels.
+ * If not specified, they fall back to the block-level severity.
  * </p>
  *
  * @see AudioBlock
@@ -126,29 +129,52 @@ public final class AudioBlockValidator extends AbstractBlockValidator<AudioBlock
         // Check if URL is required
         if (urlConfig.isRequired() && (url == null || url.trim().isEmpty())) {
             SourcePosition pos = findSourcePosition(block, context, url);
-            messages.add(ValidationMessage.builder().severity(severity).ruleId(URL_REQUIRED)
-                    .location(SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
-                    .message("Audio URL is required but not provided").errorType(ErrorType.MISSING_VALUE)
-                    .missingValueHint("target")
-                    .placeholderContext(
-                            PlaceholderContext.builder().type(PlaceholderContext.PlaceholderType.SIMPLE_VALUE).build())
-                    .addSuggestion(Suggestion.builder().description("Add audio URL").fixedValue("audio.mp3")
-                            .addExample("audio::music.mp3[]").addExample("audio::sounds/notification.ogg[]")
-                            .addExample("audio::https://example.com/audio.wav[]").build())
-                    .build());
+            messages
+                    .add(ValidationMessage
+                            .builder()
+                            .severity(severity)
+                            .ruleId(URL_REQUIRED)
+                            .location(
+                                    SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
+                            .message("Audio URL is required but not provided")
+                            .errorType(ErrorType.MISSING_VALUE)
+                            .missingValueHint("target")
+                            .placeholderContext(PlaceholderContext
+                                    .builder()
+                                    .type(PlaceholderContext.PlaceholderType.SIMPLE_VALUE)
+                                    .build())
+                            .addSuggestion(Suggestion
+                                    .builder()
+                                    .description("Add audio URL")
+                                    .fixedValue("audio.mp3")
+                                    .addExample("audio::music.mp3[]")
+                                    .addExample("audio::sounds/notification.ogg[]")
+                                    .addExample("audio::https://example.com/audio.wav[]")
+                                    .build())
+                            .build());
             return;
         }
 
         if (url != null && !url.trim().isEmpty() && urlConfig.getPattern() != null) {
             // Validate URL pattern
             if (!urlConfig.getPattern().matcher(url).matches()) {
-                messages.add(ValidationMessage.builder().severity(severity).ruleId(URL_PATTERN)
-                        .location(context.createLocation(block)).message("Audio URL does not match required pattern")
-                        .actualValue(url).expectedValue("Pattern: " + urlConfig.getPattern().pattern())
-                        .addSuggestion(Suggestion.builder().description("Use valid audio URL format")
-                                .addExample("audio::file.mp3[]").addExample("audio::sounds/music.wav[]")
-                                .explanation("URL must match pattern: " + urlConfig.getPattern().pattern()).build())
-                        .build());
+                messages
+                        .add(ValidationMessage
+                                .builder()
+                                .severity(severity)
+                                .ruleId(URL_PATTERN)
+                                .location(context.createLocation(block))
+                                .message("Audio URL does not match required pattern")
+                                .actualValue(url)
+                                .expectedValue("Pattern: " + urlConfig.getPattern().pattern())
+                                .addSuggestion(Suggestion
+                                        .builder()
+                                        .description("Use valid audio URL format")
+                                        .addExample("audio::file.mp3[]")
+                                        .addExample("audio::sounds/music.wav[]")
+                                        .explanation("URL must match pattern: " + urlConfig.getPattern().pattern())
+                                        .build())
+                                .build());
             }
         }
     }
@@ -180,14 +206,23 @@ public final class AudioBlockValidator extends AbstractBlockValidator<AudioBlock
         boolean hasAutoplay = hasOption(block, AUTOPLAY);
 
         if (!autoplayConfig.isAllowed() && hasAutoplay) {
-            messages.add(ValidationMessage.builder().severity(severity).ruleId(OPTIONS_AUTOPLAY_NOT_ALLOWED)
-                    .location(context.createLocation(block)).message("Audio autoplay is not allowed")
-                    .actualValue("autoplay enabled").expectedValue("autoplay must not be used")
-                    .addSuggestion(Suggestion.builder().description("Remove autoplay option")
-                            .addExample("audio::file.mp3[options=controls]")
-                            .addExample("Remove 'autoplay' from options attribute")
-                            .explanation("Autoplay can be disruptive for users").build())
-                    .build());
+            messages
+                    .add(ValidationMessage
+                            .builder()
+                            .severity(severity)
+                            .ruleId(OPTIONS_AUTOPLAY_NOT_ALLOWED)
+                            .location(context.createLocation(block))
+                            .message("Audio autoplay is not allowed")
+                            .actualValue("autoplay enabled")
+                            .expectedValue("autoplay must not be used")
+                            .addSuggestion(Suggestion
+                                    .builder()
+                                    .description("Remove autoplay option")
+                                    .addExample("audio::file.mp3[options=controls]")
+                                    .addExample("Remove 'autoplay' from options attribute")
+                                    .explanation("Autoplay can be disruptive for users")
+                                    .build())
+                            .build());
         }
     }
 
@@ -200,17 +235,29 @@ public final class AudioBlockValidator extends AbstractBlockValidator<AudioBlock
 
         if (controlsConfig.isRequired() && !hasControls) {
             SourcePosition pos = findSourcePosition(block, context);
-            messages.add(ValidationMessage.builder().severity(severity).ruleId(OPTIONS_CONTROLS_REQUIRED)
-                    .location(SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
-                    .message("Audio controls are required but not enabled").errorType(ErrorType.MISSING_VALUE)
-                    .missingValueHint("controls")
-                    .placeholderContext(PlaceholderContext.builder()
-                            .type(PlaceholderContext.PlaceholderType.ATTRIBUTE_VALUE).attributeName("options").build())
-                    .addSuggestion(Suggestion.builder().description("Enable audio controls")
-                            .addExample("audio::file.mp3[options=controls]")
-                            .addExample("audio::file.mp3[opts=controls]")
-                            .explanation("Controls allow users to play/pause the audio").build())
-                    .build());
+            messages
+                    .add(ValidationMessage
+                            .builder()
+                            .severity(severity)
+                            .ruleId(OPTIONS_CONTROLS_REQUIRED)
+                            .location(
+                                    SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
+                            .message("Audio controls are required but not enabled")
+                            .errorType(ErrorType.MISSING_VALUE)
+                            .missingValueHint("controls")
+                            .placeholderContext(PlaceholderContext
+                                    .builder()
+                                    .type(PlaceholderContext.PlaceholderType.ATTRIBUTE_VALUE)
+                                    .attributeName("options")
+                                    .build())
+                            .addSuggestion(Suggestion
+                                    .builder()
+                                    .description("Enable audio controls")
+                                    .addExample("audio::file.mp3[options=controls]")
+                                    .addExample("audio::file.mp3[opts=controls]")
+                                    .explanation("Controls allow users to play/pause the audio")
+                                    .build())
+                            .build());
         }
     }
 
@@ -222,14 +269,23 @@ public final class AudioBlockValidator extends AbstractBlockValidator<AudioBlock
         boolean hasLoop = hasOption(block, LOOP);
 
         if (!loopConfig.isAllowed() && hasLoop) {
-            messages.add(ValidationMessage.builder().severity(severity).ruleId(OPTIONS_LOOP_NOT_ALLOWED)
-                    .location(context.createLocation(block)).message("Audio loop is not allowed")
-                    .actualValue("loop enabled").expectedValue("loop must not be used")
-                    .addSuggestion(Suggestion.builder().description("Remove loop option")
-                            .addExample("audio::file.mp3[options=controls]")
-                            .addExample("Remove 'loop' from options attribute")
-                            .explanation("Looping audio can be annoying for users").build())
-                    .build());
+            messages
+                    .add(ValidationMessage
+                            .builder()
+                            .severity(severity)
+                            .ruleId(OPTIONS_LOOP_NOT_ALLOWED)
+                            .location(context.createLocation(block))
+                            .message("Audio loop is not allowed")
+                            .actualValue("loop enabled")
+                            .expectedValue("loop must not be used")
+                            .addSuggestion(Suggestion
+                                    .builder()
+                                    .description("Remove loop option")
+                                    .addExample("audio::file.mp3[options=controls]")
+                                    .addExample("Remove 'loop' from options attribute")
+                                    .explanation("Looping audio can be annoying for users")
+                                    .build())
+                            .build());
         }
     }
 
@@ -252,44 +308,70 @@ public final class AudioBlockValidator extends AbstractBlockValidator<AudioBlock
 
         if (titleConfig.isRequired() && (title == null || title.trim().isEmpty())) {
             SourcePosition pos = findTitlePosition(block, context);
-            messages.add(ValidationMessage.builder().severity(severity).ruleId(TITLE_REQUIRED)
-                    .location(SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
-                    .message("Audio title is required but not provided").errorType(ErrorType.MISSING_VALUE)
-                    .missingValueHint(".Audio Title")
-                    .placeholderContext(
-                            PlaceholderContext.builder().type(PlaceholderContext.PlaceholderType.INSERT_BEFORE).build())
-                    .addSuggestion(Suggestion.builder().description("Add a title for the audio")
-                            .addExample(".Background Music\naudio::music.mp3[]")
-                            .addExample(".Podcast Episode\naudio::episode-01.mp3[]")
-                            .explanation("Titles help identify audio content").build())
-                    .build());
+            messages
+                    .add(ValidationMessage
+                            .builder()
+                            .severity(severity)
+                            .ruleId(TITLE_REQUIRED)
+                            .location(
+                                    SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
+                            .message("Audio title is required but not provided")
+                            .errorType(ErrorType.MISSING_VALUE)
+                            .missingValueHint(".Audio Title")
+                            .placeholderContext(PlaceholderContext
+                                    .builder()
+                                    .type(PlaceholderContext.PlaceholderType.INSERT_BEFORE)
+                                    .build())
+                            .addSuggestion(Suggestion
+                                    .builder()
+                                    .description("Add a title for the audio")
+                                    .addExample(".Background Music\naudio::music.mp3[]")
+                                    .addExample(".Podcast Episode\naudio::episode-01.mp3[]")
+                                    .explanation("Titles help identify audio content")
+                                    .build())
+                            .build());
             return;
         }
 
         if (title != null && !title.trim().isEmpty()) {
             // Validate min length
             if (titleConfig.getMinLength() != null && title.length() < titleConfig.getMinLength()) {
-                messages.add(ValidationMessage.builder().severity(severity).ruleId(TITLE_MIN_LENGTH)
-                        .location(context.createLocation(block)).message("Audio title is too short")
-                        .actualValue(title.length() + " characters")
-                        .expectedValue("At least " + titleConfig.getMinLength() + " characters")
-                        .addSuggestion(Suggestion.builder().description("Provide a more descriptive title")
-                                .addExample("Instead of 'Audio', use 'Introduction Speech'")
-                                .addExample("Instead of 'Sound', use 'Background Music Track'").build())
-                        .build());
+                messages
+                        .add(ValidationMessage
+                                .builder()
+                                .severity(severity)
+                                .ruleId(TITLE_MIN_LENGTH)
+                                .location(context.createLocation(block))
+                                .message("Audio title is too short")
+                                .actualValue(title.length() + " characters")
+                                .expectedValue("At least " + titleConfig.getMinLength() + " characters")
+                                .addSuggestion(Suggestion
+                                        .builder()
+                                        .description("Provide a more descriptive title")
+                                        .addExample("Instead of 'Audio', use 'Introduction Speech'")
+                                        .addExample("Instead of 'Sound', use 'Background Music Track'")
+                                        .build())
+                                .build());
             }
 
             // Validate max length
             if (titleConfig.getMaxLength() != null && title.length() > titleConfig.getMaxLength()) {
-                messages.add(ValidationMessage.builder().severity(severity).ruleId(TITLE_MAX_LENGTH)
-                        .location(context.createLocation(block)).message("Audio title is too long")
-                        .actualValue(title.length() + " characters")
-                        .expectedValue("At most " + titleConfig.getMaxLength() + " characters")
-                        .addSuggestion(Suggestion.builder()
-                                .description("Shorten the title while keeping it descriptive")
-                                .addExample(String.format("Keep title under %d characters", titleConfig.getMaxLength()))
-                                .build())
-                        .build());
+                messages
+                        .add(ValidationMessage
+                                .builder()
+                                .severity(severity)
+                                .ruleId(TITLE_MAX_LENGTH)
+                                .location(context.createLocation(block))
+                                .message("Audio title is too long")
+                                .actualValue(title.length() + " characters")
+                                .expectedValue("At most " + titleConfig.getMaxLength() + " characters")
+                                .addSuggestion(Suggestion
+                                        .builder()
+                                        .description("Shorten the title while keeping it descriptive")
+                                        .addExample(String
+                                                .format("Keep title under %d characters", titleConfig.getMaxLength()))
+                                        .build())
+                                .build());
             }
         }
     }

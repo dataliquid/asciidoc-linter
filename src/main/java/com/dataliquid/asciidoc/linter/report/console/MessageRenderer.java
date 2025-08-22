@@ -28,9 +28,9 @@ public class MessageRenderer {
     public void render(ValidationMessage message, PrintWriter writer) {
         // Format depends on OutputFormat
         switch (config.getFormat()) {
-            case ENHANCED -> renderEnhanced(message, writer);
-            case SIMPLE -> renderSimple(message, writer);
-            case COMPACT -> renderCompact(message, writer);
+        case ENHANCED -> renderEnhanced(message, writer);
+        case SIMPLE -> renderSimple(message, writer);
+        case COMPACT -> renderCompact(message, writer);
         }
     }
 
@@ -98,8 +98,15 @@ public class MessageRenderer {
     private void renderCompact(ValidationMessage message, PrintWriter writer) {
         // Single-line output for CI/CD
         StringBuilder compact = new StringBuilder();
-        compact.append(message.getLocation().formatLocation()).append(": ").append(message.getSeverity()).append(": ")
-                .append(message.getMessage()).append(" [").append(message.getRuleId()).append("]");
+        compact
+                .append(message.getLocation().formatLocation())
+                .append(": ")
+                .append(message.getSeverity())
+                .append(": ")
+                .append(message.getMessage())
+                .append(" [")
+                .append(message.getRuleId())
+                .append("]");
 
         // Add actual/expected values inline if present
         if (message.getActualValue().isPresent() || message.getExpectedValue().isPresent()) {
@@ -129,9 +136,9 @@ public class MessageRenderer {
 
     private String formatSeverity(ValidationMessage message) {
         return switch (message.getSeverity()) {
-            case ERROR -> colorScheme.error("[ERROR]");
-            case WARN -> colorScheme.warning("[WARN]");
-            case INFO -> colorScheme.info("[INFO]");
+        case ERROR -> colorScheme.error("[ERROR]");
+        case WARN -> colorScheme.warning("[WARN]");
+        case INFO -> colorScheme.info("[INFO]");
         };
     }
 

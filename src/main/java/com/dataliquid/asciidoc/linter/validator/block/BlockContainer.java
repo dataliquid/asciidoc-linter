@@ -9,7 +9,8 @@ import org.asciidoctor.ast.Section;
 import org.asciidoctor.ast.StructuralNode;
 
 /**
- * Wrapper for block containers (Document or Section) to provide unified access to blocks.
+ * Wrapper for block containers (Document or Section) to provide unified access
+ * to blocks.
  */
 public final class BlockContainer {
     private final StructuralNode node;
@@ -35,7 +36,8 @@ public final class BlockContainer {
     }
 
     /**
-     * Gets all blocks from the container, handling preamble expansion for documents.
+     * Gets all blocks from the container, handling preamble expansion for
+     * documents.
      */
     public List<StructuralNode> getBlocks() {
         if (node instanceof Document) {
@@ -59,8 +61,8 @@ public final class BlockContainer {
     }
 
     /**
-     * Gets blocks from a document, expanding preamble if present. Only returns blocks at the document level, not blocks
-     * within sections.
+     * Gets blocks from a document, expanding preamble if present. Only returns
+     * blocks at the document level, not blocks within sections.
      */
     private List<StructuralNode> getDocumentBlocks(Document document) {
         List<StructuralNode> blocks = new ArrayList<>();

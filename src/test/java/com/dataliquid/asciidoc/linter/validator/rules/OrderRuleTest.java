@@ -25,8 +25,11 @@ class OrderRuleTest {
         @DisplayName("should build rule with order constraints")
         void shouldBuildRuleWithOrderConstraints() {
             // Given
-            OrderRule.Builder builder = OrderRule.builder().addOrderConstraint("title", 1, Severity.ERROR)
-                    .addOrderConstraint("author", 2, Severity.ERROR).addOrderConstraint("revdate", 3, Severity.WARN);
+            OrderRule.Builder builder = OrderRule
+                    .builder()
+                    .addOrderConstraint("title", 1, Severity.ERROR)
+                    .addOrderConstraint("author", 2, Severity.ERROR)
+                    .addOrderConstraint("revdate", 3, Severity.WARN);
 
             // When
             OrderRule rule = builder.build();
@@ -43,7 +46,9 @@ class OrderRuleTest {
         @DisplayName("should allow null order for flexible positioning")
         void shouldAllowNullOrderForFlexiblePositioning() {
             // Given
-            OrderRule.Builder builder = OrderRule.builder().addOrderConstraint("title", 1, Severity.ERROR)
+            OrderRule.Builder builder = OrderRule
+                    .builder()
+                    .addOrderConstraint("title", 1, Severity.ERROR)
                     .addOrderConstraint("optional", null, Severity.INFO);
 
             // When
@@ -62,8 +67,11 @@ class OrderRuleTest {
         @DisplayName("should pass when attributes are in correct order")
         void shouldPassWhenAttributesAreInCorrectOrder() {
             // Given
-            OrderRule rule = OrderRule.builder().addOrderConstraint("title", 1, Severity.ERROR)
-                    .addOrderConstraint("author", 2, Severity.ERROR).addOrderConstraint("revdate", 3, Severity.ERROR)
+            OrderRule rule = OrderRule
+                    .builder()
+                    .addOrderConstraint("title", 1, Severity.ERROR)
+                    .addOrderConstraint("author", 2, Severity.ERROR)
+                    .addOrderConstraint("revdate", 3, Severity.ERROR)
                     .build();
 
             // When
@@ -80,8 +88,11 @@ class OrderRuleTest {
         @DisplayName("should fail when attributes are out of order")
         void shouldFailWhenAttributesAreOutOfOrder() {
             // Given
-            OrderRule rule = OrderRule.builder().addOrderConstraint("title", 1, Severity.ERROR)
-                    .addOrderConstraint("author", 2, Severity.ERROR).addOrderConstraint("revdate", 3, Severity.ERROR)
+            OrderRule rule = OrderRule
+                    .builder()
+                    .addOrderConstraint("title", 1, Severity.ERROR)
+                    .addOrderConstraint("author", 2, Severity.ERROR)
+                    .addOrderConstraint("revdate", 3, Severity.ERROR)
                     .build();
 
             // When
@@ -94,17 +105,24 @@ class OrderRuleTest {
             // Then
             assertFalse(messages.isEmpty());
 
-            assertTrue(messages.stream().anyMatch(m -> m.getMessage().equals(
-                    "Attribute 'title' should appear before 'author': actual position line 3, expected before line 2")));
+            assertTrue(messages
+                    .stream()
+                    .anyMatch(m -> m
+                            .getMessage()
+                            .equals("Attribute 'title' should appear before 'author': actual position line 3, expected before line 2")));
         }
 
         @Test
         @DisplayName("should detect multiple order violations")
         void shouldDetectMultipleOrderViolations() {
             // Given
-            OrderRule rule = OrderRule.builder().addOrderConstraint("title", 1, Severity.ERROR)
-                    .addOrderConstraint("author", 2, Severity.ERROR).addOrderConstraint("version", 3, Severity.ERROR)
-                    .addOrderConstraint("revdate", 4, Severity.ERROR).build();
+            OrderRule rule = OrderRule
+                    .builder()
+                    .addOrderConstraint("title", 1, Severity.ERROR)
+                    .addOrderConstraint("author", 2, Severity.ERROR)
+                    .addOrderConstraint("version", 3, Severity.ERROR)
+                    .addOrderConstraint("revdate", 4, Severity.ERROR)
+                    .build();
 
             // When
             rule.validate("version", "1.0", createLocation("test.adoc", 1));
@@ -126,8 +144,11 @@ class OrderRuleTest {
         @DisplayName("should handle missing attributes in order check")
         void shouldHandleMissingAttributesInOrderCheck() {
             // Given
-            OrderRule rule = OrderRule.builder().addOrderConstraint("title", 1, Severity.ERROR)
-                    .addOrderConstraint("author", 2, Severity.ERROR).addOrderConstraint("version", 3, Severity.ERROR)
+            OrderRule rule = OrderRule
+                    .builder()
+                    .addOrderConstraint("title", 1, Severity.ERROR)
+                    .addOrderConstraint("author", 2, Severity.ERROR)
+                    .addOrderConstraint("version", 3, Severity.ERROR)
                     .build();
 
             // When
@@ -143,8 +164,11 @@ class OrderRuleTest {
         @DisplayName("should ignore attributes without order constraint")
         void shouldIgnoreAttributesWithoutOrderConstraint() {
             // Given
-            OrderRule rule = OrderRule.builder().addOrderConstraint("title", 1, Severity.ERROR)
-                    .addOrderConstraint("author", 2, Severity.ERROR).build();
+            OrderRule rule = OrderRule
+                    .builder()
+                    .addOrderConstraint("title", 1, Severity.ERROR)
+                    .addOrderConstraint("author", 2, Severity.ERROR)
+                    .build();
 
             // When
             rule.validate("title", "My Document", createLocation("test.adoc", 1));
@@ -165,8 +189,11 @@ class OrderRuleTest {
         @DisplayName("should include line numbers in error messages")
         void shouldIncludeLineNumbersInErrorMessages() {
             // Given
-            OrderRule rule = OrderRule.builder().addOrderConstraint("title", 1, Severity.ERROR)
-                    .addOrderConstraint("author", 2, Severity.ERROR).build();
+            OrderRule rule = OrderRule
+                    .builder()
+                    .addOrderConstraint("title", 1, Severity.ERROR)
+                    .addOrderConstraint("author", 2, Severity.ERROR)
+                    .build();
 
             // When
             rule.validate("author", "John Doe", createLocation("test.adoc", 2));
