@@ -22,7 +22,7 @@ public class AsciiBoxDrawer {
      * @param width the total width of the box including borders
      */
     public AsciiBoxDrawer(int width) {
-        this(width, new PrintWriter(System.out, true));
+        this(width, new PrintWriter(System.out, true)); // intentional console output for CLI display
     }
 
     /**

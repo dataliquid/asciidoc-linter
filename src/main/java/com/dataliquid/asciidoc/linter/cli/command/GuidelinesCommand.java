@@ -203,7 +203,7 @@ public class GuidelinesCommand implements Command {
     }
 
     private void generateToStdout(RuleDocumentationGenerator generator, LinterConfiguration config) {
-        PrintWriter writer = new PrintWriter(System.out);
+        PrintWriter writer = new PrintWriter(System.out); // intentional console output for guidelines
         generator.generate(config, writer);
         writer.flush();
     }

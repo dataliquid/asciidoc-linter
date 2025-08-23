@@ -157,7 +157,7 @@ public class ReportWriter {
     }
 
     private void writeToConsole(ValidationResult result, ReportFormatter formatter) {
-        try (PrintWriter writer = new PrintWriter(System.out)) {
+        try (PrintWriter writer = new PrintWriter(System.out)) { // intentional console output for reports
             formatter.format(result, writer);
             writer.flush();
         }
