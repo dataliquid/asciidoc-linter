@@ -311,7 +311,7 @@ public final class AudioBlockValidator extends AbstractBlockValidator<AudioBlock
         Severity severity = resolveSeverity(titleConfig.getSeverity(), audioConfig.getSeverity());
 
         if (titleConfig.isRequired() && StringUtils.isBlank(title)) {
-            SourcePosition pos = findTitlePosition(block, context);
+            SourcePosition pos = findTitlePosition(block);
             messages
                     .add(ValidationMessage
                             .builder()
@@ -452,8 +452,7 @@ public final class AudioBlockValidator extends AbstractBlockValidator<AudioBlock
     /**
      * Finds the column position for title in audio macro.
      */
-    @SuppressWarnings("PMD.UnusedFormalParameter")
-    private SourcePosition findTitlePosition(StructuralNode block, BlockValidationContext context) {
+    private SourcePosition findTitlePosition(StructuralNode block) {
         if (block.getSourceLocation() == null) {
             return new SourcePosition(1, 1, 1);
         }

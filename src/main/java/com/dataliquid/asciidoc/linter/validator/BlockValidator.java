@@ -58,7 +58,7 @@ public final class BlockValidator {
         BlockContainer container = BlockContainer.fromDocument(document);
         BlockValidationContext context = new BlockValidationContext(document, filename);
         // Starting document validation
-        return validateContainer(container, config, context, filename);
+        return validateContainer(container, config, context);
     }
 
     /**
@@ -78,15 +78,14 @@ public final class BlockValidator {
         // Use the generic validation method with a section container
         BlockContainer container = BlockContainer.fromSection(section);
         BlockValidationContext context = new BlockValidationContext(section, filename);
-        return validateContainer(container, config, context, filename);
+        return validateContainer(container, config, context);
     }
 
     /**
      * Generic validation method for any block container.
      */
-    @SuppressWarnings("PMD.UnusedFormalParameter")
     private ValidationResult validateContainer(BlockContainer container, SectionConfig config,
-            BlockValidationContext context, String filename) {
+            BlockValidationContext context) {
         List<ValidationMessage> messages = new ArrayList<>();
 
         // No block validation if no blocks configured

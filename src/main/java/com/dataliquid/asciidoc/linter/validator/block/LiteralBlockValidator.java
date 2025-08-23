@@ -131,7 +131,7 @@ public final class LiteralBlockValidator extends AbstractBlockValidator<LiteralB
 
         // Check if title is required
         if (config.isRequired() && StringUtils.isBlank(title)) {
-            SourcePosition pos = findTitlePosition(block, context);
+            SourcePosition pos = findTitlePosition(block);
             messages
                     .add(ValidationMessage
                             .builder()
@@ -323,8 +323,7 @@ public final class LiteralBlockValidator extends AbstractBlockValidator<LiteralB
     /**
      * Finds the position where title should be inserted.
      */
-    @SuppressWarnings("PMD.UnusedFormalParameter")
-    private SourcePosition findTitlePosition(StructuralNode block, BlockValidationContext context) {
+    private SourcePosition findTitlePosition(StructuralNode block) {
         if (block.getSourceLocation() == null) {
             return new SourcePosition(1, 1, 1);
         }

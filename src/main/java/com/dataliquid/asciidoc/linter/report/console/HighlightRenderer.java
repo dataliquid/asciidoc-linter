@@ -125,7 +125,7 @@ public class HighlightRenderer {
 
         // Line content
         if (line.isErrorLine()) {
-            String highlightedContent = highlightErrorInLine(line.getContent(), message, line.getNumber());
+            String highlightedContent = highlightErrorInLine(line.getContent(), message);
             writer.println(linePrefix + highlightedContent);
 
             // Add underline/marker if configured
@@ -138,8 +138,7 @@ public class HighlightRenderer {
         }
     }
 
-    @SuppressWarnings("PMD.UnusedFormalParameter")
-    private String highlightErrorInLine(String line, ValidationMessage message, int lineNum) {
+    private String highlightErrorInLine(String line, ValidationMessage message) {
         // For missing values: insert placeholder
         if (message.getErrorType() == ErrorType.MISSING_VALUE && message.getMissingValueHint() != null) {
             // For section.min-occurrences, insert placeholder on empty lines

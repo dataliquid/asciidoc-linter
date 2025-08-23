@@ -5,6 +5,7 @@ import static com.dataliquid.asciidoc.linter.validator.RuleIds.Section.*;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -73,7 +74,7 @@ public final class SectionValidator {
         for (StructuralNode node : sections) {
             if (node instanceof Section) {
                 Section section = (Section) node;
-                validateSection(section, level1Configs, filename, resultBuilder, null);
+                validateSection(section, level1Configs, filename, resultBuilder);
             }
         }
     }
@@ -90,9 +91,8 @@ public final class SectionValidator {
         return rootSections.stream().filter(config -> config.level() != 0).collect(Collectors.toList());
     }
 
-    @SuppressWarnings("PMD.UnusedFormalParameter")
     private void validateSection(Section section, List<SectionConfig> allowedConfigs, String filename,
-            ValidationResult.Builder resultBuilder, SectionConfig parentConfig) {
+            ValidationResult.Builder resultBuilder) {
 
         int level = section.getLevel();
         String title = section.getTitle();
@@ -199,7 +199,7 @@ public final class SectionValidator {
                 subsectionConfigs = determineSubsectionConfigsFromParent(allowedConfigs, level);
             }
 
-            validateSection((Section) subsection, subsectionConfigs, filename, resultBuilder, matchingConfig);
+            validateSection((Section) subsection, subsectionConfigs, filename, resultBuilder);
         }
     }
 
@@ -463,8 +463,7 @@ public final class SectionValidator {
             return;
         }
 
-        @SuppressWarnings("PMD.UseConcurrentHashMap") // Local variable, no concurrency needed
-        Map<String, Integer> actualOrder = new HashMap<>();
+        Map<String, Integer> actualOrder = Collections.synchronizedMap(new LinkedHashMap<>());
         for (int i = 0; i < sections.size(); i++) {
             if (sections.get(i) instanceof Section) {
                 Section section = (Section) sections.get(i);

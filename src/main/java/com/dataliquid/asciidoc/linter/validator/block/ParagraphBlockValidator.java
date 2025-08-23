@@ -114,7 +114,7 @@ public final class ParagraphBlockValidator extends AbstractBlockValidator<Paragr
         Severity severity = resolveSeverity(lineConfig.severity(), blockConfig.getSeverity());
 
         if (lineConfig.min() != null && actualLines < lineConfig.min()) {
-            SourcePosition pos = findSourcePosition(block, context, actualLines);
+            SourcePosition pos = findSourcePosition(block, context);
             messages
                     .add(ValidationMessage
                             .builder()
@@ -308,14 +308,13 @@ public final class ParagraphBlockValidator extends AbstractBlockValidator<Paragr
             List<ValidationMessage> messages) {
 
         Severity severity = resolveSeverity(wordsConfig.getSeverity(), blockConfig.getSeverity());
-        String fullContent = getBlockContent(block);
 
         for (int i = 0; i < sentences.size(); i++) {
             String sentence = sentences.get(i);
             int wordCount = countWords(sentence);
 
             if (wordsConfig.getMin() != null && wordCount < wordsConfig.getMin()) {
-                SourcePosition pos = findSentenceEndPosition(block, context, sentence, i);
+                SourcePosition pos = findSentenceEndPosition(block, context, sentence);
                 messages
                         .add(ValidationMessage
                                 .builder()
@@ -348,7 +347,7 @@ public final class ParagraphBlockValidator extends AbstractBlockValidator<Paragr
             }
 
             if (wordsConfig.getMax() != null && wordCount > wordsConfig.getMax()) {
-                SourceLocation location = createSentenceLocation(block, context, fullContent, sentence, i);
+                SourceLocation location = createSentenceLocation(block, context, sentence);
                 messages
                         .add(ValidationMessage
                                 .builder()
@@ -419,9 +418,8 @@ public final class ParagraphBlockValidator extends AbstractBlockValidator<Paragr
     /**
      * Creates a source location for a specific sentence within a paragraph.
      */
-    @SuppressWarnings("PMD.UnusedFormalParameter")
     private SourceLocation createSentenceLocation(StructuralNode block, BlockValidationContext context,
-            String fullContent, String sentence, int sentenceIndex) {
+            String sentence) {
         List<String> fileLines = fileCache.getFileLines(context.getFilename());
         if (fileLines.isEmpty() || block.getSourceLocation() == null) {
             return context.createLocation(block);
@@ -457,9 +455,8 @@ public final class ParagraphBlockValidator extends AbstractBlockValidator<Paragr
     /**
      * Finds the position before the punctuation mark at the end of a sentence.
      */
-    @SuppressWarnings("PMD.UnusedFormalParameter")
     private SourcePosition findSentenceEndPosition(StructuralNode block, BlockValidationContext context,
-            String sentence, int sentenceIndex) {
+            String sentence) {
         List<String> fileLines = fileCache.getFileLines(context.getFilename());
         if (fileLines.isEmpty() || block.getSourceLocation() == null) {
             return new SourcePosition(1, 1,
@@ -541,8 +538,7 @@ public final class ParagraphBlockValidator extends AbstractBlockValidator<Paragr
     /**
      * Finds the position where additional lines should be added.
      */
-    @SuppressWarnings("PMD.UnusedFormalParameter")
-    private SourcePosition findSourcePosition(StructuralNode block, BlockValidationContext context, int currentLines) {
+    private SourcePosition findSourcePosition(StructuralNode block, BlockValidationContext context) {
         List<String> fileLines = fileCache.getFileLines(context.getFilename());
         if (fileLines.isEmpty() || block.getSourceLocation() == null) {
             return new SourcePosition(1, 1,
