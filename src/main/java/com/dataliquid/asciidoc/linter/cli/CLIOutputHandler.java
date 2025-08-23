@@ -78,9 +78,14 @@ public class CLIOutputHandler {
             String outputFileName = generateOutputFileName(inputFile, config.getReportFormat());
             Path outputFile = outputDir.resolve(outputFileName);
 
-            try (PrintWriter writer = new PrintWriter(Files.newBufferedWriter(outputFile, StandardCharsets.UTF_8))) {
-                reportWriter.write(result, config.getReportFormat(), writer, outputConfig);
-            }
+            writeIndividualReport(result, config.getReportFormat(), outputFile, outputConfig);
+        }
+    }
+
+    private void writeIndividualReport(ValidationResult result, String format, Path outputFile,
+            OutputConfiguration outputConfig) throws IOException {
+        try (PrintWriter writer = new PrintWriter(Files.newBufferedWriter(outputFile, StandardCharsets.UTF_8))) {
+            reportWriter.write(result, format, writer, outputConfig);
         }
     }
 

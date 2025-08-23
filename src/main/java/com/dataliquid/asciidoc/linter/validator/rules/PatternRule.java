@@ -89,7 +89,7 @@ public final class PatternRule implements AttributeRule {
                 patternConfigs.put(attributeName, new PatternConfig(compiledPattern, pattern, severity));
             } catch (PatternSyntaxException e) {
                 throw new IllegalArgumentException(
-                        "Invalid pattern for attribute '" + attributeName + "': " + e.getMessage());
+                        "Invalid pattern for attribute '" + attributeName + "': " + e.getMessage(), e);
             }
 
             return this;

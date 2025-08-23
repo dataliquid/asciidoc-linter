@@ -29,9 +29,12 @@ public class GroupingEngine {
         }
 
         // Group by rule ID
+        @SuppressWarnings("PMD.UseConcurrentHashMap") // Local variable, no concurrency needed
         Map<String, List<ValidationMessage>> byRuleId = new HashMap<>();
         for (ValidationMessage msg : messages) {
-            byRuleId.computeIfAbsent(msg.getRuleId(), k -> new ArrayList<>()).add(msg);
+            @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops") // Necessary for computeIfAbsent pattern
+            List<ValidationMessage> msgList = byRuleId.computeIfAbsent(msg.getRuleId(), k -> new ArrayList<>());
+            msgList.add(msg);
         }
 
         List<MessageGroup> groups = new ArrayList<>();

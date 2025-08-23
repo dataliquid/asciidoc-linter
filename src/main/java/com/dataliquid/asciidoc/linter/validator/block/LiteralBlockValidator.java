@@ -1,6 +1,7 @@
 package com.dataliquid.asciidoc.linter.validator.block;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.asciidoctor.ast.StructuralNode;
@@ -15,6 +16,7 @@ import com.dataliquid.asciidoc.linter.validator.SourceLocation;
 import com.dataliquid.asciidoc.linter.validator.SourcePosition;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
 import com.dataliquid.asciidoc.linter.validator.Suggestion;
+import com.dataliquid.asciidoc.linter.util.StringUtils;
 
 /**
  * Validator for literal blocks in AsciiDoc documents.
@@ -61,6 +63,11 @@ import com.dataliquid.asciidoc.linter.validator.Suggestion;
  * @see BlockTypeValidator
  */
 public final class LiteralBlockValidator extends AbstractBlockValidator<LiteralBlock> {
+    private static final String SPACES_UNIT = " spaces";
+    // Constants for whitespace characters
+    private static final char SPACE_CHAR = ' ';
+    private static final char TAB_CHAR = '\t';
+    private static final int TAB_SIZE = 4;
 
     @Override
     public BlockType getSupportedType() {
@@ -110,9 +117,7 @@ public final class LiteralBlockValidator extends AbstractBlockValidator<LiteralB
 
         if (!content.isEmpty()) {
             String[] contentLines = content.split("\n");
-            for (String line : contentLines) {
-                lines.add(line);
-            }
+            lines.addAll(Arrays.asList(contentLines));
         }
 
         return lines;
@@ -125,7 +130,7 @@ public final class LiteralBlockValidator extends AbstractBlockValidator<LiteralB
         Severity severity = resolveSeverity(config.getSeverity(), blockConfig.getSeverity());
 
         // Check if title is required
-        if (config.isRequired() && (title == null || title.trim().isEmpty())) {
+        if (config.isRequired() && StringUtils.isBlank(title)) {
             SourcePosition pos = findTitlePosition(block, context);
             messages
                     .add(ValidationMessage
@@ -155,7 +160,7 @@ public final class LiteralBlockValidator extends AbstractBlockValidator<LiteralB
             return;
         }
 
-        if (title != null && !title.trim().isEmpty()) {
+        if (title != null && !StringUtils.isBlank(title)) {
             String trimmedTitle = title.trim();
 
             // Validate length constraints
@@ -198,7 +203,7 @@ public final class LiteralBlockValidator extends AbstractBlockValidator<LiteralB
             lineNumber++;
 
             // Skip empty lines for indentation checking
-            if (line.isEmpty() || line.trim().isEmpty()) {
+            if (line.isEmpty() || StringUtils.isBlank(line)) {
                 continue;
             }
 
@@ -224,10 +229,10 @@ public final class LiteralBlockValidator extends AbstractBlockValidator<LiteralB
                                         .endColumn(1)
                                         .build())
                                 .message("Literal block requires minimum indentation of " + config.getMinSpaces()
-                                        + " spaces")
+                                        + SPACES_UNIT)
                                 .errorType(ErrorType.MISSING_VALUE)
-                                .actualValue(indentSpaces + " spaces")
-                                .expectedValue("At least " + config.getMinSpaces() + " spaces")
+                                .actualValue(indentSpaces + SPACES_UNIT)
+                                .expectedValue("At least " + config.getMinSpaces() + SPACES_UNIT)
                                 .missingValueHint(indentPlaceholder)
                                 .placeholderContext(PlaceholderContext
                                         .builder()
@@ -256,8 +261,8 @@ public final class LiteralBlockValidator extends AbstractBlockValidator<LiteralB
                                 .ruleId(INDENTATION_MAX_SPACES)
                                 .location(context.createLocation(block))
                                 .message("Line " + lineNumber + " has excessive indentation")
-                                .actualValue(indentSpaces + " spaces")
-                                .expectedValue("At most " + config.getMaxSpaces() + " spaces")
+                                .actualValue(indentSpaces + SPACES_UNIT)
+                                .expectedValue("At most " + config.getMaxSpaces() + SPACES_UNIT)
                                 .addSuggestion(Suggestion
                                         .builder()
                                         .description("Reduce indentation to maximum allowed")
@@ -283,7 +288,7 @@ public final class LiteralBlockValidator extends AbstractBlockValidator<LiteralB
                                     .ruleId(INDENTATION_CONSISTENT)
                                     .location(context.createLocation(block))
                                     .message("Line " + lineNumber + " has inconsistent indentation")
-                                    .actualValue(indentSpaces + " spaces")
+                                    .actualValue(indentSpaces + SPACES_UNIT)
                                     .expectedValue(firstIndentation + " spaces (consistent with first non-empty line)")
                                     .addSuggestion(Suggestion
                                             .builder()
@@ -303,11 +308,11 @@ public final class LiteralBlockValidator extends AbstractBlockValidator<LiteralB
     private int countLeadingSpaces(String line) {
         int count = 0;
         for (char c : line.toCharArray()) {
-            if (c == ' ') {
+            if (c == SPACE_CHAR) {
                 count++;
-            } else if (c == '\t') {
+            } else if (c == TAB_CHAR) {
                 // Count tab as 4 spaces (configurable in future)
-                count += 4;
+                count += TAB_SIZE;
             } else {
                 break;
             }
@@ -318,6 +323,7 @@ public final class LiteralBlockValidator extends AbstractBlockValidator<LiteralB
     /**
      * Finds the position where title should be inserted.
      */
+    @SuppressWarnings("PMD.UnusedFormalParameter")
     private SourcePosition findTitlePosition(StructuralNode block, BlockValidationContext context) {
         if (block.getSourceLocation() == null) {
             return new SourcePosition(1, 1, 1);

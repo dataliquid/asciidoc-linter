@@ -23,6 +23,9 @@ public class JsonFormatter implements ReportFormatter {
 
     private static final DateTimeFormatter ISO_FORMATTER = DateTimeFormatter.ISO_INSTANT.withZone(ZoneOffset.UTC);
 
+    // Constants
+    private static final int MILLIS_PER_SECOND = 1000;
+
     private final String name;
     private final ObjectMapper objectMapper;
 
@@ -63,6 +66,7 @@ public class JsonFormatter implements ReportFormatter {
 
     @Override
     public void format(ValidationResult result, PrintWriter writer) {
+        @SuppressWarnings("PMD.UseConcurrentHashMap") // Local variable, no concurrency needed
         Map<String, Object> root = new LinkedHashMap<>();
 
         // Timestamp
@@ -72,6 +76,7 @@ public class JsonFormatter implements ReportFormatter {
         root.put("duration", formatDuration(result.getValidationTimeMillis()));
 
         // Summary
+        @SuppressWarnings("PMD.UseConcurrentHashMap") // Local variable, no concurrency needed
         Map<String, Object> summary = new LinkedHashMap<>();
         summary.put("totalMessages", result.getMessages().size());
         summary.put("errors", result.getErrorCount());
@@ -96,33 +101,8 @@ public class JsonFormatter implements ReportFormatter {
         }
     }
 
-    private Map<String, Object> formatMessage(ValidationMessage msg) {
-        Map<String, Object> msgMap = new LinkedHashMap<>();
-
-        msgMap.put("file", msg.getLocation().getFilename());
-        msgMap.put("line", msg.getLocation().getStartLine());
-
-        if (msg.getLocation().getStartColumn() > 1) {
-            msgMap.put("column", msg.getLocation().getStartColumn());
-        }
-
-        msgMap.put("severity", msg.getSeverity().toString());
-        msgMap.put("message", msg.getMessage());
-
-        // Optional fields
-        if (msg.getRuleId() != null) {
-            msgMap.put("ruleId", msg.getRuleId());
-        }
-
-        msg.getActualValue().ifPresent(value -> msgMap.put("actualValue", value));
-
-        msg.getExpectedValue().ifPresent(value -> msgMap.put("expectedValue", value));
-
-        return msgMap;
-    }
-
     private String formatDuration(long millis) {
-        if (millis < 1000) {
+        if (millis < MILLIS_PER_SECOND) {
             return millis + "ms";
         } else {
             return String.format("%.3fs", millis / 1000.0);

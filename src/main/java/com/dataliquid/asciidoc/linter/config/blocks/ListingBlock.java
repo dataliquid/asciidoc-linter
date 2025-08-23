@@ -37,10 +37,10 @@ public final class ListingBlock extends AbstractBlock {
 
     private ListingBlock(Builder builder) {
         super(builder);
-        this.language = builder.language;
-        this.lines = builder.lines;
-        this.title = builder.title;
-        this.callouts = builder.callouts;
+        this.language = builder._language;
+        this.lines = builder._lines;
+        this.title = builder._title;
+        this.callouts = builder._callouts;
     }
 
     @Override
@@ -49,19 +49,19 @@ public final class ListingBlock extends AbstractBlock {
     }
 
     public LanguageConfig getLanguage() {
-        return language;
+        return _language;
     }
 
     public LineConfig getLines() {
-        return lines;
+        return _lines;
     }
 
     public TitleConfig getTitle() {
-        return title;
+        return _title;
     }
 
     public CalloutsConfig getCallouts() {
-        return callouts;
+        return _callouts;
     }
 
     public static Builder builder() {
@@ -78,22 +78,22 @@ public final class ListingBlock extends AbstractBlock {
         private final Severity severity;
 
         private LanguageConfig(LanguageConfigBuilder builder) {
-            this.required = builder.required;
-            this.allowed = builder.allowed != null ? Collections.unmodifiableList(new ArrayList<>(builder.allowed))
+            this.required = builder._required;
+            this.allowed = builder._allowed != null ? Collections.unmodifiableList(new ArrayList<>(builder._allowed))
                     : Collections.emptyList();
-            this.severity = builder.severity;
+            this.severity = builder._severity;
         }
 
         public boolean isRequired() {
-            return required;
+            return _required;
         }
 
         public List<String> getAllowed() {
-            return allowed;
+            return _allowed;
         }
 
         public Severity getSeverity() {
-            return severity;
+            return _severity;
         }
 
         public static LanguageConfigBuilder builder() {
@@ -102,22 +102,22 @@ public final class ListingBlock extends AbstractBlock {
 
         @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class LanguageConfigBuilder {
-            private boolean required;
-            private List<String> allowed;
-            private Severity severity;
+            private boolean _required;
+            private List<String> _allowed;
+            private Severity _severity;
 
             public LanguageConfigBuilder required(boolean required) {
-                this.required = required;
+                this._required = required;
                 return this;
             }
 
             public LanguageConfigBuilder allowed(List<String> allowed) {
-                this.allowed = allowed;
+                this._allowed = allowed;
                 return this;
             }
 
             public LanguageConfigBuilder severity(Severity severity) {
-                this.severity = severity;
+                this._severity = severity;
                 return this;
             }
 
@@ -151,21 +151,21 @@ public final class ListingBlock extends AbstractBlock {
         private final Severity severity;
 
         private TitleConfig(TitleConfigBuilder builder) {
-            this.required = builder.required;
-            this.pattern = builder.pattern;
-            this.severity = builder.severity;
+            this.required = builder._required;
+            this.pattern = builder._pattern;
+            this.severity = builder._severity;
         }
 
         public boolean isRequired() {
-            return required;
+            return _required;
         }
 
         public Pattern getPattern() {
-            return pattern;
+            return _pattern;
         }
 
         public Severity getSeverity() {
-            return severity;
+            return _severity;
         }
 
         public static TitleConfigBuilder builder() {
@@ -174,27 +174,28 @@ public final class ListingBlock extends AbstractBlock {
 
         @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class TitleConfigBuilder {
-            private boolean required;
-            private Pattern pattern;
-            private Severity severity;
+            private boolean _required;
+            private Pattern _pattern;
+            private Severity _severity;
 
             public TitleConfigBuilder required(boolean required) {
-                this.required = required;
+                this._required = required;
                 return this;
             }
 
             public TitleConfigBuilder pattern(Pattern pattern) {
-                this.pattern = pattern;
+                this._pattern = pattern;
                 return this;
             }
 
+            @SuppressWarnings("PMD.NullAssignment")
             public TitleConfigBuilder pattern(String pattern) {
-                this.pattern = pattern != null ? Pattern.compile(pattern) : null;
+                this._pattern = pattern != null ? Pattern.compile(pattern) : null;
                 return this;
             }
 
             public TitleConfigBuilder severity(Severity severity) {
-                this.severity = severity;
+                this._severity = severity;
                 return this;
             }
 
@@ -231,21 +232,21 @@ public final class ListingBlock extends AbstractBlock {
         private final Severity severity;
 
         private CalloutsConfig(CalloutsConfigBuilder builder) {
-            this.allowed = builder.allowed;
-            this.max = builder.max;
-            this.severity = builder.severity;
+            this.allowed = builder._allowed;
+            this.max = builder._max;
+            this.severity = builder._severity;
         }
 
         public boolean isAllowed() {
-            return allowed;
+            return _allowed;
         }
 
         public Integer getMax() {
-            return max;
+            return _max;
         }
 
         public Severity getSeverity() {
-            return severity;
+            return _severity;
         }
 
         public static CalloutsConfigBuilder builder() {
@@ -254,22 +255,22 @@ public final class ListingBlock extends AbstractBlock {
 
         @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class CalloutsConfigBuilder {
-            private boolean allowed;
-            private Integer max;
-            private Severity severity;
+            private boolean _allowed;
+            private Integer _max;
+            private Severity _severity;
 
             public CalloutsConfigBuilder allowed(boolean allowed) {
-                this.allowed = allowed;
+                this._allowed = allowed;
                 return this;
             }
 
             public CalloutsConfigBuilder max(Integer max) {
-                this.max = max;
+                this._max = max;
                 return this;
             }
 
             public CalloutsConfigBuilder severity(Severity severity) {
-                this.severity = severity;
+                this._severity = severity;
                 return this;
             }
 
@@ -295,28 +296,28 @@ public final class ListingBlock extends AbstractBlock {
 
     @JsonPOJOBuilder(withPrefix = EMPTY)
     public static class Builder extends AbstractBuilder<Builder> {
-        private LanguageConfig language;
-        private LineConfig lines;
-        private TitleConfig title;
-        private CalloutsConfig callouts;
+        private LanguageConfig _language;
+        private LineConfig _lines;
+        private TitleConfig _title;
+        private CalloutsConfig _callouts;
 
         public Builder language(LanguageConfig language) {
-            this.language = language;
+            this._language = language;
             return this;
         }
 
         public Builder lines(LineConfig lines) {
-            this.lines = lines;
+            this._lines = lines;
             return this;
         }
 
         public Builder title(TitleConfig title) {
-            this.title = title;
+            this._title = title;
             return this;
         }
 
         public Builder callouts(CalloutsConfig callouts) {
-            this.callouts = callouts;
+            this._callouts = callouts;
             return this;
         }
 

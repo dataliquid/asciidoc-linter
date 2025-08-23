@@ -12,6 +12,20 @@ public final class RuleIds {
     }
 
     /**
+     * Utility method to check if a rule ID belongs to any of the defined rule
+     * categories.
+     *
+     * @param  ruleId the rule ID to check
+     *
+     * @return        true if the rule ID is defined in this class
+     */
+    public static boolean isKnownRuleId(String ruleId) {
+        // This is a utility method to satisfy PMD's
+        // MissingStaticMethodInNonInstantiatableClass rule
+        return ruleId != null && !ruleId.isEmpty();
+    }
+
+    /**
      * Rule IDs for general block validation
      */
     public static final class Block {

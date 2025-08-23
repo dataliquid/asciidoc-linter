@@ -18,12 +18,15 @@ import static com.dataliquid.asciidoc.linter.validator.RuleIds.Quote.*;
 import com.dataliquid.asciidoc.linter.validator.SourceLocation;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
 import com.dataliquid.asciidoc.linter.validator.Suggestion;
+import com.dataliquid.asciidoc.linter.util.StringUtils;
 
 /**
  * Validator for quote blocks. Based on the YAML schema structure for validating
  * AsciiDoc quote blocks.
  */
 public final class QuoteBlockValidator extends AbstractBlockValidator<QuoteBlock> {
+    private static final String CHARACTERS_UNIT = " characters";
+
     @Override
     public BlockType getSupportedType() {
         return BlockType.QUOTE;
@@ -62,7 +65,7 @@ public final class QuoteBlockValidator extends AbstractBlockValidator<QuoteBlock
         String attribution = extractAttribution(node);
         Severity severity = resolveSeverity(config.getSeverity(), blockSeverity);
 
-        if (config.isRequired() && (attribution == null || attribution.trim().isEmpty())) {
+        if (config.isRequired() && StringUtils.isBlank(attribution)) {
             SourcePosition pos = findSourcePosition(node, context);
             results
                     .add(ValidationMessage
@@ -89,7 +92,7 @@ public final class QuoteBlockValidator extends AbstractBlockValidator<QuoteBlock
             return;
         }
 
-        if (attribution != null && !attribution.trim().isEmpty()) {
+        if (attribution != null && !StringUtils.isBlank(attribution)) {
             // Validate minLength
             if (config.getMinLength() != null && attribution.length() < config.getMinLength()) {
                 results
@@ -107,7 +110,7 @@ public final class QuoteBlockValidator extends AbstractBlockValidator<QuoteBlock
                                         .addExample("Use full name: Albert Einstein")
                                         .addExample("Include title: Dr. John Smith")
                                         .explanation(
-                                                "Attribution needs at least " + config.getMinLength() + " characters")
+                                                "Attribution needs at least " + config.getMinLength() + CHARACTERS_UNIT)
                                         .build())
                                 .build());
             }
@@ -128,8 +131,8 @@ public final class QuoteBlockValidator extends AbstractBlockValidator<QuoteBlock
                                         .description("Shorten attribution")
                                         .addExample("Use initials: A. Einstein")
                                         .addExample("Use last name only")
-                                        .explanation(
-                                                "Attribution must be at most " + config.getMaxLength() + " characters")
+                                        .explanation("Attribution must be at most " + config.getMaxLength()
+                                                + CHARACTERS_UNIT)
                                         .build())
                                 .build());
             }
@@ -167,7 +170,7 @@ public final class QuoteBlockValidator extends AbstractBlockValidator<QuoteBlock
         String citation = extractCitation(node);
         Severity severity = resolveSeverity(config.getSeverity(), blockSeverity);
 
-        if (config.isRequired() && (citation == null || citation.trim().isEmpty())) {
+        if (config.isRequired() && StringUtils.isBlank(citation)) {
             SourcePosition pos = findCitationPosition(node, context);
             results
                     .add(ValidationMessage
@@ -194,7 +197,7 @@ public final class QuoteBlockValidator extends AbstractBlockValidator<QuoteBlock
             return;
         }
 
-        if (citation != null && !citation.trim().isEmpty()) {
+        if (citation != null && !StringUtils.isBlank(citation)) {
             // Validate minLength
             if (config.getMinLength() != null && citation.length() < config.getMinLength()) {
                 results
@@ -211,7 +214,8 @@ public final class QuoteBlockValidator extends AbstractBlockValidator<QuoteBlock
                                         .description("Use longer citation")
                                         .addExample("Include full book/article title")
                                         .addExample("Add publication year")
-                                        .explanation("Citation needs at least " + config.getMinLength() + " characters")
+                                        .explanation(
+                                                "Citation needs at least " + config.getMinLength() + CHARACTERS_UNIT)
                                         .build())
                                 .build());
             }
@@ -233,7 +237,7 @@ public final class QuoteBlockValidator extends AbstractBlockValidator<QuoteBlock
                                         .addExample("Use abbreviated title")
                                         .addExample("Remove unnecessary details")
                                         .explanation(
-                                                "Citation must be at most " + config.getMaxLength() + " characters")
+                                                "Citation must be at most " + config.getMaxLength() + CHARACTERS_UNIT)
                                         .build())
                                 .build());
             }
@@ -270,7 +274,7 @@ public final class QuoteBlockValidator extends AbstractBlockValidator<QuoteBlock
             List<ValidationMessage> results, BlockValidationContext context) {
         String content = extractContent(node);
 
-        if (config.isRequired() && (content == null || content.trim().isEmpty())) {
+        if (config.isRequired() && StringUtils.isBlank(content)) {
             results
                     .add(ValidationMessage
                             .builder()
@@ -290,7 +294,7 @@ public final class QuoteBlockValidator extends AbstractBlockValidator<QuoteBlock
             return;
         }
 
-        if (content != null && !content.trim().isEmpty()) {
+        if (content != null && !StringUtils.isBlank(content)) {
             // Validate minLength
             if (config.getMinLength() != null && content.length() < config.getMinLength()) {
                 results
@@ -307,7 +311,8 @@ public final class QuoteBlockValidator extends AbstractBlockValidator<QuoteBlock
                                         .description("Expand quote content")
                                         .addExample("Add more context to the quote")
                                         .addExample("Include complete thoughts")
-                                        .explanation("Content needs at least " + config.getMinLength() + " characters")
+                                        .explanation(
+                                                "Content needs at least " + config.getMinLength() + CHARACTERS_UNIT)
                                         .build())
                                 .build());
             }
@@ -328,7 +333,8 @@ public final class QuoteBlockValidator extends AbstractBlockValidator<QuoteBlock
                                         .description("Shorten quote content")
                                         .addExample("Use ellipsis for shortened quotes")
                                         .addExample("Focus on key message")
-                                        .explanation("Content must be at most " + config.getMaxLength() + " characters")
+                                        .explanation(
+                                                "Content must be at most " + config.getMaxLength() + CHARACTERS_UNIT)
                                         .build())
                                 .build());
             }
@@ -455,16 +461,16 @@ public final class QuoteBlockValidator extends AbstractBlockValidator<QuoteBlock
                 String line = fileLines.get(i);
                 if (line.trim().startsWith("[quote")) {
                     // Find the first quoted parameter after [quote,
-                    int firstQuoteStart = line.indexOf("\"");
+                    int firstQuoteStart = line.indexOf('"');
                     if (firstQuoteStart >= 0) {
-                        int firstQuoteEnd = line.indexOf("\"", firstQuoteStart + 1);
+                        int firstQuoteEnd = line.indexOf('"', firstQuoteStart + 1);
                         if (firstQuoteEnd > firstQuoteStart) {
                             // Found the attribution in quotes
                             return new SourcePosition(firstQuoteStart + 2, firstQuoteEnd, i + 1);
                         }
                     }
                     // If no quotes found but has comma, position after comma
-                    int commaPos = line.indexOf(",");
+                    int commaPos = line.indexOf(',');
                     if (commaPos >= 0) {
                         return new SourcePosition(commaPos + 2, commaPos + 2, i + 1);
                     }
@@ -496,14 +502,14 @@ public final class QuoteBlockValidator extends AbstractBlockValidator<QuoteBlock
                 String line = fileLines.get(i);
                 if (line.trim().startsWith("[quote")) {
                     // Find the second quoted parameter (citation is after attribution)
-                    int firstQuoteStart = line.indexOf("\"");
+                    int firstQuoteStart = line.indexOf('"');
                     if (firstQuoteStart >= 0) {
-                        int firstQuoteEnd = line.indexOf("\"", firstQuoteStart + 1);
+                        int firstQuoteEnd = line.indexOf('"', firstQuoteStart + 1);
                         if (firstQuoteEnd > firstQuoteStart) {
                             // Look for second quoted parameter
-                            int secondQuoteStart = line.indexOf("\"", firstQuoteEnd + 1);
+                            int secondQuoteStart = line.indexOf('"', firstQuoteEnd + 1);
                             if (secondQuoteStart >= 0) {
-                                int secondQuoteEnd = line.indexOf("\"", secondQuoteStart + 1);
+                                int secondQuoteEnd = line.indexOf('"', secondQuoteStart + 1);
                                 if (secondQuoteEnd > secondQuoteStart) {
                                     // Found the citation in quotes
                                     return new SourcePosition(secondQuoteStart + 2, secondQuoteEnd, i + 1);

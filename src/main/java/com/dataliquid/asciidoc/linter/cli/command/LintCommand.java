@@ -1,6 +1,7 @@
 package com.dataliquid.asciidoc.linter.cli.command;
 
 import java.nio.file.Paths;
+import java.util.Locale;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,6 +28,11 @@ import com.dataliquid.asciidoc.linter.output.OutputWriter;
 public class LintCommand implements Command {
 
     private static final Logger logger = LogManager.getLogger(LintCommand.class);
+
+    // Constants for CLI options
+    private static final String OUTPUT_CONFIG_OPTION = OUTPUT_CONFIG_OPTION;
+    private static final String OUTPUT_CONFIG_FILE_OPTION = OUTPUT_CONFIG_FILE_OPTION;
+
     private final OutputWriter outputWriter;
 
     public LintCommand() {
@@ -105,7 +111,7 @@ public class LintCommand implements Command {
         options
                 .addOption(Option
                         .builder()
-                        .longOpt("output-config")
+                        .longOpt(OUTPUT_CONFIG_OPTION)
                         .hasArg()
                         .argName("name")
                         .desc("Predefined output configuration: enhanced, simple, compact (default: enhanced)")
@@ -115,7 +121,7 @@ public class LintCommand implements Command {
         options
                 .addOption(Option
                         .builder()
-                        .longOpt("output-config-file")
+                        .longOpt(OUTPUT_CONFIG_FILE_OPTION)
                         .hasArg()
                         .argName("file")
                         .desc("Custom YAML output configuration file for console formatting")
@@ -213,29 +219,29 @@ public class LintCommand implements Command {
         }
 
         // Output configuration
-        if (cmd.hasOption("output-config") && cmd.hasOption("output-config-file")) {
+        if (cmd.hasOption(OUTPUT_CONFIG_OPTION) && cmd.hasOption(OUTPUT_CONFIG_FILE_OPTION)) {
             throw new IllegalArgumentException("Cannot use both --output-config and --output-config-file. Choose one.");
         }
 
-        if (cmd.hasOption("output-config")) {
-            String configName = cmd.getOptionValue("output-config");
+        if (cmd.hasOption(OUTPUT_CONFIG_OPTION)) {
+            String configName = cmd.getOptionValue(OUTPUT_CONFIG_OPTION);
             try {
                 OutputFormat format = OutputFormat.fromValue(configName);
                 builder.outputConfigFormat(format);
             } catch (IllegalArgumentException e) {
                 throw new IllegalArgumentException(
-                        "Invalid output config name: " + configName + ". Valid options: enhanced, simple, compact");
+                        "Invalid output config name: " + configName + ". Valid options: enhanced, simple, compact", e);
             }
         }
 
-        if (cmd.hasOption("output-config-file")) {
-            builder.outputConfigFile(Paths.get(cmd.getOptionValue("output-config-file")));
+        if (cmd.hasOption(OUTPUT_CONFIG_FILE_OPTION)) {
+            builder.outputConfigFile(Paths.get(cmd.getOptionValue(OUTPUT_CONFIG_FILE_OPTION)));
         }
 
         // Report format
         if (cmd.hasOption("report-format")) {
             String format = cmd.getOptionValue("report-format");
-            if (!format.equals("console") && !format.equals("json") && !format.equals("json-compact")) {
+            if (!"console".equals(format) && !"json".equals(format) && !"json-compact".equals(format)) {
                 throw new IllegalArgumentException(
                         "Invalid report format: " + format + ". Valid values are: console, json, json-compact");
             }
@@ -249,12 +255,12 @@ public class LintCommand implements Command {
 
         // Fail level
         if (cmd.hasOption("fail-level")) {
-            String level = cmd.getOptionValue("fail-level").toUpperCase();
+            String level = cmd.getOptionValue("fail-level").toUpperCase(Locale.ROOT);
             try {
                 builder.failLevel(Severity.valueOf(level));
             } catch (IllegalArgumentException e) {
                 throw new IllegalArgumentException(
-                        "Invalid fail level: " + level + ". Valid values are: error, warn, info");
+                        "Invalid fail level: " + level + ". Valid values are: error, warn, info", e);
             }
         }
 

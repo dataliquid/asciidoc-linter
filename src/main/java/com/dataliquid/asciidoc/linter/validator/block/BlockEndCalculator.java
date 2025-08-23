@@ -9,6 +9,11 @@ import com.dataliquid.asciidoc.linter.report.console.FileContentCache;
  * files. Provides generic support for all AsciiDoc block types.
  */
 public class BlockEndCalculator {
+    // Constants for whitespace characters
+    private static final char SPACE_CHAR = ' ';
+    private static final char TAB_CHAR = '\t';
+    private static final int TAB_SIZE = 4;
+
     private final FileContentCache fileCache;
 
     public BlockEndCalculator(FileContentCache fileCache) {
@@ -212,7 +217,7 @@ public class BlockEndCalculator {
         int line = startLine - 1;
 
         // Find opening |===
-        while (line < lines.size() && !lines.get(line).trim().equals("|===")) {
+        while (line < lines.size() && !"|===".equals(lines.get(line).trim())) {
             line++;
         }
 
@@ -220,7 +225,7 @@ public class BlockEndCalculator {
         line++;
 
         // Find closing |===
-        while (line < lines.size() && !lines.get(line).trim().equals("|===")) {
+        while (line < lines.size() && !"|===".equals(lines.get(line).trim())) {
             line++;
         }
 
@@ -287,7 +292,7 @@ public class BlockEndCalculator {
         while (line < lines.size()) {
             String current = lines.get(line);
 
-            if (current.trim().isEmpty()) {
+            if (StringUtils.isBlank(current)) {
                 // Empty line likely ends block
                 break;
             }
@@ -320,14 +325,14 @@ public class BlockEndCalculator {
                 trimmed.startsWith("include::") || // Include
                 trimmed.startsWith("[") || // Block attribute
                 trimmed.startsWith("|===") || // Table
-                trimmed.equals("----") || // Listing
-                trimmed.equals("....") || // Literal
-                trimmed.equals("====") || // Example
-                trimmed.equals("****") || // Sidebar
-                trimmed.equals("____") || // Quote/Verse
-                trimmed.equals("++++") || // Pass
-                trimmed.equals("--") || // Open
-                trimmed.equals("////"); // Comment
+                "----".equals(trimmed) || // Listing
+                "....".equals(trimmed) || // Literal
+                "====".equals(trimmed) || // Example
+                "****".equals(trimmed) || // Sidebar
+                "____".equals(trimmed) || // Quote/Verse
+                "++++".equals(trimmed) || // Pass
+                "--".equals(trimmed) || // Open
+                "////".equals(trimmed); // Comment
     }
 
     private String getListMarkerPattern(String listType) {
@@ -357,10 +362,10 @@ public class BlockEndCalculator {
     private int getIndentLevel(String line) {
         int indent = 0;
         for (char c : line.toCharArray()) {
-            if (c == ' ')
+            if (c == SPACE_CHAR)
                 indent++;
-            else if (c == '\t')
-                indent += 4;
+            else if (c == TAB_CHAR)
+                indent += TAB_SIZE;
             else
                 break;
         }

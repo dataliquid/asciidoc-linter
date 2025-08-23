@@ -22,16 +22,16 @@ public final class ErrorGroupingConfig {
     private final int threshold;
 
     private ErrorGroupingConfig(Builder builder) {
-        this.enabled = builder.enabled;
-        this.threshold = builder.threshold;
+        this.enabled = builder._enabled;
+        this.threshold = builder._threshold;
     }
 
     public boolean isEnabled() {
-        return enabled;
+        return this._enabled;
     }
 
     public int getThreshold() {
-        return threshold;
+        return this._threshold;
     }
 
     @Override
@@ -54,6 +54,7 @@ public final class ErrorGroupingConfig {
     }
 
     @JsonPOJOBuilder(withPrefix = EMPTY)
+    @SuppressWarnings("PMD.AvoidFieldNameMatchingMethodName")
     public static final class Builder {
         private boolean enabled = DEFAULT_ENABLED;
         private int threshold = DEFAULT_THRESHOLD;

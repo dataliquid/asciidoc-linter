@@ -12,12 +12,12 @@ public final class SourceLocation {
 
     private SourceLocation(Builder builder) {
         this.filename = Objects
-                .requireNonNull(builder.filename, "[" + getClass().getName() + "] filename must not be null");
-        this.startLine = builder.startLine;
-        this.startColumn = builder.startColumn;
-        this.endLine = builder.endLine;
-        this.endColumn = builder.endColumn;
-        this.sourceLine = builder.sourceLine;
+                .requireNonNull(builder._filename, "[" + getClass().getName() + "] filename must not be null");
+        this.startLine = builder._startLine;
+        this.startColumn = builder._startColumn;
+        this.endLine = builder._endLine;
+        this.endColumn = builder._endColumn;
+        this.sourceLine = builder._sourceLine;
     }
 
     public String getFilename() {
@@ -87,63 +87,63 @@ public final class SourceLocation {
     }
 
     public static final class Builder {
-        private String filename;
-        private int startLine = 1;
-        private int startColumn = 1;
-        private int endLine = 1;
-        private int endColumn = 1;
-        private String sourceLine;
+        private String _filename;
+        private int _startLine = 1;
+        private int _startColumn = 1;
+        private int _endLine = 1;
+        private int _endColumn = 1;
+        private String _sourceLine;
 
         private Builder() {
         }
 
         public Builder filename(String filename) {
-            this.filename = filename;
+            this._filename = filename;
             return this;
         }
 
         public Builder startLine(int startLine) {
-            this.startLine = startLine;
+            this._startLine = startLine;
             return this;
         }
 
         public Builder startColumn(int startColumn) {
-            this.startColumn = startColumn;
+            this._startColumn = startColumn;
             return this;
         }
 
         public Builder endLine(int endLine) {
-            this.endLine = endLine;
+            this._endLine = endLine;
             return this;
         }
 
         public Builder endColumn(int endColumn) {
-            this.endColumn = endColumn;
+            this._endColumn = endColumn;
             return this;
         }
 
         public Builder line(int line) {
-            this.startLine = line;
-            this.endLine = line;
+            this._startLine = line;
+            this._endLine = line;
             return this;
         }
 
         public Builder columns(int start, int end) {
-            this.startColumn = start;
-            this.endColumn = end;
+            this._startColumn = start;
+            this._endColumn = end;
             return this;
         }
 
         public Builder sourceLine(String sourceLine) {
-            this.sourceLine = sourceLine;
+            this._sourceLine = sourceLine;
             return this;
         }
 
         public Builder fromPosition(SourcePosition pos) {
-            this.startLine = pos.lineNumber;
-            this.endLine = pos.lineNumber;
-            this.startColumn = pos.startColumn;
-            this.endColumn = pos.endColumn;
+            this._startLine = pos.lineNumber;
+            this._endLine = pos.lineNumber;
+            this._startColumn = pos.startColumn;
+            this._endColumn = pos.endColumn;
             return this;
         }
 

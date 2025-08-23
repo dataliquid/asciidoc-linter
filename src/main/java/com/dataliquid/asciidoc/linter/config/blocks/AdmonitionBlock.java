@@ -39,10 +39,10 @@ public final class AdmonitionBlock extends AbstractBlock {
 
     private AdmonitionBlock(Builder builder) {
         super(builder);
-        this.type = builder.type;
-        this.title = builder.title;
-        this.content = builder.content;
-        this.icon = builder.icon;
+        this.type = builder._type;
+        this.title = builder._title;
+        this.content = builder._content;
+        this.icon = builder._icon;
     }
 
     @Override
@@ -51,19 +51,19 @@ public final class AdmonitionBlock extends AbstractBlock {
     }
 
     public TypeConfig getTypeConfig() {
-        return type;
+        return _type;
     }
 
     public TitleConfig getTitle() {
-        return title;
+        return _title;
     }
 
     public ContentConfig getContent() {
-        return content;
+        return _content;
     }
 
     public IconConfig getIcon() {
-        return icon;
+        return _icon;
     }
 
     public static Builder builder() {
@@ -80,22 +80,22 @@ public final class AdmonitionBlock extends AbstractBlock {
         private final Severity severity;
 
         private TypeConfig(TypeConfigBuilder builder) {
-            this.required = builder.required;
-            this.allowed = builder.allowed != null ? Collections.unmodifiableList(new ArrayList<>(builder.allowed))
+            this.required = builder._required;
+            this.allowed = builder._allowed != null ? Collections.unmodifiableList(new ArrayList<>(builder._allowed))
                     : Collections.emptyList();
-            this.severity = builder.severity;
+            this.severity = builder._severity;
         }
 
         public boolean isRequired() {
-            return required;
+            return _required;
         }
 
         public List<String> getAllowed() {
-            return allowed;
+            return _allowed;
         }
 
         public Severity getSeverity() {
-            return severity;
+            return _severity;
         }
 
         public static TypeConfigBuilder builder() {
@@ -104,22 +104,22 @@ public final class AdmonitionBlock extends AbstractBlock {
 
         @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class TypeConfigBuilder {
-            private boolean required;
-            private List<String> allowed;
-            private Severity severity;
+            private boolean _required;
+            private List<String> _allowed;
+            private Severity _severity;
 
             public TypeConfigBuilder required(boolean required) {
-                this.required = required;
+                this._required = required;
                 return this;
             }
 
             public TypeConfigBuilder allowed(List<String> allowed) {
-                this.allowed = allowed;
+                this._allowed = allowed;
                 return this;
             }
 
             public TypeConfigBuilder severity(Severity severity) {
-                this.severity = severity;
+                this._severity = severity;
                 return this;
             }
 
@@ -157,31 +157,31 @@ public final class AdmonitionBlock extends AbstractBlock {
         private final Severity severity;
 
         private TitleConfig(TitleConfigBuilder builder) {
-            this.required = builder.required;
-            this.pattern = builder.pattern;
-            this.minLength = builder.minLength;
-            this.maxLength = builder.maxLength;
-            this.severity = builder.severity;
+            this.required = builder._required;
+            this.pattern = builder._pattern;
+            this.minLength = builder._minLength;
+            this.maxLength = builder._maxLength;
+            this.severity = builder._severity;
         }
 
         public boolean isRequired() {
-            return required;
+            return _required;
         }
 
         public Pattern getPattern() {
-            return pattern;
+            return _pattern;
         }
 
         public Integer getMinLength() {
-            return minLength;
+            return _minLength;
         }
 
         public Integer getMaxLength() {
-            return maxLength;
+            return _maxLength;
         }
 
         public Severity getSeverity() {
-            return severity;
+            return _severity;
         }
 
         public static TitleConfigBuilder builder() {
@@ -190,39 +190,40 @@ public final class AdmonitionBlock extends AbstractBlock {
 
         @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class TitleConfigBuilder {
-            private boolean required;
-            private Pattern pattern;
-            private Integer minLength;
-            private Integer maxLength;
-            private Severity severity;
+            private boolean _required;
+            private Pattern _pattern;
+            private Integer _minLength;
+            private Integer _maxLength;
+            private Severity _severity;
 
             public TitleConfigBuilder required(boolean required) {
-                this.required = required;
+                this._required = required;
                 return this;
             }
 
             public TitleConfigBuilder pattern(Pattern pattern) {
-                this.pattern = pattern;
+                this._pattern = pattern;
                 return this;
             }
 
+            @SuppressWarnings("PMD.NullAssignment")
             public TitleConfigBuilder pattern(String pattern) {
-                this.pattern = pattern != null ? Pattern.compile(pattern) : null;
+                this._pattern = pattern != null ? Pattern.compile(pattern) : null;
                 return this;
             }
 
             public TitleConfigBuilder minLength(Integer minLength) {
-                this.minLength = minLength;
+                this._minLength = minLength;
                 return this;
             }
 
             public TitleConfigBuilder maxLength(Integer maxLength) {
-                this.maxLength = maxLength;
+                this._maxLength = maxLength;
                 return this;
             }
 
             public TitleConfigBuilder severity(Severity severity) {
-                this.severity = severity;
+                this._severity = severity;
                 return this;
             }
 
@@ -265,31 +266,31 @@ public final class AdmonitionBlock extends AbstractBlock {
         private final Severity severity;
 
         private ContentConfig(ContentConfigBuilder builder) {
-            this.required = builder.required;
-            this.minLength = builder.minLength;
-            this.maxLength = builder.maxLength;
-            this.lines = builder.lines;
-            this.severity = builder.severity;
+            this.required = builder._required;
+            this.minLength = builder._minLength;
+            this.maxLength = builder._maxLength;
+            this.lines = builder._lines;
+            this.severity = builder._severity;
         }
 
         public boolean isRequired() {
-            return required;
+            return _required;
         }
 
         public Integer getMinLength() {
-            return minLength;
+            return _minLength;
         }
 
         public Integer getMaxLength() {
-            return maxLength;
+            return _maxLength;
         }
 
         public LineConfig getLines() {
-            return lines;
+            return _lines;
         }
 
         public Severity getSeverity() {
-            return severity;
+            return _severity;
         }
 
         public static ContentConfigBuilder builder() {
@@ -298,34 +299,34 @@ public final class AdmonitionBlock extends AbstractBlock {
 
         @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class ContentConfigBuilder {
-            private boolean required;
-            private Integer minLength;
-            private Integer maxLength;
-            private LineConfig lines;
-            private Severity severity;
+            private boolean _required;
+            private Integer _minLength;
+            private Integer _maxLength;
+            private LineConfig _lines;
+            private Severity _severity;
 
             public ContentConfigBuilder required(boolean required) {
-                this.required = required;
+                this._required = required;
                 return this;
             }
 
             public ContentConfigBuilder minLength(Integer minLength) {
-                this.minLength = minLength;
+                this._minLength = minLength;
                 return this;
             }
 
             public ContentConfigBuilder maxLength(Integer maxLength) {
-                this.maxLength = maxLength;
+                this._maxLength = maxLength;
                 return this;
             }
 
             public ContentConfigBuilder lines(LineConfig lines) {
-                this.lines = lines;
+                this._lines = lines;
                 return this;
             }
 
             public ContentConfigBuilder severity(Severity severity) {
-                this.severity = severity;
+                this._severity = severity;
                 return this;
             }
 
@@ -361,21 +362,21 @@ public final class AdmonitionBlock extends AbstractBlock {
         private final Severity severity;
 
         private IconConfig(IconConfigBuilder builder) {
-            this.required = builder.required;
-            this.pattern = builder.pattern;
-            this.severity = builder.severity;
+            this.required = builder._required;
+            this.pattern = builder._pattern;
+            this.severity = builder._severity;
         }
 
         public boolean isRequired() {
-            return required;
+            return _required;
         }
 
         public Pattern getPattern() {
-            return pattern;
+            return _pattern;
         }
 
         public Severity getSeverity() {
-            return severity;
+            return _severity;
         }
 
         public static IconConfigBuilder builder() {
@@ -384,27 +385,28 @@ public final class AdmonitionBlock extends AbstractBlock {
 
         @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class IconConfigBuilder {
-            private boolean required;
-            private Pattern pattern;
-            private Severity severity;
+            private boolean _required;
+            private Pattern _pattern;
+            private Severity _severity;
 
             public IconConfigBuilder required(boolean required) {
-                this.required = required;
+                this._required = required;
                 return this;
             }
 
             public IconConfigBuilder pattern(Pattern pattern) {
-                this.pattern = pattern;
+                this._pattern = pattern;
                 return this;
             }
 
+            @SuppressWarnings("PMD.NullAssignment")
             public IconConfigBuilder pattern(String pattern) {
-                this.pattern = pattern != null ? Pattern.compile(pattern) : null;
+                this._pattern = pattern != null ? Pattern.compile(pattern) : null;
                 return this;
             }
 
             public IconConfigBuilder severity(Severity severity) {
-                this.severity = severity;
+                this._severity = severity;
                 return this;
             }
 
@@ -433,28 +435,28 @@ public final class AdmonitionBlock extends AbstractBlock {
 
     @JsonPOJOBuilder(withPrefix = EMPTY)
     public static class Builder extends AbstractBuilder<Builder> {
-        private TypeConfig type;
-        private TitleConfig title;
-        private ContentConfig content;
-        private IconConfig icon;
+        private TypeConfig _type;
+        private TitleConfig _title;
+        private ContentConfig _content;
+        private IconConfig _icon;
 
         public Builder type(TypeConfig type) {
-            this.type = type;
+            this._type = type;
             return this;
         }
 
         public Builder title(TitleConfig title) {
-            this.title = title;
+            this._title = title;
             return this;
         }
 
         public Builder content(ContentConfig content) {
-            this.content = content;
+            this._content = content;
             return this;
         }
 
         public Builder icon(IconConfig icon) {
-            this.icon = icon;
+            this._icon = icon;
             return this;
         }
 

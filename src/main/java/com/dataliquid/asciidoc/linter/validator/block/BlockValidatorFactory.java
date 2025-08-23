@@ -43,6 +43,7 @@ public final class BlockValidatorFactory {
      * Creates and registers all available validators.
      */
     private Map<BlockType, BlockTypeValidator> createValidators() {
+        @SuppressWarnings("PMD.UseConcurrentHashMap") // Local variable, no concurrency needed
         Map<BlockType, BlockTypeValidator> map = new HashMap<>();
 
         // Register all validators

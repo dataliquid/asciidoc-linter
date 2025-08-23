@@ -5,6 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -12,7 +13,7 @@ import java.util.Map;
  * Caches file contents during validation to avoid repeated file reads.
  */
 public class FileContentCache {
-    private final Map<String, List<String>> cache = new HashMap<>();
+    private final Map<String, List<String>> cache = new ConcurrentHashMap<>();
 
     /**
      * Gets the lines of a file, reading from cache if available.
@@ -29,6 +30,9 @@ public class FileContentCache {
             }
         } catch (IOException e) {
             // Log error but don't fail - return empty list
+            // IOException handled by returning empty list - file may not exist or be
+            // readable
+            System.err.println("Warning: Could not read file: " + filename); // NOPMD - intentional debug output
         }
         return List.of();
     }

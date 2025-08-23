@@ -2,6 +2,7 @@ package com.dataliquid.asciidoc.linter.validator.block;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
@@ -88,7 +89,7 @@ public abstract class AbstractBlockValidator<T extends Block> implements BlockTy
                 if (block instanceof StructuralNode) {
                     StructuralNode childNode = (StructuralNode) block;
                     if (childNode.getContent() instanceof String) {
-                        content.append(childNode.getContent()).append("\n");
+                        content.append(childNode.getContent()).append('\n');
                     }
                 }
             }
@@ -144,7 +145,8 @@ public abstract class AbstractBlockValidator<T extends Block> implements BlockTy
                 .location(context.createLocation(node))
                 .message("Literal block must have a " + fieldName)
                 .actualValue("No " + fieldName)
-                .expectedValue(fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1) + " required")
+                .expectedValue(
+                        fieldName.substring(0, 1).toUpperCase(Locale.ROOT) + fieldName.substring(1) + " required")
                 .build();
     }
 
@@ -315,7 +317,7 @@ public abstract class AbstractBlockValidator<T extends Block> implements BlockTy
             String expectedValue;
 
             // Special handling for line count
-            boolean isLineCount = fieldName.toLowerCase().contains("line");
+            boolean isLineCount = fieldName.toLowerCase(Locale.ROOT).contains("line");
             String unit = isLineCount ? " lines" : "";
 
             if (min != null && value < min) {
@@ -337,7 +339,7 @@ public abstract class AbstractBlockValidator<T extends Block> implements BlockTy
             if (isLineCount) {
                 ruleIdBase = getSupportedType().toValue() + ".lines";
             } else {
-                ruleIdBase = getSupportedType().toValue() + "." + fieldName.toLowerCase().replace(" ", "");
+                ruleIdBase = getSupportedType().toValue() + "." + fieldName.toLowerCase(Locale.ROOT).replace(" ", "");
             }
 
             return ValidationMessage

@@ -5,7 +5,7 @@ import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
-import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Output.OUTPUT;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Output.OUTPUT_CONFIG;
 import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.EMPTY;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
@@ -22,7 +22,7 @@ public final class OutputConfigWrapper {
     }
 
     public OutputConfiguration getOutput() {
-        return output;
+        return this._output;
     }
 
     @Override
@@ -45,13 +45,14 @@ public final class OutputConfigWrapper {
     }
 
     @JsonPOJOBuilder(withPrefix = EMPTY)
+    @SuppressWarnings("PMD.AvoidFieldNameMatchingMethodName")
     public static final class Builder {
         private OutputConfiguration output;
 
         private Builder() {
         }
 
-        @JsonProperty(OUTPUT)
+        @JsonProperty(OUTPUT_CONFIG)
         public Builder output(OutputConfiguration output) {
             this.output = output;
             return this;

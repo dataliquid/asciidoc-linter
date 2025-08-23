@@ -85,6 +85,7 @@ public final class MetadataValidator {
     }
 
     private Map<String, AttributeWithLocation> extractAttributesWithLocation(Document document, String filename) {
+        @SuppressWarnings("PMD.UseConcurrentHashMap") // Local variable, no concurrency needed
         Map<String, AttributeWithLocation> result = new LinkedHashMap<>();
 
         Map<String, Object> attributes = document.getAttributes();
@@ -100,7 +101,9 @@ public final class MetadataValidator {
                 // Find the attribute in the file
                 SourceLocation location = findAttributeLocation(key, stringValue, filename, fileLines);
 
-                result.put(key, new AttributeWithLocation(stringValue, location));
+                @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops") // Necessary for each attribute
+                AttributeWithLocation attrWithLocation = new AttributeWithLocation(stringValue, location);
+                result.put(key, attrWithLocation);
             }
         }
 
@@ -160,7 +163,7 @@ public final class MetadataValidator {
             return SourceLocation.builder().filename(filename).line(1).build();
         }
 
-        int lineNumber = 1;
+        int lineNumber; // Will be set based on context
         boolean inFrontMatter = false;
         boolean foundTitle = false;
         int titleLine = -1;
@@ -171,12 +174,12 @@ public final class MetadataValidator {
             String trimmed = line.trim();
 
             // Check for front matter
-            if (i == 0 && trimmed.equals("---")) {
+            if (i == 0 && "---".equals(trimmed)) {
                 inFrontMatter = true;
                 continue;
             }
 
-            if (inFrontMatter && trimmed.equals("---")) {
+            if (inFrontMatter && "---".equals(trimmed)) {
                 inFrontMatter = false;
                 continue;
             }
@@ -227,11 +230,11 @@ public final class MetadataValidator {
     }
 
     private boolean isUserAttribute(String key) {
-        return !key.startsWith("asciidoctor") && !key.equals("doctype") && !key.equals("backend")
-                && !key.equals("doctitle") && !key.equals("docfile") && !key.equals("docdir")
-                && !key.equals("docdatetime") && !key.equals("localdate") && !key.equals("localtime")
-                && !key.equals("localdatetime") && !key.equals("outfile") && !key.equals("filetype")
-                && !key.equals("notitle");
+        return !key.startsWith("asciidoctor") && !"doctype".equals(key) && !"backend".equals(key)
+                && !"doctitle".equals(key) && !"docfile".equals(key) && !"docdir".equals(key)
+                && !"docdatetime".equals(key) && !"localdate".equals(key) && !"localtime".equals(key)
+                && !"localdatetime".equals(key) && !"outfile".equals(key) && !"filetype".equals(key)
+                && !"notitle".equals(key);
     }
 
     private RequiredRule findRequiredRule() {

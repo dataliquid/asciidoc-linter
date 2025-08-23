@@ -15,6 +15,7 @@ import com.dataliquid.asciidoc.linter.documentation.VisualizationStyle;
 /**
  * Visualizes rule hierarchy as an ASCII-art tree structure.
  */
+@SuppressWarnings("PMD.UseStringBufferForStringAppends") // Documentation generation, performance not critical
 public class TreeVisualizer implements HierarchyVisualizer {
 
     private static final String VERTICAL = "│   ";

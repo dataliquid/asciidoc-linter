@@ -8,6 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -20,6 +21,10 @@ import com.dataliquid.asciidoc.linter.validator.ValidationResult;
  * formatters and handles output to files or console.
  */
 public class ReportWriter {
+
+    // Constants
+    private static final String DEFAULT_FORMAT = "console";
+    private static final String CONSOLE_FORMAT = "console";
 
     private final Map<String, ReportFormatter> formatters;
 
@@ -171,10 +176,10 @@ public class ReportWriter {
     }
 
     private ReportFormatter getFormatter(String format, OutputConfiguration outputConfig) {
-        String formatName = format != null ? format.toLowerCase() : "console";
+        String formatName = format != null ? format.toLowerCase(Locale.ROOT) : DEFAULT_FORMAT;
 
         // Special handling for console format with output configuration
-        if ("console".equals(formatName)) {
+        if (CONSOLE_FORMAT.equals(formatName)) {
             if (outputConfig != null) {
                 return new ConsoleFormatter(outputConfig);
             } else {

@@ -20,6 +20,7 @@ import static com.dataliquid.asciidoc.linter.validator.RuleIds.Dlist.*;
 import com.dataliquid.asciidoc.linter.validator.SourceLocation;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
 import com.dataliquid.asciidoc.linter.validator.Suggestion;
+import com.dataliquid.asciidoc.linter.util.StringUtils;
 
 /**
  * Validator for definition list (dlist) blocks in AsciiDoc documents.
@@ -258,7 +259,7 @@ public final class DlistBlockValidator extends AbstractBlockValidator<DlistBlock
 
             // Check if description is required
             if (config.getRequired() != null && config.getRequired() && (description == null
-                    || description.getText() == null || description.getText().trim().isEmpty())) {
+                    || description.getText(StringUtils.isBlank() == null || description.getText()))) {
                 // Get the first term for error location
                 List<ListItem> terms = entry.getTerms();
                 if (!terms.isEmpty()) {

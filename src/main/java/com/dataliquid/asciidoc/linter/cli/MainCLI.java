@@ -22,6 +22,9 @@ import com.dataliquid.asciidoc.linter.output.OutputWriter;
 public class MainCLI {
 
     private static final Logger logger = LogManager.getLogger(MainCLI.class);
+
+    // Constants
+    private static final String NO_SPLASH_ARG = "--no-splash";
     private final CommandRegistry commandRegistry;
     private final OutputWriter outputWriter;
 
@@ -34,13 +37,13 @@ public class MainCLI {
         this.commandRegistry = new CommandRegistry(outputWriter);
     }
 
-    public static void main(String[] args) {
+    public static void main(String... args) {
         MainCLI cli = new MainCLI();
         int exitCode = cli.run(args);
         System.exit(exitCode);
     }
 
-    public int run(String[] args) {
+    public int run(String... args) {
         // Handle no arguments
         if (args.length == 0) {
             printMainHelp();
@@ -48,12 +51,12 @@ public class MainCLI {
         }
 
         // Check for global options first
-        if (args[0].equals("--help") || args[0].equals("-h")) {
+        if ("--help".equals(args[0]) || "-h".equals(args[0])) {
             printMainHelp();
             return 0;
         }
 
-        if (args[0].equals("--version") || args[0].equals("-v")) {
+        if ("--version".equals(args[0]) || "-v".equals(args[0])) {
             printVersion();
             return 0;
         }
@@ -73,7 +76,7 @@ public class MainCLI {
         String[] commandArgs = Arrays.copyOfRange(args, 1, args.length);
 
         // Check for splash screen suppression in global args
-        boolean showSplash = !containsNoSplash(args) && !potentialCommand.equals("guidelines");
+        boolean showSplash = !containsNoSplash(args) && !"guidelines".equals(potentialCommand);
         if (showSplash) {
             SplashScreen.display(outputWriter);
         }
@@ -99,9 +102,9 @@ public class MainCLI {
         }
     }
 
-    private boolean containsNoSplash(String[] args) {
+    private boolean containsNoSplash(String... args) {
         for (String arg : args) {
-            if (arg.equals("--no-splash")) {
+            if (NO_SPLASH_ARG.equals(arg)) {
                 return true;
             }
         }

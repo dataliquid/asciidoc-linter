@@ -49,9 +49,9 @@ public final class SidebarBlock extends AbstractBlock {
 
     private SidebarBlock(Builder builder) {
         super(builder);
-        this.title = builder.title;
-        this.content = builder.content;
-        this.position = builder.position;
+        this.title = builder._title;
+        this.content = builder._content;
+        this.position = builder._position;
     }
 
     @Override
@@ -60,15 +60,15 @@ public final class SidebarBlock extends AbstractBlock {
     }
 
     public TitleConfig getTitle() {
-        return title;
+        return _title;
     }
 
     public ContentConfig getContent() {
-        return content;
+        return _content;
     }
 
     public PositionConfig getPosition() {
-        return position;
+        return _position;
     }
 
     public static Builder builder() {
@@ -89,31 +89,31 @@ public final class SidebarBlock extends AbstractBlock {
         private final Severity severity;
 
         private TitleConfig(TitleConfigBuilder builder) {
-            this.required = builder.required;
-            this.minLength = builder.minLength;
-            this.maxLength = builder.maxLength;
-            this.pattern = builder.pattern;
-            this.severity = builder.severity;
+            this.required = builder._required;
+            this.minLength = builder._minLength;
+            this.maxLength = builder._maxLength;
+            this.pattern = builder._pattern;
+            this.severity = builder._severity;
         }
 
         public boolean isRequired() {
-            return required;
+            return _required;
         }
 
         public Integer getMinLength() {
-            return minLength;
+            return _minLength;
         }
 
         public Integer getMaxLength() {
-            return maxLength;
+            return _maxLength;
         }
 
         public Pattern getPattern() {
-            return pattern;
+            return _pattern;
         }
 
         public Severity getSeverity() {
-            return severity;
+            return _severity;
         }
 
         public static TitleConfigBuilder builder() {
@@ -122,39 +122,40 @@ public final class SidebarBlock extends AbstractBlock {
 
         @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class TitleConfigBuilder {
-            private boolean required;
-            private Integer minLength;
-            private Integer maxLength;
-            private Pattern pattern;
-            private Severity severity;
+            private boolean _required;
+            private Integer _minLength;
+            private Integer _maxLength;
+            private Pattern _pattern;
+            private Severity _severity;
 
             public TitleConfigBuilder required(boolean required) {
-                this.required = required;
+                this._required = required;
                 return this;
             }
 
             public TitleConfigBuilder minLength(Integer minLength) {
-                this.minLength = minLength;
+                this._minLength = minLength;
                 return this;
             }
 
             public TitleConfigBuilder maxLength(Integer maxLength) {
-                this.maxLength = maxLength;
+                this._maxLength = maxLength;
                 return this;
             }
 
+            @SuppressWarnings("PMD.NullAssignment")
             public TitleConfigBuilder pattern(String pattern) {
-                this.pattern = pattern != null ? Pattern.compile(pattern) : null;
+                this._pattern = pattern != null ? Pattern.compile(pattern) : null;
                 return this;
             }
 
             public TitleConfigBuilder pattern(Pattern pattern) {
-                this.pattern = pattern;
+                this._pattern = pattern;
                 return this;
             }
 
             public TitleConfigBuilder severity(Severity severity) {
-                this.severity = severity;
+                this._severity = severity;
                 return this;
             }
 
@@ -195,26 +196,26 @@ public final class SidebarBlock extends AbstractBlock {
         private final LinesConfig lines;
 
         private ContentConfig(ContentConfigBuilder builder) {
-            this.required = builder.required;
-            this.minLength = builder.minLength;
-            this.maxLength = builder.maxLength;
-            this.lines = builder.lines;
+            this.required = builder._required;
+            this.minLength = builder._minLength;
+            this.maxLength = builder._maxLength;
+            this.lines = builder._lines;
         }
 
         public boolean isRequired() {
-            return required;
+            return _required;
         }
 
         public Integer getMinLength() {
-            return minLength;
+            return _minLength;
         }
 
         public Integer getMaxLength() {
-            return maxLength;
+            return _maxLength;
         }
 
         public LinesConfig getLines() {
-            return lines;
+            return _lines;
         }
 
         public static ContentConfigBuilder builder() {
@@ -223,28 +224,28 @@ public final class SidebarBlock extends AbstractBlock {
 
         @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class ContentConfigBuilder {
-            private boolean required;
-            private Integer minLength;
-            private Integer maxLength;
-            private LinesConfig lines;
+            private boolean _required;
+            private Integer _minLength;
+            private Integer _maxLength;
+            private LinesConfig _lines;
 
             public ContentConfigBuilder required(boolean required) {
-                this.required = required;
+                this._required = required;
                 return this;
             }
 
             public ContentConfigBuilder minLength(Integer minLength) {
-                this.minLength = minLength;
+                this._minLength = minLength;
                 return this;
             }
 
             public ContentConfigBuilder maxLength(Integer maxLength) {
-                this.maxLength = maxLength;
+                this._maxLength = maxLength;
                 return this;
             }
 
             public ContentConfigBuilder lines(LinesConfig lines) {
-                this.lines = lines;
+                this._lines = lines;
                 return this;
             }
 
@@ -279,21 +280,21 @@ public final class SidebarBlock extends AbstractBlock {
         private final Severity severity;
 
         private LinesConfig(LinesConfigBuilder builder) {
-            this.min = builder.min;
-            this.max = builder.max;
-            this.severity = builder.severity;
+            this.min = builder._min;
+            this.max = builder._max;
+            this.severity = builder._severity;
         }
 
         public Integer getMin() {
-            return min;
+            return _min;
         }
 
         public Integer getMax() {
-            return max;
+            return _max;
         }
 
         public Severity getSeverity() {
-            return severity;
+            return _severity;
         }
 
         public static LinesConfigBuilder builder() {
@@ -302,22 +303,22 @@ public final class SidebarBlock extends AbstractBlock {
 
         @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class LinesConfigBuilder {
-            private Integer min;
-            private Integer max;
-            private Severity severity;
+            private Integer _min;
+            private Integer _max;
+            private Severity _severity;
 
             public LinesConfigBuilder min(Integer min) {
-                this.min = min;
+                this._min = min;
                 return this;
             }
 
             public LinesConfigBuilder max(Integer max) {
-                this.max = max;
+                this._max = max;
                 return this;
             }
 
             public LinesConfigBuilder severity(Severity severity) {
-                this.severity = severity;
+                this._severity = severity;
                 return this;
             }
 
@@ -351,21 +352,21 @@ public final class SidebarBlock extends AbstractBlock {
         private final Severity severity;
 
         private PositionConfig(PositionConfigBuilder builder) {
-            this.required = builder.required;
-            this.allowed = builder.allowed;
-            this.severity = builder.severity;
+            this.required = builder._required;
+            this.allowed = builder._allowed;
+            this.severity = builder._severity;
         }
 
         public boolean isRequired() {
-            return required;
+            return _required;
         }
 
         public List<String> getAllowed() {
-            return allowed;
+            return _allowed;
         }
 
         public Severity getSeverity() {
-            return severity;
+            return _severity;
         }
 
         public static PositionConfigBuilder builder() {
@@ -374,22 +375,22 @@ public final class SidebarBlock extends AbstractBlock {
 
         @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class PositionConfigBuilder {
-            private boolean required;
-            private List<String> allowed;
-            private Severity severity;
+            private boolean _required;
+            private List<String> _allowed;
+            private Severity _severity;
 
             public PositionConfigBuilder required(boolean required) {
-                this.required = required;
+                this._required = required;
                 return this;
             }
 
             public PositionConfigBuilder allowed(List<String> allowed) {
-                this.allowed = allowed;
+                this._allowed = allowed;
                 return this;
             }
 
             public PositionConfigBuilder severity(Severity severity) {
-                this.severity = severity;
+                this._severity = severity;
                 return this;
             }
 
@@ -415,22 +416,22 @@ public final class SidebarBlock extends AbstractBlock {
 
     @JsonPOJOBuilder(withPrefix = EMPTY)
     public static class Builder extends AbstractBuilder<Builder> {
-        private TitleConfig title;
-        private ContentConfig content;
-        private PositionConfig position;
+        private TitleConfig _title;
+        private ContentConfig _content;
+        private PositionConfig _position;
 
         public Builder title(TitleConfig title) {
-            this.title = title;
+            this._title = title;
             return this;
         }
 
         public Builder content(ContentConfig content) {
-            this.content = content;
+            this._content = content;
             return this;
         }
 
         public Builder position(PositionConfig position) {
-            this.position = position;
+            this._position = position;
             return this;
         }
 

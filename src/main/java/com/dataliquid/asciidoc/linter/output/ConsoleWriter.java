@@ -8,7 +8,7 @@ package com.dataliquid.asciidoc.linter.output;
 public class ConsoleWriter implements OutputWriter {
 
     private static final ConsoleWriter INSTANCE = new ConsoleWriter();
-    private boolean debugEnabled = false;
+    private boolean debugEnabled;
 
     /**
      * Private constructor to enforce singleton pattern.

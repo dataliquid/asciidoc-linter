@@ -25,21 +25,21 @@ public final class SuggestionsConfig {
     private final boolean showExamples;
 
     private SuggestionsConfig(Builder builder) {
-        this.enabled = builder.enabled;
-        this.maxPerError = builder.maxPerError;
-        this.showExamples = builder.showExamples;
+        this.enabled = builder._enabled;
+        this.maxPerError = builder._maxPerError;
+        this.showExamples = builder._showExamples;
     }
 
     public boolean isEnabled() {
-        return enabled;
+        return this._enabled;
     }
 
     public int getMaxPerError() {
-        return maxPerError;
+        return this._maxPerError;
     }
 
     public boolean isShowExamples() {
-        return showExamples;
+        return this._showExamples;
     }
 
     @Override
@@ -62,6 +62,7 @@ public final class SuggestionsConfig {
     }
 
     @JsonPOJOBuilder(withPrefix = EMPTY)
+    @SuppressWarnings("PMD.AvoidFieldNameMatchingMethodName")
     public static final class Builder {
         private boolean enabled = DEFAULT_ENABLED;
         private int maxPerError = DEFAULT_MAX_PER_ERROR;

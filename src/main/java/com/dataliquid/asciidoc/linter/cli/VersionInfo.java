@@ -2,6 +2,7 @@ package com.dataliquid.asciidoc.linter.cli;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintStream;
 import java.util.Properties;
 
 /**
@@ -25,7 +26,11 @@ public class VersionInfo {
                 props.load(is);
             }
         } catch (IOException e) {
-            // Properties remain empty
+            // Log the IOException and continue with default values - System.err is not
+            // closeable
+            @SuppressWarnings({ "PMD.SystemPrintln", "PMD.CloseResource" })
+            PrintStream err = System.err;
+            err.println("Warning: Could not load version properties: " + e.getMessage());
         }
 
         this.version = props.getProperty("version", UNKNOWN);
@@ -39,10 +44,12 @@ public class VersionInfo {
      * @return the VersionInfo instance
      */
     public static VersionInfo getInstance() {
-        if (instance == null) {
-            instance = new VersionInfo();
+        synchronized (VersionInfo.class) {
+            if (instance == null) {
+                instance = new VersionInfo();
+            }
+            return instance;
         }
-        return instance;
     }
 
     /**

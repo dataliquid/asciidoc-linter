@@ -36,9 +36,9 @@ public class QuoteBlock extends AbstractBlock {
 
     private QuoteBlock(Builder builder) {
         super(builder);
-        this.attribution = builder.attribution;
-        this.citation = builder.citation;
-        this.content = builder.content;
+        this.attribution = builder._attribution;
+        this.citation = builder._citation;
+        this.content = builder._content;
     }
 
     @Override
@@ -48,17 +48,17 @@ public class QuoteBlock extends AbstractBlock {
 
     @JsonProperty(ATTRIBUTION)
     public AttributionConfig getAttribution() {
-        return attribution;
+        return _attribution;
     }
 
     @JsonProperty(CITATION)
     public CitationConfig getCitation() {
-        return citation;
+        return _citation;
     }
 
     @JsonProperty(CONTENT)
     public ContentConfig getContent() {
-        return content;
+        return _content;
     }
 
     /**
@@ -73,36 +73,36 @@ public class QuoteBlock extends AbstractBlock {
         private final Severity severity;
 
         private AttributionConfig(Builder builder) {
-            this.required = builder.required;
-            this.minLength = builder.minLength;
-            this.maxLength = builder.maxLength;
-            this.pattern = builder.pattern;
-            this.severity = builder.severity;
+            this.required = builder._required;
+            this.minLength = builder._minLength;
+            this.maxLength = builder._maxLength;
+            this.pattern = builder._pattern;
+            this.severity = builder._severity;
         }
 
         @JsonProperty(REQUIRED)
         public boolean isRequired() {
-            return required;
+            return _required;
         }
 
         @JsonProperty(MIN_LENGTH)
         public Integer getMinLength() {
-            return minLength;
+            return _minLength;
         }
 
         @JsonProperty(MAX_LENGTH)
         public Integer getMaxLength() {
-            return maxLength;
+            return _maxLength;
         }
 
         @JsonProperty(PATTERN)
         public Pattern getPattern() {
-            return pattern;
+            return _pattern;
         }
 
         @JsonProperty(SEVERITY)
         public Severity getSeverity() {
-            return severity;
+            return _severity;
         }
 
         @Override
@@ -122,6 +122,7 @@ public class QuoteBlock extends AbstractBlock {
             return Objects.hash(required, minLength, maxLength, pattern != null ? pattern.pattern() : null, severity);
         }
 
+        @SuppressWarnings("PMD.CompareObjectsWithEquals") // Pattern comparison optimization
         private boolean patternEquals(Pattern p1, Pattern p2) {
             if (p1 == p2)
                 return true;
@@ -136,39 +137,40 @@ public class QuoteBlock extends AbstractBlock {
 
         @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class Builder {
-            private boolean required = false;
-            private Integer minLength;
-            private Integer maxLength;
-            private Pattern pattern;
-            private Severity severity;
+            private boolean _required;
+            private Integer _minLength;
+            private Integer _maxLength;
+            private Pattern _pattern;
+            private Severity _severity;
 
             @JsonProperty(REQUIRED)
             public Builder required(boolean required) {
-                this.required = required;
+                this._required = required;
                 return this;
             }
 
             @JsonProperty(MIN_LENGTH)
             public Builder minLength(Integer minLength) {
-                this.minLength = minLength;
+                this._minLength = minLength;
                 return this;
             }
 
             @JsonProperty(MAX_LENGTH)
             public Builder maxLength(Integer maxLength) {
-                this.maxLength = maxLength;
+                this._maxLength = maxLength;
                 return this;
             }
 
             @JsonProperty(PATTERN)
+            @SuppressWarnings("PMD.NullAssignment")
             public Builder pattern(String pattern) {
-                this.pattern = pattern != null ? Pattern.compile(pattern) : null;
+                this._pattern = pattern != null ? Pattern.compile(pattern) : null;
                 return this;
             }
 
             @JsonProperty(SEVERITY)
             public Builder severity(Severity severity) {
-                this.severity = severity;
+                this._severity = severity;
                 return this;
             }
 
@@ -190,36 +192,36 @@ public class QuoteBlock extends AbstractBlock {
         private final Severity severity;
 
         private CitationConfig(Builder builder) {
-            this.required = builder.required;
-            this.minLength = builder.minLength;
-            this.maxLength = builder.maxLength;
-            this.pattern = builder.pattern;
-            this.severity = builder.severity;
+            this.required = builder._required;
+            this.minLength = builder._minLength;
+            this.maxLength = builder._maxLength;
+            this.pattern = builder._pattern;
+            this.severity = builder._severity;
         }
 
         @JsonProperty(REQUIRED)
         public boolean isRequired() {
-            return required;
+            return _required;
         }
 
         @JsonProperty(MIN_LENGTH)
         public Integer getMinLength() {
-            return minLength;
+            return _minLength;
         }
 
         @JsonProperty(MAX_LENGTH)
         public Integer getMaxLength() {
-            return maxLength;
+            return _maxLength;
         }
 
         @JsonProperty(PATTERN)
         public Pattern getPattern() {
-            return pattern;
+            return _pattern;
         }
 
         @JsonProperty(SEVERITY)
         public Severity getSeverity() {
-            return severity;
+            return _severity;
         }
 
         @Override
@@ -239,6 +241,7 @@ public class QuoteBlock extends AbstractBlock {
             return Objects.hash(required, minLength, maxLength, pattern != null ? pattern.pattern() : null, severity);
         }
 
+        @SuppressWarnings("PMD.CompareObjectsWithEquals") // Pattern comparison optimization
         private boolean patternEquals(Pattern p1, Pattern p2) {
             if (p1 == p2)
                 return true;
@@ -253,39 +256,40 @@ public class QuoteBlock extends AbstractBlock {
 
         @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class Builder {
-            private boolean required = false;
-            private Integer minLength;
-            private Integer maxLength;
-            private Pattern pattern;
-            private Severity severity;
+            private boolean _required;
+            private Integer _minLength;
+            private Integer _maxLength;
+            private Pattern _pattern;
+            private Severity _severity;
 
             @JsonProperty(REQUIRED)
             public Builder required(boolean required) {
-                this.required = required;
+                this._required = required;
                 return this;
             }
 
             @JsonProperty(MIN_LENGTH)
             public Builder minLength(Integer minLength) {
-                this.minLength = minLength;
+                this._minLength = minLength;
                 return this;
             }
 
             @JsonProperty(MAX_LENGTH)
             public Builder maxLength(Integer maxLength) {
-                this.maxLength = maxLength;
+                this._maxLength = maxLength;
                 return this;
             }
 
             @JsonProperty(PATTERN)
+            @SuppressWarnings("PMD.NullAssignment")
             public Builder pattern(String pattern) {
-                this.pattern = pattern != null ? Pattern.compile(pattern) : null;
+                this._pattern = pattern != null ? Pattern.compile(pattern) : null;
                 return this;
             }
 
             @JsonProperty(SEVERITY)
             public Builder severity(Severity severity) {
-                this.severity = severity;
+                this._severity = severity;
                 return this;
             }
 
@@ -306,30 +310,30 @@ public class QuoteBlock extends AbstractBlock {
         private final LinesConfig lines;
 
         private ContentConfig(Builder builder) {
-            this.required = builder.required;
-            this.minLength = builder.minLength;
-            this.maxLength = builder.maxLength;
-            this.lines = builder.lines;
+            this.required = builder._required;
+            this.minLength = builder._minLength;
+            this.maxLength = builder._maxLength;
+            this.lines = builder._lines;
         }
 
         @JsonProperty(REQUIRED)
         public boolean isRequired() {
-            return required;
+            return _required;
         }
 
         @JsonProperty(MIN_LENGTH)
         public Integer getMinLength() {
-            return minLength;
+            return _minLength;
         }
 
         @JsonProperty(MAX_LENGTH)
         public Integer getMaxLength() {
-            return maxLength;
+            return _maxLength;
         }
 
         @JsonProperty(LINES)
         public LinesConfig getLines() {
-            return lines;
+            return _lines;
         }
 
         @Override
@@ -354,32 +358,32 @@ public class QuoteBlock extends AbstractBlock {
 
         @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class Builder {
-            private boolean required = false;
-            private Integer minLength;
-            private Integer maxLength;
-            private LinesConfig lines;
+            private boolean _required;
+            private Integer _minLength;
+            private Integer _maxLength;
+            private LinesConfig _lines;
 
             @JsonProperty(REQUIRED)
             public Builder required(boolean required) {
-                this.required = required;
+                this._required = required;
                 return this;
             }
 
             @JsonProperty(MIN_LENGTH)
             public Builder minLength(Integer minLength) {
-                this.minLength = minLength;
+                this._minLength = minLength;
                 return this;
             }
 
             @JsonProperty(MAX_LENGTH)
             public Builder maxLength(Integer maxLength) {
-                this.maxLength = maxLength;
+                this._maxLength = maxLength;
                 return this;
             }
 
             @JsonProperty(LINES)
             public Builder lines(LinesConfig lines) {
-                this.lines = lines;
+                this._lines = lines;
                 return this;
             }
 
@@ -399,24 +403,24 @@ public class QuoteBlock extends AbstractBlock {
         private final Severity severity;
 
         private LinesConfig(Builder builder) {
-            this.min = builder.min;
-            this.max = builder.max;
-            this.severity = builder.severity;
+            this.min = builder._min;
+            this.max = builder._max;
+            this.severity = builder._severity;
         }
 
         @JsonProperty(MIN)
         public Integer getMin() {
-            return min;
+            return _min;
         }
 
         @JsonProperty(MAX)
         public Integer getMax() {
-            return max;
+            return _max;
         }
 
         @JsonProperty(SEVERITY)
         public Severity getSeverity() {
-            return severity;
+            return _severity;
         }
 
         @Override
@@ -440,25 +444,25 @@ public class QuoteBlock extends AbstractBlock {
 
         @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class Builder {
-            private Integer min;
-            private Integer max;
-            private Severity severity;
+            private Integer _min;
+            private Integer _max;
+            private Severity _severity;
 
             @JsonProperty(MIN)
             public Builder min(Integer min) {
-                this.min = min;
+                this._min = min;
                 return this;
             }
 
             @JsonProperty(MAX)
             public Builder max(Integer max) {
-                this.max = max;
+                this._max = max;
                 return this;
             }
 
             @JsonProperty(SEVERITY)
             public Builder severity(Severity severity) {
-                this.severity = severity;
+                this._severity = severity;
                 return this;
             }
 
@@ -490,25 +494,25 @@ public class QuoteBlock extends AbstractBlock {
 
     @JsonPOJOBuilder(withPrefix = EMPTY)
     public static class Builder extends AbstractBlock.AbstractBuilder<Builder> {
-        private AttributionConfig attribution;
-        private CitationConfig citation;
-        private ContentConfig content;
+        private AttributionConfig _attribution;
+        private CitationConfig _citation;
+        private ContentConfig _content;
 
         @JsonProperty(ATTRIBUTION)
         public Builder attribution(AttributionConfig attribution) {
-            this.attribution = attribution;
+            this._attribution = attribution;
             return this;
         }
 
         @JsonProperty(CITATION)
         public Builder citation(CitationConfig citation) {
-            this.citation = citation;
+            this._citation = citation;
             return this;
         }
 
         @JsonProperty(CONTENT)
         public Builder content(ContentConfig content) {
-            this.content = content;
+            this._content = content;
             return this;
         }
 

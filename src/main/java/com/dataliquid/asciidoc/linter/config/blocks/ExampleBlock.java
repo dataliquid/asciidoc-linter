@@ -33,8 +33,8 @@ public class ExampleBlock extends AbstractBlock {
 
     private ExampleBlock(Builder builder) {
         super(builder);
-        this.caption = builder.caption;
-        this.collapsible = builder.collapsible;
+        this.caption = builder._caption;
+        this.collapsible = builder._collapsible;
     }
 
     @Override
@@ -43,11 +43,11 @@ public class ExampleBlock extends AbstractBlock {
     }
 
     public CaptionConfig getCaption() {
-        return caption;
+        return _caption;
     }
 
     public CollapsibleConfig getCollapsible() {
-        return collapsible;
+        return _collapsible;
     }
 
     @Override
@@ -79,18 +79,18 @@ public class ExampleBlock extends AbstractBlock {
 
     @JsonPOJOBuilder(withPrefix = EMPTY)
     public static class Builder extends AbstractBlock.AbstractBuilder<Builder> {
-        private CaptionConfig caption;
-        private CollapsibleConfig collapsible;
+        private CaptionConfig _caption;
+        private CollapsibleConfig _collapsible;
 
         @JsonProperty(CAPTION)
         public Builder caption(CaptionConfig caption) {
-            this.caption = caption;
+            this._caption = caption;
             return this;
         }
 
         @JsonProperty(COLLAPSIBLE)
         public Builder collapsible(CollapsibleConfig collapsible) {
-            this.collapsible = collapsible;
+            this._collapsible = collapsible;
             return this;
         }
 
@@ -113,31 +113,31 @@ public class ExampleBlock extends AbstractBlock {
         private final Severity severity;
 
         private CaptionConfig(Builder builder) {
-            this.required = builder.required;
-            this.pattern = builder.pattern;
-            this.minLength = builder.minLength;
-            this.maxLength = builder.maxLength;
-            this.severity = builder.severity;
+            this.required = builder._required;
+            this.pattern = builder._pattern;
+            this.minLength = builder._minLength;
+            this.maxLength = builder._maxLength;
+            this.severity = builder._severity;
         }
 
         public boolean isRequired() {
-            return required;
+            return _required;
         }
 
         public Pattern getPattern() {
-            return pattern;
+            return _pattern;
         }
 
         public Integer getMinLength() {
-            return minLength;
+            return _minLength;
         }
 
         public Integer getMaxLength() {
-            return maxLength;
+            return _maxLength;
         }
 
         public Severity getSeverity() {
-            return severity;
+            return _severity;
         }
 
         @Override
@@ -173,39 +173,40 @@ public class ExampleBlock extends AbstractBlock {
 
         @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class Builder {
-            private boolean required = false;
-            private Pattern pattern;
-            private Integer minLength;
-            private Integer maxLength;
-            private Severity severity;
+            private boolean _required;
+            private Pattern _pattern;
+            private Integer _minLength;
+            private Integer _maxLength;
+            private Severity _severity;
 
             @JsonProperty(REQUIRED)
             public Builder required(boolean required) {
-                this.required = required;
+                this._required = required;
                 return this;
             }
 
             @JsonProperty(PATTERN)
+            @SuppressWarnings("PMD.NullAssignment")
             public Builder pattern(String pattern) {
-                this.pattern = pattern != null ? Pattern.compile(pattern) : null;
+                this._pattern = pattern != null ? Pattern.compile(pattern) : null;
                 return this;
             }
 
             @JsonProperty(MIN_LENGTH)
             public Builder minLength(Integer minLength) {
-                this.minLength = minLength;
+                this._minLength = minLength;
                 return this;
             }
 
             @JsonProperty(MAX_LENGTH)
             public Builder maxLength(Integer maxLength) {
-                this.maxLength = maxLength;
+                this._maxLength = maxLength;
                 return this;
             }
 
             @JsonProperty(SEVERITY)
             public Builder severity(Severity severity) {
-                this.severity = severity;
+                this._severity = severity;
                 return this;
             }
 
@@ -226,21 +227,21 @@ public class ExampleBlock extends AbstractBlock {
         private final Severity severity;
 
         private CollapsibleConfig(Builder builder) {
-            this.required = builder.required;
-            this.allowed = builder.allowed;
-            this.severity = builder.severity;
+            this.required = builder._required;
+            this.allowed = builder._allowed;
+            this.severity = builder._severity;
         }
 
         public boolean isRequired() {
-            return required;
+            return _required;
         }
 
         public List<Boolean> getAllowed() {
-            return allowed;
+            return _allowed;
         }
 
         public Severity getSeverity() {
-            return severity;
+            return _severity;
         }
 
         @Override
@@ -270,25 +271,25 @@ public class ExampleBlock extends AbstractBlock {
 
         @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class Builder {
-            private boolean required = false;
-            private List<Boolean> allowed;
-            private Severity severity;
+            private boolean _required;
+            private List<Boolean> _allowed;
+            private Severity _severity;
 
             @JsonProperty(REQUIRED)
             public Builder required(boolean required) {
-                this.required = required;
+                this._required = required;
                 return this;
             }
 
             @JsonProperty(ALLOWED)
             public Builder allowed(List<Boolean> allowed) {
-                this.allowed = allowed;
+                this._allowed = allowed;
                 return this;
             }
 
             @JsonProperty(SEVERITY)
             public Builder severity(Severity severity) {
-                this.severity = severity;
+                this._severity = severity;
                 return this;
             }
 

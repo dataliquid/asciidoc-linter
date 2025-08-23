@@ -18,6 +18,7 @@ import static com.dataliquid.asciidoc.linter.validator.RuleIds.Pass.*;
 import com.dataliquid.asciidoc.linter.validator.SourceLocation;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
 import com.dataliquid.asciidoc.linter.validator.Suggestion;
+import com.dataliquid.asciidoc.linter.util.StringUtils;
 
 /**
  * Validator for pass (passthrough) blocks in AsciiDoc documents.
@@ -67,6 +68,8 @@ import com.dataliquid.asciidoc.linter.validator.Suggestion;
  * @see BlockTypeValidator
  */
 public final class PassBlockValidator extends AbstractBlockValidator<PassBlock> {
+    private static final String CHARACTERS_UNIT = " characters";
+
     @Override
     public BlockType getSupportedType() {
         return BlockType.PASS;
@@ -118,7 +121,7 @@ public final class PassBlockValidator extends AbstractBlockValidator<PassBlock> 
         Severity severity = resolveSeverity(config.getSeverity(), blockConfig.getSeverity());
 
         // Check if type is required
-        if (config.isRequired() && (passType == null || passType.trim().isEmpty())) {
+        if (config.isRequired() && StringUtils.isBlank(passType)) {
             messages
                     .add(ValidationMessage
                             .builder()
@@ -184,7 +187,7 @@ public final class PassBlockValidator extends AbstractBlockValidator<PassBlock> 
         Severity severity = resolveSeverity(config.getSeverity(), blockConfig.getSeverity());
 
         // Check if content is required
-        if (config.isRequired() && (content == null || content.trim().isEmpty())) {
+        if (config.isRequired() && StringUtils.isBlank(content)) {
             messages
                     .add(ValidationMessage
                             .builder()
@@ -228,8 +231,8 @@ public final class PassBlockValidator extends AbstractBlockValidator<PassBlock> 
                                         .fromPosition(pos)
                                         .build())
                                 .message("Pass block content is too long")
-                                .actualValue(contentLength + " characters")
-                                .expectedValue("Maximum " + config.getMaxLength() + " characters")
+                                .actualValue(contentLength + CHARACTERS_UNIT)
+                                .expectedValue("Maximum " + config.getMaxLength() + CHARACTERS_UNIT)
                                 .addSuggestion(Suggestion
                                         .builder()
                                         .description("Shorten pass block content")
@@ -279,7 +282,7 @@ public final class PassBlockValidator extends AbstractBlockValidator<PassBlock> 
         Severity severity = resolveSeverity(config.getSeverity(), blockConfig.getSeverity());
 
         // Check if reason is required
-        if (config.isRequired() && (passReason == null || passReason.trim().isEmpty())) {
+        if (config.isRequired() && StringUtils.isBlank(passReason)) {
             messages
                     .add(ValidationMessage
                             .builder()
@@ -325,8 +328,8 @@ public final class PassBlockValidator extends AbstractBlockValidator<PassBlock> 
                                         .fromPosition(pos)
                                         .build())
                                 .message("Pass block reason is too short")
-                                .actualValue(reasonLength + " characters")
-                                .expectedValue("At least " + config.getMinLength() + " characters")
+                                .actualValue(reasonLength + CHARACTERS_UNIT)
+                                .expectedValue("At least " + config.getMinLength() + CHARACTERS_UNIT)
                                 .addSuggestion(Suggestion
                                         .builder()
                                         .description("Provide a more detailed reason")
@@ -353,8 +356,8 @@ public final class PassBlockValidator extends AbstractBlockValidator<PassBlock> 
                                         .fromPosition(pos)
                                         .build())
                                 .message("Pass block reason is too long")
-                                .actualValue(reasonLength + " characters")
-                                .expectedValue("At most " + config.getMaxLength() + " characters")
+                                .actualValue(reasonLength + CHARACTERS_UNIT)
+                                .expectedValue("At most " + config.getMaxLength() + CHARACTERS_UNIT)
                                 .addSuggestion(Suggestion
                                         .builder()
                                         .description("Shorten the reason description")
@@ -387,7 +390,7 @@ public final class PassBlockValidator extends AbstractBlockValidator<PassBlock> 
             // Find the first line of actual content
             for (int i = blockLineNum; i < fileLines.size() && i < blockLineNum + 10; i++) {
                 String line = fileLines.get(i - 1);
-                if (!line.trim().equals("++++") && !line.trim().isEmpty() && !line.trim().startsWith("[")) {
+                if (!"++++".equals(line.trim()) && StringUtils.isNotBlank(line) && !line.trim().startsWith("[")) {
                     // Found content line
                     return new SourcePosition(1, line.length(), i);
                 }
@@ -433,7 +436,7 @@ public final class PassBlockValidator extends AbstractBlockValidator<PassBlock> 
                         return new SourcePosition(valueStart + 1, valueEnd + 1, checkLine);
                     }
                     // If no type= found, position after the comma if there is one
-                    int commaPos = line.indexOf(",");
+                    int commaPos = line.indexOf(',');
                     if (commaPos >= 0) {
                         return new SourcePosition(commaPos + 2, commaPos + 2, checkLine);
                     }
@@ -483,7 +486,7 @@ public final class PassBlockValidator extends AbstractBlockValidator<PassBlock> 
                         }
                     }
                     // If no reason= found, position after the comma if there is one
-                    int commaPos = line.indexOf(",");
+                    int commaPos = line.indexOf(',');
                     if (commaPos >= 0) {
                         return new SourcePosition(commaPos + 2, commaPos + 2, checkLine);
                     }

@@ -50,9 +50,9 @@ public final class PassBlock extends AbstractBlock {
 
     private PassBlock(Builder builder) {
         super(builder);
-        this.type = builder.type;
-        this.content = builder.content;
-        this.reason = builder.reason;
+        this.type = builder._type;
+        this.content = builder._content;
+        this.reason = builder._reason;
     }
 
     @Override
@@ -61,15 +61,15 @@ public final class PassBlock extends AbstractBlock {
     }
 
     public TypeConfig getTypeConfig() {
-        return type;
+        return _type;
     }
 
     public ContentConfig getContent() {
-        return content;
+        return _content;
     }
 
     public ReasonConfig getReason() {
-        return reason;
+        return _reason;
     }
 
     public static Builder builder() {
@@ -86,22 +86,22 @@ public final class PassBlock extends AbstractBlock {
         private final Severity severity;
 
         private TypeConfig(TypeConfigBuilder builder) {
-            this.required = builder.required;
-            this.allowed = builder.allowed != null ? Collections.unmodifiableList(new ArrayList<>(builder.allowed))
+            this.required = builder._required;
+            this.allowed = builder._allowed != null ? Collections.unmodifiableList(new ArrayList<>(builder._allowed))
                     : Collections.emptyList();
-            this.severity = builder.severity;
+            this.severity = builder._severity;
         }
 
         public boolean isRequired() {
-            return required;
+            return _required;
         }
 
         public List<String> getAllowed() {
-            return allowed;
+            return _allowed;
         }
 
         public Severity getSeverity() {
-            return severity;
+            return _severity;
         }
 
         public static TypeConfigBuilder builder() {
@@ -110,22 +110,22 @@ public final class PassBlock extends AbstractBlock {
 
         @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class TypeConfigBuilder {
-            private boolean required;
-            private List<String> allowed;
-            private Severity severity;
+            private boolean _required;
+            private List<String> _allowed;
+            private Severity _severity;
 
             public TypeConfigBuilder required(boolean required) {
-                this.required = required;
+                this._required = required;
                 return this;
             }
 
             public TypeConfigBuilder allowed(List<String> allowed) {
-                this.allowed = allowed;
+                this._allowed = allowed;
                 return this;
             }
 
             public TypeConfigBuilder severity(Severity severity) {
-                this.severity = severity;
+                this._severity = severity;
                 return this;
             }
 
@@ -161,26 +161,26 @@ public final class PassBlock extends AbstractBlock {
         private final Severity severity;
 
         private ContentConfig(ContentConfigBuilder builder) {
-            this.required = builder.required;
-            this.maxLength = builder.maxLength;
-            this.pattern = builder.pattern;
-            this.severity = builder.severity;
+            this.required = builder._required;
+            this.maxLength = builder._maxLength;
+            this.pattern = builder._pattern;
+            this.severity = builder._severity;
         }
 
         public boolean isRequired() {
-            return required;
+            return _required;
         }
 
         public Integer getMaxLength() {
-            return maxLength;
+            return _maxLength;
         }
 
         public Pattern getPattern() {
-            return pattern;
+            return _pattern;
         }
 
         public Severity getSeverity() {
-            return severity;
+            return _severity;
         }
 
         public static ContentConfigBuilder builder() {
@@ -189,33 +189,34 @@ public final class PassBlock extends AbstractBlock {
 
         @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class ContentConfigBuilder {
-            private boolean required;
-            private Integer maxLength;
-            private Pattern pattern;
-            private Severity severity;
+            private boolean _required;
+            private Integer _maxLength;
+            private Pattern _pattern;
+            private Severity _severity;
 
             public ContentConfigBuilder required(boolean required) {
-                this.required = required;
+                this._required = required;
                 return this;
             }
 
             public ContentConfigBuilder maxLength(Integer maxLength) {
-                this.maxLength = maxLength;
+                this._maxLength = maxLength;
                 return this;
             }
 
             public ContentConfigBuilder pattern(Pattern pattern) {
-                this.pattern = pattern;
+                this._pattern = pattern;
                 return this;
             }
 
+            @SuppressWarnings("PMD.NullAssignment")
             public ContentConfigBuilder pattern(String pattern) {
-                this.pattern = pattern != null ? Pattern.compile(pattern) : null;
+                this._pattern = pattern != null ? Pattern.compile(pattern) : null;
                 return this;
             }
 
             public ContentConfigBuilder severity(Severity severity) {
-                this.severity = severity;
+                this._severity = severity;
                 return this;
             }
 
@@ -255,26 +256,26 @@ public final class PassBlock extends AbstractBlock {
         private final Severity severity;
 
         private ReasonConfig(ReasonConfigBuilder builder) {
-            this.required = builder.required;
-            this.minLength = builder.minLength;
-            this.maxLength = builder.maxLength;
-            this.severity = builder.severity;
+            this.required = builder._required;
+            this.minLength = builder._minLength;
+            this.maxLength = builder._maxLength;
+            this.severity = builder._severity;
         }
 
         public boolean isRequired() {
-            return required;
+            return _required;
         }
 
         public Integer getMinLength() {
-            return minLength;
+            return _minLength;
         }
 
         public Integer getMaxLength() {
-            return maxLength;
+            return _maxLength;
         }
 
         public Severity getSeverity() {
-            return severity;
+            return _severity;
         }
 
         public static ReasonConfigBuilder builder() {
@@ -283,28 +284,28 @@ public final class PassBlock extends AbstractBlock {
 
         @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class ReasonConfigBuilder {
-            private boolean required;
-            private Integer minLength;
-            private Integer maxLength;
-            private Severity severity;
+            private boolean _required;
+            private Integer _minLength;
+            private Integer _maxLength;
+            private Severity _severity;
 
             public ReasonConfigBuilder required(boolean required) {
-                this.required = required;
+                this._required = required;
                 return this;
             }
 
             public ReasonConfigBuilder minLength(Integer minLength) {
-                this.minLength = minLength;
+                this._minLength = minLength;
                 return this;
             }
 
             public ReasonConfigBuilder maxLength(Integer maxLength) {
-                this.maxLength = maxLength;
+                this._maxLength = maxLength;
                 return this;
             }
 
             public ReasonConfigBuilder severity(Severity severity) {
-                this.severity = severity;
+                this._severity = severity;
                 return this;
             }
 
@@ -331,22 +332,22 @@ public final class PassBlock extends AbstractBlock {
 
     @JsonPOJOBuilder(withPrefix = EMPTY)
     public static class Builder extends AbstractBuilder<Builder> {
-        private TypeConfig type;
-        private ContentConfig content;
-        private ReasonConfig reason;
+        private TypeConfig _type;
+        private ContentConfig _content;
+        private ReasonConfig _reason;
 
         public Builder type(TypeConfig type) {
-            this.type = type;
+            this._type = type;
             return this;
         }
 
         public Builder content(ContentConfig content) {
-            this.content = content;
+            this._content = content;
             return this;
         }
 
         public Builder reason(ReasonConfig reason) {
-            this.reason = reason;
+            this._reason = reason;
             return this;
         }
 

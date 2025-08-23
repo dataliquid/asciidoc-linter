@@ -24,8 +24,8 @@ public final class ParagraphBlock extends AbstractBlock {
 
     private ParagraphBlock(Builder builder) {
         super(builder);
-        this.lines = builder.lines;
-        this.sentence = builder.sentence;
+        this.lines = builder._lines;
+        this.sentence = builder._sentence;
     }
 
     @Override
@@ -34,11 +34,11 @@ public final class ParagraphBlock extends AbstractBlock {
     }
 
     public LineConfig getLines() {
-        return lines;
+        return _lines;
     }
 
     public SentenceConfig getSentence() {
-        return sentence;
+        return _sentence;
     }
 
     public static Builder builder() {
@@ -47,16 +47,16 @@ public final class ParagraphBlock extends AbstractBlock {
 
     @JsonPOJOBuilder(withPrefix = EMPTY)
     public static class Builder extends AbstractBuilder<Builder> {
-        private LineConfig lines;
-        private SentenceConfig sentence;
+        private LineConfig _lines;
+        private SentenceConfig _sentence;
 
         public Builder lines(LineConfig lines) {
-            this.lines = lines;
+            this._lines = lines;
             return this;
         }
 
         public Builder sentence(SentenceConfig sentence) {
-            this.sentence = sentence;
+            this._sentence = sentence;
             return this;
         }
 
@@ -96,16 +96,16 @@ public final class ParagraphBlock extends AbstractBlock {
         private final WordsConfig words;
 
         private SentenceConfig(Builder builder) {
-            this.occurrence = builder.occurrence;
-            this.words = builder.words;
+            this.occurrence = builder._occurrence;
+            this.words = builder._words;
         }
 
         public OccurrenceConfig getOccurrence() {
-            return occurrence;
+            return _occurrence;
         }
 
         public WordsConfig getWords() {
-            return words;
+            return _words;
         }
 
         public static Builder builder() {
@@ -114,18 +114,18 @@ public final class ParagraphBlock extends AbstractBlock {
 
         @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class Builder {
-            private OccurrenceConfig occurrence;
-            private WordsConfig words;
+            private OccurrenceConfig _occurrence;
+            private WordsConfig _words;
 
             @JsonProperty(OCCURRENCE)
             public Builder occurrence(OccurrenceConfig occurrence) {
-                this.occurrence = occurrence;
+                this._occurrence = occurrence;
                 return this;
             }
 
             @JsonProperty(WORDS)
             public Builder words(WordsConfig words) {
-                this.words = words;
+                this._words = words;
                 return this;
             }
 
@@ -165,21 +165,21 @@ public final class ParagraphBlock extends AbstractBlock {
         private final Severity severity;
 
         private WordsConfig(Builder builder) {
-            this.min = builder.min;
-            this.max = builder.max;
-            this.severity = builder.severity;
+            this.min = builder._min;
+            this.max = builder._max;
+            this.severity = builder._severity;
         }
 
         public Integer getMin() {
-            return min;
+            return _min;
         }
 
         public Integer getMax() {
-            return max;
+            return _max;
         }
 
         public Severity getSeverity() {
-            return severity;
+            return _severity;
         }
 
         public static Builder builder() {
@@ -188,25 +188,25 @@ public final class ParagraphBlock extends AbstractBlock {
 
         @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class Builder {
-            private Integer min;
-            private Integer max;
-            private Severity severity;
+            private Integer _min;
+            private Integer _max;
+            private Severity _severity;
 
             @JsonProperty(MIN)
             public Builder min(Integer min) {
-                this.min = min;
+                this._min = min;
                 return this;
             }
 
             @JsonProperty(MAX)
             public Builder max(Integer max) {
-                this.max = max;
+                this._max = max;
                 return this;
             }
 
             @JsonProperty(SEVERITY)
             public Builder severity(Severity severity) {
-                this.severity = severity;
+                this._severity = severity;
                 return this;
             }
 

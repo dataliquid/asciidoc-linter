@@ -40,10 +40,10 @@ public final class DlistBlock extends AbstractBlock {
 
     private DlistBlock(Builder builder) {
         super(builder);
-        this.terms = builder.terms;
-        this.descriptions = builder.descriptions;
-        this.nestingLevel = builder.nestingLevel;
-        this.delimiterStyle = builder.delimiterStyle;
+        this.terms = builder._terms;
+        this.descriptions = builder._descriptions;
+        this.nestingLevel = builder._nestingLevel;
+        this.delimiterStyle = builder._delimiterStyle;
     }
 
     @Override
@@ -52,19 +52,19 @@ public final class DlistBlock extends AbstractBlock {
     }
 
     public TermsConfig getTerms() {
-        return terms;
+        return _terms;
     }
 
     public DescriptionsConfig getDescriptions() {
-        return descriptions;
+        return _descriptions;
     }
 
     public NestingLevelConfig getNestingLevel() {
-        return nestingLevel;
+        return _nestingLevel;
     }
 
     public DelimiterStyleConfig getDelimiterStyle() {
-        return delimiterStyle;
+        return _delimiterStyle;
     }
 
     public static Builder builder() {
@@ -90,36 +90,36 @@ public final class DlistBlock extends AbstractBlock {
         private final Severity severity;
 
         private TermsConfig(TermsConfigBuilder builder) {
-            this.min = builder.min;
-            this.max = builder.max;
-            this.pattern = builder.pattern;
-            this.minLength = builder.minLength;
-            this.maxLength = builder.maxLength;
-            this.severity = builder.severity;
+            this.min = builder._min;
+            this.max = builder._max;
+            this.pattern = builder._pattern;
+            this.minLength = builder._minLength;
+            this.maxLength = builder._maxLength;
+            this.severity = builder._severity;
         }
 
         public Integer getMin() {
-            return min;
+            return _min;
         }
 
         public Integer getMax() {
-            return max;
+            return _max;
         }
 
         public String getPattern() {
-            return pattern;
+            return _pattern;
         }
 
         public Integer getMinLength() {
-            return minLength;
+            return _minLength;
         }
 
         public Integer getMaxLength() {
-            return maxLength;
+            return _maxLength;
         }
 
         public Severity getSeverity() {
-            return severity;
+            return _severity;
         }
 
         public static TermsConfigBuilder builder() {
@@ -128,40 +128,40 @@ public final class DlistBlock extends AbstractBlock {
 
         @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class TermsConfigBuilder {
-            private Integer min;
-            private Integer max;
-            private String pattern;
-            private Integer minLength;
-            private Integer maxLength;
-            private Severity severity;
+            private Integer _min;
+            private Integer _max;
+            private String _pattern;
+            private Integer _minLength;
+            private Integer _maxLength;
+            private Severity _severity;
 
             public TermsConfigBuilder min(Integer min) {
-                this.min = min;
+                this._min = min;
                 return this;
             }
 
             public TermsConfigBuilder max(Integer max) {
-                this.max = max;
+                this._max = max;
                 return this;
             }
 
             public TermsConfigBuilder pattern(String pattern) {
-                this.pattern = pattern;
+                this._pattern = pattern;
                 return this;
             }
 
             public TermsConfigBuilder minLength(Integer minLength) {
-                this.minLength = minLength;
+                this._minLength = minLength;
                 return this;
             }
 
             public TermsConfigBuilder maxLength(Integer maxLength) {
-                this.maxLength = maxLength;
+                this._maxLength = maxLength;
                 return this;
             }
 
             public TermsConfigBuilder severity(Severity severity) {
-                this.severity = severity;
+                this._severity = severity;
                 return this;
             }
 
@@ -204,31 +204,31 @@ public final class DlistBlock extends AbstractBlock {
         private final Severity severity;
 
         private DescriptionsConfig(DescriptionsConfigBuilder builder) {
-            this.required = builder.required;
-            this.min = builder.min;
-            this.max = builder.max;
-            this.pattern = builder.pattern;
-            this.severity = builder.severity;
+            this.required = builder._required;
+            this.min = builder._min;
+            this.max = builder._max;
+            this.pattern = builder._pattern;
+            this.severity = builder._severity;
         }
 
         public Boolean getRequired() {
-            return required;
+            return _required;
         }
 
         public Integer getMin() {
-            return min;
+            return _min;
         }
 
         public Integer getMax() {
-            return max;
+            return _max;
         }
 
         public String getPattern() {
-            return pattern;
+            return _pattern;
         }
 
         public Severity getSeverity() {
-            return severity;
+            return _severity;
         }
 
         public static DescriptionsConfigBuilder builder() {
@@ -237,34 +237,34 @@ public final class DlistBlock extends AbstractBlock {
 
         @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class DescriptionsConfigBuilder {
-            private Boolean required;
-            private Integer min;
-            private Integer max;
-            private String pattern;
-            private Severity severity;
+            private Boolean _required;
+            private Integer _min;
+            private Integer _max;
+            private String _pattern;
+            private Severity _severity;
 
             public DescriptionsConfigBuilder required(Boolean required) {
-                this.required = required;
+                this._required = required;
                 return this;
             }
 
             public DescriptionsConfigBuilder min(Integer min) {
-                this.min = min;
+                this._min = min;
                 return this;
             }
 
             public DescriptionsConfigBuilder max(Integer max) {
-                this.max = max;
+                this._max = max;
                 return this;
             }
 
             public DescriptionsConfigBuilder pattern(String pattern) {
-                this.pattern = pattern;
+                this._pattern = pattern;
                 return this;
             }
 
             public DescriptionsConfigBuilder severity(Severity severity) {
-                this.severity = severity;
+                this._severity = severity;
                 return this;
             }
 
@@ -301,16 +301,16 @@ public final class DlistBlock extends AbstractBlock {
         private final Severity severity;
 
         private NestingLevelConfig(NestingLevelConfigBuilder builder) {
-            this.max = builder.max;
-            this.severity = builder.severity;
+            this.max = builder._max;
+            this.severity = builder._severity;
         }
 
         public Integer getMax() {
-            return max;
+            return _max;
         }
 
         public Severity getSeverity() {
-            return severity;
+            return _severity;
         }
 
         public static NestingLevelConfigBuilder builder() {
@@ -319,16 +319,16 @@ public final class DlistBlock extends AbstractBlock {
 
         @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class NestingLevelConfigBuilder {
-            private Integer max;
-            private Severity severity;
+            private Integer _max;
+            private Severity _severity;
 
             public NestingLevelConfigBuilder max(Integer max) {
-                this.max = max;
+                this._max = max;
                 return this;
             }
 
             public NestingLevelConfigBuilder severity(Severity severity) {
-                this.severity = severity;
+                this._severity = severity;
                 return this;
             }
 
@@ -365,21 +365,21 @@ public final class DlistBlock extends AbstractBlock {
         private final Severity severity;
 
         private DelimiterStyleConfig(DelimiterStyleConfigBuilder builder) {
-            this.allowedDelimiters = builder.allowedDelimiters;
-            this.consistent = builder.consistent;
-            this.severity = builder.severity;
+            this.allowedDelimiters = builder._allowedDelimiters;
+            this.consistent = builder._consistent;
+            this.severity = builder._severity;
         }
 
         public String[] getAllowedDelimiters() {
-            return allowedDelimiters;
+            return _allowedDelimiters;
         }
 
         public Boolean getConsistent() {
-            return consistent;
+            return _consistent;
         }
 
         public Severity getSeverity() {
-            return severity;
+            return _severity;
         }
 
         public static DelimiterStyleConfigBuilder builder() {
@@ -388,22 +388,22 @@ public final class DlistBlock extends AbstractBlock {
 
         @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class DelimiterStyleConfigBuilder {
-            private String[] allowedDelimiters;
-            private Boolean consistent;
-            private Severity severity;
+            private String[] _allowedDelimiters;
+            private Boolean _consistent;
+            private Severity _severity;
 
-            public DelimiterStyleConfigBuilder allowedDelimiters(String[] allowedDelimiters) {
-                this.allowedDelimiters = allowedDelimiters;
+            public DelimiterStyleConfigBuilder allowedDelimiters(String... allowedDelimiters) {
+                this._allowedDelimiters = allowedDelimiters.clone(); // Defensive copy to avoid external modification
                 return this;
             }
 
             public DelimiterStyleConfigBuilder consistent(Boolean consistent) {
-                this.consistent = consistent;
+                this._consistent = consistent;
                 return this;
             }
 
             public DelimiterStyleConfigBuilder severity(Severity severity) {
-                this.severity = severity;
+                this._severity = severity;
                 return this;
             }
 
@@ -432,28 +432,28 @@ public final class DlistBlock extends AbstractBlock {
 
     @JsonPOJOBuilder(withPrefix = EMPTY)
     public static class Builder extends AbstractBuilder<Builder> {
-        private TermsConfig terms;
-        private DescriptionsConfig descriptions;
-        private NestingLevelConfig nestingLevel;
-        private DelimiterStyleConfig delimiterStyle;
+        private TermsConfig _terms;
+        private DescriptionsConfig _descriptions;
+        private NestingLevelConfig _nestingLevel;
+        private DelimiterStyleConfig _delimiterStyle;
 
         public Builder terms(TermsConfig terms) {
-            this.terms = terms;
+            this._terms = terms;
             return this;
         }
 
         public Builder descriptions(DescriptionsConfig descriptions) {
-            this.descriptions = descriptions;
+            this._descriptions = descriptions;
             return this;
         }
 
         public Builder nestingLevel(NestingLevelConfig nestingLevel) {
-            this.nestingLevel = nestingLevel;
+            this._nestingLevel = nestingLevel;
             return this;
         }
 
         public Builder delimiterStyle(DelimiterStyleConfig delimiterStyle) {
-            this.delimiterStyle = delimiterStyle;
+            this._delimiterStyle = delimiterStyle;
             return this;
         }
 

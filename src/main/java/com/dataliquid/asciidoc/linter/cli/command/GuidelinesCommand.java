@@ -18,6 +18,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.dataliquid.asciidoc.linter.cli.VersionInfo;
+import com.dataliquid.asciidoc.linter.util.StringUtils;
 import com.dataliquid.asciidoc.linter.config.LinterConfiguration;
 import com.dataliquid.asciidoc.linter.config.loader.ConfigurationLoader;
 import com.dataliquid.asciidoc.linter.documentation.AsciiDocAuthorGuidelineGenerator;
@@ -171,9 +172,9 @@ public class GuidelinesCommand implements Command {
     }
 
     private Set<VisualizationStyle> parseVisualizationStyles(String stylesArg) {
-        if (stylesArg == null || stylesArg.trim().isEmpty()) {
+        if (StringUtils.isBlank(stylesArg)) {
             // Default to tree visualization
-            return Set.of(VisualizationStyle.TREE);
+            return Set.of((VisualizationStyle) VisualizationStyle.TREE);
         }
 
         return Arrays
@@ -203,8 +204,9 @@ public class GuidelinesCommand implements Command {
     }
 
     private void generateToStdout(RuleDocumentationGenerator generator, LinterConfiguration config) {
-        PrintWriter writer = new PrintWriter(System.out); // intentional console output for guidelines
-        generator.generate(config, writer);
-        writer.flush();
+        try (PrintWriter writer = new PrintWriter(System.out, true)) { // intentional console output for guidelines,
+                                                                       // auto-flush enabled
+            generator.generate(config, writer);
+        }
     }
 }

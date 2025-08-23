@@ -67,7 +67,7 @@ public class CLIConfig {
     }
 
     public Path getReportOutput() {
-        return reportOutput;
+        return _reportOutput;
     }
 
     public Severity getFailLevel() {

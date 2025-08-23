@@ -16,22 +16,22 @@ import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.EMP
 
 @JsonDeserialize(builder = DocumentConfiguration.Builder.class)
 public final class DocumentConfiguration {
-    private final MetadataConfiguration metadata;
-    private final List<SectionConfig> sections;
+    private final MetadataConfiguration _metadata;
+    private final List<SectionConfig> _sections;
 
     private DocumentConfiguration(Builder builder) {
-        this.metadata = builder.metadata;
-        this.sections = Collections.unmodifiableList(new ArrayList<>(builder.sections));
+        this.metadata = builder._metadata;
+        this._sections = Collections.unmodifiableList(new ArrayList<>(builder._sections));
     }
 
     @JsonProperty(METADATA)
     public MetadataConfiguration metadata() {
-        return metadata;
+        return this._metadata;
     }
 
     @JsonProperty(SECTIONS)
     public List<SectionConfig> sections() {
-        return sections;
+        return this._sections;
     }
 
     public static Builder builder() {
@@ -40,23 +40,23 @@ public final class DocumentConfiguration {
 
     @JsonPOJOBuilder(withPrefix = EMPTY)
     public static class Builder {
-        private MetadataConfiguration metadata;
-        private List<SectionConfig> sections = new ArrayList<>();
+        private MetadataConfiguration _metadata;
+        private List<SectionConfig> _sections = new ArrayList<>();
 
         @JsonProperty(METADATA)
         public Builder metadata(MetadataConfiguration metadata) {
-            this.metadata = metadata;
+            this._metadata = metadata;
             return this;
         }
 
         @JsonProperty(SECTIONS)
         public Builder sections(List<SectionConfig> sections) {
-            this.sections = sections != null ? new ArrayList<>(sections) : new ArrayList<>();
+            this._sections = sections != null ? new ArrayList<>(sections) : new ArrayList<>();
             return this;
         }
 
         public Builder addSection(SectionConfig section) {
-            this.sections.add(section);
+            this._sections.add(section);
             return this;
         }
 
@@ -72,11 +72,11 @@ public final class DocumentConfiguration {
         if (o == null || getClass() != o.getClass())
             return false;
         DocumentConfiguration that = (DocumentConfiguration) o;
-        return Objects.equals(metadata, that.metadata) && Objects.equals(sections, that.sections);
+        return Objects.equals(_metadata, that._metadata) && Objects.equals(_sections, that._sections);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(metadata, sections);
+        return Objects.hash(_metadata, _sections);
     }
 }

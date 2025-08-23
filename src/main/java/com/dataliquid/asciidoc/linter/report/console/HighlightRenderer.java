@@ -17,6 +17,29 @@ public class HighlightRenderer {
     private static final String PLACEHOLDER_START = "«";
     private static final String PLACEHOLDER_END = "»";
 
+    // Constants for rule IDs
+    private static final String SECTION_MIN_OCCURRENCES_RULE = "section.min-occurrences";
+    private static final String BLOCK_OCCURRENCE_MIN_RULE = "block.occurrence.min";
+    private static final String PARAGRAPH_LINES_MIN_RULE = "paragraph.lines.min";
+    private static final String PARAGRAPH_SENTENCE_OCCURRENCE_MIN_RULE = "paragraph.sentence.occurrence.min";
+    private static final String PARAGRAPH_SENTENCE_WORDS_MIN_RULE = "paragraph.sentence.words.min";
+    private static final String VIDEO_CAPTION_REQUIRED_RULE = "video.caption.required";
+    private static final String AUDIO_TITLE_REQUIRED_RULE = "audio.title.required";
+    private static final String TABLE_CAPTION_REQUIRED_RULE = "table.caption.required";
+    private static final String TABLE_HEADER_REQUIRED_RULE = "table.header.required";
+    private static final String EXAMPLE_CAPTION_REQUIRED_RULE = "example.caption.required";
+    private static final String EXAMPLE_COLLAPSIBLE_REQUIRED_RULE = "example.collapsible.required";
+    private static final String VERSE_AUTHOR_REQUIRED_RULE = "verse.author.required";
+    private static final String VERSE_ATTRIBUTION_REQUIRED_RULE = "verse.attribution.required";
+    private static final String VERSE_CONTENT_REQUIRED_RULE = "verse.content.required";
+    private static final String DLIST_DESCRIPTIONS_REQUIRED_RULE = "dlist.descriptions.required";
+    private static final String PASS_CONTENT_REQUIRED_RULE = "pass.content.required";
+    private static final String PASS_REASON_REQUIRED_RULE = "pass.reason.required";
+    private static final String PASS_TYPE_REQUIRED_RULE = "pass.type.required";
+    private static final String LITERAL_TITLE_REQUIRED_RULE = "literal.title.required";
+    private static final String ULIST_ITEMS_MIN_RULE = "ulist.items.min";
+    private static final String ULIST_MARKER_STYLE_RULE = "ulist.markerStyle";
+
     private final DisplayConfig config;
     private final ColorScheme colorScheme;
 
@@ -31,8 +54,7 @@ public class HighlightRenderer {
     public void renderWithHighlight(SourceContext context, ValidationMessage message, PrintWriter writer) {
 
         List<SourceContext.ContextLine> lines = context.getLines();
-        for (int i = 0; i < lines.size(); i++) {
-            SourceContext.ContextLine line = lines.get(i);
+        for (SourceContext.ContextLine line : lines) {
 
             // Check if this is a placeholder line for block.occurrence.min
             if (line.isErrorLine() && line.getContent().isEmpty() && "block.occurrence.min".equals(message.getRuleId())
@@ -46,6 +68,7 @@ public class HighlightRenderer {
                     String placeholderContent = placeholderLines[j];
 
                     // Create context line for each placeholder line
+                    @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops") // Necessary for each placeholder line
                     SourceContext.ContextLine placeholderLine = new SourceContext.ContextLine(line.getNumber() + j,
                             placeholderContent, true // Mark as error line
                     );
@@ -72,13 +95,15 @@ public class HighlightRenderer {
         }
 
         // Add placeholder markers only on first and last lines
-        String content = line.getContent();
+        StringBuilder contentBuilder = new StringBuilder(line.getContent().length() + 20);
+        contentBuilder.append(line.getContent());
         if (isFirstLine) {
-            content = PLACEHOLDER_START + content;
+            contentBuilder.insert(0, PLACEHOLDER_START);
         }
         if (isLastLine) {
-            content = content + PLACEHOLDER_END;
+            contentBuilder.append(PLACEHOLDER_END);
         }
+        String content = contentBuilder.toString();
 
         // Color the entire placeholder content
         String highlighted = colorScheme.error(content);
@@ -113,11 +138,12 @@ public class HighlightRenderer {
         }
     }
 
+    @SuppressWarnings("PMD.UnusedFormalParameter")
     private String highlightErrorInLine(String line, ValidationMessage message, int lineNum) {
         // For missing values: insert placeholder
         if (message.getErrorType() == ErrorType.MISSING_VALUE && message.getMissingValueHint() != null) {
             // For section.min-occurrences, insert placeholder on empty lines
-            if ("section.min-occurrences".equals(message.getRuleId())) {
+            if (SECTION_MIN_OCCURRENCES_RULE.equals(message.getRuleId())) {
                 if (line.isEmpty()) {
                     return insertPlaceholder(line, message);
                 } else {
@@ -126,7 +152,7 @@ public class HighlightRenderer {
                 }
             }
             // For block.occurrence.min, insert placeholder on empty lines
-            else if ("block.occurrence.min".equals(message.getRuleId())) {
+            else if (BLOCK_OCCURRENCE_MIN_RULE.equals(message.getRuleId())) {
                 if (line.isEmpty()) {
                     return insertPlaceholder(line, message);
                 } else {
@@ -135,7 +161,7 @@ public class HighlightRenderer {
                 }
             }
             // For paragraph.lines.min, only insert placeholder on empty lines
-            else if ("paragraph.lines.min".equals(message.getRuleId())) {
+            else if (PARAGRAPH_LINES_MIN_RULE.equals(message.getRuleId())) {
                 if (line.isEmpty()) {
                     return insertPlaceholder(line, message);
                 } else {
@@ -145,15 +171,15 @@ public class HighlightRenderer {
             }
             // For paragraph.sentence.occurrence.min, append placeholder at end of line with
             // space
-            else if ("paragraph.sentence.occurrence.min".equals(message.getRuleId())) {
+            else if (PARAGRAPH_SENTENCE_OCCURRENCE_MIN_RULE.equals(message.getRuleId())) {
                 return insertPlaceholderWithSpace(line, message);
             }
             // For paragraph.sentence.words.min, insert placeholder before punctuation
-            else if ("paragraph.sentence.words.min".equals(message.getRuleId())) {
+            else if (PARAGRAPH_SENTENCE_WORDS_MIN_RULE.equals(message.getRuleId())) {
                 return insertPlaceholderBeforePunctuation(line, message);
             }
             // For video.caption.required, only insert placeholder on empty lines
-            else if ("video.caption.required".equals(message.getRuleId())) {
+            else if (VIDEO_CAPTION_REQUIRED_RULE.equals(message.getRuleId())) {
                 if (line.isEmpty()) {
                     return insertPlaceholder(line, message);
                 } else {
@@ -162,7 +188,7 @@ public class HighlightRenderer {
                 }
             }
             // For audio.title.required, only insert placeholder on empty lines
-            else if ("audio.title.required".equals(message.getRuleId())) {
+            else if (AUDIO_TITLE_REQUIRED_RULE.equals(message.getRuleId())) {
                 if (line.isEmpty()) {
                     return insertPlaceholder(line, message);
                 } else {
@@ -171,7 +197,7 @@ public class HighlightRenderer {
                 }
             }
             // For table.caption.required, only insert placeholder on empty lines
-            else if ("table.caption.required".equals(message.getRuleId())) {
+            else if (TABLE_CAPTION_REQUIRED_RULE.equals(message.getRuleId())) {
                 if (line.isEmpty()) {
                     return insertPlaceholder(line, message);
                 } else {
@@ -180,7 +206,7 @@ public class HighlightRenderer {
                 }
             }
             // For table.header.required, only insert placeholder on empty lines
-            else if ("table.header.required".equals(message.getRuleId())) {
+            else if (TABLE_HEADER_REQUIRED_RULE.equals(message.getRuleId())) {
                 if (line.isEmpty()) {
                     return insertPlaceholder(line, message);
                 } else {
@@ -189,7 +215,7 @@ public class HighlightRenderer {
                 }
             }
             // For example.caption.required, only insert placeholder on empty lines
-            else if ("example.caption.required".equals(message.getRuleId())) {
+            else if (EXAMPLE_CAPTION_REQUIRED_RULE.equals(message.getRuleId())) {
                 if (line.isEmpty()) {
                     return insertPlaceholder(line, message);
                 } else {
@@ -198,7 +224,7 @@ public class HighlightRenderer {
                 }
             }
             // For example.collapsible.required, only insert placeholder on empty lines
-            else if ("example.collapsible.required".equals(message.getRuleId())) {
+            else if (EXAMPLE_COLLAPSIBLE_REQUIRED_RULE.equals(message.getRuleId())) {
                 if (line.isEmpty()) {
                     return insertPlaceholder(line, message);
                 } else {
@@ -391,8 +417,8 @@ public class HighlightRenderer {
 
         // For verse.author.required and verse.attribution.required errors,
         // insert placeholder with comma inline in the [verse] line
-        if ("verse.author.required".equals(message.getRuleId())
-                || "verse.attribution.required".equals(message.getRuleId())) {
+        if (VERSE_AUTHOR_REQUIRED_RULE.equals(message.getRuleId())
+                || VERSE_ATTRIBUTION_REQUIRED_RULE.equals(message.getRuleId())) {
             // Insert at position 7 with comma
             if (line.startsWith("[verse")) {
                 String before = line.substring(0, 6); // "[verse"
@@ -403,50 +429,50 @@ public class HighlightRenderer {
         }
 
         // For verse.content.required errors with empty lines, show placeholder at start
-        if ("verse.content.required".equals(message.getRuleId()) && line.isEmpty()) {
+        if (VERSE_CONTENT_REQUIRED_RULE.equals(message.getRuleId()) && line.isEmpty()) {
             String placeholderText = PLACEHOLDER_START + message.getMissingValueHint() + PLACEHOLDER_END;
             return colorScheme.error(placeholderText);
         }
 
         // For dlist.descriptions.required errors, append placeholder to term line
-        if ("dlist.descriptions.required".equals(message.getRuleId())) {
+        if (DLIST_DESCRIPTIONS_REQUIRED_RULE.equals(message.getRuleId())) {
             // This is special - append to the term line
             String placeholderText = PLACEHOLDER_START + message.getMissingValueHint() + PLACEHOLDER_END;
             return line + " " + colorScheme.error(placeholderText);
         }
 
         // For pass.content.required errors with empty lines, show placeholder at start
-        if ("pass.content.required".equals(message.getRuleId()) && line.isEmpty()) {
+        if (PASS_CONTENT_REQUIRED_RULE.equals(message.getRuleId()) && line.isEmpty()) {
             String placeholderText = PLACEHOLDER_START + message.getMissingValueHint() + PLACEHOLDER_END;
             return colorScheme.error(placeholderText);
         }
 
         // For pass.reason.required errors with empty lines, show placeholder at start
-        if ("pass.reason.required".equals(message.getRuleId()) && line.isEmpty()) {
+        if (PASS_REASON_REQUIRED_RULE.equals(message.getRuleId()) && line.isEmpty()) {
             String placeholderText = PLACEHOLDER_START + message.getMissingValueHint() + PLACEHOLDER_END;
             return colorScheme.error(placeholderText);
         }
 
         // For pass.type.required errors with empty lines, show placeholder at start
-        if ("pass.type.required".equals(message.getRuleId()) && line.isEmpty()) {
+        if (PASS_TYPE_REQUIRED_RULE.equals(message.getRuleId()) && line.isEmpty()) {
             String placeholderText = PLACEHOLDER_START + message.getMissingValueHint() + PLACEHOLDER_END;
             return colorScheme.error(placeholderText);
         }
 
         // For literal.title.required errors with empty lines, show placeholder at start
-        if ("literal.title.required".equals(message.getRuleId()) && line.isEmpty()) {
+        if (LITERAL_TITLE_REQUIRED_RULE.equals(message.getRuleId()) && line.isEmpty()) {
             String placeholderText = PLACEHOLDER_START + message.getMissingValueHint() + PLACEHOLDER_END;
             return colorScheme.error(placeholderText);
         }
 
         // For ulist.items.min errors with empty lines, show placeholder at start
-        if ("ulist.items.min".equals(message.getRuleId()) && line.isEmpty()) {
+        if (ULIST_ITEMS_MIN_RULE.equals(message.getRuleId()) && line.isEmpty()) {
             String placeholderText = PLACEHOLDER_START + message.getMissingValueHint() + PLACEHOLDER_END;
             return colorScheme.error(placeholderText);
         }
 
         // For ulist.markerStyle errors, replace the existing marker
-        if ("ulist.markerStyle".equals(message.getRuleId())) {
+        if (ULIST_MARKER_STYLE_RULE.equals(message.getRuleId())) {
             int col = message.getLocation().getStartColumn();
             if (col > 0 && col <= line.length()) {
                 // Replace the marker character at the specified position
@@ -520,8 +546,7 @@ public class HighlightRenderer {
 
         // Padding for line number
         if (config.isShowLineNumbers()) {
-            underline.append("    "); // 4 spaces for line number
-            underline.append(" | "); // 3 spaces for " | "
+            underline.append("     | "); // Combined: 4 spaces for line number + " | "
         }
 
         // Spaces before error

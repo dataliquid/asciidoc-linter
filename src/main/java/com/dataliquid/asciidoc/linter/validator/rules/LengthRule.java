@@ -19,6 +19,7 @@ import static com.dataliquid.asciidoc.linter.validator.RuleIds.Metadata.LENGTH_M
 import static com.dataliquid.asciidoc.linter.validator.RuleIds.Metadata.LENGTH_MAX;
 
 public final class LengthRule implements AttributeRule {
+    private static final String CHARACTERS_SUFFIX = " characters";
     private final Map<String, LengthConfig> lengthConfigs;
 
     private LengthRule(Builder builder) {
@@ -45,12 +46,12 @@ public final class LengthRule implements AttributeRule {
                                 .severity(config.getSeverity())
                                 .ruleId(LENGTH_MIN)
                                 .message("Attribute '" + attributeName + "' is too short: actual '" + value + "' ("
-                                        + length + " characters), expected minimum " + config.getMinLength()
-                                        + " characters")
+                                        + length + CHARACTERS_SUFFIX + "), expected minimum " + config.getMinLength()
+                                        + CHARACTERS_SUFFIX)
                                 .location(location)
                                 .attributeName(attributeName)
-                                .actualValue(value + " (" + length + " characters)")
-                                .expectedValue("Minimum " + config.getMinLength() + " characters")
+                                .actualValue(value + " (" + length + CHARACTERS_SUFFIX + ")")
+                                .expectedValue("Minimum " + config.getMinLength() + CHARACTERS_SUFFIX)
                                 .errorType(ErrorType.OUT_OF_RANGE)
                                 .addSuggestion(Suggestion
                                         .builder()
@@ -59,7 +60,7 @@ public final class LengthRule implements AttributeRule {
                                         .addExample(
                                                 "Expand the value to at least " + config.getMinLength() + " characters")
                                         .explanation("Attribute value must be at least " + config.getMinLength()
-                                                + " characters long")
+                                                + CHARACTERS_SUFFIX + " long")
                                         .build())
                                 .build());
             }
@@ -71,12 +72,12 @@ public final class LengthRule implements AttributeRule {
                                 .severity(config.getSeverity())
                                 .ruleId(LENGTH_MAX)
                                 .message("Attribute '" + attributeName + "' is too long: actual '" + value + "' ("
-                                        + length + " characters), expected maximum " + config.getMaxLength()
-                                        + " characters")
+                                        + length + CHARACTERS_SUFFIX + "), expected maximum " + config.getMaxLength()
+                                        + CHARACTERS_SUFFIX)
                                 .location(location)
                                 .attributeName(attributeName)
-                                .actualValue(value + " (" + length + " characters)")
-                                .expectedValue("Maximum " + config.getMaxLength() + " characters")
+                                .actualValue(value + " (" + length + CHARACTERS_SUFFIX + ")")
+                                .expectedValue("Maximum " + config.getMaxLength() + CHARACTERS_SUFFIX)
                                 .errorType(ErrorType.OUT_OF_RANGE)
                                 .addSuggestion(Suggestion
                                         .builder()
@@ -85,7 +86,7 @@ public final class LengthRule implements AttributeRule {
                                         .addExample("Use more concise wording")
                                         .addExample("Remove unnecessary details")
                                         .explanation("Attribute value must not exceed " + config.getMaxLength()
-                                                + " characters")
+                                                + CHARACTERS_SUFFIX)
                                         .build())
                                 .build());
             }

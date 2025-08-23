@@ -141,13 +141,17 @@ public class FileDiscoveryService {
         // Cache for compiled regex patterns to improve performance
         private static final Map<String, Pattern> PATTERN_CACHE = new ConcurrentHashMap<>();
 
+        // Constants for pattern matching
+        private static final String DOUBLE_WILDCARD = "**";
+        private static final String PATH_SEPARATOR = "/";
+
         public static boolean match(String pattern, String path) {
             // Normalize paths - create local copies to avoid reassigning parameters
             String normalizedPattern = pattern.replace(File.separatorChar, '/');
             String normalizedPath = path.replace(File.separatorChar, '/');
 
             // Handle ** (matches any number of directories)
-            if (normalizedPattern.contains("**")) {
+            if (normalizedPattern.contains(DOUBLE_WILDCARD)) {
                 return matchWithDoubleWildcard(normalizedPattern, normalizedPath);
             }
 
@@ -156,8 +160,8 @@ public class FileDiscoveryService {
         }
 
         private static boolean matchWithDoubleWildcard(String pattern, String path) {
-            String[] patternParts = pattern.split("/");
-            String[] pathParts = path.split("/");
+            String[] patternParts = pattern.split(PATH_SEPARATOR);
+            String[] pathParts = path.split(PATH_SEPARATOR);
 
             int patternIndex = 0;
             int pathIndex = 0;
@@ -166,7 +170,7 @@ public class FileDiscoveryService {
                 if (pathIndex >= pathParts.length) {
                     // Check if remaining pattern parts are all **
                     while (patternIndex < patternParts.length) {
-                        if (!patternParts[patternIndex].equals("**")) {
+                        if (!DOUBLE_WILDCARD.equals(patternParts[patternIndex])) {
                             return false;
                         }
                         patternIndex++;
@@ -176,7 +180,7 @@ public class FileDiscoveryService {
 
                 String patternPart = patternParts[patternIndex];
 
-                if (patternPart.equals("**")) {
+                if (DOUBLE_WILDCARD.equals(patternPart)) {
                     // Handle **
                     if (patternIndex == patternParts.length - 1) {
                         // ** at end matches everything
@@ -217,8 +221,8 @@ public class FileDiscoveryService {
         }
 
         private static boolean matchSimplePattern(String pattern, String path) {
-            String[] patternParts = pattern.split("/");
-            String[] pathParts = path.split("/");
+            String[] patternParts = pattern.split(PATH_SEPARATOR);
+            String[] pathParts = path.split(PATH_SEPARATOR);
 
             if (patternParts.length != pathParts.length) {
                 return false;
@@ -245,7 +249,7 @@ public class FileDiscoveryService {
                         regex.append(".*");
                         break;
                     case '?':
-                        regex.append(".");
+                        regex.append('.');
                         break;
                     case '.':
                     case '\\':
@@ -259,13 +263,13 @@ public class FileDiscoveryService {
                     case '}':
                     case '+':
                     case '|':
-                        regex.append("\\").append(c);
+                        regex.append('\\').append(c);
                         break;
                     default:
                         regex.append(c);
                     }
                 }
-                regex.append("$");
+                regex.append('$');
 
                 return Pattern.compile(regex.toString());
             });

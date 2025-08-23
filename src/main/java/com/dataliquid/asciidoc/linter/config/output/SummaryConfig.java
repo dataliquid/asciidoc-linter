@@ -28,26 +28,26 @@ public final class SummaryConfig {
     private final boolean showFileList;
 
     private SummaryConfig(Builder builder) {
-        this.enabled = builder.enabled;
-        this.showStatistics = builder.showStatistics;
-        this.showMostCommon = builder.showMostCommon;
-        this.showFileList = builder.showFileList;
+        this.enabled = builder._enabled;
+        this.showStatistics = builder._showStatistics;
+        this.showMostCommon = builder._showMostCommon;
+        this.showFileList = builder._showFileList;
     }
 
     public boolean isEnabled() {
-        return enabled;
+        return this._enabled;
     }
 
     public boolean isShowStatistics() {
-        return showStatistics;
+        return this._showStatistics;
     }
 
     public boolean isShowMostCommon() {
-        return showMostCommon;
+        return this._showMostCommon;
     }
 
     public boolean isShowFileList() {
-        return showFileList;
+        return this._showFileList;
     }
 
     @Override
@@ -71,6 +71,7 @@ public final class SummaryConfig {
     }
 
     @JsonPOJOBuilder(withPrefix = EMPTY)
+    @SuppressWarnings("PMD.AvoidFieldNameMatchingMethodName")
     public static final class Builder {
         private boolean enabled = DEFAULT_ENABLED;
         private boolean showStatistics = DEFAULT_SHOW_STATISTICS;

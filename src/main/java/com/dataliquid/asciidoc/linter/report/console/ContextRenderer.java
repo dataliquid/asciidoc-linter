@@ -8,11 +8,26 @@ import com.dataliquid.asciidoc.linter.config.output.DisplayConfig;
 import com.dataliquid.asciidoc.linter.validator.ErrorType;
 import com.dataliquid.asciidoc.linter.validator.SourceLocation;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
+import com.dataliquid.asciidoc.linter.util.StringUtils;
 
 /**
  * Extracts source code context around validation errors.
  */
 public class ContextRenderer {
+    // Constants for section levels
+    private static final int DOCUMENT_TITLE_LEVEL = 0;
+    private static final int FIRST_SECTION_LEVEL = 1;
+
+    // Constants for AsciiDoc delimiters
+    private static final String EXAMPLE_BLOCK_DELIMITER = "====";
+    private static final String SIDEBAR_DELIMITER = "****";
+    private static final String VERSE_BLOCK_DELIMITER = "____";
+    private static final String PASS_BLOCK_DELIMITER = "++++";
+
+    // Constants for rule IDs
+    private static final String VERSE_CONTENT_REQUIRED_RULE = "verse.content.required";
+    private static final String PASS_CONTENT_REQUIRED_RULE = "pass.content.required";
+
     private final DisplayConfig config;
     private final FileContentCache fileCache;
 
@@ -83,17 +98,17 @@ public class ContextRenderer {
             // Find the appropriate position to insert the section placeholder
             int insertIndex = -1;
 
-            if (sectionLevel == 0) {
+            if (sectionLevel == DOCUMENT_TITLE_LEVEL) {
                 // For level 0 sections (document title), insert at the beginning
                 insertIndex = 0;
-            } else if (sectionLevel == 1) {
+            } else if (sectionLevel == FIRST_SECTION_LEVEL) {
                 // For level 1 sections, insert after the document title
                 for (int i = 0; i < contextLines.size(); i++) {
                     String line = contextLines.get(i).trim();
                     if (line.startsWith("= ") && !line.startsWith("== ")) {
                         insertIndex = i + 1;
                         // If there's an empty line after the title, insert after it
-                        if (insertIndex < contextLines.size() && contextLines.get(insertIndex).trim().isEmpty()) {
+                        if (insertIndex < contextLines.size() && StringUtils.isBlank(contextLines.get(insertIndex))) {
                             insertIndex++;
                         }
                         break;
@@ -127,7 +142,8 @@ public class ContextRenderer {
                         // Find the end of this section's content
                         insertIndex = i + 1;
                         // Skip any empty lines after the section header
-                        while (insertIndex < contextLines.size() && contextLines.get(insertIndex).trim().isEmpty()) {
+                        while (insertIndex < contextLines.size()
+                                && StringUtils.isBlank(contextLines.get(insertIndex))) {
                             insertIndex++;
                         }
                         // Skip content lines until we find the next section or end
@@ -219,10 +235,10 @@ public class ContextRenderer {
                 } else {
                     // After the placeholder
                     int originalIndex = i - 1; // Account for inserted placeholder
-                    int lineNum = startLine + originalIndex;
+                    int lineNum; // Will be set based on position
 
                     // If we're right after placeholder and current line is empty
-                    if (i == insertIndex + 1 && content.trim().isEmpty()) {
+                    if (i == insertIndex + 1 && StringUtils.isBlank(content)) {
                         // This empty line gets number insertLineNumber + 1
                         lineNum = insertLineNumber + 1;
                     } else {
@@ -337,7 +353,7 @@ public class ContextRenderer {
             int insertedLineIndex = -1;
             // Look for the opening delimiter and insert after it
             for (int i = admonitionLineIndex; i < contextLines.size(); i++) {
-                if (contextLines.get(i).trim().equals("====")) {
+                if (EXAMPLE_BLOCK_DELIMITER.equals(contextLines.get(i).trim())) {
                     contextLines.add(i + 1, "");
                     insertedLineIndex = i + 1;
                     break;
@@ -402,7 +418,7 @@ public class ContextRenderer {
             int insertedLineIndex = -1;
             // Look for the opening delimiter and insert after it
             for (int i = sidebarLineIndex; i < contextLines.size(); i++) {
-                if (contextLines.get(i).trim().equals("****")) {
+                if (SIDEBAR_DELIMITER.equals(contextLines.get(i).trim())) {
                     contextLines.add(i + 1, "");
                     insertedLineIndex = i + 1;
                     break;
@@ -460,13 +476,14 @@ public class ContextRenderer {
         // [verse] line
 
         // For verse.content.required errors, add an extra line inside the verse block
-        if ("verse.content.required".equals(message.getRuleId()) && message.getErrorType() == ErrorType.MISSING_VALUE) {
+        if (VERSE_CONTENT_REQUIRED_RULE.equals(message.getRuleId())
+                && message.getErrorType() == ErrorType.MISSING_VALUE) {
             // Find the line after the opening delimiter (____)
             int verseLineIndex = loc.getStartLine() - startLine;
             int insertedLineIndex = -1;
             // Look for the opening delimiter and insert after it
             for (int i = verseLineIndex; i < contextLines.size(); i++) {
-                if (contextLines.get(i).trim().equals("____")) {
+                if (VERSE_BLOCK_DELIMITER.equals(contextLines.get(i).trim())) {
                     contextLines.add(i + 1, "");
                     insertedLineIndex = i + 1;
                     break;
@@ -489,13 +506,14 @@ public class ContextRenderer {
         // The placeholder will be inserted inline in the term line
 
         // For pass.content.required errors, add an extra line inside the pass block
-        if ("pass.content.required".equals(message.getRuleId()) && message.getErrorType() == ErrorType.MISSING_VALUE) {
+        if (PASS_CONTENT_REQUIRED_RULE.equals(message.getRuleId())
+                && message.getErrorType() == ErrorType.MISSING_VALUE) {
             // Find the line after the opening delimiter (++++)
             int passLineIndex = loc.getStartLine() - startLine;
             int insertedLineIndex = -1;
             // Look for the opening delimiter and insert after it
             for (int i = passLineIndex; i < contextLines.size(); i++) {
-                if (contextLines.get(i).trim().equals("++++")) {
+                if (PASS_BLOCK_DELIMITER.equals(contextLines.get(i).trim())) {
                     contextLines.add(i + 1, "");
                     insertedLineIndex = i + 1;
                     break;
@@ -645,14 +663,17 @@ public class ContextRenderer {
             int actual = Integer.parseInt(actualValue);
             // Expected value is in format "At least X lines"
             String[] parts = expectedValue.split(" ");
-            for (int i = 0; i < parts.length; i++) {
-                if (parts[i].matches("\\d+")) {
-                    int expected = Integer.parseInt(parts[i]);
+            for (String part : parts) {
+                if (part.matches("\\d+")) {
+                    int expected = Integer.parseInt(part);
                     return Math.max(1, expected - actual);
                 }
             }
         } catch (NumberFormatException e) {
             // Fallback to 1 line if parsing fails
+            // NumberFormatException expected for non-numeric content
+            System.err.println("Warning: Could not parse expected value: " + expectedValue); // NOPMD - intentional
+                                                                                             // debug output
         }
 
         return 1;

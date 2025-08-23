@@ -14,6 +14,9 @@ import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
  */
 public final class BlockOrderValidator {
 
+    // Constants for duplicate literals
+    private static final String AT_POSITION_SUFFIX = "' at position ";
+
     /**
      * Validates order constraints for blocks in a section.
      *
@@ -121,8 +124,8 @@ public final class BlockOrderValidator {
                             .location(createSectionLocation(context))
                             .message("Block '" + constraint.first() + "' must appear before '" + constraint.second()
                                     + "'")
-                            .actualValue("'" + constraint.first() + "' at position " + (firstPos + 1) + ", '"
-                                    + constraint.second() + "' at position " + (secondPos + 1))
+                            .actualValue("'" + constraint.first() + AT_POSITION_SUFFIX + (firstPos + 1) + ", '"
+                                    + constraint.second() + AT_POSITION_SUFFIX + (secondPos + 1))
                             .expectedValue("'" + constraint.first() + "' before '" + constraint.second() + "'")
                             .build());
         }
@@ -167,8 +170,8 @@ public final class BlockOrderValidator {
                             .location(createSectionLocation(context))
                             .message("Block '" + constraint.first() + "' must appear after '" + constraint.second()
                                     + "'")
-                            .actualValue("'" + constraint.first() + "' at position " + (firstPos + 1) + ", '"
-                                    + constraint.second() + "' at position " + (secondPos + 1))
+                            .actualValue("'" + constraint.first() + AT_POSITION_SUFFIX + (firstPos + 1) + ", '"
+                                    + constraint.second() + AT_POSITION_SUFFIX + (secondPos + 1))
                             .expectedValue("'" + constraint.first() + "' after '" + constraint.second() + "'")
                             .build());
         }

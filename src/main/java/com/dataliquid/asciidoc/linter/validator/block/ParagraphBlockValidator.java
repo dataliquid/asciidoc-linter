@@ -17,6 +17,7 @@ import static com.dataliquid.asciidoc.linter.validator.RuleIds.Paragraph.*;
 import com.dataliquid.asciidoc.linter.validator.SourceLocation;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
 import com.dataliquid.asciidoc.linter.validator.Suggestion;
+import com.dataliquid.asciidoc.linter.util.StringUtils;
 
 /**
  * Validator for paragraph blocks in AsciiDoc documents.
@@ -49,6 +50,11 @@ import com.dataliquid.asciidoc.linter.validator.Suggestion;
  * @see BlockTypeValidator
  */
 public final class ParagraphBlockValidator extends AbstractBlockValidator<ParagraphBlock> {
+    private static final String AT_LEAST = "At least ";
+    private static final String LINES_UNIT = " lines";
+    private static final String SENTENCES_UNIT = " sentences";
+    private static final String WORDS_UNIT = " words";
+
     @Override
     public BlockType getSupportedType() {
         return BlockType.PARAGRAPH;
@@ -92,7 +98,7 @@ public final class ParagraphBlockValidator extends AbstractBlockValidator<Paragr
         String[] lines = content.split("\n");
         int count = 0;
         for (String line : lines) {
-            if (!line.trim().isEmpty()) {
+            if (!StringUtils.isBlank(line)) {
                 count++;
             }
         }
@@ -118,7 +124,7 @@ public final class ParagraphBlockValidator extends AbstractBlockValidator<Paragr
                                     SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
                             .message("Paragraph has too few lines")
                             .actualValue(String.valueOf(actualLines))
-                            .expectedValue("At least " + lineConfig.min() + " lines")
+                            .expectedValue(AT_LEAST + lineConfig.min() + LINES_UNIT)
                             .errorType(ErrorType.MISSING_VALUE)
                             .missingValueHint("Add more content here...")
                             .placeholderContext(PlaceholderContext
@@ -131,7 +137,7 @@ public final class ParagraphBlockValidator extends AbstractBlockValidator<Paragr
                                     .addExample("This is the first line of content.")
                                     .addExample("This is additional content on a new line.")
                                     .addExample("Add more descriptive text here.")
-                                    .explanation("Paragraph needs at least " + lineConfig.min() + " lines")
+                                    .explanation("Paragraph needs at least " + lineConfig.min() + LINES_UNIT)
                                     .build())
                             .build());
         }
@@ -145,7 +151,7 @@ public final class ParagraphBlockValidator extends AbstractBlockValidator<Paragr
                             .location(context.createLocation(block))
                             .message("Paragraph has too many lines")
                             .actualValue(String.valueOf(actualLines))
-                            .expectedValue("At most " + lineConfig.max() + " lines")
+                            .expectedValue("At most " + lineConfig.max() + LINES_UNIT)
                             .addSuggestion(Suggestion
                                     .builder()
                                     .description("Split paragraph into smaller parts")
@@ -153,7 +159,7 @@ public final class ParagraphBlockValidator extends AbstractBlockValidator<Paragr
                                     .addExample("Use bullet points for lists")
                                     .addExample("Remove unnecessary details")
                                     .explanation(
-                                            "Consider splitting content to stay under " + lineConfig.max() + " lines")
+                                            "Consider splitting content to stay under " + lineConfig.max() + LINES_UNIT)
                                     .build())
                             .build());
         }
@@ -177,7 +183,7 @@ public final class ParagraphBlockValidator extends AbstractBlockValidator<Paragr
                                 .location(context.createLocation(block))
                                 .message("Paragraph has too few sentences")
                                 .actualValue("0")
-                                .expectedValue("At least " + sentenceConfig.getOccurrence().min() + " sentences")
+                                .expectedValue(AT_LEAST + sentenceConfig.getOccurrence().min() + SENTENCES_UNIT)
                                 .errorType(ErrorType.MISSING_VALUE)
                                 .missingValueHint("Add sentence content.")
                                 .placeholderContext(PlaceholderContext
@@ -191,7 +197,7 @@ public final class ParagraphBlockValidator extends AbstractBlockValidator<Paragr
                                         .addExample("This is the second sentence with more detail.")
                                         .addExample("This concludes the paragraph.")
                                         .explanation("Paragraph needs at least " + sentenceConfig.getOccurrence().min()
-                                                + " sentences")
+                                                + SENTENCES_UNIT)
                                         .build())
                                 .build());
             }
@@ -232,7 +238,7 @@ public final class ParagraphBlockValidator extends AbstractBlockValidator<Paragr
 
         // If no sentences found but content exists, treat the whole content as one
         // sentence
-        if (sentences.isEmpty() && !normalizedContent.trim().isEmpty()) {
+        if (sentences.isEmpty() && !StringUtils.isBlank(normalizedContent)) {
             sentences.add(normalizedContent.trim());
         }
 
@@ -256,7 +262,7 @@ public final class ParagraphBlockValidator extends AbstractBlockValidator<Paragr
                                     SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
                             .message("Paragraph has too few sentences")
                             .actualValue(String.valueOf(sentenceCount))
-                            .expectedValue("At least " + occurrenceConfig.min() + " sentences")
+                            .expectedValue(AT_LEAST + occurrenceConfig.min() + SENTENCES_UNIT)
                             .errorType(ErrorType.MISSING_VALUE)
                             .missingValueHint("Add more sentences.")
                             .placeholderContext(PlaceholderContext
@@ -284,14 +290,14 @@ public final class ParagraphBlockValidator extends AbstractBlockValidator<Paragr
                             .location(location)
                             .message("Paragraph has too many sentences")
                             .actualValue(String.valueOf(sentenceCount))
-                            .expectedValue("At most " + occurrenceConfig.max() + " sentences")
+                            .expectedValue("At most " + occurrenceConfig.max() + SENTENCES_UNIT)
                             .addSuggestion(Suggestion
                                     .builder()
                                     .description("Reduce sentence count")
                                     .addExample("Split into multiple paragraphs")
                                     .addExample("Combine related sentences")
                                     .addExample("Remove redundant information")
-                                    .explanation("Remove " + (sentenceCount - occurrenceConfig.max()) + " sentences")
+                                    .explanation("Remove " + (sentenceCount - occurrenceConfig.max()) + SENTENCES_UNIT)
                                     .build())
                             .build());
         }
@@ -321,8 +327,8 @@ public final class ParagraphBlockValidator extends AbstractBlockValidator<Paragr
                                         .fromPosition(pos)
                                         .build())
                                 .message("Sentence " + (i + 1) + " has too few words")
-                                .actualValue(wordCount + " words")
-                                .expectedValue("At least " + wordsConfig.getMin() + " words")
+                                .actualValue(wordCount + WORDS_UNIT)
+                                .expectedValue(AT_LEAST + wordsConfig.getMin() + WORDS_UNIT)
                                 .errorType(ErrorType.MISSING_VALUE)
                                 .missingValueHint("add more words")
                                 .placeholderContext(PlaceholderContext
@@ -350,15 +356,15 @@ public final class ParagraphBlockValidator extends AbstractBlockValidator<Paragr
                                 .ruleId(SENTENCE_WORDS_MAX)
                                 .location(location)
                                 .message("Sentence " + (i + 1) + " has too many words")
-                                .actualValue(wordCount + " words")
-                                .expectedValue("At most " + wordsConfig.getMax() + " words")
+                                .actualValue(wordCount + WORDS_UNIT)
+                                .expectedValue("At most " + wordsConfig.getMax() + WORDS_UNIT)
                                 .addSuggestion(Suggestion
                                         .builder()
                                         .description("Simplify sentence")
                                         .addExample("Remove unnecessary words")
                                         .addExample("Split into two sentences")
                                         .addExample("Use more concise language")
-                                        .explanation("Remove " + (wordCount - wordsConfig.getMax()) + " words")
+                                        .explanation("Remove " + (wordCount - wordsConfig.getMax()) + WORDS_UNIT)
                                         .build())
                                 .build());
             }
@@ -366,7 +372,7 @@ public final class ParagraphBlockValidator extends AbstractBlockValidator<Paragr
     }
 
     private int countWords(String text) {
-        if (text == null || text.trim().isEmpty()) {
+        if (StringUtils.isBlank(text)) {
             return 0;
         }
 
@@ -413,6 +419,7 @@ public final class ParagraphBlockValidator extends AbstractBlockValidator<Paragr
     /**
      * Creates a source location for a specific sentence within a paragraph.
      */
+    @SuppressWarnings("PMD.UnusedFormalParameter")
     private SourceLocation createSentenceLocation(StructuralNode block, BlockValidationContext context,
             String fullContent, String sentence, int sentenceIndex) {
         List<String> fileLines = fileCache.getFileLines(context.getFilename());
@@ -450,6 +457,7 @@ public final class ParagraphBlockValidator extends AbstractBlockValidator<Paragr
     /**
      * Finds the position before the punctuation mark at the end of a sentence.
      */
+    @SuppressWarnings("PMD.UnusedFormalParameter")
     private SourcePosition findSentenceEndPosition(StructuralNode block, BlockValidationContext context,
             String sentence, int sentenceIndex) {
         List<String> fileLines = fileCache.getFileLines(context.getFilename());
@@ -478,7 +486,7 @@ public final class ParagraphBlockValidator extends AbstractBlockValidator<Paragr
 
         if (sentenceStart != -1) {
             // Find position before punctuation
-            int endPos = sentenceStart + trimmedSentence.length();
+            int endPos; // Will be set based on punctuation presence
 
             // Check if there's punctuation at the end
             if (trimmedSentence.matches(".*[.!?]+$")) {
@@ -533,6 +541,7 @@ public final class ParagraphBlockValidator extends AbstractBlockValidator<Paragr
     /**
      * Finds the position where additional lines should be added.
      */
+    @SuppressWarnings("PMD.UnusedFormalParameter")
     private SourcePosition findSourcePosition(StructuralNode block, BlockValidationContext context, int currentLines) {
         List<String> fileLines = fileCache.getFileLines(context.getFilename());
         if (fileLines.isEmpty() || block.getSourceLocation() == null) {
@@ -553,7 +562,7 @@ public final class ParagraphBlockValidator extends AbstractBlockValidator<Paragr
 
             // Find the last line of the paragraph
             for (int i = 0; i < lines.length && startLine + i <= fileLines.size(); i++) {
-                if (!lines[i].trim().isEmpty()) {
+                if (!lines[i].isBlank()) { // More efficient than trim().isEmpty()
                     lastNonEmptyLine = startLine + i;
                 }
             }

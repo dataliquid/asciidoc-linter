@@ -12,6 +12,9 @@ import com.dataliquid.asciidoc.linter.output.OutputWriter;
  */
 public class AsciiBoxDrawer {
 
+    // Constants
+    private static final int MIN_BOX_WIDTH = 4;
+
     private final int width;
     private final PrintWriter printWriter;
     private final OutputWriter outputWriter;
@@ -32,8 +35,8 @@ public class AsciiBoxDrawer {
      * @param writer the print writer to write to
      */
     public AsciiBoxDrawer(int width, PrintWriter writer) {
-        if (width < 4) {
-            throw new IllegalArgumentException("Box width must be at least 4");
+        if (width < MIN_BOX_WIDTH) {
+            throw new IllegalArgumentException("Box width must be at least " + MIN_BOX_WIDTH);
         }
         this.width = width;
         this.printWriter = Objects.requireNonNull(writer, "PrintWriter must not be null");
@@ -47,8 +50,8 @@ public class AsciiBoxDrawer {
      * @param outputWriter the output writer to write to
      */
     public AsciiBoxDrawer(int width, OutputWriter outputWriter) {
-        if (width < 4) {
-            throw new IllegalArgumentException("Box width must be at least 4");
+        if (width < MIN_BOX_WIDTH) {
+            throw new IllegalArgumentException("Box width must be at least " + MIN_BOX_WIDTH);
         }
         this.width = width;
         this.printWriter = null; // Use OutputWriter for output

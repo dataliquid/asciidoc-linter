@@ -23,18 +23,18 @@ public final class ValidationResult {
     private final long endTime;
 
     private ValidationResult(Builder builder) {
-        this.messages = Collections.unmodifiableList(new ArrayList<>(builder.messages));
-        this.scannedFiles = Collections.unmodifiableSet(new HashSet<>(builder.scannedFiles));
-        this.startTime = builder.startTime;
-        this.endTime = builder.endTime;
+        this.messages = Collections.unmodifiableList(new ArrayList<>(builder._messages));
+        this.scannedFiles = Collections.unmodifiableSet(new HashSet<>(builder._scannedFiles));
+        this.startTime = builder._startTime;
+        this.endTime = builder._endTime;
     }
 
     public List<ValidationMessage> getMessages() {
-        return messages;
+        return this._messages;
     }
 
     public Set<String> getScannedFiles() {
-        return scannedFiles;
+        return this._scannedFiles;
     }
 
     public int getScannedFileCount() {
@@ -140,50 +140,50 @@ public final class ValidationResult {
     }
 
     public static final class Builder {
-        private final List<ValidationMessage> messages = new ArrayList<>();
-        private final Set<String> scannedFiles = new HashSet<>();
-        private long startTime = System.currentTimeMillis();
-        private long endTime;
+        private final List<ValidationMessage> _messages = new ArrayList<>();
+        private final Set<String> _scannedFiles = new HashSet<>();
+        private long _startTime = System.currentTimeMillis();
+        private long _endTime;
 
         private Builder() {
         }
 
         public Builder addMessage(ValidationMessage message) {
             Objects.requireNonNull(message, "[" + getClass().getName() + "] message must not be null");
-            this.messages.add(message);
+            this._messages.add(message);
             return this;
         }
 
         public Builder addMessages(Collection<ValidationMessage> messages) {
             Objects.requireNonNull(messages, "[" + getClass().getName() + "] messages must not be null");
-            this.messages.addAll(messages);
+            this._messages.addAll(messages);
             return this;
         }
 
         public Builder addScannedFile(String filename) {
             Objects.requireNonNull(filename, "[" + getClass().getName() + "] filename must not be null");
-            this.scannedFiles.add(filename);
+            this._scannedFiles.add(filename);
             return this;
         }
 
         public Builder addScannedFiles(Collection<String> filenames) {
             Objects.requireNonNull(filenames, "[" + getClass().getName() + "] filenames must not be null");
-            this.scannedFiles.addAll(filenames);
+            this._scannedFiles.addAll(filenames);
             return this;
         }
 
         public Builder startTime(long startTime) {
-            this.startTime = startTime;
+            this._startTime = startTime;
             return this;
         }
 
         public Builder endTime(long endTime) {
-            this.endTime = endTime;
+            this._endTime = endTime;
             return this;
         }
 
         public Builder complete() {
-            this.endTime = System.currentTimeMillis();
+            this._endTime = System.currentTimeMillis();
             return this;
         }
 

@@ -84,6 +84,7 @@ public final class BlockValidator {
     /**
      * Generic validation method for any block container.
      */
+    @SuppressWarnings("PMD.UnusedFormalParameter")
     private ValidationResult validateContainer(BlockContainer container, SectionConfig config,
             BlockValidationContext context, String filename) {
         List<ValidationMessage> messages = new ArrayList<>();

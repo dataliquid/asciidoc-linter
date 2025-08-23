@@ -35,7 +35,8 @@ public class SuggestionRenderer {
         // Render each suggestion (up to max)
         int count = 0;
         for (Suggestion suggestion : suggestions) {
-            if (++count > config.getMaxPerError()) {
+            count++;
+            if (count > config.getMaxPerError()) {
                 break;
             }
 

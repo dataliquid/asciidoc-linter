@@ -14,32 +14,32 @@ public class PlaceholderContext {
         INSERT_BEFORE // Insert before the given position (e.g., before ])
     }
 
-    private final PlaceholderType type;
-    private final String attributeName;
-    private final boolean isFirstAttribute;
-    private final boolean hasExistingAttributes;
+    private final PlaceholderType _type;
+    private final String _attributeName;
+    private final boolean _isFirstAttribute;
+    private final boolean _hasExistingAttributes;
 
     private PlaceholderContext(Builder builder) {
-        this.type = builder.type;
-        this.attributeName = builder.attributeName;
-        this.isFirstAttribute = builder.isFirstAttribute;
-        this.hasExistingAttributes = builder.hasExistingAttributes;
+        this._type = builder._type;
+        this._attributeName = builder._attributeName;
+        this._isFirstAttribute = builder._isFirstAttribute;
+        this._hasExistingAttributes = builder._hasExistingAttributes;
     }
 
     public PlaceholderType getType() {
-        return type;
+        return this._type;
     }
 
     public String getAttributeName() {
-        return attributeName;
+        return this._attributeName;
     }
 
     public boolean isFirstAttribute() {
-        return isFirstAttribute;
+        return this._isFirstAttribute;
     }
 
     public boolean hasExistingAttributes() {
-        return hasExistingAttributes;
+        return this._hasExistingAttributes;
     }
 
     /**
@@ -64,7 +64,7 @@ public class PlaceholderContext {
 
         case SIMPLE_VALUE:
         default:
-            return placeholder;
+            return this._placeholder;
         }
     }
 
@@ -73,28 +73,28 @@ public class PlaceholderContext {
     }
 
     public static class Builder {
-        private PlaceholderType type = PlaceholderType.SIMPLE_VALUE;
-        private String attributeName;
-        private boolean isFirstAttribute = false;
-        private boolean hasExistingAttributes = false;
+        private PlaceholderType _type = PlaceholderType.SIMPLE_VALUE;
+        private String _attributeName;
+        private boolean _isFirstAttribute; // Default false
+        private boolean _hasExistingAttributes; // Default false
 
         public Builder type(PlaceholderType type) {
-            this.type = type;
+            this._type = type;
             return this;
         }
 
         public Builder attributeName(String attributeName) {
-            this.attributeName = attributeName;
+            this._attributeName = attributeName;
             return this;
         }
 
         public Builder isFirstAttribute(boolean isFirstAttribute) {
-            this.isFirstAttribute = isFirstAttribute;
+            this._isFirstAttribute = isFirstAttribute;
             return this;
         }
 
         public Builder hasExistingAttributes(boolean hasExistingAttributes) {
-            this.hasExistingAttributes = hasExistingAttributes;
+            this._hasExistingAttributes = hasExistingAttributes;
             return this;
         }
 
@@ -110,12 +110,12 @@ public class PlaceholderContext {
         if (o == null || getClass() != o.getClass())
             return false;
         PlaceholderContext that = (PlaceholderContext) o;
-        return isFirstAttribute == that.isFirstAttribute && hasExistingAttributes == that.hasExistingAttributes
-                && type == that.type && java.util.Objects.equals(attributeName, that.attributeName);
+        return _isFirstAttribute == that._isFirstAttribute && _hasExistingAttributes == that._hasExistingAttributes
+                && _type == that._type && java.util.Objects.equals(_attributeName, that._attributeName);
     }
 
     @Override
     public int hashCode() {
-        return java.util.Objects.hash(type, attributeName, isFirstAttribute, hasExistingAttributes);
+        return java.util.Objects.hash(_type, _attributeName, _isFirstAttribute, _hasExistingAttributes);
     }
 }

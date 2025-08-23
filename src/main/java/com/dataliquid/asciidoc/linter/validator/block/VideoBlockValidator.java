@@ -18,6 +18,7 @@ import com.dataliquid.asciidoc.linter.validator.PlaceholderContext;
 import static com.dataliquid.asciidoc.linter.validator.RuleIds.Video.*;
 import com.dataliquid.asciidoc.linter.validator.SourceLocation;
 import com.dataliquid.asciidoc.linter.validator.Suggestion;
+import com.dataliquid.asciidoc.linter.util.StringUtils;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
 
 /**
@@ -83,7 +84,7 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
         Severity severity = resolveSeverity(urlConfig.getSeverity(), videoConfig.getSeverity());
 
         // Check if required
-        if (Boolean.TRUE.equals(urlConfig.getRequired()) && (url == null || url.trim().isEmpty())) {
+        if (Boolean.TRUE.equals(urlConfig.getRequired()) && StringUtils.isBlank(url)) {
             SourcePosition pos = findSourcePosition(node, context, url);
             messages
                     .add(ValidationMessage
@@ -149,8 +150,7 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
         Severity severity = resolveSeverity(dimensionConfig.getSeverity(), videoConfig.getSeverity());
 
         // Check if required
-        if (Boolean.TRUE.equals(dimensionConfig.getRequired())
-                && (dimensionStr == null || dimensionStr.trim().isEmpty())) {
+        if (Boolean.TRUE.equals(dimensionConfig.getRequired()) && StringUtils.isBlank(dimensionStr)) {
             SourcePosition pos = findSourcePosition(node, context, dimensionType, dimensionStr);
 
             // Check if there are existing attributes
@@ -268,7 +268,7 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
         Severity severity = resolveSeverity(posterConfig.getSeverity(), videoConfig.getSeverity());
 
         // Check if required
-        if (Boolean.TRUE.equals(posterConfig.getRequired()) && (poster == null || poster.trim().isEmpty())) {
+        if (Boolean.TRUE.equals(posterConfig.getRequired()) && StringUtils.isBlank(poster)) {
             SourcePosition pos = findPosterPosition(node, context, poster);
 
             // Check if there are existing attributes
@@ -397,7 +397,7 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
         Severity severity = resolveSeverity(captionConfig.getSeverity(), videoConfig.getSeverity());
 
         // Check if required
-        if (Boolean.TRUE.equals(captionConfig.getRequired()) && (caption == null || caption.trim().isEmpty())) {
+        if (Boolean.TRUE.equals(captionConfig.getRequired()) && StringUtils.isBlank(caption)) {
             SourcePosition pos = findCaptionPosition(node, context);
             messages
                     .add(ValidationMessage
