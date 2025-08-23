@@ -3,6 +3,7 @@ package com.dataliquid.asciidoc.linter.validator.rules;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -21,7 +22,7 @@ public final class LengthRule implements AttributeRule {
     private final Map<String, LengthConfig> lengthConfigs;
 
     private LengthRule(Builder builder) {
-        this.lengthConfigs = Collections.unmodifiableMap(new HashMap<>(builder.lengthConfigs));
+        this.lengthConfigs = Collections.unmodifiableMap(new ConcurrentHashMap<>(builder.lengthConfigs));
     }
 
     @Override
@@ -103,7 +104,7 @@ public final class LengthRule implements AttributeRule {
     }
 
     public static final class Builder {
-        private final Map<String, LengthConfig> lengthConfigs = new HashMap<>();
+        private final Map<String, LengthConfig> lengthConfigs = new ConcurrentHashMap<>();
 
         private Builder() {
         }

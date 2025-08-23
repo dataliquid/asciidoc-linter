@@ -1,9 +1,11 @@
 package com.dataliquid.asciidoc.linter.cli.command;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -94,7 +96,7 @@ public class GuidelinesCommand implements Command {
 
         // Check required rule file
         if (!cmd.hasOption("rule")) {
-            System.err.println("Error: --rule is required for guidelines command");
+            System.err.println("Error: --rule is required for guidelines command"); // NOPMD - intentional CLI output
             printHelp();
             return 2;
         }
@@ -116,7 +118,8 @@ public class GuidelinesCommand implements Command {
             if (outputPath != null) {
                 // Write to file
                 generateToFile(generator, config, outputPath);
-                System.out.println("Guidelines generated successfully: " + outputPath);
+                System.out.println("Guidelines generated successfully: " + outputPath); // NOPMD - intentional CLI
+                                                                                        // output
             } else {
                 // Write to stdout
                 generateToStdout(generator, config);
@@ -125,8 +128,10 @@ public class GuidelinesCommand implements Command {
             return 0;
 
         } catch (Exception e) {
-            logger.error("Error generating guidelines: {}", e.getMessage());
-            System.err.println("Error generating guidelines: " + e.getMessage());
+            if (logger.isErrorEnabled()) {
+                logger.error("Error generating guidelines: {}", e.getMessage());
+            }
+            System.err.println("Error generating guidelines: " + e.getMessage()); // NOPMD - intentional CLI output
             return 2;
         }
     }
@@ -184,7 +189,8 @@ public class GuidelinesCommand implements Command {
             }
         }
 
-        try (PrintWriter writer = new PrintWriter(new FileWriter(outputFile))) {
+        try (PrintWriter writer = new PrintWriter(
+                new OutputStreamWriter(Files.newOutputStream(outputFile.toPath()), StandardCharsets.UTF_8))) {
             generator.generate(config, writer);
         }
     }

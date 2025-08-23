@@ -1,10 +1,10 @@
 package com.dataliquid.asciidoc.linter.cli;
 
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 import com.dataliquid.asciidoc.linter.config.output.OutputConfiguration;
@@ -32,7 +32,7 @@ public class CLIOutputHandler {
             Path outputFile = config.getReportOutput();
             ensureParentDirectoryExists(outputFile);
 
-            try (PrintWriter writer = new PrintWriter(new FileWriter(outputFile.toFile()))) {
+            try (PrintWriter writer = new PrintWriter(Files.newBufferedWriter(outputFile, StandardCharsets.UTF_8))) {
                 reportWriter.write(result, config.getReportFormat(), writer, outputConfig);
             }
         } else {
@@ -78,7 +78,7 @@ public class CLIOutputHandler {
             String outputFileName = generateOutputFileName(inputFile, config.getReportFormat());
             Path outputFile = outputDir.resolve(outputFileName);
 
-            try (PrintWriter writer = new PrintWriter(new FileWriter(outputFile.toFile()))) {
+            try (PrintWriter writer = new PrintWriter(Files.newBufferedWriter(outputFile, StandardCharsets.UTF_8))) {
                 reportWriter.write(result, config.getReportFormat(), writer, outputConfig);
             }
         }

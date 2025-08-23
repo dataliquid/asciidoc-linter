@@ -6,6 +6,7 @@ import java.util.List;
 import org.asciidoctor.ast.StructuralNode;
 
 import static com.dataliquid.asciidoc.linter.validator.block.BlockAttributes.*;
+import com.dataliquid.asciidoc.linter.util.StringUtils;
 
 import com.dataliquid.asciidoc.linter.config.blocks.BlockType;
 import com.dataliquid.asciidoc.linter.config.blocks.ExampleBlock;
@@ -58,7 +59,7 @@ public final class ExampleBlockValidator extends AbstractBlockValidator<ExampleB
         String caption = node.getTitle();
 
         // Check if caption is required
-        if (config.isRequired() && (caption == null || caption.trim().isEmpty())) {
+        if (config.isRequired() && StringUtils.isBlank(caption)) {
             // Find position for caption placeholder
             int lineNumber = node.getSourceLocation() != null ? node.getSourceLocation().getLineNumber() : 1;
             messages
@@ -96,7 +97,7 @@ public final class ExampleBlockValidator extends AbstractBlockValidator<ExampleB
         }
 
         // If caption is not present and not required, skip further validation
-        if (caption == null || caption.trim().isEmpty()) {
+        if (StringUtils.isBlank(caption)) {
             return messages;
         }
 

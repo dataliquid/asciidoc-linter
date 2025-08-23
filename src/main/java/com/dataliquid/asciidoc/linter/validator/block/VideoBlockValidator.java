@@ -501,7 +501,7 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
         // Look for video:: macro pattern
         int videoStart = sourceLine.indexOf("video::");
         if (videoStart >= 0) {
-            int urlEnd = sourceLine.indexOf("[", videoStart);
+            int urlEnd = sourceLine.indexOf('[', videoStart);
             if (urlEnd == -1) {
                 urlEnd = sourceLine.length();
             }
@@ -541,9 +541,9 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
         String sourceLine = fileLines.get(lineNum - 1);
 
         // Look for attributes bracket
-        int bracketStart = sourceLine.indexOf("[");
+        int bracketStart = sourceLine.indexOf('[');
         if (bracketStart >= 0) {
-            int bracketEnd = sourceLine.indexOf("]", bracketStart);
+            int bracketEnd = sourceLine.indexOf(']', bracketStart);
             if (bracketEnd > bracketStart) {
                 String attributes = sourceLine.substring(bracketStart + 1, bracketEnd);
 
@@ -583,9 +583,9 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
         String sourceLine = fileLines.get(lineNum - 1);
 
         // Look for attributes bracket
-        int bracketStart = sourceLine.indexOf("[");
+        int bracketStart = sourceLine.indexOf('[');
         if (bracketStart >= 0) {
-            int bracketEnd = sourceLine.indexOf("]", bracketStart);
+            int bracketEnd = sourceLine.indexOf(']', bracketStart);
             if (bracketEnd > bracketStart) {
                 String attributes = sourceLine.substring(bracketStart + 1, bracketEnd);
 
@@ -626,9 +626,9 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
         String sourceLine = fileLines.get(lineNum - 1);
 
         // Look for attributes bracket
-        int bracketStart = sourceLine.indexOf("[");
+        int bracketStart = sourceLine.indexOf('[');
         if (bracketStart >= 0) {
-            int bracketEnd = sourceLine.indexOf("]", bracketStart);
+            int bracketEnd = sourceLine.indexOf(']', bracketStart);
             if (bracketEnd > bracketStart) {
                 return new SourcePosition(bracketEnd + 1, bracketEnd + 1, lineNum);
             }

@@ -20,7 +20,7 @@ public class CommandRegistry {
     /**
      * Registers the default commands.
      */
-    private void registerDefaultCommands() {
+    private final void registerDefaultCommands() {
         register(new LintCommand());
         register(new GuidelinesCommand());
     }
@@ -30,7 +30,7 @@ public class CommandRegistry {
      *
      * @param command the command to register
      */
-    public void register(Command command) {
+    public final void register(Command command) {
         commands.put(command.getName(), command);
     }
 
@@ -78,7 +78,7 @@ public class CommandRegistry {
      * Prints a summary of all available commands.
      */
     public void printCommandSummary() {
-        System.out.println("\nAvailable commands:");
+        System.out.println("\nAvailable commands:"); // NOPMD - intentional CLI output
 
         int maxNameLength = commands.keySet().stream().mapToInt(String::length).max().orElse(10);
 
@@ -86,9 +86,12 @@ public class CommandRegistry {
             String name = entry.getKey();
             String description = entry.getValue().getDescription();
             String padding = " ".repeat(maxNameLength - name.length() + 2);
-            System.out.println("  " + name + padding + description);
+            System.out.println("  " + name + padding + description); // NOPMD - intentional CLI output
         }
 
-        System.out.println("\nUse 'asciidoc-linter <command> --help' for more information about a command.");
+        System.out.println("\nUse 'asciidoc-linter <command> --help' for more information about a command."); // NOPMD -
+                                                                                                              // intentional
+                                                                                                              // CLI
+                                                                                                              // output
     }
 }

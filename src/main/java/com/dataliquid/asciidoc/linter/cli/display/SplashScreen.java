@@ -20,21 +20,21 @@ public class SplashScreen {
     public static void display() {
         // ASCII Art
         for (String line : ASCII_ART) {
-            System.out.println(line);
+            System.out.println(line); // NOPMD - intentional CLI output
         }
 
         // Version line
         VersionInfo versionInfo = VersionInfo.getInstance();
         String versionLine = String.format("        L I N T E R   v%s", versionInfo.getVersion());
-        System.out.println(versionLine);
-        System.out.println();
+        System.out.println(versionLine); // NOPMD - intentional CLI output
+        System.out.println(); // NOPMD - intentional CLI output
 
         // Description
-        System.out.println("  Powerful linter for AsciiDoc documents");
+        System.out.println("  Powerful linter for AsciiDoc documents"); // NOPMD - intentional CLI output
 
         // Copyright
         String copyright = String.format("  © %d dataliquid - Apache License 2.0", Year.now().getValue());
-        System.out.println(copyright);
-        System.out.println();
+        System.out.println(copyright); // NOPMD - intentional CLI output
+        System.out.println(); // NOPMD - intentional CLI output
     }
 }

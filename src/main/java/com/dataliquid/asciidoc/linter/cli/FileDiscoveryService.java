@@ -142,17 +142,17 @@ public class FileDiscoveryService {
         private static final Map<String, Pattern> PATTERN_CACHE = new ConcurrentHashMap<>();
 
         public static boolean match(String pattern, String path) {
-            // Normalize paths
-            pattern = pattern.replace(File.separatorChar, '/');
-            path = path.replace(File.separatorChar, '/');
+            // Normalize paths - create local copies to avoid reassigning parameters
+            String normalizedPattern = pattern.replace(File.separatorChar, '/');
+            String normalizedPath = path.replace(File.separatorChar, '/');
 
             // Handle ** (matches any number of directories)
-            if (pattern.contains("**")) {
-                return matchWithDoubleWildcard(pattern, path);
+            if (normalizedPattern.contains("**")) {
+                return matchWithDoubleWildcard(normalizedPattern, normalizedPath);
             }
 
             // Simple pattern matching
-            return matchSimplePattern(pattern, path);
+            return matchSimplePattern(normalizedPattern, normalizedPath);
         }
 
         private static boolean matchWithDoubleWildcard(String pattern, String path) {

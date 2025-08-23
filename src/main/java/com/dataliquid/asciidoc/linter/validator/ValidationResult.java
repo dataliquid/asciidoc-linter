@@ -91,12 +91,12 @@ public final class ValidationResult {
     }
 
     public void printReport() {
-        System.out.println("Validation Report");
-        System.out.println("=================");
-        System.out.println();
+        System.out.println("Validation Report"); // NOPMD - intentional console output
+        System.out.println("================="); // NOPMD - intentional console output
+        System.out.println(); // NOPMD - intentional console output
 
         if (messages.isEmpty()) {
-            System.out.println("No validation issues found.");
+            System.out.println("No validation issues found."); // NOPMD - intentional console output
         } else {
             Map<String, List<ValidationMessage>> messagesByFile = getMessagesByFile();
 
@@ -108,16 +108,17 @@ public final class ValidationResult {
                                 .thenComparing(msg -> msg.getLocation().getStartColumn()));
 
                 for (ValidationMessage msg : fileMessages) {
-                    System.out.println(msg.format());
-                    System.out.println();
+                    System.out.println(msg.format()); // NOPMD - intentional console output
+                    System.out.println(); // NOPMD - intentional console output
                 }
             }
         }
 
-        System.out
+        System.out // NOPMD - intentional console output
                 .println("Summary: " + getErrorCount() + " errors, " + getWarningCount() + " warnings, "
                         + getInfoCount() + " info messages");
-        System.out.println("Validation completed in " + getValidationTimeMillis() + "ms");
+        System.out.println("Validation completed in " + getValidationTimeMillis() + "ms"); // NOPMD - intentional
+                                                                                           // console output
     }
 
     public static Builder builder() {

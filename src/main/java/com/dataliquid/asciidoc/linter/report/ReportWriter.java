@@ -1,10 +1,12 @@
 package com.dataliquid.asciidoc.linter.report;
 
-import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -26,7 +28,7 @@ public class ReportWriter {
         registerDefaultFormatters();
     }
 
-    private void registerDefaultFormatters() {
+    private final void registerDefaultFormatters() {
         // Console formatter will be created dynamically with output config
         registerFormatter(JsonFormatter.pretty());
         registerFormatter(JsonFormatter.compact());
@@ -37,7 +39,7 @@ public class ReportWriter {
      *
      * @param formatter the formatter to register
      */
-    public void registerFormatter(ReportFormatter formatter) {
+    public final void registerFormatter(ReportFormatter formatter) {
         Objects.requireNonNull(formatter, "[" + getClass().getName() + "] formatter must not be null");
         formatters.put(formatter.getName(), formatter);
     }
@@ -162,7 +164,8 @@ public class ReportWriter {
     }
 
     private void writeToFile(ValidationResult result, ReportFormatter formatter, String outputPath) throws IOException {
-        try (PrintWriter writer = new PrintWriter(new FileWriter(outputPath, StandardCharsets.UTF_8))) {
+        try (PrintWriter writer = new PrintWriter(
+                new OutputStreamWriter(Files.newOutputStream(Paths.get(outputPath)), StandardCharsets.UTF_8))) {
             formatter.format(result, writer);
         }
     }

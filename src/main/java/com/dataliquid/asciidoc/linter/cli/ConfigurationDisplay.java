@@ -44,7 +44,7 @@ public class ConfigurationDisplay {
      * @param config the CLI configuration to display
      */
     public void display(CLIConfig config) {
-        System.out.println(); // Empty line before box
+        System.out.println(); // NOPMD - intentional CLI output
 
         boxDrawer.drawTop();
         boxDrawer.drawTitle("Configuration");
@@ -54,9 +54,9 @@ public class ConfigurationDisplay {
 
         boxDrawer.drawBottom();
 
-        System.out.println(); // Empty line after box
-        System.out.println("Starting validation...");
-        System.out.println();
+        System.out.println(); // NOPMD - intentional CLI output
+        System.out.println("Starting validation..."); // NOPMD - intentional CLI output
+        System.out.println(); // NOPMD - intentional CLI output
     }
 
     /**

@@ -56,7 +56,7 @@ public class MainCLI {
         // Check if command exists
         Command command = commandRegistry.getCommand(potentialCommand);
         if (command == null) {
-            System.err.println("Unknown command: " + potentialCommand);
+            System.err.println("Unknown command: " + potentialCommand); // NOPMD - intentional CLI output
             printMainHelp();
             return 2;
         }
@@ -75,14 +75,18 @@ public class MainCLI {
             CommandLine cmd = parser.parse(command.getOptions(), commandArgs);
             return command.execute(cmd);
         } catch (ParseException e) {
-            logger.error("Error: {}", e.getMessage());
-            System.err.println("Error: " + e.getMessage());
-            System.err.println();
+            if (logger.isErrorEnabled()) {
+                logger.error("Error: {}", e.getMessage());
+            }
+            System.err.println("Error: " + e.getMessage()); // NOPMD - intentional CLI output
+            System.err.println(); // NOPMD - intentional CLI output
             command.printHelp();
             return 2;
         } catch (Exception e) {
-            logger.error("Error executing command: {}", e.getMessage(), e);
-            System.err.println("Error: " + e.getMessage());
+            if (logger.isErrorEnabled()) {
+                logger.error("Error executing command: {}", e.getMessage(), e);
+            }
+            System.err.println("Error: " + e.getMessage()); // NOPMD - intentional CLI output
             return 2;
         }
     }
@@ -103,23 +107,26 @@ public class MainCLI {
         VersionInfo versionInfo = VersionInfo.getInstance();
         String programName = versionInfo.getArtifactId();
 
-        System.out.println("\n" + programName + " - AsciiDoc Linter");
-        System.out.println("Version: " + versionInfo.getFullVersion());
-        System.out.println("\nUsage: " + programName + " [global-options] <command> [command-options]");
-        System.out.println("\nGlobal Options:");
-        System.out.println("  -h, --help       Show this help message");
-        System.out.println("  -v, --version    Show version information");
-        System.out.println("  --no-splash      Suppress splash screen");
+        System.out.println("\n" + programName + " - AsciiDoc Linter"); // NOPMD - intentional CLI output
+        System.out.println("Version: " + versionInfo.getFullVersion()); // NOPMD - intentional CLI output
+        System.out.println("\nUsage: " + programName + " [global-options] <command> [command-options]"); // NOPMD -
+                                                                                                         // intentional
+                                                                                                         // CLI output
+        System.out.println("\nGlobal Options:"); // NOPMD - intentional CLI output
+        System.out.println("  -h, --help       Show this help message"); // NOPMD - intentional CLI output
+        System.out.println("  -v, --version    Show version information"); // NOPMD - intentional CLI output
+        System.out.println("  --no-splash      Suppress splash screen"); // NOPMD - intentional CLI output
 
         commandRegistry.printCommandSummary();
 
-        System.out.println("\nExamples:");
-        System.out.println("  " + programName + " lint -i \"**/*.adoc\"");
-        System.out.println("  " + programName + " guidelines -r rules.yaml -o guide.adoc");
+        System.out.println("\nExamples:"); // NOPMD - intentional CLI output
+        System.out.println("  " + programName + " lint -i \"**/*.adoc\""); // NOPMD - intentional CLI output
+        System.out.println("  " + programName + " guidelines -r rules.yaml -o guide.adoc"); // NOPMD - intentional CLI
+                                                                                            // output
     }
 
     private void printVersion() {
-        System.out.println(VersionInfo.getInstance().getFullVersion());
+        System.out.println(VersionInfo.getInstance().getFullVersion()); // NOPMD - intentional CLI output
     }
 
 }

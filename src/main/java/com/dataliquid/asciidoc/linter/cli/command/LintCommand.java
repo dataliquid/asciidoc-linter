@@ -126,7 +126,7 @@ public class LintCommand implements Command {
 
         // Check required input
         if (!cmd.hasOption("input")) {
-            System.err.println("Error: --input is required for lint command");
+            System.err.println("Error: --input is required for lint command"); // NOPMD - intentional CLI output
             printHelp();
             return 2;
         }
@@ -147,8 +147,10 @@ public class LintCommand implements Command {
             return runner.run(config);
 
         } catch (IllegalArgumentException e) {
-            logger.error("Error: {}", e.getMessage());
-            System.err.println("Error: " + e.getMessage());
+            if (logger.isErrorEnabled()) {
+                logger.error("Error: {}", e.getMessage());
+            }
+            System.err.println("Error: " + e.getMessage()); // NOPMD - intentional CLI output
             return 2;
         }
     }

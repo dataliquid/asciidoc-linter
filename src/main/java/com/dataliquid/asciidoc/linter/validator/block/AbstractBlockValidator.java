@@ -8,6 +8,7 @@ import java.util.regex.PatternSyntaxException;
 import org.asciidoctor.ast.StructuralNode;
 
 import com.dataliquid.asciidoc.linter.config.common.Severity;
+import com.dataliquid.asciidoc.linter.util.StringUtils;
 import com.dataliquid.asciidoc.linter.config.blocks.Block;
 import com.dataliquid.asciidoc.linter.report.console.FileContentCache;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
@@ -229,7 +230,7 @@ public abstract class AbstractBlockValidator<T extends Block> implements BlockTy
      */
     protected ValidationMessage validateRequired(String value, String fieldName, boolean required, Severity severity,
             BlockValidationContext context, StructuralNode node) {
-        if (required && (value == null || value.trim().isEmpty())) {
+        if (required && StringUtils.isBlank(value)) {
             return createRequiredFieldMessage(fieldName, severity, context, node);
         }
         return null;

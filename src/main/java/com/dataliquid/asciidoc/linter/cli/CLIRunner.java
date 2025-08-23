@@ -61,13 +61,17 @@ public class CLIRunner {
             List<Path> filesToValidate = fileDiscoveryService.discoverFiles(config);
 
             if (filesToValidate.isEmpty()) {
-                logger.error("No files found matching patterns: {}", String.join(", ", config.getInputPatterns()));
+                if (logger.isErrorEnabled()) {
+                    logger.error("No files found matching patterns: {}", String.join(", ", config.getInputPatterns()));
+                }
                 return 2;
             }
 
             // Print files being validated
             if (filesToValidate.size() > 1) {
-                logger.info("Validating {} files...", filesToValidate.size());
+                if (logger.isInfoEnabled()) {
+                    logger.info("Validating {} files...", filesToValidate.size());
+                }
             }
 
             // Validate files
@@ -85,10 +89,14 @@ public class CLIRunner {
             }
 
         } catch (IOException e) {
-            logger.error("I/O error: {}", e.getMessage());
+            if (logger.isErrorEnabled()) {
+                logger.error("I/O error: {}", e.getMessage());
+            }
             return 2;
         } catch (Exception e) {
-            logger.error("Error: {}", e.getMessage(), e);
+            if (logger.isErrorEnabled()) {
+                logger.error("Error: {}", e.getMessage(), e);
+            }
             return 2;
         } finally {
             linter.close();
