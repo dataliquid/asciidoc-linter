@@ -5,6 +5,7 @@ import java.io.PrintWriter;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +23,6 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 public class JsonFormatter implements ReportFormatter {
 
     private static final DateTimeFormatter ISO_FORMATTER = DateTimeFormatter.ISO_INSTANT.withZone(ZoneOffset.UTC);
-    private static final String PMD_USE_CONCURRENT_HASHMAP = "PMD.UseConcurrentHashMap";
 
     // Constants
     private static final int MILLIS_PER_SECOND = 1000;
@@ -67,8 +67,7 @@ public class JsonFormatter implements ReportFormatter {
 
     @Override
     public void format(ValidationResult result, PrintWriter writer) {
-        @SuppressWarnings(PMD_USE_CONCURRENT_HASHMAP) // Local variable, no concurrency needed
-        Map<String, Object> root = new LinkedHashMap<>();
+        Map<String, Object> root = Collections.synchronizedMap(new LinkedHashMap<>());
 
         // Timestamp
         root.put("timestamp", ISO_FORMATTER.format(Instant.now()));
@@ -77,8 +76,7 @@ public class JsonFormatter implements ReportFormatter {
         root.put("duration", formatDuration(result.getValidationTimeMillis()));
 
         // Summary
-        @SuppressWarnings(PMD_USE_CONCURRENT_HASHMAP) // Local variable, no concurrency needed
-        Map<String, Object> summary = new LinkedHashMap<>();
+        Map<String, Object> summary = Collections.synchronizedMap(new LinkedHashMap<>());
         summary.put("totalMessages", result.getMessages().size());
         summary.put("errors", result.getErrorCount());
         summary.put("warnings", result.getWarningCount());
@@ -104,8 +102,7 @@ public class JsonFormatter implements ReportFormatter {
 
     @SuppressWarnings("PMD.UnusedPrivateMethod")
     private Map<String, Object> formatMessage(ValidationMessage message) {
-        @SuppressWarnings(PMD_USE_CONCURRENT_HASHMAP) // Local variable, no concurrency needed
-        Map<String, Object> messageMap = new LinkedHashMap<>();
+        Map<String, Object> messageMap = Collections.synchronizedMap(new LinkedHashMap<>());
 
         // Add location fields first if available
         if (message.getLocation() != null) {

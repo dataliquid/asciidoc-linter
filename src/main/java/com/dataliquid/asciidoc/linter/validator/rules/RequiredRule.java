@@ -121,8 +121,8 @@ public final class RequiredRule implements AttributeRule {
     }
 
     public static final class Builder {
-        @SuppressWarnings("PMD.UseConcurrentHashMap") // LinkedHashMap needed for deterministic iteration order in tests
-        private final Map<String, RequiredAttribute> requiredAttributes = new LinkedHashMap<>();
+        private final Map<String, RequiredAttribute> requiredAttributes = Collections
+                .synchronizedMap(new LinkedHashMap<>());
 
         private Builder() {
         }

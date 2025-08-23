@@ -85,8 +85,7 @@ public final class MetadataValidator {
     }
 
     private Map<String, AttributeWithLocation> extractAttributesWithLocation(Document document, String filename) {
-        @SuppressWarnings("PMD.UseConcurrentHashMap") // Local variable, no concurrency needed
-        Map<String, AttributeWithLocation> result = new LinkedHashMap<>();
+        Map<String, AttributeWithLocation> result = Collections.synchronizedMap(new LinkedHashMap<>());
 
         Map<String, Object> attributes = document.getAttributes();
         List<String> fileLines = fileCache.getFileLines(filename);
