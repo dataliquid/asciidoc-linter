@@ -3,7 +3,7 @@ package com.dataliquid.asciidoc.linter.validator.rules;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -22,7 +22,7 @@ public final class RequiredRule implements AttributeRule {
     private final Map<String, RequiredAttribute> requiredAttributes;
 
     private RequiredRule(Builder builder) {
-        this.requiredAttributes = Collections.unmodifiableMap(new ConcurrentHashMap<>(builder.requiredAttributes));
+        this.requiredAttributes = Collections.unmodifiableMap(new LinkedHashMap<>(builder.requiredAttributes));
     }
 
     @Override
@@ -121,7 +121,8 @@ public final class RequiredRule implements AttributeRule {
     }
 
     public static final class Builder {
-        private final Map<String, RequiredAttribute> requiredAttributes = new ConcurrentHashMap<>();
+        @SuppressWarnings("PMD.UseConcurrentHashMap") // LinkedHashMap needed for deterministic iteration order in tests
+        private final Map<String, RequiredAttribute> requiredAttributes = new LinkedHashMap<>();
 
         private Builder() {
         }
