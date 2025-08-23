@@ -22,6 +22,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 public class JsonFormatter implements ReportFormatter {
 
     private static final DateTimeFormatter ISO_FORMATTER = DateTimeFormatter.ISO_INSTANT.withZone(ZoneOffset.UTC);
+    private static final String PMD_USE_CONCURRENT_HASHMAP = "PMD.UseConcurrentHashMap";
 
     // Constants
     private static final int MILLIS_PER_SECOND = 1000;
@@ -66,7 +67,7 @@ public class JsonFormatter implements ReportFormatter {
 
     @Override
     public void format(ValidationResult result, PrintWriter writer) {
-        @SuppressWarnings("PMD.UseConcurrentHashMap") // Local variable, no concurrency needed
+        @SuppressWarnings(PMD_USE_CONCURRENT_HASHMAP) // Local variable, no concurrency needed
         Map<String, Object> root = new LinkedHashMap<>();
 
         // Timestamp
@@ -76,7 +77,7 @@ public class JsonFormatter implements ReportFormatter {
         root.put("duration", formatDuration(result.getValidationTimeMillis()));
 
         // Summary
-        @SuppressWarnings("PMD.UseConcurrentHashMap") // Local variable, no concurrency needed
+        @SuppressWarnings(PMD_USE_CONCURRENT_HASHMAP) // Local variable, no concurrency needed
         Map<String, Object> summary = new LinkedHashMap<>();
         summary.put("totalMessages", result.getMessages().size());
         summary.put("errors", result.getErrorCount());
@@ -101,14 +102,16 @@ public class JsonFormatter implements ReportFormatter {
         }
     }
 
+    @SuppressWarnings("PMD.UnusedPrivateMethod")
     private Map<String, Object> formatMessage(ValidationMessage message) {
-        @SuppressWarnings("PMD.UseConcurrentHashMap") // Local variable, no concurrency needed
+        @SuppressWarnings(PMD_USE_CONCURRENT_HASHMAP) // Local variable, no concurrency needed
         Map<String, Object> messageMap = new LinkedHashMap<>();
         messageMap.put("severity", message.getSeverity().toString());
         messageMap.put("ruleId", message.getRuleId());
         messageMap.put("message", message.getMessage());
         if (message.getLocation() != null) {
             messageMap.put("filename", message.getLocation().getFilename());
+            @SuppressWarnings(PMD_USE_CONCURRENT_HASHMAP) // Local variable, no concurrency needed
             Map<String, Object> location = new LinkedHashMap<>();
             location.put("line", message.getLocation().getStartLine());
             location.put("column", message.getLocation().getStartColumn());

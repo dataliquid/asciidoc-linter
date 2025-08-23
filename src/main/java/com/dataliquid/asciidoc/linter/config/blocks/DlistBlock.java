@@ -370,6 +370,7 @@ public final class DlistBlock extends AbstractBlock {
             this.severity = builder._severity;
         }
 
+        @SuppressWarnings("PMD.MethodReturnsInternalArray")
         public String[] getAllowedDelimiters() {
             return allowedDelimiters;
         }
