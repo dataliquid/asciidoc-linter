@@ -79,7 +79,8 @@ public final class LineConfig {
         if (o == null || getClass() != o.getClass())
             return false;
         LineConfig lineRule = (LineConfig) o;
-        return Objects.equals(min, lineRule.min) && Objects.equals(max, lineRule.max) && severity == lineRule.severity;
+        return Objects.equals(min(), lineRule.min()) && Objects.equals(max(), lineRule.max())
+                && severity() == lineRule.severity();
     }
 
     @Override

@@ -35,19 +35,19 @@ public final class SummaryConfig {
     }
 
     public boolean isEnabled() {
-        return this._enabled;
+        return this.enabled;
     }
 
     public boolean isShowStatistics() {
-        return this._showStatistics;
+        return this.showStatistics;
     }
 
     public boolean isShowMostCommon() {
-        return this._showMostCommon;
+        return this.showMostCommon;
     }
 
     public boolean isShowFileList() {
-        return this._showFileList;
+        return this.showFileList;
     }
 
     @Override
@@ -73,35 +73,35 @@ public final class SummaryConfig {
     @JsonPOJOBuilder(withPrefix = EMPTY)
     @SuppressWarnings("PMD.AvoidFieldNameMatchingMethodName")
     public static final class Builder {
-        private boolean enabled = DEFAULT_ENABLED;
-        private boolean showStatistics = DEFAULT_SHOW_STATISTICS;
-        private boolean showMostCommon = DEFAULT_SHOW_MOST_COMMON;
-        private boolean showFileList = DEFAULT_SHOW_FILE_LIST;
+        private boolean _enabled = DEFAULT_ENABLED;
+        private boolean _showStatistics = DEFAULT_SHOW_STATISTICS;
+        private boolean _showMostCommon = DEFAULT_SHOW_MOST_COMMON;
+        private boolean _showFileList = DEFAULT_SHOW_FILE_LIST;
 
         private Builder() {
         }
 
         @JsonProperty(ENABLED)
         public Builder enabled(boolean enabled) {
-            this.enabled = enabled;
+            this._enabled = enabled;
             return this;
         }
 
         @JsonProperty(SHOW_STATISTICS)
         public Builder showStatistics(boolean showStatistics) {
-            this.showStatistics = showStatistics;
+            this._showStatistics = showStatistics;
             return this;
         }
 
         @JsonProperty(SHOW_MOST_COMMON)
         public Builder showMostCommon(boolean showMostCommon) {
-            this.showMostCommon = showMostCommon;
+            this._showMostCommon = showMostCommon;
             return this;
         }
 
         @JsonProperty(SHOW_FILE_LIST)
         public Builder showFileList(boolean showFileList) {
-            this.showFileList = showFileList;
+            this._showFileList = showFileList;
             return this;
         }
 

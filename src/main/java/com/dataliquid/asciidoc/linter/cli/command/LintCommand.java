@@ -30,8 +30,8 @@ public class LintCommand implements Command {
     private static final Logger logger = LogManager.getLogger(LintCommand.class);
 
     // Constants for CLI options
-    private static final String OUTPUT_CONFIG_OPTION = OUTPUT_CONFIG_OPTION;
-    private static final String OUTPUT_CONFIG_FILE_OPTION = OUTPUT_CONFIG_FILE_OPTION;
+    private static final String OUTPUT_CONFIG_OPTION = "output-config";
+    private static final String OUTPUT_CONFIG_FILE_OPTION = "output-config-file";
 
     private final OutputWriter outputWriter;
 

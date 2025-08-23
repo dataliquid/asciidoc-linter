@@ -20,7 +20,7 @@ public final class DocumentConfiguration {
     private final List<SectionConfig> _sections;
 
     private DocumentConfiguration(Builder builder) {
-        this.metadata = builder._metadata;
+        this._metadata = builder._metadata;
         this._sections = Collections.unmodifiableList(new ArrayList<>(builder._sections));
     }
 

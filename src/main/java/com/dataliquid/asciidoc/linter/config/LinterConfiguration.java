@@ -50,11 +50,11 @@ public final class LinterConfiguration {
         if (o == null || getClass() != o.getClass())
             return false;
         LinterConfiguration that = (LinterConfiguration) o;
-        return Objects.equals(document, that.document);
+        return Objects.equals(document(), that.document());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash((Object) document);
+        return Objects.hash((Object) document());
     }
 }

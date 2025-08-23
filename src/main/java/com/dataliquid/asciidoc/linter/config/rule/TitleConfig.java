@@ -49,12 +49,12 @@ public final class TitleConfig {
         @JsonProperty(SEVERITY)
         public Builder severity(Severity severity) {
             this._severity = Objects
-                    .requireNonNull(_severity, "[" + getClass().getName() + "] severity must not be null");
+                    .requireNonNull(severity, "[" + getClass().getName() + "] severity must not be null");
             return this;
         }
 
         public TitleConfig build() {
-            if (pattern == null) {
+            if (_pattern == null) {
                 throw new IllegalStateException("Pattern must be specified");
             }
             return new TitleConfig(this);

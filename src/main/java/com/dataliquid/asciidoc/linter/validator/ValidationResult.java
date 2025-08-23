@@ -30,11 +30,11 @@ public final class ValidationResult {
     }
 
     public List<ValidationMessage> getMessages() {
-        return this._messages;
+        return this.messages;
     }
 
     public Set<String> getScannedFiles() {
-        return this._scannedFiles;
+        return this.scannedFiles;
     }
 
     public int getScannedFileCount() {
@@ -188,8 +188,8 @@ public final class ValidationResult {
         }
 
         public ValidationResult build() {
-            if (endTime == 0) {
-                endTime = System.currentTimeMillis();
+            if (_endTime == 0) {
+                _endTime = System.currentTimeMillis();
             }
             return new ValidationResult(this);
         }

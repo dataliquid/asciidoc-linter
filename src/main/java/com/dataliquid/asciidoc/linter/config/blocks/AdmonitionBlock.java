@@ -51,19 +51,19 @@ public final class AdmonitionBlock extends AbstractBlock {
     }
 
     public TypeConfig getTypeConfig() {
-        return _type;
+        return type;
     }
 
     public TitleConfig getTitle() {
-        return _title;
+        return title;
     }
 
     public ContentConfig getContent() {
-        return _content;
+        return content;
     }
 
     public IconConfig getIcon() {
-        return _icon;
+        return icon;
     }
 
     public static Builder builder() {
@@ -87,15 +87,15 @@ public final class AdmonitionBlock extends AbstractBlock {
         }
 
         public boolean isRequired() {
-            return _required;
+            return required;
         }
 
         public List<String> getAllowed() {
-            return _allowed;
+            return allowed;
         }
 
         public Severity getSeverity() {
-            return _severity;
+            return severity;
         }
 
         public static TypeConfigBuilder builder() {
@@ -165,23 +165,23 @@ public final class AdmonitionBlock extends AbstractBlock {
         }
 
         public boolean isRequired() {
-            return _required;
+            return required;
         }
 
         public Pattern getPattern() {
-            return _pattern;
+            return pattern;
         }
 
         public Integer getMinLength() {
-            return _minLength;
+            return minLength;
         }
 
         public Integer getMaxLength() {
-            return _maxLength;
+            return maxLength;
         }
 
         public Severity getSeverity() {
-            return _severity;
+            return severity;
         }
 
         public static TitleConfigBuilder builder() {
@@ -274,23 +274,23 @@ public final class AdmonitionBlock extends AbstractBlock {
         }
 
         public boolean isRequired() {
-            return _required;
+            return required;
         }
 
         public Integer getMinLength() {
-            return _minLength;
+            return minLength;
         }
 
         public Integer getMaxLength() {
-            return _maxLength;
+            return maxLength;
         }
 
         public LineConfig getLines() {
-            return _lines;
+            return lines;
         }
 
         public Severity getSeverity() {
-            return _severity;
+            return severity;
         }
 
         public static ContentConfigBuilder builder() {
@@ -368,15 +368,15 @@ public final class AdmonitionBlock extends AbstractBlock {
         }
 
         public boolean isRequired() {
-            return _required;
+            return required;
         }
 
         public Pattern getPattern() {
-            return _pattern;
+            return pattern;
         }
 
         public Severity getSeverity() {
-            return _severity;
+            return severity;
         }
 
         public static IconConfigBuilder builder() {

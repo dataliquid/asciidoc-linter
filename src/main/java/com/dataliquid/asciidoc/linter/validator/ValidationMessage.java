@@ -38,8 +38,8 @@ public final class ValidationMessage {
         this.errorType = builder._errorType != null ? builder._errorType : ErrorType.GENERIC;
         this.missingValueHint = builder._missingValueHint;
         this.placeholderContext = builder._placeholderContext;
-        this._suggestions = new ArrayList<>(builder._suggestions);
-        this._contextLines = new ArrayList<>(builder._contextLines);
+        this.suggestions = new ArrayList<>(builder._suggestions);
+        this.contextLines = new ArrayList<>(builder._contextLines);
         this.cause = builder._cause;
     }
 

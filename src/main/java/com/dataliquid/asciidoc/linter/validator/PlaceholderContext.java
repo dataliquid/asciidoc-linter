@@ -52,19 +52,19 @@ public class PlaceholderContext {
     public String generatePlaceholder(String value) {
         String placeholder = "«" + value + "»";
 
-        switch (type) {
+        switch (_type) {
         case ATTRIBUTE_VALUE:
-            return attributeName + "=" + placeholder;
+            return _attributeName + "=" + placeholder;
 
         case ATTRIBUTE_IN_LIST:
-            return "," + attributeName + "=" + placeholder;
+            return "," + _attributeName + "=" + placeholder;
 
         case LIST_VALUE:
             return "," + placeholder;
 
         case SIMPLE_VALUE:
         default:
-            return this._placeholder;
+            return placeholder;
         }
     }
 
