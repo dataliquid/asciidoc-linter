@@ -4,6 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import com.dataliquid.asciidoc.linter.output.ConsoleWriter;
+import com.dataliquid.asciidoc.linter.output.OutputWriter;
+
 /**
  * Registry for all available CLI commands. Manages command registration and
  * lookup.
@@ -11,9 +14,15 @@ import java.util.Set;
 public class CommandRegistry {
 
     private final Map<String, Command> commands;
+    private final OutputWriter outputWriter;
 
     public CommandRegistry() {
+        this(ConsoleWriter.getInstance());
+    }
+
+    public CommandRegistry(OutputWriter outputWriter) {
         this.commands = new HashMap<>();
+        this.outputWriter = outputWriter;
         registerDefaultCommands();
     }
 
@@ -21,8 +30,8 @@ public class CommandRegistry {
      * Registers the default commands.
      */
     private final void registerDefaultCommands() {
-        register(new LintCommand());
-        register(new GuidelinesCommand());
+        register(new LintCommand(outputWriter));
+        register(new GuidelinesCommand(outputWriter));
     }
 
     /**
@@ -78,7 +87,7 @@ public class CommandRegistry {
      * Prints a summary of all available commands.
      */
     public void printCommandSummary() {
-        System.out.println("\nAvailable commands:"); // NOPMD - intentional CLI output
+        outputWriter.writeLine("\nAvailable commands:");
 
         int maxNameLength = commands.keySet().stream().mapToInt(String::length).max().orElse(10);
 
@@ -86,12 +95,9 @@ public class CommandRegistry {
             String name = entry.getKey();
             String description = entry.getValue().getDescription();
             String padding = " ".repeat(maxNameLength - name.length() + 2);
-            System.out.println("  " + name + padding + description); // NOPMD - intentional CLI output
+            outputWriter.writeLine("  " + name + padding + description);
         }
 
-        System.out.println("\nUse 'asciidoc-linter <command> --help' for more information about a command."); // NOPMD -
-                                                                                                              // intentional
-                                                                                                              // CLI
-                                                                                                              // output
+        outputWriter.writeLine("\nUse 'asciidoc-linter <command> --help' for more information about a command.");
     }
 }

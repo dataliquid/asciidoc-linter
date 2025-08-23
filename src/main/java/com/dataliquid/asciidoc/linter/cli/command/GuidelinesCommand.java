@@ -23,6 +23,8 @@ import com.dataliquid.asciidoc.linter.config.loader.ConfigurationLoader;
 import com.dataliquid.asciidoc.linter.documentation.AsciiDocAuthorGuidelineGenerator;
 import com.dataliquid.asciidoc.linter.documentation.RuleDocumentationGenerator;
 import com.dataliquid.asciidoc.linter.documentation.VisualizationStyle;
+import com.dataliquid.asciidoc.linter.output.ConsoleWriter;
+import com.dataliquid.asciidoc.linter.output.OutputWriter;
 
 /**
  * Command for generating author guidelines from linter configuration.
@@ -31,9 +33,15 @@ public class GuidelinesCommand implements Command {
 
     private static final Logger logger = LogManager.getLogger(GuidelinesCommand.class);
     private final ConfigurationLoader configLoader;
+    private final OutputWriter outputWriter;
 
     public GuidelinesCommand() {
+        this(ConsoleWriter.getInstance());
+    }
+
+    public GuidelinesCommand(OutputWriter outputWriter) {
         this.configLoader = new ConfigurationLoader();
+        this.outputWriter = outputWriter;
     }
 
     @Override
@@ -96,7 +104,7 @@ public class GuidelinesCommand implements Command {
 
         // Check required rule file
         if (!cmd.hasOption("rule")) {
-            System.err.println("Error: --rule is required for guidelines command"); // NOPMD - intentional CLI output
+            outputWriter.writeError("Error: --rule is required for guidelines command");
             printHelp();
             return 2;
         }
@@ -118,8 +126,7 @@ public class GuidelinesCommand implements Command {
             if (outputPath != null) {
                 // Write to file
                 generateToFile(generator, config, outputPath);
-                System.out.println("Guidelines generated successfully: " + outputPath); // NOPMD - intentional CLI
-                                                                                        // output
+                outputWriter.writeLine("Guidelines generated successfully: " + outputPath);
             } else {
                 // Write to stdout
                 generateToStdout(generator, config);
@@ -131,7 +138,7 @@ public class GuidelinesCommand implements Command {
             if (logger.isErrorEnabled()) {
                 logger.error("Error generating guidelines: {}", e.getMessage());
             }
-            System.err.println("Error generating guidelines: " + e.getMessage()); // NOPMD - intentional CLI output
+            outputWriter.writeError("Error generating guidelines: " + e.getMessage());
             return 2;
         }
     }

@@ -18,6 +18,8 @@ import com.dataliquid.asciidoc.linter.cli.ConfigurationDisplay;
 import com.dataliquid.asciidoc.linter.cli.VersionInfo;
 import com.dataliquid.asciidoc.linter.config.common.Severity;
 import com.dataliquid.asciidoc.linter.config.output.OutputFormat;
+import com.dataliquid.asciidoc.linter.output.ConsoleWriter;
+import com.dataliquid.asciidoc.linter.output.OutputWriter;
 
 /**
  * Command for linting AsciiDoc files.
@@ -25,6 +27,15 @@ import com.dataliquid.asciidoc.linter.config.output.OutputFormat;
 public class LintCommand implements Command {
 
     private static final Logger logger = LogManager.getLogger(LintCommand.class);
+    private final OutputWriter outputWriter;
+
+    public LintCommand() {
+        this(ConsoleWriter.getInstance());
+    }
+
+    public LintCommand(OutputWriter outputWriter) {
+        this.outputWriter = outputWriter;
+    }
 
     @Override
     public String getName() {
@@ -126,7 +137,7 @@ public class LintCommand implements Command {
 
         // Check required input
         if (!cmd.hasOption("input")) {
-            System.err.println("Error: --input is required for lint command"); // NOPMD - intentional CLI output
+            outputWriter.writeError("Error: --input is required for lint command");
             printHelp();
             return 2;
         }
@@ -138,7 +149,9 @@ public class LintCommand implements Command {
             // Display configuration (if not suppressed globally)
             boolean showConfig = !cmd.hasOption("quiet");
             if (showConfig) {
-                ConfigurationDisplay configDisplay = new ConfigurationDisplay();
+                ConfigurationDisplay configDisplay = new ConfigurationDisplay(
+                        com.dataliquid.asciidoc.linter.cli.display.DisplayConstants.DEFAULT_BOX_WIDTH,
+                        com.dataliquid.asciidoc.linter.cli.display.DisplayConstants.DEFAULT_LABEL_WIDTH, outputWriter);
                 configDisplay.display(config);
             }
 
@@ -150,7 +163,7 @@ public class LintCommand implements Command {
             if (logger.isErrorEnabled()) {
                 logger.error("Error: {}", e.getMessage());
             }
-            System.err.println("Error: " + e.getMessage()); // NOPMD - intentional CLI output
+            outputWriter.writeError("Error: " + e.getMessage());
             return 2;
         }
     }

@@ -13,6 +13,8 @@ import org.apache.logging.log4j.Logger;
 import com.dataliquid.asciidoc.linter.cli.command.Command;
 import com.dataliquid.asciidoc.linter.cli.command.CommandRegistry;
 import com.dataliquid.asciidoc.linter.cli.display.SplashScreen;
+import com.dataliquid.asciidoc.linter.output.ConsoleWriter;
+import com.dataliquid.asciidoc.linter.output.OutputWriter;
 
 /**
  * Main CLI entry point for the AsciiDoc tools.
@@ -21,9 +23,15 @@ public class MainCLI {
 
     private static final Logger logger = LogManager.getLogger(MainCLI.class);
     private final CommandRegistry commandRegistry;
+    private final OutputWriter outputWriter;
 
     public MainCLI() {
-        this.commandRegistry = new CommandRegistry();
+        this(ConsoleWriter.getInstance());
+    }
+
+    public MainCLI(OutputWriter outputWriter) {
+        this.outputWriter = outputWriter;
+        this.commandRegistry = new CommandRegistry(outputWriter);
     }
 
     public static void main(String[] args) {
@@ -56,7 +64,7 @@ public class MainCLI {
         // Check if command exists
         Command command = commandRegistry.getCommand(potentialCommand);
         if (command == null) {
-            System.err.println("Unknown command: " + potentialCommand); // NOPMD - intentional CLI output
+            outputWriter.writeError("Unknown command: " + potentialCommand);
             printMainHelp();
             return 2;
         }
@@ -67,7 +75,7 @@ public class MainCLI {
         // Check for splash screen suppression in global args
         boolean showSplash = !containsNoSplash(args) && !potentialCommand.equals("guidelines");
         if (showSplash) {
-            SplashScreen.display();
+            SplashScreen.display(outputWriter);
         }
 
         try {
@@ -78,15 +86,15 @@ public class MainCLI {
             if (logger.isErrorEnabled()) {
                 logger.error("Error: {}", e.getMessage());
             }
-            System.err.println("Error: " + e.getMessage()); // NOPMD - intentional CLI output
-            System.err.println(); // NOPMD - intentional CLI output
+            outputWriter.writeError("Error: " + e.getMessage());
+            outputWriter.writeLine();
             command.printHelp();
             return 2;
         } catch (Exception e) {
             if (logger.isErrorEnabled()) {
                 logger.error("Error executing command: {}", e.getMessage(), e);
             }
-            System.err.println("Error: " + e.getMessage()); // NOPMD - intentional CLI output
+            outputWriter.writeError("Error: " + e.getMessage());
             return 2;
         }
     }
@@ -107,26 +115,23 @@ public class MainCLI {
         VersionInfo versionInfo = VersionInfo.getInstance();
         String programName = versionInfo.getArtifactId();
 
-        System.out.println("\n" + programName + " - AsciiDoc Linter"); // NOPMD - intentional CLI output
-        System.out.println("Version: " + versionInfo.getFullVersion()); // NOPMD - intentional CLI output
-        System.out.println("\nUsage: " + programName + " [global-options] <command> [command-options]"); // NOPMD -
-                                                                                                         // intentional
-                                                                                                         // CLI output
-        System.out.println("\nGlobal Options:"); // NOPMD - intentional CLI output
-        System.out.println("  -h, --help       Show this help message"); // NOPMD - intentional CLI output
-        System.out.println("  -v, --version    Show version information"); // NOPMD - intentional CLI output
-        System.out.println("  --no-splash      Suppress splash screen"); // NOPMD - intentional CLI output
+        outputWriter.writeLine("\n" + programName + " - AsciiDoc Linter");
+        outputWriter.writeLine("Version: " + versionInfo.getFullVersion());
+        outputWriter.writeLine("\nUsage: " + programName + " [global-options] <command> [command-options]");
+        outputWriter.writeLine("\nGlobal Options:");
+        outputWriter.writeLine("  -h, --help       Show this help message");
+        outputWriter.writeLine("  -v, --version    Show version information");
+        outputWriter.writeLine("  --no-splash      Suppress splash screen");
 
         commandRegistry.printCommandSummary();
 
-        System.out.println("\nExamples:"); // NOPMD - intentional CLI output
-        System.out.println("  " + programName + " lint -i \"**/*.adoc\""); // NOPMD - intentional CLI output
-        System.out.println("  " + programName + " guidelines -r rules.yaml -o guide.adoc"); // NOPMD - intentional CLI
-                                                                                            // output
+        outputWriter.writeLine("\nExamples:");
+        outputWriter.writeLine("  " + programName + " lint -i \"**/*.adoc\"");
+        outputWriter.writeLine("  " + programName + " guidelines -r rules.yaml -o guide.adoc");
     }
 
     private void printVersion() {
-        System.out.println(VersionInfo.getInstance().getFullVersion()); // NOPMD - intentional CLI output
+        outputWriter.writeLine(VersionInfo.getInstance().getFullVersion());
     }
 
 }

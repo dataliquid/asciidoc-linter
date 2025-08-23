@@ -4,6 +4,8 @@ import java.io.PrintWriter;
 import java.util.List;
 import java.util.Objects;
 
+import com.dataliquid.asciidoc.linter.output.OutputWriter;
+
 /**
  * Utility class for drawing ASCII box borders and content. Provides methods to
  * create well-formatted text boxes for console output.
@@ -12,6 +14,7 @@ public class AsciiBoxDrawer {
 
     private final int width;
     private final PrintWriter printWriter;
+    private final OutputWriter outputWriter;
 
     /**
      * Creates a new AsciiBoxDrawer with the specified width.
@@ -34,13 +37,33 @@ public class AsciiBoxDrawer {
         }
         this.width = width;
         this.printWriter = Objects.requireNonNull(writer, "PrintWriter must not be null");
+        this.outputWriter = null; // Use PrintWriter for output
+    }
+
+    /**
+     * Creates a new AsciiBoxDrawer with the specified width and output writer.
+     *
+     * @param width        the total width of the box including borders
+     * @param outputWriter the output writer to write to
+     */
+    public AsciiBoxDrawer(int width, OutputWriter outputWriter) {
+        if (width < 4) {
+            throw new IllegalArgumentException("Box width must be at least 4");
+        }
+        this.width = width;
+        this.printWriter = null; // Use OutputWriter for output
+        this.outputWriter = Objects.requireNonNull(outputWriter, "OutputWriter must not be null");
     }
 
     /**
      * Outputs a line to the appropriate output.
      */
     private void println(String line) {
-        printWriter.println(line);
+        if (outputWriter != null) {
+            outputWriter.writeLine(line);
+        } else {
+            printWriter.println(line);
+        }
     }
 
     /**

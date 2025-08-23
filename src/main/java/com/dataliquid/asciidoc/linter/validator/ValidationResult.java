@@ -13,6 +13,8 @@ import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import com.dataliquid.asciidoc.linter.config.common.Severity;
+import com.dataliquid.asciidoc.linter.output.ConsoleWriter;
+import com.dataliquid.asciidoc.linter.output.OutputWriter;
 
 public final class ValidationResult {
     private final List<ValidationMessage> messages;
@@ -90,13 +92,26 @@ public final class ValidationResult {
         return endTime - startTime;
     }
 
+    /**
+     * Prints the validation report using the default console writer. This method
+     * maintains backward compatibility.
+     */
     public void printReport() {
-        System.out.println("Validation Report"); // NOPMD - intentional console output
-        System.out.println("================="); // NOPMD - intentional console output
-        System.out.println(); // NOPMD - intentional console output
+        printReport(ConsoleWriter.getInstance());
+    }
+
+    /**
+     * Prints the validation report using the specified output writer.
+     *
+     * @param outputWriter the output writer to use for printing the report
+     */
+    public void printReport(OutputWriter outputWriter) {
+        outputWriter.writeLine("Validation Report");
+        outputWriter.writeLine("=================");
+        outputWriter.writeLine();
 
         if (messages.isEmpty()) {
-            System.out.println("No validation issues found."); // NOPMD - intentional console output
+            outputWriter.writeLine("No validation issues found.");
         } else {
             Map<String, List<ValidationMessage>> messagesByFile = getMessagesByFile();
 
@@ -108,17 +123,16 @@ public final class ValidationResult {
                                 .thenComparing(msg -> msg.getLocation().getStartColumn()));
 
                 for (ValidationMessage msg : fileMessages) {
-                    System.out.println(msg.format()); // NOPMD - intentional console output
-                    System.out.println(); // NOPMD - intentional console output
+                    outputWriter.writeLine(msg.format());
+                    outputWriter.writeLine();
                 }
             }
         }
 
-        System.out // NOPMD - intentional console output
-                .println("Summary: " + getErrorCount() + " errors, " + getWarningCount() + " warnings, "
+        outputWriter
+                .writeLine("Summary: " + getErrorCount() + " errors, " + getWarningCount() + " warnings, "
                         + getInfoCount() + " info messages");
-        System.out.println("Validation completed in " + getValidationTimeMillis() + "ms"); // NOPMD - intentional
-                                                                                           // console output
+        outputWriter.writeLine("Validation completed in " + getValidationTimeMillis() + "ms");
     }
 
     public static Builder builder() {

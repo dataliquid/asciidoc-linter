@@ -6,6 +6,8 @@ import java.util.List;
 import com.dataliquid.asciidoc.linter.cli.display.AsciiBoxDrawer;
 import com.dataliquid.asciidoc.linter.cli.display.DisplayConstants;
 import com.dataliquid.asciidoc.linter.cli.display.TextWrapper;
+import com.dataliquid.asciidoc.linter.output.ConsoleWriter;
+import com.dataliquid.asciidoc.linter.output.OutputWriter;
 
 /**
  * Handles the display of configuration information for the AsciiDoc linter.
@@ -17,6 +19,7 @@ public class ConfigurationDisplay {
     private final int labelWidth;
     private final AsciiBoxDrawer boxDrawer;
     private final TextWrapper textWrapper;
+    private final OutputWriter outputWriter;
 
     /**
      * Creates a new ConfigurationDisplay with default settings.
@@ -32,9 +35,21 @@ public class ConfigurationDisplay {
      * @param labelWidth the width allocated for labels
      */
     public ConfigurationDisplay(int boxWidth, int labelWidth) {
+        this(boxWidth, labelWidth, ConsoleWriter.getInstance());
+    }
+
+    /**
+     * Creates a new ConfigurationDisplay with custom dimensions and output writer.
+     *
+     * @param boxWidth     the width of the display box
+     * @param labelWidth   the width allocated for labels
+     * @param outputWriter the output writer to use for display
+     */
+    public ConfigurationDisplay(int boxWidth, int labelWidth, OutputWriter outputWriter) {
         this.boxWidth = boxWidth;
         this.labelWidth = labelWidth;
-        this.boxDrawer = new AsciiBoxDrawer(boxWidth);
+        this.outputWriter = outputWriter;
+        this.boxDrawer = new AsciiBoxDrawer(boxWidth, outputWriter);
         this.textWrapper = new TextWrapper();
     }
 
@@ -44,7 +59,7 @@ public class ConfigurationDisplay {
      * @param config the CLI configuration to display
      */
     public void display(CLIConfig config) {
-        System.out.println(); // NOPMD - intentional CLI output
+        outputWriter.writeLine();
 
         boxDrawer.drawTop();
         boxDrawer.drawTitle("Configuration");
@@ -54,9 +69,9 @@ public class ConfigurationDisplay {
 
         boxDrawer.drawBottom();
 
-        System.out.println(); // NOPMD - intentional CLI output
-        System.out.println("Starting validation..."); // NOPMD - intentional CLI output
-        System.out.println(); // NOPMD - intentional CLI output
+        outputWriter.writeLine();
+        outputWriter.writeLine("Starting validation...");
+        outputWriter.writeLine();
     }
 
     /**
