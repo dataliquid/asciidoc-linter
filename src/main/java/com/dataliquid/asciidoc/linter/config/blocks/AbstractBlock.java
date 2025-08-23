@@ -25,20 +25,25 @@ public abstract class AbstractBlock implements Block {
         this.order = builder._order;
     }
 
+    @Override
     public abstract BlockType getType();
 
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public Severity getSeverity() {
         return severity;
     }
 
+    @Override
     public OccurrenceConfig getOccurrence() {
         return occurrence;
     }
 
+    @Override
     public Integer getOrder() {
         return order;
     }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
@@ -128,7 +129,7 @@ public final class BlockValidationContext {
         if (config.getName() != null) {
             return "block '" + config.getName() + "'";
         }
-        return config.getType().toString().toLowerCase() + " block";
+        return config.getType().toString().toLowerCase(Locale.ROOT) + " block";
     }
 
     private String createOccurrenceKey(Block config) {

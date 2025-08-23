@@ -212,14 +212,14 @@ public final class ImageBlockValidator extends AbstractBlockValidator<ImageBlock
                     .add(ValidationMessage
                             .builder()
                             .severity(imageConfig.getSeverity())
-                            .ruleId(dimensionName.equals(WIDTH) ? WIDTH_REQUIRED : HEIGHT_REQUIRED)
+                            .ruleId(WIDTH.equals(dimensionName) ? WIDTH_REQUIRED : HEIGHT_REQUIRED)
                             .location(
                                     SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
                             .message("Image must have " + dimensionName + " specified")
                             .actualValue("No " + dimensionName)
                             .expectedValue(dimensionName + " required")
                             .errorType(ErrorType.MISSING_VALUE)
-                            .missingValueHint(dimensionName.equals(WIDTH) ? "640" : "480")
+                            .missingValueHint(WIDTH.equals(dimensionName) ? "640" : "480")
                             .placeholderContext(PlaceholderContext
                                     .builder()
                                     .type(PlaceholderContext.PlaceholderType.ATTRIBUTE_IN_LIST)
@@ -246,7 +246,7 @@ public final class ImageBlockValidator extends AbstractBlockValidator<ImageBlock
                             .add(ValidationMessage
                                     .builder()
                                     .severity(imageConfig.getSeverity())
-                                    .ruleId(dimensionName.equals(WIDTH) ? WIDTH_MIN : HEIGHT_MIN)
+                                    .ruleId(WIDTH.equals(dimensionName) ? WIDTH_MIN : HEIGHT_MIN)
                                     .location(SourceLocation
                                             .builder()
                                             .filename(context.getFilename())
@@ -270,7 +270,7 @@ public final class ImageBlockValidator extends AbstractBlockValidator<ImageBlock
                             .add(ValidationMessage
                                     .builder()
                                     .severity(imageConfig.getSeverity())
-                                    .ruleId(dimensionName.equals(WIDTH) ? WIDTH_MAX : HEIGHT_MAX)
+                                    .ruleId(WIDTH.equals(dimensionName) ? WIDTH_MAX : HEIGHT_MAX)
                                     .location(SourceLocation
                                             .builder()
                                             .filename(context.getFilename())

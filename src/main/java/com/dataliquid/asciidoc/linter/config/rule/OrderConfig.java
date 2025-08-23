@@ -129,7 +129,7 @@ public final class OrderConfig {
 
         public Builder severity(Severity severity) {
             this._severity = Objects
-                    .requireNonNull(_severity, "[" + getClass().getName() + "] severity must not be null");
+                    .requireNonNull(severity, "[" + getClass().getName() + "] severity must not be null");
             return this;
         }
 

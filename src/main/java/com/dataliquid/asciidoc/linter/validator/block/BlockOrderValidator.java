@@ -4,6 +4,7 @@ import static com.dataliquid.asciidoc.linter.validator.RuleIds.Block.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import com.dataliquid.asciidoc.linter.config.blocks.Block;
 import com.dataliquid.asciidoc.linter.config.rule.OrderConfig;
@@ -184,7 +185,7 @@ public final class BlockOrderValidator {
         if (block.getName() != null) {
             return block.getName();
         }
-        return block.getType().toString().toLowerCase();
+        return block.getType().toString().toLowerCase(Locale.ROOT);
     }
 
     /**

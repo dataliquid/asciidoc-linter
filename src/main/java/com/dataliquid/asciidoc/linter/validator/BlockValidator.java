@@ -302,9 +302,9 @@ public final class BlockValidator {
                     BlockType type = typeDetector.detectType(block);
                     if (type != null) {
                         Block blockCfg = findBlockConfig(type, block, config.allowedBlocks());
-                        if (blockCfg == current && currentBlockIndex == -1) {
+                        if (blockCfg.equals(current) && currentBlockIndex == -1) {
                             currentBlockIndex = j;
-                        } else if (blockCfg == next && nextBlockIndex == -1) {
+                        } else if (blockCfg.equals(next) && nextBlockIndex == -1) {
                             nextBlockIndex = j;
                         }
                     }

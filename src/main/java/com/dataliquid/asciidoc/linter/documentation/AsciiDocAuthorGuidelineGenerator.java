@@ -1,6 +1,7 @@
 package com.dataliquid.asciidoc.linter.documentation;
 
 import java.io.PrintWriter;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -70,7 +71,7 @@ public class AsciiDocAuthorGuidelineGenerator implements RuleDocumentationGenera
      * @param visualizationStyles the visualization styles to use
      */
     public AsciiDocAuthorGuidelineGenerator(Set<VisualizationStyle> visualizationStyles) {
-        this.visualizationStyles = new HashSet<>(visualizationStyles);
+        this.visualizationStyles = EnumSet.copyOf(visualizationStyles);
         this.patternHumanizer = new PatternHumanizer();
         this.visualizerFactory = new HierarchyVisualizerFactory();
     }

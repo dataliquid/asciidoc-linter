@@ -106,17 +106,26 @@ public class JsonFormatter implements ReportFormatter {
     private Map<String, Object> formatMessage(ValidationMessage message) {
         @SuppressWarnings(PMD_USE_CONCURRENT_HASHMAP) // Local variable, no concurrency needed
         Map<String, Object> messageMap = new LinkedHashMap<>();
-        messageMap.put("severity", message.getSeverity().toString());
-        messageMap.put("ruleId", message.getRuleId());
-        messageMap.put("message", message.getMessage());
+
+        // Add location fields first if available
         if (message.getLocation() != null) {
-            messageMap.put("filename", message.getLocation().getFilename());
-            @SuppressWarnings(PMD_USE_CONCURRENT_HASHMAP) // Local variable, no concurrency needed
-            Map<String, Object> location = new LinkedHashMap<>();
-            location.put("line", message.getLocation().getStartLine());
-            location.put("column", message.getLocation().getStartColumn());
-            messageMap.put("location", location);
+            messageMap.put("file", message.getLocation().getFilename());
+            messageMap.put("line", message.getLocation().getStartLine());
+            // Only add column if it's meaningfully set (different from endColumn or > 1)
+            if (message.getLocation().getStartColumn() > 1
+                    || message.getLocation().getStartColumn() != message.getLocation().getEndColumn()) {
+                messageMap.put("column", message.getLocation().getStartColumn());
+            }
         }
+
+        messageMap.put("severity", message.getSeverity().toString());
+        messageMap.put("message", message.getMessage());
+        messageMap.put("ruleId", message.getRuleId());
+
+        // Add optional fields if present
+        message.getActualValue().ifPresent(value -> messageMap.put("actualValue", value));
+        message.getExpectedValue().ifPresent(value -> messageMap.put("expectedValue", value));
+
         return messageMap;
     }
 

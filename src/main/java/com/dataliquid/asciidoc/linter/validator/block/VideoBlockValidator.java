@@ -155,10 +155,10 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
 
             // Check if there are existing attributes
             boolean hasOtherAttributes = false;
-            if (dimensionType.equals(WIDTH)) {
+            if (WIDTH.equals(dimensionType)) {
                 hasOtherAttributes = node.getAttribute(HEIGHT) != null || node.getAttribute(POSTER) != null
                         || node.getAttribute(OPTIONS) != null;
-            } else if (dimensionType.equals(HEIGHT)) {
+            } else if (HEIGHT.equals(dimensionType)) {
                 hasOtherAttributes = node.getAttribute(WIDTH) != null || node.getAttribute(POSTER) != null
                         || node.getAttribute(OPTIONS) != null;
             }
@@ -167,12 +167,12 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
                     .add(ValidationMessage
                             .builder()
                             .severity(severity)
-                            .ruleId(dimensionType.equals(WIDTH) ? WIDTH_REQUIRED : HEIGHT_REQUIRED)
+                            .ruleId(WIDTH.equals(dimensionType) ? WIDTH_REQUIRED : HEIGHT_REQUIRED)
                             .message(String.format("Video %s is required but not provided", dimensionType))
                             .location(
                                     SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
                             .errorType(ErrorType.MISSING_VALUE)
-                            .missingValueHint(dimensionType.equals(WIDTH) ? "640" : "360")
+                            .missingValueHint(WIDTH.equals(dimensionType) ? "640" : "360")
                             .placeholderContext(PlaceholderContext
                                     .builder()
                                     .type(hasOtherAttributes ? PlaceholderContext.PlaceholderType.ATTRIBUTE_IN_LIST
@@ -200,7 +200,7 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
                             .add(ValidationMessage
                                     .builder()
                                     .severity(severity)
-                                    .ruleId(dimensionType.equals(WIDTH) ? WIDTH_MIN : HEIGHT_MIN)
+                                    .ruleId(WIDTH.equals(dimensionType) ? WIDTH_MIN : HEIGHT_MIN)
                                     .message(String.format("Video %s is below minimum value", dimensionType))
                                     .location(context.createLocation(node))
                                     .errorType(ErrorType.OUT_OF_RANGE)
@@ -222,7 +222,7 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
                             .add(ValidationMessage
                                     .builder()
                                     .severity(severity)
-                                    .ruleId(dimensionType.equals(WIDTH) ? WIDTH_MAX : HEIGHT_MAX)
+                                    .ruleId(WIDTH.equals(dimensionType) ? WIDTH_MAX : HEIGHT_MAX)
                                     .message(String.format("Video %s exceeds maximum value", dimensionType))
                                     .location(context.createLocation(node))
                                     .errorType(ErrorType.OUT_OF_RANGE)
@@ -243,7 +243,7 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
                         .add(ValidationMessage
                                 .builder()
                                 .severity(severity)
-                                .ruleId(dimensionType.equals(WIDTH) ? WIDTH_INVALID : HEIGHT_INVALID)
+                                .ruleId(WIDTH.equals(dimensionType) ? WIDTH_INVALID : HEIGHT_INVALID)
                                 .message(String.format("Video %s is not a valid number", dimensionType))
                                 .location(context.createLocation(node))
                                 .errorType(ErrorType.INVALID_PATTERN)
