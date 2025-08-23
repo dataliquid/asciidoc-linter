@@ -37,6 +37,26 @@ public class ContextRenderer {
     }
 
     /**
+     * Checks if a string is empty or contains only whitespace. Unlike
+     * StringUtils.isBlank(), this method returns false for null strings to maintain
+     * compatibility with the original trim().isEmpty() behavior.
+     */
+    private static boolean isEmptyOrWhitespace(String str) {
+        if (str == null) {
+            return false; // NULL is NOT empty (important for compatibility!)
+        }
+        if (str.isEmpty()) {
+            return true;
+        }
+        for (int i = 0; i < str.length(); i++) {
+            if (!Character.isWhitespace(str.charAt(i))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
      * Gets the source context for a validation message.
      */
     public SourceContext getContext(ValidationMessage message) {
@@ -108,7 +128,7 @@ public class ContextRenderer {
                     if (line.startsWith("= ") && !line.startsWith("== ")) {
                         insertIndex = i + 1;
                         // If there's an empty line after the title, insert after it
-                        if (insertIndex < contextLines.size() && StringUtils.isBlank(contextLines.get(insertIndex))) {
+                        if (insertIndex < contextLines.size() && isEmptyOrWhitespace(contextLines.get(insertIndex))) {
                             insertIndex++;
                         }
                         break;
@@ -143,7 +163,7 @@ public class ContextRenderer {
                         insertIndex = i + 1;
                         // Skip any empty lines after the section header
                         while (insertIndex < contextLines.size()
-                                && StringUtils.isBlank(contextLines.get(insertIndex))) {
+                                && isEmptyOrWhitespace(contextLines.get(insertIndex))) {
                             insertIndex++;
                         }
                         // Skip content lines until we find the next section or end
@@ -238,7 +258,7 @@ public class ContextRenderer {
                     int lineNum; // Will be set based on position
 
                     // If we're right after placeholder and current line is empty
-                    if (i == insertIndex + 1 && StringUtils.isBlank(content)) {
+                    if (i == insertIndex + 1 && isEmptyOrWhitespace(content)) {
                         // This empty line gets number insertLineNumber + 1
                         lineNum = insertLineNumber + 1;
                     } else {
