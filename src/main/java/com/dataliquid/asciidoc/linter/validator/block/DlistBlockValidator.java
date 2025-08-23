@@ -258,8 +258,8 @@ public final class DlistBlockValidator extends AbstractBlockValidator<DlistBlock
             ListItem description = entry.getDescription();
 
             // Check if description is required
-            if (config.getRequired() != null && config.getRequired() && (description == null
-                    || description.getText(StringUtils.isBlank() == null || description.getText()))) {
+            if (config.getRequired() != null && config.getRequired()
+                    && (description == null || StringUtils.isBlank(description.getText()))) {
                 // Get the first term for error location
                 List<ListItem> terms = entry.getTerms();
                 if (!terms.isEmpty()) {

@@ -42,15 +42,15 @@ public final class UlistBlock extends AbstractBlock {
     }
 
     public ItemsConfig getItems() {
-        return _items;
+        return items;
     }
 
     public NestingLevelConfig getNestingLevel() {
-        return _nestingLevel;
+        return nestingLevel;
     }
 
     public String getMarkerStyle() {
-        return _markerStyle;
+        return markerStyle;
     }
 
     public static Builder builder() {
@@ -76,15 +76,15 @@ public final class UlistBlock extends AbstractBlock {
         }
 
         public Integer getMin() {
-            return _min;
+            return min;
         }
 
         public Integer getMax() {
-            return _max;
+            return max;
         }
 
         public Severity getSeverity() {
-            return _severity;
+            return severity;
         }
 
         public static ItemsConfigBuilder builder() {
@@ -148,11 +148,11 @@ public final class UlistBlock extends AbstractBlock {
         }
 
         public Integer getMax() {
-            return _max;
+            return max;
         }
 
         public Severity getSeverity() {
-            return _severity;
+            return severity;
         }
 
         public static NestingLevelConfigBuilder builder() {
@@ -217,7 +217,7 @@ public final class UlistBlock extends AbstractBlock {
 
         @Override
         public UlistBlock build() {
-            Objects.requireNonNull(severity, "[" + getClass().getName() + "] severity is required");
+            Objects.requireNonNull(_severity, "[" + getClass().getName() + "] severity is required");
             return new UlistBlock(this);
         }
     }

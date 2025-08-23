@@ -43,11 +43,11 @@ public class ExampleBlock extends AbstractBlock {
     }
 
     public CaptionConfig getCaption() {
-        return _caption;
+        return caption;
     }
 
     public CollapsibleConfig getCollapsible() {
-        return _collapsible;
+        return collapsible;
     }
 
     @Override
@@ -121,23 +121,23 @@ public class ExampleBlock extends AbstractBlock {
         }
 
         public boolean isRequired() {
-            return _required;
+            return required;
         }
 
         public Pattern getPattern() {
-            return _pattern;
+            return pattern;
         }
 
         public Integer getMinLength() {
-            return _minLength;
+            return minLength;
         }
 
         public Integer getMaxLength() {
-            return _maxLength;
+            return maxLength;
         }
 
         public Severity getSeverity() {
-            return _severity;
+            return severity;
         }
 
         @Override
@@ -233,15 +233,15 @@ public class ExampleBlock extends AbstractBlock {
         }
 
         public boolean isRequired() {
-            return _required;
+            return required;
         }
 
         public List<Boolean> getAllowed() {
-            return _allowed;
+            return allowed;
         }
 
         public Severity getSeverity() {
-            return _severity;
+            return severity;
         }
 
         @Override

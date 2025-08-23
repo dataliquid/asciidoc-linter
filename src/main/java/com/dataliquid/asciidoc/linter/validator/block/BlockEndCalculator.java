@@ -3,6 +3,7 @@ package com.dataliquid.asciidoc.linter.validator.block;
 import java.util.List;
 import org.asciidoctor.ast.StructuralNode;
 import com.dataliquid.asciidoc.linter.report.console.FileContentCache;
+import com.dataliquid.asciidoc.linter.util.StringUtils;
 
 /**
  * Utility class to calculate the actual end line of blocks by analyzing source

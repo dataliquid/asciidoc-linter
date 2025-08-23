@@ -101,6 +101,22 @@ public class JsonFormatter implements ReportFormatter {
         }
     }
 
+    private Map<String, Object> formatMessage(ValidationMessage message) {
+        @SuppressWarnings("PMD.UseConcurrentHashMap") // Local variable, no concurrency needed
+        Map<String, Object> messageMap = new LinkedHashMap<>();
+        messageMap.put("severity", message.getSeverity().toString());
+        messageMap.put("ruleId", message.getRuleId());
+        messageMap.put("message", message.getMessage());
+        if (message.getLocation() != null) {
+            messageMap.put("filename", message.getLocation().getFilename());
+            Map<String, Object> location = new LinkedHashMap<>();
+            location.put("line", message.getLocation().getStartLine());
+            location.put("column", message.getLocation().getStartColumn());
+            messageMap.put("location", location);
+        }
+        return messageMap;
+    }
+
     private String formatDuration(long millis) {
         if (millis < MILLIS_PER_SECOND) {
             return millis + "ms";

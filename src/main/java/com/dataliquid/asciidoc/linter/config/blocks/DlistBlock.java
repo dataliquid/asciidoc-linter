@@ -52,19 +52,19 @@ public final class DlistBlock extends AbstractBlock {
     }
 
     public TermsConfig getTerms() {
-        return _terms;
+        return terms;
     }
 
     public DescriptionsConfig getDescriptions() {
-        return _descriptions;
+        return descriptions;
     }
 
     public NestingLevelConfig getNestingLevel() {
-        return _nestingLevel;
+        return nestingLevel;
     }
 
     public DelimiterStyleConfig getDelimiterStyle() {
-        return _delimiterStyle;
+        return delimiterStyle;
     }
 
     public static Builder builder() {
@@ -99,27 +99,27 @@ public final class DlistBlock extends AbstractBlock {
         }
 
         public Integer getMin() {
-            return _min;
+            return min;
         }
 
         public Integer getMax() {
-            return _max;
+            return max;
         }
 
         public String getPattern() {
-            return _pattern;
+            return pattern;
         }
 
         public Integer getMinLength() {
-            return _minLength;
+            return minLength;
         }
 
         public Integer getMaxLength() {
-            return _maxLength;
+            return maxLength;
         }
 
         public Severity getSeverity() {
-            return _severity;
+            return severity;
         }
 
         public static TermsConfigBuilder builder() {
@@ -212,23 +212,23 @@ public final class DlistBlock extends AbstractBlock {
         }
 
         public Boolean getRequired() {
-            return _required;
+            return required;
         }
 
         public Integer getMin() {
-            return _min;
+            return min;
         }
 
         public Integer getMax() {
-            return _max;
+            return max;
         }
 
         public String getPattern() {
-            return _pattern;
+            return pattern;
         }
 
         public Severity getSeverity() {
-            return _severity;
+            return severity;
         }
 
         public static DescriptionsConfigBuilder builder() {
@@ -306,11 +306,11 @@ public final class DlistBlock extends AbstractBlock {
         }
 
         public Integer getMax() {
-            return _max;
+            return max;
         }
 
         public Severity getSeverity() {
-            return _severity;
+            return severity;
         }
 
         public static NestingLevelConfigBuilder builder() {
@@ -371,15 +371,15 @@ public final class DlistBlock extends AbstractBlock {
         }
 
         public String[] getAllowedDelimiters() {
-            return _allowedDelimiters;
+            return allowedDelimiters;
         }
 
         public Boolean getConsistent() {
-            return _consistent;
+            return consistent;
         }
 
         public Severity getSeverity() {
-            return _severity;
+            return severity;
         }
 
         public static DelimiterStyleConfigBuilder builder() {
@@ -459,7 +459,7 @@ public final class DlistBlock extends AbstractBlock {
 
         @Override
         public DlistBlock build() {
-            Objects.requireNonNull(severity, "[" + getClass().getName() + "] severity is required");
+            Objects.requireNonNull(_severity, "[" + getClass().getName() + "] severity is required");
             return new DlistBlock(this);
         }
     }

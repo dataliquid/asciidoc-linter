@@ -48,17 +48,17 @@ public class QuoteBlock extends AbstractBlock {
 
     @JsonProperty(ATTRIBUTION)
     public AttributionConfig getAttribution() {
-        return _attribution;
+        return attribution;
     }
 
     @JsonProperty(CITATION)
     public CitationConfig getCitation() {
-        return _citation;
+        return citation;
     }
 
     @JsonProperty(CONTENT)
     public ContentConfig getContent() {
-        return _content;
+        return content;
     }
 
     /**
@@ -82,27 +82,27 @@ public class QuoteBlock extends AbstractBlock {
 
         @JsonProperty(REQUIRED)
         public boolean isRequired() {
-            return _required;
+            return required;
         }
 
         @JsonProperty(MIN_LENGTH)
         public Integer getMinLength() {
-            return _minLength;
+            return minLength;
         }
 
         @JsonProperty(MAX_LENGTH)
         public Integer getMaxLength() {
-            return _maxLength;
+            return maxLength;
         }
 
         @JsonProperty(PATTERN)
         public Pattern getPattern() {
-            return _pattern;
+            return pattern;
         }
 
         @JsonProperty(SEVERITY)
         public Severity getSeverity() {
-            return _severity;
+            return severity;
         }
 
         @Override
@@ -201,27 +201,27 @@ public class QuoteBlock extends AbstractBlock {
 
         @JsonProperty(REQUIRED)
         public boolean isRequired() {
-            return _required;
+            return required;
         }
 
         @JsonProperty(MIN_LENGTH)
         public Integer getMinLength() {
-            return _minLength;
+            return minLength;
         }
 
         @JsonProperty(MAX_LENGTH)
         public Integer getMaxLength() {
-            return _maxLength;
+            return maxLength;
         }
 
         @JsonProperty(PATTERN)
         public Pattern getPattern() {
-            return _pattern;
+            return pattern;
         }
 
         @JsonProperty(SEVERITY)
         public Severity getSeverity() {
-            return _severity;
+            return severity;
         }
 
         @Override
@@ -318,22 +318,22 @@ public class QuoteBlock extends AbstractBlock {
 
         @JsonProperty(REQUIRED)
         public boolean isRequired() {
-            return _required;
+            return required;
         }
 
         @JsonProperty(MIN_LENGTH)
         public Integer getMinLength() {
-            return _minLength;
+            return minLength;
         }
 
         @JsonProperty(MAX_LENGTH)
         public Integer getMaxLength() {
-            return _maxLength;
+            return maxLength;
         }
 
         @JsonProperty(LINES)
         public LinesConfig getLines() {
-            return _lines;
+            return lines;
         }
 
         @Override
@@ -410,17 +410,17 @@ public class QuoteBlock extends AbstractBlock {
 
         @JsonProperty(MIN)
         public Integer getMin() {
-            return _min;
+            return min;
         }
 
         @JsonProperty(MAX)
         public Integer getMax() {
-            return _max;
+            return max;
         }
 
         @JsonProperty(SEVERITY)
         public Severity getSeverity() {
-            return _severity;
+            return severity;
         }
 
         @Override
@@ -518,7 +518,7 @@ public class QuoteBlock extends AbstractBlock {
 
         @Override
         public QuoteBlock build() {
-            Objects.requireNonNull(severity, "[" + getClass().getName() + "] severity is required");
+            Objects.requireNonNull(_severity, "[" + getClass().getName() + "] severity is required");
             return new QuoteBlock(this);
         }
     }

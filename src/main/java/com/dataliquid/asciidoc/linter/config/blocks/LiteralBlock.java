@@ -61,15 +61,15 @@ public final class LiteralBlock extends AbstractBlock {
     }
 
     public TitleConfig getTitle() {
-        return _title;
+        return title;
     }
 
     public LinesConfig getLines() {
-        return _lines;
+        return lines;
     }
 
     public IndentationConfig getIndentation() {
-        return _indentation;
+        return indentation;
     }
 
     public static Builder builder() {
@@ -95,19 +95,19 @@ public final class LiteralBlock extends AbstractBlock {
         }
 
         public boolean isRequired() {
-            return _required;
+            return required;
         }
 
         public Integer getMinLength() {
-            return _minLength;
+            return minLength;
         }
 
         public Integer getMaxLength() {
-            return _maxLength;
+            return maxLength;
         }
 
         public Severity getSeverity() {
-            return _severity;
+            return severity;
         }
 
         public static TitleConfigBuilder builder() {
@@ -178,15 +178,15 @@ public final class LiteralBlock extends AbstractBlock {
         }
 
         public Integer getMin() {
-            return _min;
+            return min;
         }
 
         public Integer getMax() {
-            return _max;
+            return max;
         }
 
         public Severity getSeverity() {
-            return _severity;
+            return severity;
         }
 
         public static LinesConfigBuilder builder() {
@@ -256,23 +256,23 @@ public final class LiteralBlock extends AbstractBlock {
         }
 
         public boolean isRequired() {
-            return _required;
+            return required;
         }
 
         public boolean isConsistent() {
-            return _consistent;
+            return consistent;
         }
 
         public Integer getMinSpaces() {
-            return _minSpaces;
+            return minSpaces;
         }
 
         public Integer getMaxSpaces() {
-            return _maxSpaces;
+            return maxSpaces;
         }
 
         public Severity getSeverity() {
-            return _severity;
+            return severity;
         }
 
         public static IndentationConfigBuilder builder() {
@@ -357,7 +357,7 @@ public final class LiteralBlock extends AbstractBlock {
 
         @Override
         public LiteralBlock build() {
-            Objects.requireNonNull(severity, "[" + getClass().getName() + "] severity is required");
+            Objects.requireNonNull(_severity, "[" + getClass().getName() + "] severity is required");
             return new LiteralBlock(this);
         }
     }

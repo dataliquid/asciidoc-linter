@@ -51,27 +51,27 @@ public class VideoBlock extends AbstractBlock {
     }
 
     public UrlConfig getUrl() {
-        return _url;
+        return url;
     }
 
     public DimensionConfig getWidth() {
-        return _width;
+        return width;
     }
 
     public DimensionConfig getHeight() {
-        return _height;
+        return height;
     }
 
     public PosterConfig getPoster() {
-        return _poster;
+        return poster;
     }
 
     public OptionsConfig getOptions() {
-        return _options;
+        return options;
     }
 
     public CaptionConfig getCaption() {
-        return _caption;
+        return caption;
     }
 
     public static Builder builder() {
@@ -144,7 +144,7 @@ public class VideoBlock extends AbstractBlock {
 
         @Override
         public VideoBlock build() {
-            Objects.requireNonNull(severity, "[" + getClass().getName() + "] severity must not be null");
+            Objects.requireNonNull(_severity, "[" + getClass().getName() + "] severity must not be null");
             return new VideoBlock(this);
         }
     }
@@ -162,15 +162,15 @@ public class VideoBlock extends AbstractBlock {
         }
 
         public Boolean getRequired() {
-            return _required;
+            return required;
         }
 
         public Pattern getPattern() {
-            return _pattern;
+            return pattern;
         }
 
         public Severity getSeverity() {
-            return _severity;
+            return severity;
         }
 
         public static Builder builder() {
@@ -258,19 +258,19 @@ public class VideoBlock extends AbstractBlock {
         }
 
         public Boolean getRequired() {
-            return _required;
+            return required;
         }
 
         public Integer getMinValue() {
-            return _minValue;
+            return minValue;
         }
 
         public Integer getMaxValue() {
-            return _maxValue;
+            return maxValue;
         }
 
         public Severity getSeverity() {
-            return _severity;
+            return severity;
         }
 
         public static Builder builder() {
@@ -343,15 +343,15 @@ public class VideoBlock extends AbstractBlock {
         }
 
         public Boolean getRequired() {
-            return _required;
+            return required;
         }
 
         public Pattern getPattern() {
-            return _pattern;
+            return pattern;
         }
 
         public Severity getSeverity() {
-            return _severity;
+            return severity;
         }
 
         public static Builder builder() {
@@ -433,7 +433,7 @@ public class VideoBlock extends AbstractBlock {
         }
 
         public ControlsConfig getControls() {
-            return _controls;
+            return controls;
         }
 
         public static Builder builder() {
@@ -482,11 +482,11 @@ public class VideoBlock extends AbstractBlock {
         }
 
         public Boolean getRequired() {
-            return _required;
+            return required;
         }
 
         public Severity getSeverity() {
-            return _severity;
+            return severity;
         }
 
         public static Builder builder() {
@@ -546,19 +546,19 @@ public class VideoBlock extends AbstractBlock {
         }
 
         public Boolean getRequired() {
-            return _required;
+            return required;
         }
 
         public Integer getMinLength() {
-            return _minLength;
+            return minLength;
         }
 
         public Integer getMaxLength() {
-            return _maxLength;
+            return maxLength;
         }
 
         public Severity getSeverity() {
-            return _severity;
+            return severity;
         }
 
         public static Builder builder() {

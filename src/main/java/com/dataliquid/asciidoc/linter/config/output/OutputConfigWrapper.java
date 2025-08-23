@@ -22,7 +22,7 @@ public final class OutputConfigWrapper {
     }
 
     public OutputConfiguration getOutput() {
-        return this._output;
+        return this.output;
     }
 
     @Override

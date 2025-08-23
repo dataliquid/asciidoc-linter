@@ -53,23 +53,23 @@ public final class TableBlock extends AbstractBlock {
     }
 
     public DimensionConfig getColumns() {
-        return _columns;
+        return columns;
     }
 
     public DimensionConfig getRows() {
-        return _rows;
+        return rows;
     }
 
     public HeaderConfig getHeader() {
-        return _header;
+        return header;
     }
 
     public CaptionConfig getCaption() {
-        return _caption;
+        return caption;
     }
 
     public FormatConfig getFormat() {
-        return _format;
+        return format;
     }
 
     public static Builder builder() {
@@ -92,15 +92,15 @@ public final class TableBlock extends AbstractBlock {
         }
 
         public Integer getMin() {
-            return _min;
+            return min;
         }
 
         public Integer getMax() {
-            return _max;
+            return max;
         }
 
         public Severity getSeverity() {
-            return _severity;
+            return severity;
         }
 
         public static DimensionConfigBuilder builder() {
@@ -164,15 +164,15 @@ public final class TableBlock extends AbstractBlock {
         }
 
         public boolean isRequired() {
-            return _required;
+            return required;
         }
 
         public Pattern getPattern() {
-            return _pattern;
+            return pattern;
         }
 
         public Severity getSeverity() {
-            return _severity;
+            return severity;
         }
 
         public static HeaderConfigBuilder builder() {
@@ -251,23 +251,23 @@ public final class TableBlock extends AbstractBlock {
         }
 
         public boolean isRequired() {
-            return _required;
+            return required;
         }
 
         public Pattern getPattern() {
-            return _pattern;
+            return pattern;
         }
 
         public Integer getMinLength() {
-            return _minLength;
+            return minLength;
         }
 
         public Integer getMaxLength() {
-            return _maxLength;
+            return maxLength;
         }
 
         public Severity getSeverity() {
-            return _severity;
+            return severity;
         }
 
         public static CaptionConfigBuilder builder() {
@@ -354,15 +354,15 @@ public final class TableBlock extends AbstractBlock {
         }
 
         public String getStyle() {
-            return _style;
+            return style;
         }
 
         public Boolean getBorders() {
-            return _borders;
+            return borders;
         }
 
         public Severity getSeverity() {
-            return _severity;
+            return severity;
         }
 
         public static FormatConfigBuilder builder() {
@@ -446,7 +446,7 @@ public final class TableBlock extends AbstractBlock {
 
         @Override
         public TableBlock build() {
-            Objects.requireNonNull(severity, "[" + getClass().getName() + "] severity is required");
+            Objects.requireNonNull(_severity, "[" + getClass().getName() + "] severity is required");
             return new TableBlock(this);
         }
     }

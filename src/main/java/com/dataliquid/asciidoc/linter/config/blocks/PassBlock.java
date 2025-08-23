@@ -61,15 +61,15 @@ public final class PassBlock extends AbstractBlock {
     }
 
     public TypeConfig getTypeConfig() {
-        return _type;
+        return type;
     }
 
     public ContentConfig getContent() {
-        return _content;
+        return content;
     }
 
     public ReasonConfig getReason() {
-        return _reason;
+        return reason;
     }
 
     public static Builder builder() {
@@ -93,15 +93,15 @@ public final class PassBlock extends AbstractBlock {
         }
 
         public boolean isRequired() {
-            return _required;
+            return required;
         }
 
         public List<String> getAllowed() {
-            return _allowed;
+            return allowed;
         }
 
         public Severity getSeverity() {
-            return _severity;
+            return severity;
         }
 
         public static TypeConfigBuilder builder() {
@@ -168,19 +168,19 @@ public final class PassBlock extends AbstractBlock {
         }
 
         public boolean isRequired() {
-            return _required;
+            return required;
         }
 
         public Integer getMaxLength() {
-            return _maxLength;
+            return maxLength;
         }
 
         public Pattern getPattern() {
-            return _pattern;
+            return pattern;
         }
 
         public Severity getSeverity() {
-            return _severity;
+            return severity;
         }
 
         public static ContentConfigBuilder builder() {
@@ -263,19 +263,19 @@ public final class PassBlock extends AbstractBlock {
         }
 
         public boolean isRequired() {
-            return _required;
+            return required;
         }
 
         public Integer getMinLength() {
-            return _minLength;
+            return minLength;
         }
 
         public Integer getMaxLength() {
-            return _maxLength;
+            return maxLength;
         }
 
         public Severity getSeverity() {
-            return _severity;
+            return severity;
         }
 
         public static ReasonConfigBuilder builder() {
@@ -353,7 +353,7 @@ public final class PassBlock extends AbstractBlock {
 
         @Override
         public PassBlock build() {
-            Objects.requireNonNull(severity, "[" + getClass().getName() + "] severity is required");
+            Objects.requireNonNull(_severity, "[" + getClass().getName() + "] severity is required");
             return new PassBlock(this);
         }
     }

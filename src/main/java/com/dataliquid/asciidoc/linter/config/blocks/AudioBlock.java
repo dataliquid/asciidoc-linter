@@ -45,15 +45,15 @@ public final class AudioBlock extends AbstractBlock {
     }
 
     public UrlConfig getUrl() {
-        return _url;
+        return url;
     }
 
     public OptionsConfig getOptions() {
-        return _options;
+        return options;
     }
 
     public TitleConfig getTitle() {
-        return _title;
+        return title;
     }
 
     public static Builder builder() {
@@ -76,15 +76,15 @@ public final class AudioBlock extends AbstractBlock {
         }
 
         public boolean isRequired() {
-            return _required;
+            return required;
         }
 
         public Pattern getPattern() {
-            return _pattern;
+            return pattern;
         }
 
         public Severity getSeverity() {
-            return _severity;
+            return severity;
         }
 
         public static UrlConfigBuilder builder() {
@@ -158,15 +158,15 @@ public final class AudioBlock extends AbstractBlock {
         }
 
         public AutoplayConfig getAutoplay() {
-            return _autoplay;
+            return autoplay;
         }
 
         public ControlsConfig getControls() {
-            return _controls;
+            return controls;
         }
 
         public LoopConfig getLoop() {
-            return _loop;
+            return loop;
         }
 
         public static OptionsConfigBuilder builder() {
@@ -228,11 +228,11 @@ public final class AudioBlock extends AbstractBlock {
         }
 
         public boolean isAllowed() {
-            return _allowed;
+            return allowed;
         }
 
         public Severity getSeverity() {
-            return _severity;
+            return severity;
         }
 
         public static AutoplayConfigBuilder builder() {
@@ -287,11 +287,11 @@ public final class AudioBlock extends AbstractBlock {
         }
 
         public boolean isRequired() {
-            return _required;
+            return required;
         }
 
         public Severity getSeverity() {
-            return _severity;
+            return severity;
         }
 
         public static ControlsConfigBuilder builder() {
@@ -346,11 +346,11 @@ public final class AudioBlock extends AbstractBlock {
         }
 
         public boolean isAllowed() {
-            return _allowed;
+            return allowed;
         }
 
         public Severity getSeverity() {
-            return _severity;
+            return severity;
         }
 
         public static LoopConfigBuilder builder() {
@@ -411,19 +411,19 @@ public final class AudioBlock extends AbstractBlock {
         }
 
         public boolean isRequired() {
-            return _required;
+            return required;
         }
 
         public Integer getMinLength() {
-            return _minLength;
+            return minLength;
         }
 
         public Integer getMaxLength() {
-            return _maxLength;
+            return maxLength;
         }
 
         public Severity getSeverity() {
-            return _severity;
+            return severity;
         }
 
         public static TitleConfigBuilder builder() {
@@ -501,7 +501,7 @@ public final class AudioBlock extends AbstractBlock {
 
         @Override
         public AudioBlock build() {
-            Objects.requireNonNull(severity, "[" + getClass().getName() + "] severity is required");
+            Objects.requireNonNull(_severity, "[" + getClass().getName() + "] severity is required");
             return new AudioBlock(this);
         }
     }

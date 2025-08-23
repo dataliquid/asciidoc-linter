@@ -40,15 +40,15 @@ public final class VerseBlock extends AbstractBlock {
     }
 
     public AuthorConfig getAuthor() {
-        return _author;
+        return author;
     }
 
     public AttributionConfig getAttribution() {
-        return _attribution;
+        return attribution;
     }
 
     public ContentConfig getContent() {
-        return _content;
+        return content;
     }
 
     public static Builder builder() {
@@ -77,23 +77,23 @@ public final class VerseBlock extends AbstractBlock {
         }
 
         public String getDefaultValue() {
-            return _defaultValue;
+            return defaultValue;
         }
 
         public Integer getMinLength() {
-            return _minLength;
+            return minLength;
         }
 
         public Integer getMaxLength() {
-            return _maxLength;
+            return maxLength;
         }
 
         public Pattern getPattern() {
-            return _pattern;
+            return pattern;
         }
 
         public boolean isRequired() {
-            return _required;
+            return required;
         }
 
         public static AuthorConfigBuilder builder() {
@@ -186,23 +186,23 @@ public final class VerseBlock extends AbstractBlock {
         }
 
         public String getDefaultValue() {
-            return _defaultValue;
+            return defaultValue;
         }
 
         public Integer getMinLength() {
-            return _minLength;
+            return minLength;
         }
 
         public Integer getMaxLength() {
-            return _maxLength;
+            return maxLength;
         }
 
         public Pattern getPattern() {
-            return _pattern;
+            return pattern;
         }
 
         public boolean isRequired() {
-            return _required;
+            return required;
         }
 
         public static AttributionConfigBuilder builder() {
@@ -292,19 +292,19 @@ public final class VerseBlock extends AbstractBlock {
         }
 
         public Integer getMinLength() {
-            return _minLength;
+            return minLength;
         }
 
         public Integer getMaxLength() {
-            return _maxLength;
+            return maxLength;
         }
 
         public Pattern getPattern() {
-            return _pattern;
+            return pattern;
         }
 
         public boolean isRequired() {
-            return _required;
+            return required;
         }
 
         public static ContentConfigBuilder builder() {
@@ -391,7 +391,7 @@ public final class VerseBlock extends AbstractBlock {
 
         @Override
         public VerseBlock build() {
-            Objects.requireNonNull(severity, "[" + getClass().getName() + "] severity is required");
+            Objects.requireNonNull(_severity, "[" + getClass().getName() + "] severity is required");
             return new VerseBlock(this);
         }
     }

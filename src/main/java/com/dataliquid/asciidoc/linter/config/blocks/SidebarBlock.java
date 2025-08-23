@@ -60,15 +60,15 @@ public final class SidebarBlock extends AbstractBlock {
     }
 
     public TitleConfig getTitle() {
-        return _title;
+        return title;
     }
 
     public ContentConfig getContent() {
-        return _content;
+        return content;
     }
 
     public PositionConfig getPosition() {
-        return _position;
+        return position;
     }
 
     public static Builder builder() {
@@ -97,23 +97,23 @@ public final class SidebarBlock extends AbstractBlock {
         }
 
         public boolean isRequired() {
-            return _required;
+            return required;
         }
 
         public Integer getMinLength() {
-            return _minLength;
+            return minLength;
         }
 
         public Integer getMaxLength() {
-            return _maxLength;
+            return maxLength;
         }
 
         public Pattern getPattern() {
-            return _pattern;
+            return pattern;
         }
 
         public Severity getSeverity() {
-            return _severity;
+            return severity;
         }
 
         public static TitleConfigBuilder builder() {
@@ -203,19 +203,19 @@ public final class SidebarBlock extends AbstractBlock {
         }
 
         public boolean isRequired() {
-            return _required;
+            return required;
         }
 
         public Integer getMinLength() {
-            return _minLength;
+            return minLength;
         }
 
         public Integer getMaxLength() {
-            return _maxLength;
+            return maxLength;
         }
 
         public LinesConfig getLines() {
-            return _lines;
+            return lines;
         }
 
         public static ContentConfigBuilder builder() {
@@ -286,15 +286,15 @@ public final class SidebarBlock extends AbstractBlock {
         }
 
         public Integer getMin() {
-            return _min;
+            return min;
         }
 
         public Integer getMax() {
-            return _max;
+            return max;
         }
 
         public Severity getSeverity() {
-            return _severity;
+            return severity;
         }
 
         public static LinesConfigBuilder builder() {
@@ -358,15 +358,15 @@ public final class SidebarBlock extends AbstractBlock {
         }
 
         public boolean isRequired() {
-            return _required;
+            return required;
         }
 
         public List<String> getAllowed() {
-            return _allowed;
+            return allowed;
         }
 
         public Severity getSeverity() {
-            return _severity;
+            return severity;
         }
 
         public static PositionConfigBuilder builder() {
@@ -437,7 +437,7 @@ public final class SidebarBlock extends AbstractBlock {
 
         @Override
         public SidebarBlock build() {
-            Objects.requireNonNull(severity, "[" + getClass().getName() + "] severity is required");
+            Objects.requireNonNull(_severity, "[" + getClass().getName() + "] severity is required");
             return new SidebarBlock(this);
         }
     }

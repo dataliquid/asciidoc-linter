@@ -49,19 +49,19 @@ public final class ListingBlock extends AbstractBlock {
     }
 
     public LanguageConfig getLanguage() {
-        return _language;
+        return language;
     }
 
     public LineConfig getLines() {
-        return _lines;
+        return lines;
     }
 
     public TitleConfig getTitle() {
-        return _title;
+        return title;
     }
 
     public CalloutsConfig getCallouts() {
-        return _callouts;
+        return callouts;
     }
 
     public static Builder builder() {
@@ -85,15 +85,15 @@ public final class ListingBlock extends AbstractBlock {
         }
 
         public boolean isRequired() {
-            return _required;
+            return required;
         }
 
         public List<String> getAllowed() {
-            return _allowed;
+            return allowed;
         }
 
         public Severity getSeverity() {
-            return _severity;
+            return severity;
         }
 
         public static LanguageConfigBuilder builder() {
@@ -157,15 +157,15 @@ public final class ListingBlock extends AbstractBlock {
         }
 
         public boolean isRequired() {
-            return _required;
+            return required;
         }
 
         public Pattern getPattern() {
-            return _pattern;
+            return pattern;
         }
 
         public Severity getSeverity() {
-            return _severity;
+            return severity;
         }
 
         public static TitleConfigBuilder builder() {
@@ -238,15 +238,15 @@ public final class ListingBlock extends AbstractBlock {
         }
 
         public boolean isAllowed() {
-            return _allowed;
+            return allowed;
         }
 
         public Integer getMax() {
-            return _max;
+            return max;
         }
 
         public Severity getSeverity() {
-            return _severity;
+            return severity;
         }
 
         public static CalloutsConfigBuilder builder() {
@@ -323,7 +323,7 @@ public final class ListingBlock extends AbstractBlock {
 
         @Override
         public ListingBlock build() {
-            Objects.requireNonNull(severity, "[" + getClass().getName() + "] severity is required");
+            Objects.requireNonNull(_severity, "[" + getClass().getName() + "] severity is required");
             return new ListingBlock(this);
         }
     }

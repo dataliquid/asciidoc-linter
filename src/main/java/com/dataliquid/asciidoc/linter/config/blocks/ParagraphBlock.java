@@ -34,11 +34,11 @@ public final class ParagraphBlock extends AbstractBlock {
     }
 
     public LineConfig getLines() {
-        return _lines;
+        return lines;
     }
 
     public SentenceConfig getSentence() {
-        return _sentence;
+        return sentence;
     }
 
     public static Builder builder() {
@@ -62,7 +62,7 @@ public final class ParagraphBlock extends AbstractBlock {
 
         @Override
         public ParagraphBlock build() {
-            Objects.requireNonNull(severity, "[" + getClass().getName() + "] severity is required");
+            Objects.requireNonNull(_severity, "[" + getClass().getName() + "] severity is required");
             return new ParagraphBlock(this);
         }
     }
@@ -101,11 +101,11 @@ public final class ParagraphBlock extends AbstractBlock {
         }
 
         public OccurrenceConfig getOccurrence() {
-            return _occurrence;
+            return occurrence;
         }
 
         public WordsConfig getWords() {
-            return _words;
+            return words;
         }
 
         public static Builder builder() {
@@ -171,15 +171,15 @@ public final class ParagraphBlock extends AbstractBlock {
         }
 
         public Integer getMin() {
-            return _min;
+            return min;
         }
 
         public Integer getMax() {
-            return _max;
+            return max;
         }
 
         public Severity getSeverity() {
-            return _severity;
+            return severity;
         }
 
         public static Builder builder() {

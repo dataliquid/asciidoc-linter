@@ -87,7 +87,7 @@ public final class OrderConfig {
 
         @Override
         public int hashCode() {
-            return Objects.hash(_first, _second, __severity);
+            return Objects.hash(_first, _second, _severity);
         }
     }
 
@@ -151,6 +151,6 @@ public final class OrderConfig {
 
     @Override
     public int hashCode() {
-        return Objects.hash(_fixedOrder, _before, _after, __severity);
+        return Objects.hash(_fixedOrder, _before, _after, _severity);
     }
 }

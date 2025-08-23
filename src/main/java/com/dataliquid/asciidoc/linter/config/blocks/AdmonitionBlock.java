@@ -462,7 +462,7 @@ public final class AdmonitionBlock extends AbstractBlock {
 
         @Override
         public AdmonitionBlock build() {
-            Objects.requireNonNull(severity, "[" + getClass().getName() + "] severity is required");
+            Objects.requireNonNull(_severity, "[" + getClass().getName() + "] severity is required");
             return new AdmonitionBlock(this);
         }
     }

@@ -45,19 +45,19 @@ public final class ImageBlock extends AbstractBlock {
     }
 
     public UrlConfig getUrl() {
-        return _url;
+        return url;
     }
 
     public DimensionConfig getHeight() {
-        return _height;
+        return height;
     }
 
     public DimensionConfig getWidth() {
-        return _width;
+        return width;
     }
 
     public AltTextConfig getAlt() {
-        return _alt;
+        return alt;
     }
 
     public static Builder builder() {
@@ -77,11 +77,11 @@ public final class ImageBlock extends AbstractBlock {
         }
 
         public Pattern getPattern() {
-            return _pattern;
+            return pattern;
         }
 
         public boolean isRequired() {
-            return _required;
+            return required;
         }
 
         public static UrlConfigBuilder builder() {
@@ -147,15 +147,15 @@ public final class ImageBlock extends AbstractBlock {
         }
 
         public Integer getMinValue() {
-            return _minValue;
+            return minValue;
         }
 
         public Integer getMaxValue() {
-            return _maxValue;
+            return maxValue;
         }
 
         public boolean isRequired() {
-            return _required;
+            return required;
         }
 
         public static DimensionConfigBuilder builder() {
@@ -220,15 +220,15 @@ public final class ImageBlock extends AbstractBlock {
         }
 
         public boolean isRequired() {
-            return _required;
+            return required;
         }
 
         public Integer getMinLength() {
-            return _minLength;
+            return minLength;
         }
 
         public Integer getMaxLength() {
-            return _maxLength;
+            return maxLength;
         }
 
         public static AltTextConfigBuilder builder() {
@@ -306,7 +306,7 @@ public final class ImageBlock extends AbstractBlock {
 
         @Override
         public ImageBlock build() {
-            Objects.requireNonNull(severity, "[" + getClass().getName() + "] severity is required");
+            Objects.requireNonNull(_severity, "[" + getClass().getName() + "] severity is required");
             return new ImageBlock(this);
         }
     }
