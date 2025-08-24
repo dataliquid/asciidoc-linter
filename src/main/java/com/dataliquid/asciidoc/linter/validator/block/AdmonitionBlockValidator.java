@@ -2,6 +2,7 @@ package com.dataliquid.asciidoc.linter.validator.block;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import org.asciidoctor.ast.StructuralNode;
 
@@ -17,6 +18,7 @@ import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
 import com.dataliquid.asciidoc.linter.validator.SourceLocation;
 import com.dataliquid.asciidoc.linter.validator.SourcePosition;
 import com.dataliquid.asciidoc.linter.validator.Suggestion;
+import com.dataliquid.asciidoc.linter.util.StringUtils;
 
 /**
  * Validator for admonition blocks in AsciiDoc documents.
@@ -46,6 +48,12 @@ import com.dataliquid.asciidoc.linter.validator.Suggestion;
  * @see BlockTypeValidator
  */
 public final class AdmonitionBlockValidator extends AbstractBlockValidator<AdmonitionBlock> {
+    // Constants for quote parsing
+    private static final char QUOTE_CHAR = '"';
+
+    // Constants for duplicate literals
+    private static final String CHARACTERS_SUFFIX = " characters";
+
     @Override
     public BlockType getSupportedType() {
         return BlockType.ADMONITION;
@@ -96,13 +104,13 @@ public final class AdmonitionBlockValidator extends AbstractBlockValidator<Admon
         String style = block.getStyle();
         if (style != null) {
             // Convert to uppercase for consistency
-            return style.toUpperCase();
+            return style.toUpperCase(Locale.ROOT);
         }
 
         // Try role attribute as fallback
         Object role = block.getAttribute(ROLE);
         if (role != null) {
-            return role.toString().toUpperCase();
+            return role.toString().toUpperCase(Locale.ROOT);
         }
 
         return null;
@@ -127,7 +135,7 @@ public final class AdmonitionBlockValidator extends AbstractBlockValidator<Admon
         Severity severity = resolveSeverity(config.getSeverity(), blockConfig.getSeverity());
 
         // Check if type is required
-        if (config.isRequired() && (admonitionType == null || admonitionType.trim().isEmpty())) {
+        if (config.isRequired() && StringUtils.isBlank(admonitionType)) {
             messages
                     .add(ValidationMessage
                             .builder()
@@ -184,7 +192,7 @@ public final class AdmonitionBlockValidator extends AbstractBlockValidator<Admon
         // Get severity with fallback to block severity
         Severity severity = resolveSeverity(config.getSeverity(), blockConfig.getSeverity());
 
-        if (config.isRequired() && (title == null || title.trim().isEmpty())) {
+        if (config.isRequired() && StringUtils.isBlank(title)) {
             messages
                     .add(ValidationMessage
                             .builder()
@@ -250,8 +258,8 @@ public final class AdmonitionBlockValidator extends AbstractBlockValidator<Admon
                                         .fromPosition(pos)
                                         .build())
                                 .message("Admonition title is too short")
-                                .actualValue(title.length() + " characters")
-                                .expectedValue("At least " + config.getMinLength() + " characters")
+                                .actualValue(title.length() + CHARACTERS_SUFFIX)
+                                .expectedValue("At least " + config.getMinLength() + CHARACTERS_SUFFIX)
                                 .addSuggestion(Suggestion
                                         .builder()
                                         .description("Provide a more descriptive title")
@@ -275,8 +283,8 @@ public final class AdmonitionBlockValidator extends AbstractBlockValidator<Admon
                                         .fromPosition(pos)
                                         .build())
                                 .message("Admonition title is too long")
-                                .actualValue(title.length() + " characters")
-                                .expectedValue("At most " + config.getMaxLength() + " characters")
+                                .actualValue(title.length() + CHARACTERS_SUFFIX)
+                                .expectedValue("At most " + config.getMaxLength() + CHARACTERS_SUFFIX)
                                 .addSuggestion(Suggestion
                                         .builder()
                                         .description("Shorten the title while keeping it descriptive")
@@ -295,7 +303,7 @@ public final class AdmonitionBlockValidator extends AbstractBlockValidator<Admon
         Severity severity = resolveSeverity(config.getSeverity(), blockConfig.getSeverity());
 
         // Check if content is required
-        if (config.isRequired() && (content == null || content.trim().isEmpty())) {
+        if (config.isRequired() && StringUtils.isBlank(content)) {
             messages
                     .add(ValidationMessage
                             .builder()
@@ -334,8 +342,8 @@ public final class AdmonitionBlockValidator extends AbstractBlockValidator<Admon
                             .location(
                                     SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
                             .message("Admonition content is too short")
-                            .actualValue(contentLength + " characters")
-                            .expectedValue("At least " + config.getMinLength() + " characters")
+                            .actualValue(contentLength + CHARACTERS_SUFFIX)
+                            .expectedValue("At least " + config.getMinLength() + CHARACTERS_SUFFIX)
                             .addSuggestion(Suggestion
                                     .builder()
                                     .description("Provide more detailed information")
@@ -356,8 +364,8 @@ public final class AdmonitionBlockValidator extends AbstractBlockValidator<Admon
                             .location(
                                     SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
                             .message("Admonition content is too long")
-                            .actualValue(contentLength + " characters")
-                            .expectedValue("At most " + config.getMaxLength() + " characters")
+                            .actualValue(contentLength + CHARACTERS_SUFFIX)
+                            .expectedValue("At most " + config.getMaxLength() + CHARACTERS_SUFFIX)
                             .addSuggestion(Suggestion
                                     .builder()
                                     .description("Condense the content or split into multiple admonitions")
@@ -507,9 +515,9 @@ public final class AdmonitionBlockValidator extends AbstractBlockValidator<Admon
             int checkLine = blockLineNum + offset;
             if (checkLine > 0 && checkLine <= fileLines.size()) {
                 String line = fileLines.get(checkLine - 1);
-                if (line.trim().startsWith(".") && line.trim().substring(1).equals(title)) {
+                if (line.trim().startsWith(".") && title.equals(line.trim().substring(1))) {
                     // Found the title line
-                    int titleStart = line.indexOf(".");
+                    int titleStart = line.indexOf('.');
                     int titleEnd = titleStart + 1 + title.length();
                     return new SourcePosition(titleStart + 1, titleEnd, checkLine);
                 }
@@ -632,7 +640,7 @@ public final class AdmonitionBlockValidator extends AbstractBlockValidator<Admon
                             char ch = line.charAt(i);
                             if (isQuoted) {
                                 // For quoted values, stop at closing quote
-                                if (ch == '"') {
+                                if (ch == QUOTE_CHAR) {
                                     valueEnd = i;
                                     break;
                                 }

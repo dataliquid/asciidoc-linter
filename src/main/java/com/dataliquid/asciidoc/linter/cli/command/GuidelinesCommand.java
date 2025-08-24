@@ -1,9 +1,11 @@
 package com.dataliquid.asciidoc.linter.cli.command;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -16,11 +18,14 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.dataliquid.asciidoc.linter.cli.VersionInfo;
+import com.dataliquid.asciidoc.linter.util.StringUtils;
 import com.dataliquid.asciidoc.linter.config.LinterConfiguration;
 import com.dataliquid.asciidoc.linter.config.loader.ConfigurationLoader;
 import com.dataliquid.asciidoc.linter.documentation.AsciiDocAuthorGuidelineGenerator;
 import com.dataliquid.asciidoc.linter.documentation.RuleDocumentationGenerator;
 import com.dataliquid.asciidoc.linter.documentation.VisualizationStyle;
+import com.dataliquid.asciidoc.linter.output.ConsoleWriter;
+import com.dataliquid.asciidoc.linter.output.OutputWriter;
 
 /**
  * Command for generating author guidelines from linter configuration.
@@ -29,9 +34,15 @@ public class GuidelinesCommand implements Command {
 
     private static final Logger logger = LogManager.getLogger(GuidelinesCommand.class);
     private final ConfigurationLoader configLoader;
+    private final OutputWriter outputWriter;
 
     public GuidelinesCommand() {
+        this(ConsoleWriter.getInstance());
+    }
+
+    public GuidelinesCommand(OutputWriter outputWriter) {
         this.configLoader = new ConfigurationLoader();
+        this.outputWriter = outputWriter;
     }
 
     @Override
@@ -94,7 +105,7 @@ public class GuidelinesCommand implements Command {
 
         // Check required rule file
         if (!cmd.hasOption("rule")) {
-            System.err.println("Error: --rule is required for guidelines command");
+            outputWriter.writeError("Error: --rule is required for guidelines command");
             printHelp();
             return 2;
         }
@@ -116,7 +127,7 @@ public class GuidelinesCommand implements Command {
             if (outputPath != null) {
                 // Write to file
                 generateToFile(generator, config, outputPath);
-                System.out.println("Guidelines generated successfully: " + outputPath);
+                outputWriter.writeLine("Guidelines generated successfully: " + outputPath);
             } else {
                 // Write to stdout
                 generateToStdout(generator, config);
@@ -125,8 +136,10 @@ public class GuidelinesCommand implements Command {
             return 0;
 
         } catch (Exception e) {
-            logger.error("Error generating guidelines: {}", e.getMessage());
-            System.err.println("Error generating guidelines: " + e.getMessage());
+            if (logger.isErrorEnabled()) {
+                logger.error("Error generating guidelines: {}", e.getMessage());
+            }
+            outputWriter.writeError("Error generating guidelines: " + e.getMessage());
             return 2;
         }
     }
@@ -159,9 +172,9 @@ public class GuidelinesCommand implements Command {
     }
 
     private Set<VisualizationStyle> parseVisualizationStyles(String stylesArg) {
-        if (stylesArg == null || stylesArg.trim().isEmpty()) {
+        if (StringUtils.isBlank(stylesArg)) {
             // Default to tree visualization
-            return Set.of(VisualizationStyle.TREE);
+            return Set.of((VisualizationStyle) VisualizationStyle.TREE);
         }
 
         return Arrays
@@ -184,14 +197,16 @@ public class GuidelinesCommand implements Command {
             }
         }
 
-        try (PrintWriter writer = new PrintWriter(new FileWriter(outputFile))) {
+        try (PrintWriter writer = new PrintWriter(
+                new OutputStreamWriter(Files.newOutputStream(outputFile.toPath()), StandardCharsets.UTF_8))) {
             generator.generate(config, writer);
         }
     }
 
     private void generateToStdout(RuleDocumentationGenerator generator, LinterConfiguration config) {
-        PrintWriter writer = new PrintWriter(System.out);
-        generator.generate(config, writer);
-        writer.flush();
+        try (PrintWriter writer = new PrintWriter(System.out, true)) { // intentional console output for guidelines,
+                                                                       // auto-flush enabled
+            generator.generate(config, writer);
+        }
     }
 }

@@ -16,6 +16,7 @@ import com.dataliquid.asciidoc.linter.validator.PlaceholderContext;
 import static com.dataliquid.asciidoc.linter.validator.RuleIds.Sidebar.*;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
 import com.dataliquid.asciidoc.linter.validator.Suggestion;
+import com.dataliquid.asciidoc.linter.util.StringUtils;
 
 /**
  * Validator for sidebar blocks based on YAML schema configuration.
@@ -37,6 +38,8 @@ import com.dataliquid.asciidoc.linter.validator.Suggestion;
  * @see BlockTypeValidator
  */
 public final class SidebarBlockValidator extends AbstractBlockValidator<SidebarBlock> {
+    private static final String CHARACTERS_UNIT = " characters";
+    private static final String LINES_UNIT = " lines";
 
     @Override
     public BlockType getSupportedType() {
@@ -77,7 +80,7 @@ public final class SidebarBlockValidator extends AbstractBlockValidator<SidebarB
         SidebarBlock.TitleConfig titleConfig = config.getTitle();
 
         String title = block.getTitle();
-        boolean hasTitle = title != null && !title.trim().isEmpty();
+        boolean hasTitle = title != null && !StringUtils.isBlank(title);
 
         // Get severity with fallback to block severity
         Severity severity = resolveSeverity(titleConfig.getSeverity(), config.getSeverity());
@@ -125,8 +128,8 @@ public final class SidebarBlockValidator extends AbstractBlockValidator<SidebarB
                             .ruleId(TITLE_MIN_LENGTH)
                             .location(context.createLocation(block, 1, 1))
                             .message("Sidebar title too short")
-                            .actualValue(title.length() + " characters")
-                            .expectedValue("At least " + titleConfig.getMinLength() + " characters")
+                            .actualValue(title.length() + CHARACTERS_UNIT)
+                            .expectedValue("At least " + titleConfig.getMinLength() + CHARACTERS_UNIT)
                             .addSuggestion(Suggestion
                                     .builder()
                                     .description("Use a longer, more descriptive title")
@@ -147,8 +150,8 @@ public final class SidebarBlockValidator extends AbstractBlockValidator<SidebarB
                             .ruleId(TITLE_MAX_LENGTH)
                             .location(context.createLocation(block, 1, 1))
                             .message("Sidebar title too long")
-                            .actualValue(title.length() + " characters")
-                            .expectedValue("At most " + titleConfig.getMaxLength() + " characters")
+                            .actualValue(title.length() + CHARACTERS_UNIT)
+                            .expectedValue("At most " + titleConfig.getMaxLength() + CHARACTERS_UNIT)
                             .addSuggestion(Suggestion
                                     .builder()
                                     .description("Shorten the title")
@@ -235,8 +238,8 @@ public final class SidebarBlockValidator extends AbstractBlockValidator<SidebarB
                             .ruleId(CONTENT_MIN_LENGTH)
                             .location(context.createLocation(block, 1, 1))
                             .message("Sidebar content too short")
-                            .actualValue(content.length() + " characters")
-                            .expectedValue("At least " + contentConfig.getMinLength() + " characters")
+                            .actualValue(content.length() + CHARACTERS_UNIT)
+                            .expectedValue("At least " + contentConfig.getMinLength() + CHARACTERS_UNIT)
                             .addSuggestion(Suggestion
                                     .builder()
                                     .description("Add more detailed content")
@@ -257,8 +260,8 @@ public final class SidebarBlockValidator extends AbstractBlockValidator<SidebarB
                             .ruleId(CONTENT_MAX_LENGTH)
                             .location(context.createLocation(block, 1, 1))
                             .message("Sidebar content too long")
-                            .actualValue(content.length() + " characters")
-                            .expectedValue("At most " + contentConfig.getMaxLength() + " characters")
+                            .actualValue(content.length() + CHARACTERS_UNIT)
+                            .expectedValue("At most " + contentConfig.getMaxLength() + CHARACTERS_UNIT)
                             .addSuggestion(Suggestion
                                     .builder()
                                     .description("Shorten the content")
@@ -296,8 +299,8 @@ public final class SidebarBlockValidator extends AbstractBlockValidator<SidebarB
                             .ruleId(LINES_MIN)
                             .location(context.createLocation(block, 1, 1))
                             .message("Sidebar has too few lines")
-                            .actualValue(lineCount + " lines")
-                            .expectedValue("At least " + linesConfig.getMin() + " lines")
+                            .actualValue(lineCount + LINES_UNIT)
+                            .expectedValue("At least " + linesConfig.getMin() + LINES_UNIT)
                             .addSuggestion(Suggestion
                                     .builder()
                                     .description("Add more lines of content")
@@ -318,8 +321,8 @@ public final class SidebarBlockValidator extends AbstractBlockValidator<SidebarB
                             .ruleId(LINES_MAX)
                             .location(context.createLocation(block, 1, 1))
                             .message("Sidebar has too many lines")
-                            .actualValue(lineCount + " lines")
-                            .expectedValue("At most " + linesConfig.getMax() + " lines")
+                            .actualValue(lineCount + LINES_UNIT)
+                            .expectedValue("At most " + linesConfig.getMax() + LINES_UNIT)
                             .addSuggestion(Suggestion
                                     .builder()
                                     .description("Reduce the number of lines")

@@ -4,14 +4,20 @@ import java.io.PrintWriter;
 import java.util.List;
 import java.util.Objects;
 
+import com.dataliquid.asciidoc.linter.output.OutputWriter;
+
 /**
  * Utility class for drawing ASCII box borders and content. Provides methods to
  * create well-formatted text boxes for console output.
  */
 public class AsciiBoxDrawer {
 
+    // Constants
+    private static final int MIN_BOX_WIDTH = 4;
+
     private final int width;
     private final PrintWriter printWriter;
+    private final OutputWriter outputWriter;
 
     /**
      * Creates a new AsciiBoxDrawer with the specified width.
@@ -19,7 +25,7 @@ public class AsciiBoxDrawer {
      * @param width the total width of the box including borders
      */
     public AsciiBoxDrawer(int width) {
-        this(width, new PrintWriter(System.out, true));
+        this(width, new PrintWriter(System.out, true)); // intentional console output for CLI display
     }
 
     /**
@@ -29,18 +35,38 @@ public class AsciiBoxDrawer {
      * @param writer the print writer to write to
      */
     public AsciiBoxDrawer(int width, PrintWriter writer) {
-        if (width < 4) {
-            throw new IllegalArgumentException("Box width must be at least 4");
+        if (width < MIN_BOX_WIDTH) {
+            throw new IllegalArgumentException("Box width must be at least " + MIN_BOX_WIDTH);
         }
         this.width = width;
         this.printWriter = Objects.requireNonNull(writer, "PrintWriter must not be null");
+        this.outputWriter = null; // Use PrintWriter for output
+    }
+
+    /**
+     * Creates a new AsciiBoxDrawer with the specified width and output writer.
+     *
+     * @param width        the total width of the box including borders
+     * @param outputWriter the output writer to write to
+     */
+    public AsciiBoxDrawer(int width, OutputWriter outputWriter) {
+        if (width < MIN_BOX_WIDTH) {
+            throw new IllegalArgumentException("Box width must be at least " + MIN_BOX_WIDTH);
+        }
+        this.width = width;
+        this.printWriter = null; // Use OutputWriter for output
+        this.outputWriter = Objects.requireNonNull(outputWriter, "OutputWriter must not be null");
     }
 
     /**
      * Outputs a line to the appropriate output.
      */
     private void println(String line) {
-        printWriter.println(line);
+        if (outputWriter != null) {
+            outputWriter.writeLine(line);
+        } else {
+            printWriter.println(line);
+        }
     }
 
     /**
@@ -70,20 +96,21 @@ public class AsciiBoxDrawer {
      * @param title the title text to center
      */
     public void drawTitle(String title) {
-        if (title == null) {
-            title = "";
+        String titleText = title;
+        if (titleText == null) {
+            titleText = "";
         }
 
         int contentWidth = width - 2; // Subtract borders
-        if (title.length() > contentWidth) {
-            title = title.substring(0, contentWidth);
+        if (titleText.length() > contentWidth) {
+            titleText = titleText.substring(0, contentWidth);
         }
 
-        int totalPadding = contentWidth - title.length();
+        int totalPadding = contentWidth - titleText.length();
         int leftPadding = totalPadding / 2;
         int rightPadding = totalPadding - leftPadding;
 
-        println("|" + " ".repeat(leftPadding) + title + " ".repeat(rightPadding) + "|");
+        println("|" + " ".repeat(leftPadding) + titleText + " ".repeat(rightPadding) + "|");
     }
 
     /**
@@ -92,16 +119,17 @@ public class AsciiBoxDrawer {
      * @param content the content to draw
      */
     public void drawLine(String content) {
-        if (content == null) {
-            content = "";
+        String contentText = content;
+        if (contentText == null) {
+            contentText = "";
         }
 
         int contentWidth = width - 4; // Subtract borders and internal padding
-        if (content.length() > contentWidth) {
-            content = content.substring(0, contentWidth);
+        if (contentText.length() > contentWidth) {
+            contentText = contentText.substring(0, contentWidth);
         }
 
-        println("| " + content + " ".repeat(contentWidth - content.length()) + " |");
+        println("| " + contentText + " ".repeat(contentWidth - contentText.length()) + " |");
     }
 
     /**
@@ -112,19 +140,21 @@ public class AsciiBoxDrawer {
      * @param labelWidth the width allocated for the label
      */
     public void drawLabeledLine(String label, String value, int labelWidth) {
-        if (label == null)
-            label = "";
-        if (value == null)
-            value = "";
+        String labelText = label;
+        String valueText = value;
+        if (labelText == null)
+            labelText = "";
+        if (valueText == null)
+            valueText = "";
 
-        String paddedLabel = String.format("%-" + labelWidth + "s", label);
+        String paddedLabel = String.format("%-" + labelWidth + "s", labelText);
         int valueWidth = width - 4 - labelWidth; // Subtract borders, padding, and label
 
-        if (value.length() > valueWidth) {
-            value = value.substring(0, valueWidth);
+        if (valueText.length() > valueWidth) {
+            valueText = valueText.substring(0, valueWidth);
         }
 
-        println("| " + paddedLabel + value + " ".repeat(valueWidth - value.length()) + " |");
+        println("| " + paddedLabel + valueText + " ".repeat(valueWidth - valueText.length()) + " |");
     }
 
     /**

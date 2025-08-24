@@ -40,11 +40,11 @@ public final class TableBlock extends AbstractBlock {
 
     private TableBlock(Builder builder) {
         super(builder);
-        this.columns = builder.columns;
-        this.rows = builder.rows;
-        this.header = builder.header;
-        this.caption = builder.caption;
-        this.format = builder.format;
+        this.columns = builder._columns;
+        this.rows = builder._rows;
+        this.header = builder._header;
+        this.caption = builder._caption;
+        this.format = builder._format;
     }
 
     @Override
@@ -86,9 +86,9 @@ public final class TableBlock extends AbstractBlock {
         private final Severity severity;
 
         private DimensionConfig(DimensionConfigBuilder builder) {
-            this.min = builder.min;
-            this.max = builder.max;
-            this.severity = builder.severity;
+            this.min = builder._min;
+            this.max = builder._max;
+            this.severity = builder._severity;
         }
 
         public Integer getMin() {
@@ -109,22 +109,22 @@ public final class TableBlock extends AbstractBlock {
 
         @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class DimensionConfigBuilder {
-            private Integer min;
-            private Integer max;
-            private Severity severity;
+            private Integer _min;
+            private Integer _max;
+            private Severity _severity;
 
             public DimensionConfigBuilder min(Integer min) {
-                this.min = min;
+                this._min = min;
                 return this;
             }
 
             public DimensionConfigBuilder max(Integer max) {
-                this.max = max;
+                this._max = max;
                 return this;
             }
 
             public DimensionConfigBuilder severity(Severity severity) {
-                this.severity = severity;
+                this._severity = severity;
                 return this;
             }
 
@@ -158,9 +158,9 @@ public final class TableBlock extends AbstractBlock {
         private final Severity severity;
 
         private HeaderConfig(HeaderConfigBuilder builder) {
-            this.required = builder.required;
-            this.pattern = builder.pattern;
-            this.severity = builder.severity;
+            this.required = builder._required;
+            this.pattern = builder._pattern;
+            this.severity = builder._severity;
         }
 
         public boolean isRequired() {
@@ -181,27 +181,28 @@ public final class TableBlock extends AbstractBlock {
 
         @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class HeaderConfigBuilder {
-            private boolean required;
-            private Pattern pattern;
-            private Severity severity;
+            private boolean _required;
+            private Pattern _pattern;
+            private Severity _severity;
 
             public HeaderConfigBuilder required(boolean required) {
-                this.required = required;
+                this._required = required;
                 return this;
             }
 
             public HeaderConfigBuilder pattern(Pattern pattern) {
-                this.pattern = pattern;
+                this._pattern = pattern;
                 return this;
             }
 
+            @SuppressWarnings("PMD.NullAssignment")
             public HeaderConfigBuilder pattern(String pattern) {
-                this.pattern = pattern != null ? Pattern.compile(pattern) : null;
+                this._pattern = pattern != null ? Pattern.compile(pattern) : null;
                 return this;
             }
 
             public HeaderConfigBuilder severity(Severity severity) {
-                this.severity = severity;
+                this._severity = severity;
                 return this;
             }
 
@@ -242,11 +243,11 @@ public final class TableBlock extends AbstractBlock {
         private final Severity severity;
 
         private CaptionConfig(CaptionConfigBuilder builder) {
-            this.required = builder.required;
-            this.pattern = builder.pattern;
-            this.minLength = builder.minLength;
-            this.maxLength = builder.maxLength;
-            this.severity = builder.severity;
+            this.required = builder._required;
+            this.pattern = builder._pattern;
+            this.minLength = builder._minLength;
+            this.maxLength = builder._maxLength;
+            this.severity = builder._severity;
         }
 
         public boolean isRequired() {
@@ -275,39 +276,40 @@ public final class TableBlock extends AbstractBlock {
 
         @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class CaptionConfigBuilder {
-            private boolean required;
-            private Pattern pattern;
-            private Integer minLength;
-            private Integer maxLength;
-            private Severity severity;
+            private boolean _required;
+            private Pattern _pattern;
+            private Integer _minLength;
+            private Integer _maxLength;
+            private Severity _severity;
 
             public CaptionConfigBuilder required(boolean required) {
-                this.required = required;
+                this._required = required;
                 return this;
             }
 
             public CaptionConfigBuilder pattern(Pattern pattern) {
-                this.pattern = pattern;
+                this._pattern = pattern;
                 return this;
             }
 
+            @SuppressWarnings("PMD.NullAssignment")
             public CaptionConfigBuilder pattern(String pattern) {
-                this.pattern = pattern != null ? Pattern.compile(pattern) : null;
+                this._pattern = pattern != null ? Pattern.compile(pattern) : null;
                 return this;
             }
 
             public CaptionConfigBuilder minLength(Integer minLength) {
-                this.minLength = minLength;
+                this._minLength = minLength;
                 return this;
             }
 
             public CaptionConfigBuilder maxLength(Integer maxLength) {
-                this.maxLength = maxLength;
+                this._maxLength = maxLength;
                 return this;
             }
 
             public CaptionConfigBuilder severity(Severity severity) {
-                this.severity = severity;
+                this._severity = severity;
                 return this;
             }
 
@@ -346,9 +348,9 @@ public final class TableBlock extends AbstractBlock {
         private final Severity severity;
 
         private FormatConfig(FormatConfigBuilder builder) {
-            this.style = builder.style;
-            this.borders = builder.borders;
-            this.severity = builder.severity;
+            this.style = builder._style;
+            this.borders = builder._borders;
+            this.severity = builder._severity;
         }
 
         public String getStyle() {
@@ -369,22 +371,22 @@ public final class TableBlock extends AbstractBlock {
 
         @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class FormatConfigBuilder {
-            private String style;
-            private Boolean borders;
-            private Severity severity;
+            private String _style;
+            private Boolean _borders;
+            private Severity _severity;
 
             public FormatConfigBuilder style(String style) {
-                this.style = style;
+                this._style = style;
                 return this;
             }
 
             public FormatConfigBuilder borders(Boolean borders) {
-                this.borders = borders;
+                this._borders = borders;
                 return this;
             }
 
             public FormatConfigBuilder severity(Severity severity) {
-                this.severity = severity;
+                this._severity = severity;
                 return this;
             }
 
@@ -411,40 +413,40 @@ public final class TableBlock extends AbstractBlock {
 
     @JsonPOJOBuilder(withPrefix = EMPTY)
     public static class Builder extends AbstractBuilder<Builder> {
-        private DimensionConfig columns;
-        private DimensionConfig rows;
-        private HeaderConfig header;
-        private CaptionConfig caption;
-        private FormatConfig format;
+        private DimensionConfig _columns;
+        private DimensionConfig _rows;
+        private HeaderConfig _header;
+        private CaptionConfig _caption;
+        private FormatConfig _format;
 
         public Builder columns(DimensionConfig columns) {
-            this.columns = columns;
+            this._columns = columns;
             return this;
         }
 
         public Builder rows(DimensionConfig rows) {
-            this.rows = rows;
+            this._rows = rows;
             return this;
         }
 
         public Builder header(HeaderConfig header) {
-            this.header = header;
+            this._header = header;
             return this;
         }
 
         public Builder caption(CaptionConfig caption) {
-            this.caption = caption;
+            this._caption = caption;
             return this;
         }
 
         public Builder format(FormatConfig format) {
-            this.format = format;
+            this._format = format;
             return this;
         }
 
         @Override
         public TableBlock build() {
-            Objects.requireNonNull(severity, "[" + getClass().getName() + "] severity is required");
+            Objects.requireNonNull(_severity, "[" + getClass().getName() + "] severity is required");
             return new TableBlock(this);
         }
     }

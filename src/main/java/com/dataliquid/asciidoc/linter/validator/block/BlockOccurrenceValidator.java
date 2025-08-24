@@ -4,6 +4,7 @@ import static com.dataliquid.asciidoc.linter.validator.RuleIds.Block.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 import com.dataliquid.asciidoc.linter.config.blocks.Block;
@@ -50,7 +51,7 @@ public final class BlockOccurrenceValidator {
 
         com.dataliquid.asciidoc.linter.config.rule.OccurrenceConfig occurrences = block.getOccurrence();
         int actualCount = context.getOccurrenceCount(block);
-        String blockType = block.getType().toString().toLowerCase();
+        String blockType = block.getType().toString().toLowerCase(Locale.ROOT);
 
         // Validate occurrence count
 
@@ -104,7 +105,7 @@ public final class BlockOccurrenceValidator {
      */
     private String generateBlockPlaceholder(String blockName) {
         // Basic placeholders for common block types
-        switch (blockName.toLowerCase()) {
+        switch (blockName.toLowerCase(Locale.ROOT)) {
         case "paragraph":
             return "Paragraph content";
         case "listing":

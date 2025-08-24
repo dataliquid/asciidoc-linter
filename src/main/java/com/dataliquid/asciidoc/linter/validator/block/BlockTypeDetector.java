@@ -10,6 +10,10 @@ import static com.dataliquid.asciidoc.linter.validator.block.BlockAttributes.*;
  * Detects the type of AsciidoctorJ blocks and maps them to our BlockType enum.
  */
 public final class BlockTypeDetector {
+    // Constants for block styles and contexts
+    private static final String VERSE_STYLE = "verse";
+    private static final String VERSE_CONTEXT = "verse";
+    private static final String QUOTE_CONTEXT = "quote";
 
     /**
      * Detects the block type from an AsciidoctorJ StructuralNode.
@@ -47,7 +51,7 @@ public final class BlockTypeDetector {
             case "image":
                 return BlockType.IMAGE;
 
-            case "verse":
+            case VERSE_CONTEXT:
             case "quote":
                 return detectVerseOrQuote(node);
 
@@ -97,17 +101,17 @@ public final class BlockTypeDetector {
      */
     private BlockType detectVerseOrQuote(StructuralNode node) {
         // Check if it has verse style explicitly
-        if ("verse".equals(node.getStyle())) {
+        if (VERSE_STYLE.equals(node.getStyle())) {
             return BlockType.VERSE;
         }
 
         // If context is "verse", it's definitely a verse block
-        if ("verse".equals(node.getContext())) {
+        if (VERSE_CONTEXT.equals(node.getContext())) {
             return BlockType.VERSE;
         }
 
         // If context is "quote", it's a quote block
-        if ("quote".equals(node.getContext())) {
+        if (QUOTE_CONTEXT.equals(node.getContext())) {
             return BlockType.QUOTE;
         }
 
@@ -132,8 +136,11 @@ public final class BlockTypeDetector {
             case "source":
             case "listing":
                 return BlockType.LISTING;
-            case "verse":
+            case VERSE_CONTEXT:
                 return BlockType.VERSE;
+            default:
+                // No specific block type detected from style, continue with other checks
+                break;
             }
         }
 

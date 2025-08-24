@@ -55,17 +55,19 @@ public class TextWrapper {
             String part = parts[i].trim();
             String separator = i < parts.length - 1 ? ", " : "";
 
-            if (currentLine.length() == 0) {
+            if (currentLine.isEmpty()) {
                 currentLine.append(part).append(separator);
             } else if (currentLine.length() + part.length() + separator.length() <= maxWidth) {
                 currentLine.append(part).append(separator);
             } else {
                 lines.add(currentLine.toString());
-                currentLine = new StringBuilder(part).append(separator);
+                @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops") // Necessary to create new line
+                StringBuilder newLine = new StringBuilder(part).append(separator);
+                currentLine = newLine;
             }
         }
 
-        if (currentLine.length() > 0) {
+        if (!currentLine.isEmpty()) {
             lines.add(currentLine.toString());
         }
 
@@ -121,17 +123,19 @@ public class TextWrapper {
         StringBuilder currentLine = new StringBuilder();
 
         for (String word : words) {
-            if (currentLine.length() == 0) {
+            if (currentLine.isEmpty()) {
                 currentLine.append(word);
             } else if (currentLine.length() + 1 + word.length() <= maxWidth) {
-                currentLine.append(" ").append(word);
+                currentLine.append(' ').append(word);
             } else {
                 lines.add(currentLine.toString());
-                currentLine = new StringBuilder(word);
+                @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops") // Necessary to create new line
+                StringBuilder newLine = new StringBuilder(word);
+                currentLine = newLine;
             }
         }
 
-        if (currentLine.length() > 0) {
+        if (!currentLine.isEmpty()) {
             lines.add(currentLine.toString());
         }
 

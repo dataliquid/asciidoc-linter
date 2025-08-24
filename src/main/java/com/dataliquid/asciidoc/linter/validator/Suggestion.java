@@ -24,11 +24,11 @@ public final class Suggestion {
     }
 
     public String getDescription() {
-        return description;
+        return this.description;
     }
 
     public String getFixedValue() {
-        return fixedValue;
+        return this.fixedValue;
     }
 
     public boolean hasFixedValue() {
@@ -36,11 +36,11 @@ public final class Suggestion {
     }
 
     public String getExplanation() {
-        return explanation;
+        return this.explanation;
     }
 
     public boolean isPreferred() {
-        return preferred;
+        return this.preferred;
     }
 
     public List<String> getExamples() {
@@ -72,6 +72,7 @@ public final class Suggestion {
         return new Builder();
     }
 
+    @SuppressWarnings("PMD.AvoidFieldNameMatchingMethodName")
     public static final class Builder {
         private String description;
         private String fixedValue;

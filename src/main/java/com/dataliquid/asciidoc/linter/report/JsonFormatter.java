@@ -5,6 +5,7 @@ import java.io.PrintWriter;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +23,9 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 public class JsonFormatter implements ReportFormatter {
 
     private static final DateTimeFormatter ISO_FORMATTER = DateTimeFormatter.ISO_INSTANT.withZone(ZoneOffset.UTC);
+
+    // Constants
+    private static final int MILLIS_PER_SECOND = 1000;
 
     private final String name;
     private final ObjectMapper objectMapper;
@@ -63,7 +67,7 @@ public class JsonFormatter implements ReportFormatter {
 
     @Override
     public void format(ValidationResult result, PrintWriter writer) {
-        Map<String, Object> root = new LinkedHashMap<>();
+        Map<String, Object> root = Collections.synchronizedMap(new LinkedHashMap<>());
 
         // Timestamp
         root.put("timestamp", ISO_FORMATTER.format(Instant.now()));
@@ -72,7 +76,7 @@ public class JsonFormatter implements ReportFormatter {
         root.put("duration", formatDuration(result.getValidationTimeMillis()));
 
         // Summary
-        Map<String, Object> summary = new LinkedHashMap<>();
+        Map<String, Object> summary = Collections.synchronizedMap(new LinkedHashMap<>());
         summary.put("totalMessages", result.getMessages().size());
         summary.put("errors", result.getErrorCount());
         summary.put("warnings", result.getWarningCount());
@@ -96,33 +100,34 @@ public class JsonFormatter implements ReportFormatter {
         }
     }
 
-    private Map<String, Object> formatMessage(ValidationMessage msg) {
-        Map<String, Object> msgMap = new LinkedHashMap<>();
+    @SuppressWarnings("PMD.UnusedPrivateMethod")
+    private Map<String, Object> formatMessage(ValidationMessage message) {
+        Map<String, Object> messageMap = Collections.synchronizedMap(new LinkedHashMap<>());
 
-        msgMap.put("file", msg.getLocation().getFilename());
-        msgMap.put("line", msg.getLocation().getStartLine());
-
-        if (msg.getLocation().getStartColumn() > 1) {
-            msgMap.put("column", msg.getLocation().getStartColumn());
+        // Add location fields first if available
+        if (message.getLocation() != null) {
+            messageMap.put("file", message.getLocation().getFilename());
+            messageMap.put("line", message.getLocation().getStartLine());
+            // Only add column if it's meaningfully set (different from endColumn or > 1)
+            if (message.getLocation().getStartColumn() > 1
+                    || message.getLocation().getStartColumn() != message.getLocation().getEndColumn()) {
+                messageMap.put("column", message.getLocation().getStartColumn());
+            }
         }
 
-        msgMap.put("severity", msg.getSeverity().toString());
-        msgMap.put("message", msg.getMessage());
+        messageMap.put("severity", message.getSeverity().toString());
+        messageMap.put("message", message.getMessage());
+        messageMap.put("ruleId", message.getRuleId());
 
-        // Optional fields
-        if (msg.getRuleId() != null) {
-            msgMap.put("ruleId", msg.getRuleId());
-        }
+        // Add optional fields if present
+        message.getActualValue().ifPresent(value -> messageMap.put("actualValue", value));
+        message.getExpectedValue().ifPresent(value -> messageMap.put("expectedValue", value));
 
-        msg.getActualValue().ifPresent(value -> msgMap.put("actualValue", value));
-
-        msg.getExpectedValue().ifPresent(value -> msgMap.put("expectedValue", value));
-
-        return msgMap;
+        return messageMap;
     }
 
     private String formatDuration(long millis) {
-        if (millis < 1000) {
+        if (millis < MILLIS_PER_SECOND) {
             return millis + "ms";
         } else {
             return String.format("%.3fs", millis / 1000.0);

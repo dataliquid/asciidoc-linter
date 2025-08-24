@@ -34,9 +34,9 @@ public final class AudioBlock extends AbstractBlock {
 
     private AudioBlock(Builder builder) {
         super(builder);
-        this.url = builder.url;
-        this.options = builder.options;
-        this.title = builder.title;
+        this.url = builder._url;
+        this.options = builder._options;
+        this.title = builder._title;
     }
 
     @Override
@@ -70,9 +70,9 @@ public final class AudioBlock extends AbstractBlock {
         private final Severity severity;
 
         private UrlConfig(UrlConfigBuilder builder) {
-            this.required = builder.required;
-            this.pattern = builder.pattern;
-            this.severity = builder.severity;
+            this.required = builder._required;
+            this.pattern = builder._pattern;
+            this.severity = builder._severity;
         }
 
         public boolean isRequired() {
@@ -93,27 +93,28 @@ public final class AudioBlock extends AbstractBlock {
 
         @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class UrlConfigBuilder {
-            private boolean required;
-            private Pattern pattern;
-            private Severity severity;
+            private boolean _required;
+            private Pattern _pattern;
+            private Severity _severity;
 
             public UrlConfigBuilder required(boolean required) {
-                this.required = required;
+                this._required = required;
                 return this;
             }
 
             public UrlConfigBuilder pattern(Pattern pattern) {
-                this.pattern = pattern;
+                this._pattern = pattern;
                 return this;
             }
 
+            @SuppressWarnings("PMD.NullAssignment")
             public UrlConfigBuilder pattern(String pattern) {
-                this.pattern = pattern != null ? Pattern.compile(pattern) : null;
+                this._pattern = pattern != null ? Pattern.compile(pattern) : null;
                 return this;
             }
 
             public UrlConfigBuilder severity(Severity severity) {
-                this.severity = severity;
+                this._severity = severity;
                 return this;
             }
 
@@ -151,9 +152,9 @@ public final class AudioBlock extends AbstractBlock {
         private final LoopConfig loop;
 
         private OptionsConfig(OptionsConfigBuilder builder) {
-            this.autoplay = builder.autoplay;
-            this.controls = builder.controls;
-            this.loop = builder.loop;
+            this.autoplay = builder._autoplay;
+            this.controls = builder._controls;
+            this.loop = builder._loop;
         }
 
         public AutoplayConfig getAutoplay() {
@@ -174,22 +175,22 @@ public final class AudioBlock extends AbstractBlock {
 
         @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class OptionsConfigBuilder {
-            private AutoplayConfig autoplay;
-            private ControlsConfig controls;
-            private LoopConfig loop;
+            private AutoplayConfig _autoplay;
+            private ControlsConfig _controls;
+            private LoopConfig _loop;
 
             public OptionsConfigBuilder autoplay(AutoplayConfig autoplay) {
-                this.autoplay = autoplay;
+                this._autoplay = autoplay;
                 return this;
             }
 
             public OptionsConfigBuilder controls(ControlsConfig controls) {
-                this.controls = controls;
+                this._controls = controls;
                 return this;
             }
 
             public OptionsConfigBuilder loop(LoopConfig loop) {
-                this.loop = loop;
+                this._loop = loop;
                 return this;
             }
 
@@ -222,8 +223,8 @@ public final class AudioBlock extends AbstractBlock {
         private final Severity severity;
 
         private AutoplayConfig(AutoplayConfigBuilder builder) {
-            this.allowed = builder.allowed;
-            this.severity = builder.severity;
+            this.allowed = builder._allowed;
+            this.severity = builder._severity;
         }
 
         public boolean isAllowed() {
@@ -240,16 +241,16 @@ public final class AudioBlock extends AbstractBlock {
 
         @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class AutoplayConfigBuilder {
-            private boolean allowed;
-            private Severity severity;
+            private boolean _allowed;
+            private Severity _severity;
 
             public AutoplayConfigBuilder allowed(boolean allowed) {
-                this.allowed = allowed;
+                this._allowed = allowed;
                 return this;
             }
 
             public AutoplayConfigBuilder severity(Severity severity) {
-                this.severity = severity;
+                this._severity = severity;
                 return this;
             }
 
@@ -281,8 +282,8 @@ public final class AudioBlock extends AbstractBlock {
         private final Severity severity;
 
         private ControlsConfig(ControlsConfigBuilder builder) {
-            this.required = builder.required;
-            this.severity = builder.severity;
+            this.required = builder._required;
+            this.severity = builder._severity;
         }
 
         public boolean isRequired() {
@@ -299,16 +300,16 @@ public final class AudioBlock extends AbstractBlock {
 
         @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class ControlsConfigBuilder {
-            private boolean required;
-            private Severity severity;
+            private boolean _required;
+            private Severity _severity;
 
             public ControlsConfigBuilder required(boolean required) {
-                this.required = required;
+                this._required = required;
                 return this;
             }
 
             public ControlsConfigBuilder severity(Severity severity) {
-                this.severity = severity;
+                this._severity = severity;
                 return this;
             }
 
@@ -340,8 +341,8 @@ public final class AudioBlock extends AbstractBlock {
         private final Severity severity;
 
         private LoopConfig(LoopConfigBuilder builder) {
-            this.allowed = builder.allowed;
-            this.severity = builder.severity;
+            this.allowed = builder._allowed;
+            this.severity = builder._severity;
         }
 
         public boolean isAllowed() {
@@ -358,16 +359,16 @@ public final class AudioBlock extends AbstractBlock {
 
         @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class LoopConfigBuilder {
-            private boolean allowed;
-            private Severity severity;
+            private boolean _allowed;
+            private Severity _severity;
 
             public LoopConfigBuilder allowed(boolean allowed) {
-                this.allowed = allowed;
+                this._allowed = allowed;
                 return this;
             }
 
             public LoopConfigBuilder severity(Severity severity) {
-                this.severity = severity;
+                this._severity = severity;
                 return this;
             }
 
@@ -403,10 +404,10 @@ public final class AudioBlock extends AbstractBlock {
         private final Severity severity;
 
         private TitleConfig(TitleConfigBuilder builder) {
-            this.required = builder.required;
-            this.minLength = builder.minLength;
-            this.maxLength = builder.maxLength;
-            this.severity = builder.severity;
+            this.required = builder._required;
+            this.minLength = builder._minLength;
+            this.maxLength = builder._maxLength;
+            this.severity = builder._severity;
         }
 
         public boolean isRequired() {
@@ -431,28 +432,28 @@ public final class AudioBlock extends AbstractBlock {
 
         @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class TitleConfigBuilder {
-            private boolean required;
-            private Integer minLength;
-            private Integer maxLength;
-            private Severity severity;
+            private boolean _required;
+            private Integer _minLength;
+            private Integer _maxLength;
+            private Severity _severity;
 
             public TitleConfigBuilder required(boolean required) {
-                this.required = required;
+                this._required = required;
                 return this;
             }
 
             public TitleConfigBuilder minLength(Integer minLength) {
-                this.minLength = minLength;
+                this._minLength = minLength;
                 return this;
             }
 
             public TitleConfigBuilder maxLength(Integer maxLength) {
-                this.maxLength = maxLength;
+                this._maxLength = maxLength;
                 return this;
             }
 
             public TitleConfigBuilder severity(Severity severity) {
-                this.severity = severity;
+                this._severity = severity;
                 return this;
             }
 
@@ -479,28 +480,28 @@ public final class AudioBlock extends AbstractBlock {
 
     @JsonPOJOBuilder(withPrefix = EMPTY)
     public static class Builder extends AbstractBuilder<Builder> {
-        private UrlConfig url;
-        private OptionsConfig options;
-        private TitleConfig title;
+        private UrlConfig _url;
+        private OptionsConfig _options;
+        private TitleConfig _title;
 
         public Builder url(UrlConfig url) {
-            this.url = url;
+            this._url = url;
             return this;
         }
 
         public Builder options(OptionsConfig options) {
-            this.options = options;
+            this._options = options;
             return this;
         }
 
         public Builder title(TitleConfig title) {
-            this.title = title;
+            this._title = title;
             return this;
         }
 
         @Override
         public AudioBlock build() {
-            Objects.requireNonNull(severity, "[" + getClass().getName() + "] severity is required");
+            Objects.requireNonNull(_severity, "[" + getClass().getName() + "] severity is required");
             return new AudioBlock(this);
         }
     }

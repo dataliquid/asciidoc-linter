@@ -28,6 +28,7 @@ public class OutputConfigurationLoader {
     /**
      * Creates a loader with optional schema validation.
      */
+    @SuppressWarnings("PMD.NullAssignment")
     public OutputConfigurationLoader(boolean skipValidation) {
         this.mapper = new ObjectMapper(new YAMLFactory());
         this.validator = skipValidation ? null : new OutputSchemaValidator(SCHEMA_PATH);

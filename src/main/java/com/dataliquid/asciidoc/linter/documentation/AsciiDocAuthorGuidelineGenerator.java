@@ -1,6 +1,7 @@
 package com.dataliquid.asciidoc.linter.documentation;
 
 import java.io.PrintWriter;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -39,6 +40,18 @@ import com.dataliquid.asciidoc.linter.config.rule.SectionConfig;
  */
 public class AsciiDocAuthorGuidelineGenerator implements RuleDocumentationGenerator {
 
+    // Constants for duplicate literals
+    private static final String TABLE_SEPARATOR = "|===";
+    private static final String CHARACTERS_SUFFIX = " characters";
+    private static final String REQUIRED_YES = "  - Required: Yes";
+    private static final String PMD_UNUSED_PARAM = "PMD.UnusedFormalParameter";
+    private static final String PATTERN_PREFIX = "  - Pattern: ";
+    private static final String MINIMUM_PREFIX = "  - Minimum: ";
+    private static final String MAXIMUM_PREFIX = "  - Maximum: ";
+    private static final String MINIMUM_LENGTH_PREFIX = "  - Minimum length: ";
+    private static final String MAXIMUM_LENGTH_PREFIX = "  - Maximum length: ";
+    private static final String TITLE_HEADER = "* **Title:**";
+
     private final Set<VisualizationStyle> visualizationStyles;
     private final PatternHumanizer patternHumanizer;
     private final HierarchyVisualizerFactory visualizerFactory;
@@ -48,7 +61,7 @@ public class AsciiDocAuthorGuidelineGenerator implements RuleDocumentationGenera
      * styles.
      */
     public AsciiDocAuthorGuidelineGenerator() {
-        this(Set.of(VisualizationStyle.TREE));
+        this(Set.of((VisualizationStyle) VisualizationStyle.TREE));
     }
 
     /**
@@ -58,7 +71,7 @@ public class AsciiDocAuthorGuidelineGenerator implements RuleDocumentationGenera
      * @param visualizationStyles the visualization styles to use
      */
     public AsciiDocAuthorGuidelineGenerator(Set<VisualizationStyle> visualizationStyles) {
-        this.visualizationStyles = new HashSet<>(visualizationStyles);
+        this.visualizationStyles = EnumSet.copyOf(visualizationStyles);
         this.patternHumanizer = new PatternHumanizer();
         this.visualizerFactory = new HierarchyVisualizerFactory();
     }
@@ -133,7 +146,7 @@ public class AsciiDocAuthorGuidelineGenerator implements RuleDocumentationGenera
 
     private void generateAttributeTable(List<AttributeConfig> attributes, PrintWriter writer) {
         writer.println("[cols=\"1,2,1,3\", options=\"header\"]");
-        writer.println("|===");
+        writer.println(TABLE_SEPARATOR);
         writer.println("|Attribute |Description |Severity |Requirements");
         writer.println();
 
@@ -146,7 +159,7 @@ public class AsciiDocAuthorGuidelineGenerator implements RuleDocumentationGenera
             writer.println();
         }
 
-        writer.println("|===");
+        writer.println(TABLE_SEPARATOR);
         writer.println();
     }
 
@@ -158,11 +171,11 @@ public class AsciiDocAuthorGuidelineGenerator implements RuleDocumentationGenera
         }
 
         if (attr.minLength() != null) {
-            writer.println("* Minimum length: " + attr.minLength() + " characters");
+            writer.println("* Minimum length: " + attr.minLength() + CHARACTERS_SUFFIX);
         }
 
         if (attr.maxLength() != null) {
-            writer.println("* Maximum length: " + attr.maxLength() + " characters");
+            writer.println("* Maximum length: " + attr.maxLength() + CHARACTERS_SUFFIX);
         }
 
         if (attr.pattern() != null) {
@@ -207,7 +220,7 @@ public class AsciiDocAuthorGuidelineGenerator implements RuleDocumentationGenera
         if (section.allowedBlocks() != null && !section.allowedBlocks().isEmpty()) {
             writer.println(".Allowed Content");
             writer.println("[cols=\"1,3\", options=\"header\"]");
-            writer.println("|===");
+            writer.println(TABLE_SEPARATOR);
             writer.println("|Block Type |Requirements");
             writer.println();
 
@@ -218,7 +231,7 @@ public class AsciiDocAuthorGuidelineGenerator implements RuleDocumentationGenera
                 writer.println();
             }
 
-            writer.println("|===");
+            writer.println(TABLE_SEPARATOR);
             writer.println();
         }
 
@@ -259,6 +272,7 @@ public class AsciiDocAuthorGuidelineGenerator implements RuleDocumentationGenera
         writer.println();
     }
 
+    @SuppressWarnings(PMD_UNUSED_PARAM)
     private void generateBlockReferenceSection(DocumentConfiguration document, PrintWriter writer) {
         writer.println("== Block Reference");
         writer.println();
@@ -274,7 +288,7 @@ public class AsciiDocAuthorGuidelineGenerator implements RuleDocumentationGenera
         writer.println();
 
         writer.println("[cols=\"1,1,3\", options=\"header\"]");
-        writer.println("|===");
+        writer.println(TABLE_SEPARATOR);
         writer.println("|Level |Symbol |Meaning");
         writer.println();
         writer.println("|ERROR");
@@ -288,7 +302,7 @@ public class AsciiDocAuthorGuidelineGenerator implements RuleDocumentationGenera
         writer.println("|INFO");
         writer.println("|icon:info-circle[role=\"blue\"]");
         writer.println("|Suggestion for improvement, optional");
-        writer.println("|===");
+        writer.println(TABLE_SEPARATOR);
         writer.println();
     }
 
@@ -385,49 +399,49 @@ public class AsciiDocAuthorGuidelineGenerator implements RuleDocumentationGenera
         if (block.getUrl() != null) {
             writer.println("* **URL Requirements:**");
             if (block.getUrl().isRequired()) {
-                writer.println("  - Required: Yes");
+                writer.println(REQUIRED_YES);
             }
             if (block.getUrl().getPattern() != null) {
-                writer.println("  - Pattern: " + patternHumanizer.humanize(block.getUrl().getPattern().pattern()));
+                writer.println(PATTERN_PREFIX + patternHumanizer.humanize(block.getUrl().getPattern().pattern()));
             }
         }
 
         if (block.getWidth() != null) {
             writer.println("* **Width:**");
             if (block.getWidth().isRequired()) {
-                writer.println("  - Required: Yes");
+                writer.println(REQUIRED_YES);
             }
             if (block.getWidth().getMinValue() != null) {
-                writer.println("  - Minimum: " + block.getWidth().getMinValue() + "px");
+                writer.println(MINIMUM_PREFIX + block.getWidth().getMinValue() + "px");
             }
             if (block.getWidth().getMaxValue() != null) {
-                writer.println("  - Maximum: " + block.getWidth().getMaxValue() + "px");
+                writer.println(MAXIMUM_PREFIX + block.getWidth().getMaxValue() + "px");
             }
         }
 
         if (block.getHeight() != null) {
             writer.println("* **Height:**");
             if (block.getHeight().isRequired()) {
-                writer.println("  - Required: Yes");
+                writer.println(REQUIRED_YES);
             }
             if (block.getHeight().getMinValue() != null) {
-                writer.println("  - Minimum: " + block.getHeight().getMinValue() + "px");
+                writer.println(MINIMUM_PREFIX + block.getHeight().getMinValue() + "px");
             }
             if (block.getHeight().getMaxValue() != null) {
-                writer.println("  - Maximum: " + block.getHeight().getMaxValue() + "px");
+                writer.println(MAXIMUM_PREFIX + block.getHeight().getMaxValue() + "px");
             }
         }
 
         if (block.getAlt() != null) {
             writer.println("* **Alt Text:**");
             if (block.getAlt().isRequired()) {
-                writer.println("  - Required: Yes");
+                writer.println(REQUIRED_YES);
             }
             if (block.getAlt().getMinLength() != null) {
-                writer.println("  - Minimum length: " + block.getAlt().getMinLength() + " characters");
+                writer.println(MINIMUM_LENGTH_PREFIX + block.getAlt().getMinLength() + CHARACTERS_SUFFIX);
             }
             if (block.getAlt().getMaxLength() != null) {
-                writer.println("  - Maximum length: " + block.getAlt().getMaxLength() + " characters");
+                writer.println(MAXIMUM_LENGTH_PREFIX + block.getAlt().getMaxLength() + CHARACTERS_SUFFIX);
             }
         }
     }
@@ -436,7 +450,7 @@ public class AsciiDocAuthorGuidelineGenerator implements RuleDocumentationGenera
         if (block.getLanguage() != null) {
             writer.println("* **Language:**");
             if (block.getLanguage().isRequired()) {
-                writer.println("  - Required: Yes");
+                writer.println(REQUIRED_YES);
             }
             if (block.getLanguage().getAllowed() != null && !block.getLanguage().getAllowed().isEmpty()) {
                 writer.println("  - Allowed: " + String.join(", ", block.getLanguage().getAllowed()));
@@ -446,27 +460,27 @@ public class AsciiDocAuthorGuidelineGenerator implements RuleDocumentationGenera
         if (block.getLines() != null) {
             writer.println("* **Lines:**");
             if (block.getLines().min() != null) {
-                writer.println("  - Minimum: " + block.getLines().min());
+                writer.println(MINIMUM_PREFIX + block.getLines().min());
             }
             if (block.getLines().max() != null) {
-                writer.println("  - Maximum: " + block.getLines().max());
+                writer.println(MAXIMUM_PREFIX + block.getLines().max());
             }
         }
 
         if (block.getTitle() != null) {
-            writer.println("* **Title:**");
+            writer.println(TITLE_HEADER);
             if (block.getTitle().isRequired()) {
-                writer.println("  - Required: Yes");
+                writer.println(REQUIRED_YES);
             }
             if (block.getTitle().getPattern() != null) {
-                writer.println("  - Pattern: " + patternHumanizer.humanize(block.getTitle().getPattern().pattern()));
+                writer.println(PATTERN_PREFIX + patternHumanizer.humanize(block.getTitle().getPattern().pattern()));
             }
         }
 
         if (block.getCallouts() != null) {
             writer.println("* **Callouts:**");
             if (block.getCallouts().getMax() != null) {
-                writer.println("  - Maximum: " + block.getCallouts().getMax());
+                writer.println(MAXIMUM_PREFIX + block.getCallouts().getMax());
             }
         }
     }
@@ -475,29 +489,29 @@ public class AsciiDocAuthorGuidelineGenerator implements RuleDocumentationGenera
         if (block.getLines() != null) {
             writer.println("* **Lines:**");
             if (block.getLines().min() != null) {
-                writer.println("  - Minimum: " + block.getLines().min());
+                writer.println(MINIMUM_PREFIX + block.getLines().min());
             }
             if (block.getLines().max() != null) {
-                writer.println("  - Maximum: " + block.getLines().max());
+                writer.println(MAXIMUM_PREFIX + block.getLines().max());
             }
         }
 
         if (block.getSentence() != null) {
             if (block.getSentence().getOccurrence() != null) {
                 writer.println("* **Sentences:**");
-                writer.println("  - Minimum: " + block.getSentence().getOccurrence().min());
+                writer.println(MINIMUM_PREFIX + block.getSentence().getOccurrence().min());
                 if (block.getSentence().getOccurrence().max() < Integer.MAX_VALUE) {
-                    writer.println("  - Maximum: " + block.getSentence().getOccurrence().max());
+                    writer.println(MAXIMUM_PREFIX + block.getSentence().getOccurrence().max());
                 }
             }
 
             if (block.getSentence().getWords() != null) {
                 writer.println("* **Words per sentence:**");
                 if (block.getSentence().getWords().getMin() != null) {
-                    writer.println("  - Minimum: " + block.getSentence().getWords().getMin());
+                    writer.println(MINIMUM_PREFIX + block.getSentence().getWords().getMin());
                 }
                 if (block.getSentence().getWords().getMax() != null) {
-                    writer.println("  - Maximum: " + block.getSentence().getWords().getMax());
+                    writer.println(MAXIMUM_PREFIX + block.getSentence().getWords().getMax());
                 }
             }
         }
@@ -507,10 +521,10 @@ public class AsciiDocAuthorGuidelineGenerator implements RuleDocumentationGenera
         if (block.getUrl() != null) {
             writer.println("* **URL:**");
             if (block.getUrl().isRequired()) {
-                writer.println("  - Required: Yes");
+                writer.println(REQUIRED_YES);
             }
             if (block.getUrl().getPattern() != null) {
-                writer.println("  - Pattern: " + patternHumanizer.humanize(block.getUrl().getPattern().pattern()));
+                writer.println(PATTERN_PREFIX + patternHumanizer.humanize(block.getUrl().getPattern().pattern()));
             }
         }
 
@@ -528,15 +542,15 @@ public class AsciiDocAuthorGuidelineGenerator implements RuleDocumentationGenera
         }
 
         if (block.getTitle() != null) {
-            writer.println("* **Title:**");
+            writer.println(TITLE_HEADER);
             if (block.getTitle().isRequired()) {
-                writer.println("  - Required: Yes");
+                writer.println(REQUIRED_YES);
             }
             if (block.getTitle().getMinLength() != null) {
-                writer.println("  - Minimum length: " + block.getTitle().getMinLength() + " characters");
+                writer.println(MINIMUM_LENGTH_PREFIX + block.getTitle().getMinLength() + CHARACTERS_SUFFIX);
             }
             if (block.getTitle().getMaxLength() != null) {
-                writer.println("  - Maximum length: " + block.getTitle().getMaxLength() + " characters");
+                writer.println(MAXIMUM_LENGTH_PREFIX + block.getTitle().getMaxLength() + CHARACTERS_SUFFIX);
             }
         }
     }
@@ -563,57 +577,58 @@ public class AsciiDocAuthorGuidelineGenerator implements RuleDocumentationGenera
         if (block.getColumns() != null) {
             writer.println("* **Columns:**");
             if (block.getColumns().getMin() != null) {
-                writer.println("  - Minimum: " + block.getColumns().getMin());
+                writer.println(MINIMUM_PREFIX + block.getColumns().getMin());
             }
             if (block.getColumns().getMax() != null) {
-                writer.println("  - Maximum: " + block.getColumns().getMax());
+                writer.println(MAXIMUM_PREFIX + block.getColumns().getMax());
             }
         }
 
         if (block.getRows() != null) {
             writer.println("* **Rows:**");
             if (block.getRows().getMin() != null) {
-                writer.println("  - Minimum: " + block.getRows().getMin());
+                writer.println(MINIMUM_PREFIX + block.getRows().getMin());
             }
             if (block.getRows().getMax() != null) {
-                writer.println("  - Maximum: " + block.getRows().getMax());
+                writer.println(MAXIMUM_PREFIX + block.getRows().getMax());
             }
         }
 
         if (block.getHeader() != null) {
             writer.println("* **Header:**");
             if (block.getHeader().isRequired()) {
-                writer.println("  - Required: Yes");
+                writer.println(REQUIRED_YES);
             }
         }
 
         if (block.getCaption() != null) {
             writer.println("* **Caption:**");
             if (block.getCaption().isRequired()) {
-                writer.println("  - Required: Yes");
+                writer.println(REQUIRED_YES);
             }
             if (block.getCaption().getPattern() != null) {
-                writer.println("  - Pattern: " + patternHumanizer.humanize(block.getCaption().getPattern().pattern()));
+                writer.println(PATTERN_PREFIX + patternHumanizer.humanize(block.getCaption().getPattern().pattern()));
             }
         }
     }
 
     private void generateAdmonitionBlockDetails(AdmonitionBlock block, PrintWriter writer) {
         if (block.getTitle() != null) {
-            writer.println("* **Title:**");
+            writer.println(TITLE_HEADER);
             if (block.getTitle().isRequired()) {
-                writer.println("  - Required: Yes");
+                writer.println(REQUIRED_YES);
             }
             if (block.getTitle().getMinLength() != null) {
-                writer.println("  - Minimum length: " + block.getTitle().getMinLength() + " characters");
+                writer.println(MINIMUM_LENGTH_PREFIX + block.getTitle().getMinLength() + CHARACTERS_SUFFIX);
             }
             if (block.getTitle().getMaxLength() != null) {
-                writer.println("  - Maximum length: " + block.getTitle().getMaxLength() + " characters");
+                writer.println(MAXIMUM_LENGTH_PREFIX + block.getTitle().getMaxLength() + CHARACTERS_SUFFIX);
             }
         }
         // AdmonitionBlock might have other specific attributes
     }
 
+    @SuppressWarnings(PMD_UNUSED_PARAM)
     private void generateExampleBlockDetails(ExampleBlock block, PrintWriter writer) {
         // ExampleBlock typically doesn't have many specific validation rules
         // It's mainly a container for example content
@@ -623,11 +638,11 @@ public class AsciiDocAuthorGuidelineGenerator implements RuleDocumentationGenera
         if (block.getAttribution() != null) {
             writer.println("* **Attribution:**");
             if (block.getAttribution().isRequired()) {
-                writer.println("  - Required: Yes");
+                writer.println(REQUIRED_YES);
             }
             if (block.getAttribution().getPattern() != null) {
                 writer
-                        .println("  - Pattern: "
+                        .println(PATTERN_PREFIX
                                 + patternHumanizer.humanize(block.getAttribution().getPattern().pattern()));
             }
         }
@@ -635,25 +650,25 @@ public class AsciiDocAuthorGuidelineGenerator implements RuleDocumentationGenera
         if (block.getCitation() != null) {
             writer.println("* **Citation:**");
             if (block.getCitation().isRequired()) {
-                writer.println("  - Required: Yes");
+                writer.println(REQUIRED_YES);
             }
             if (block.getCitation().getPattern() != null) {
-                writer.println("  - Pattern: " + patternHumanizer.humanize(block.getCitation().getPattern().pattern()));
+                writer.println(PATTERN_PREFIX + patternHumanizer.humanize(block.getCitation().getPattern().pattern()));
             }
         }
     }
 
     private void generateSidebarBlockDetails(SidebarBlock block, PrintWriter writer) {
         if (block.getTitle() != null) {
-            writer.println("* **Title:**");
+            writer.println(TITLE_HEADER);
             if (block.getTitle().isRequired()) {
-                writer.println("  - Required: Yes");
+                writer.println(REQUIRED_YES);
             }
             if (block.getTitle().getMinLength() != null) {
-                writer.println("  - Minimum length: " + block.getTitle().getMinLength() + " characters");
+                writer.println(MINIMUM_LENGTH_PREFIX + block.getTitle().getMinLength() + CHARACTERS_SUFFIX);
             }
             if (block.getTitle().getMaxLength() != null) {
-                writer.println("  - Maximum length: " + block.getTitle().getMaxLength() + " characters");
+                writer.println(MAXIMUM_LENGTH_PREFIX + block.getTitle().getMaxLength() + CHARACTERS_SUFFIX);
             }
         }
     }
@@ -662,15 +677,16 @@ public class AsciiDocAuthorGuidelineGenerator implements RuleDocumentationGenera
         if (block.getItems() != null) {
             writer.println("* **Items:**");
             if (block.getItems().getMin() != null) {
-                writer.println("  - Minimum: " + block.getItems().getMin());
+                writer.println(MINIMUM_PREFIX + block.getItems().getMin());
             }
             if (block.getItems().getMax() != null) {
-                writer.println("  - Maximum: " + block.getItems().getMax());
+                writer.println(MAXIMUM_PREFIX + block.getItems().getMax());
             }
         }
         // UlistBlock might have other attributes like nesting depth
     }
 
+    @SuppressWarnings(PMD_UNUSED_PARAM)
     private void generateDlistBlockDetails(DlistBlock block, PrintWriter writer) {
         // DlistBlock specific attributes would go here
         // Currently DlistBlock doesn't expose specific validation methods
@@ -680,14 +696,15 @@ public class AsciiDocAuthorGuidelineGenerator implements RuleDocumentationGenera
         if (block.getLines() != null) {
             writer.println("* **Lines:**");
             if (block.getLines().getMin() != null) {
-                writer.println("  - Minimum: " + block.getLines().getMin());
+                writer.println(MINIMUM_PREFIX + block.getLines().getMin());
             }
             if (block.getLines().getMax() != null) {
-                writer.println("  - Maximum: " + block.getLines().getMax());
+                writer.println(MAXIMUM_PREFIX + block.getLines().getMax());
             }
         }
     }
 
+    @SuppressWarnings(PMD_UNUSED_PARAM)
     private void generatePassBlockDetails(PassBlock block, PrintWriter writer) {
         // PassBlock typically doesn't have specific validation rules
         // It passes content through without processing
@@ -697,11 +714,11 @@ public class AsciiDocAuthorGuidelineGenerator implements RuleDocumentationGenera
         if (block.getAttribution() != null) {
             writer.println("* **Attribution:**");
             if (block.getAttribution().isRequired()) {
-                writer.println("  - Required: Yes");
+                writer.println(REQUIRED_YES);
             }
             if (block.getAttribution().getPattern() != null) {
                 writer
-                        .println("  - Pattern: "
+                        .println(PATTERN_PREFIX
                                 + patternHumanizer.humanize(block.getAttribution().getPattern().pattern()));
             }
         }

@@ -3,6 +3,7 @@ package com.dataliquid.asciidoc.linter.validator.rules;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -16,10 +17,10 @@ import static com.dataliquid.asciidoc.linter.validator.RuleIds.Metadata.ORDER;
 
 public final class OrderRule implements AttributeRule {
     private final Map<String, OrderConfig> orderConfigs;
-    private final Map<String, AttributePosition> actualPositions = new HashMap<>();
+    private final Map<String, AttributePosition> actualPositions = new ConcurrentHashMap<>();
 
     private OrderRule(Builder builder) {
-        this.orderConfigs = Collections.unmodifiableMap(new HashMap<>(builder.orderConfigs));
+        this.orderConfigs = Collections.unmodifiableMap(new ConcurrentHashMap<>(builder.orderConfigs));
     }
 
     @Override
@@ -91,7 +92,7 @@ public final class OrderRule implements AttributeRule {
     }
 
     public static final class Builder {
-        private final Map<String, OrderConfig> orderConfigs = new HashMap<>();
+        private final Map<String, OrderConfig> orderConfigs = new ConcurrentHashMap<>();
 
         private Builder() {
         }

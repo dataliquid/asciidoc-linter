@@ -1,7 +1,9 @@
 package com.dataliquid.asciidoc.linter.report.console;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -29,9 +31,11 @@ public class GroupingEngine {
         }
 
         // Group by rule ID
-        Map<String, List<ValidationMessage>> byRuleId = new HashMap<>();
+        Map<String, List<ValidationMessage>> byRuleId = Collections.synchronizedMap(new LinkedHashMap<>());
         for (ValidationMessage msg : messages) {
-            byRuleId.computeIfAbsent(msg.getRuleId(), k -> new ArrayList<>()).add(msg);
+            @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops") // Necessary for computeIfAbsent pattern
+            List<ValidationMessage> msgList = byRuleId.computeIfAbsent(msg.getRuleId(), k -> new ArrayList<>());
+            msgList.add(msg);
         }
 
         List<MessageGroup> groups = new ArrayList<>();

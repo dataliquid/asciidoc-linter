@@ -58,7 +58,7 @@ public final class BlockValidator {
         BlockContainer container = BlockContainer.fromDocument(document);
         BlockValidationContext context = new BlockValidationContext(document, filename);
         // Starting document validation
-        return validateContainer(container, config, context, filename);
+        return validateContainer(container, config, context);
     }
 
     /**
@@ -78,14 +78,14 @@ public final class BlockValidator {
         // Use the generic validation method with a section container
         BlockContainer container = BlockContainer.fromSection(section);
         BlockValidationContext context = new BlockValidationContext(section, filename);
-        return validateContainer(container, config, context, filename);
+        return validateContainer(container, config, context);
     }
 
     /**
      * Generic validation method for any block container.
      */
     private ValidationResult validateContainer(BlockContainer container, SectionConfig config,
-            BlockValidationContext context, String filename) {
+            BlockValidationContext context) {
         List<ValidationMessage> messages = new ArrayList<>();
 
         // No block validation if no blocks configured
@@ -301,9 +301,9 @@ public final class BlockValidator {
                     BlockType type = typeDetector.detectType(block);
                     if (type != null) {
                         Block blockCfg = findBlockConfig(type, block, config.allowedBlocks());
-                        if (blockCfg == current && currentBlockIndex == -1) {
+                        if (blockCfg.equals(current) && currentBlockIndex == -1) {
                             currentBlockIndex = j;
-                        } else if (blockCfg == next && nextBlockIndex == -1) {
+                        } else if (blockCfg.equals(next) && nextBlockIndex == -1) {
                             nextBlockIndex = j;
                         }
                     }

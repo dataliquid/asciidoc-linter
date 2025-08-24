@@ -2,10 +2,12 @@ package com.dataliquid.asciidoc.linter.validator.block;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import org.asciidoctor.ast.StructuralNode;
 
 import static com.dataliquid.asciidoc.linter.validator.block.BlockAttributes.*;
+import com.dataliquid.asciidoc.linter.util.StringUtils;
 
 import com.dataliquid.asciidoc.linter.config.blocks.BlockType;
 import com.dataliquid.asciidoc.linter.config.blocks.ExampleBlock;
@@ -21,6 +23,8 @@ import com.dataliquid.asciidoc.linter.validator.Suggestion;
  * schema definition, including caption format and collapsible attribute.
  */
 public final class ExampleBlockValidator extends AbstractBlockValidator<ExampleBlock> {
+
+    private static final String COLLAPSIBLE_ATTRIBUTE = "[%collapsible]";
 
     @Override
     public BlockType getSupportedType() {
@@ -58,7 +62,7 @@ public final class ExampleBlockValidator extends AbstractBlockValidator<ExampleB
         String caption = node.getTitle();
 
         // Check if caption is required
-        if (config.isRequired() && (caption == null || caption.trim().isEmpty())) {
+        if (config.isRequired() && StringUtils.isBlank(caption)) {
             // Find position for caption placeholder
             int lineNumber = node.getSourceLocation() != null ? node.getSourceLocation().getLineNumber() : 1;
             messages
@@ -96,7 +100,7 @@ public final class ExampleBlockValidator extends AbstractBlockValidator<ExampleB
         }
 
         // If caption is not present and not required, skip further validation
-        if (caption == null || caption.trim().isEmpty()) {
+        if (StringUtils.isBlank(caption)) {
             return messages;
         }
 
@@ -200,7 +204,7 @@ public final class ExampleBlockValidator extends AbstractBlockValidator<ExampleB
                                     .build())
                             .ruleId(COLLAPSIBLE_REQUIRED)
                             .errorType(ErrorType.MISSING_VALUE)
-                            .missingValueHint("[%collapsible]")
+                            .missingValueHint(COLLAPSIBLE_ATTRIBUTE)
                             .placeholderContext(PlaceholderContext
                                     .builder()
                                     .type(PlaceholderContext.PlaceholderType.INSERT_BEFORE)
@@ -208,8 +212,8 @@ public final class ExampleBlockValidator extends AbstractBlockValidator<ExampleB
                             .addSuggestion(Suggestion
                                     .builder()
                                     .description("Add collapsible attribute to example block")
-                                    .fixedValue("[%collapsible]")
-                                    .addExample("[%collapsible]")
+                                    .fixedValue(COLLAPSIBLE_ATTRIBUTE)
+                                    .addExample(COLLAPSIBLE_ATTRIBUTE)
                                     .addExample("[example,%collapsible]")
                                     .addExample("[%collapsible%open]")
                                     .explanation(
@@ -229,7 +233,7 @@ public final class ExampleBlockValidator extends AbstractBlockValidator<ExampleB
         if (collapsibleAttr instanceof Boolean) {
             collapsibleValue = (Boolean) collapsibleAttr;
         } else if (collapsibleAttr instanceof String) {
-            String strValue = ((String) collapsibleAttr).toLowerCase();
+            String strValue = ((String) collapsibleAttr).toLowerCase(Locale.ROOT);
             if ("true".equals(strValue) || "yes".equals(strValue) || "1".equals(strValue)) {
                 collapsibleValue = true;
             } else if ("false".equals(strValue) || "no".equals(strValue) || "0".equals(strValue)) {
@@ -252,7 +256,7 @@ public final class ExampleBlockValidator extends AbstractBlockValidator<ExampleB
                                 .addSuggestion(Suggestion
                                         .builder()
                                         .description("Use a valid collapsible value")
-                                        .fixedValue(config.getAllowed().contains(true) ? "[%collapsible]"
+                                        .fixedValue(config.getAllowed().contains(true) ? COLLAPSIBLE_ATTRIBUTE
                                                 : "[%collapsible=false]")
                                         .addExample("[%collapsible] for collapsible")
                                         .addExample("[%collapsible%open] for initially open")

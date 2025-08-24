@@ -3,6 +3,7 @@ package com.dataliquid.asciidoc.linter.validator.rules;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -21,7 +22,7 @@ public final class PatternRule implements AttributeRule {
     private final Map<String, PatternConfig> patternConfigs;
 
     private PatternRule(Builder builder) {
-        this.patternConfigs = Collections.unmodifiableMap(new HashMap<>(builder.patternConfigs));
+        this.patternConfigs = Collections.unmodifiableMap(new ConcurrentHashMap<>(builder.patternConfigs));
     }
 
     @Override
@@ -73,7 +74,7 @@ public final class PatternRule implements AttributeRule {
     }
 
     public static final class Builder {
-        private final Map<String, PatternConfig> patternConfigs = new HashMap<>();
+        private final Map<String, PatternConfig> patternConfigs = new ConcurrentHashMap<>();
 
         private Builder() {
         }
@@ -88,7 +89,7 @@ public final class PatternRule implements AttributeRule {
                 patternConfigs.put(attributeName, new PatternConfig(compiledPattern, pattern, severity));
             } catch (PatternSyntaxException e) {
                 throw new IllegalArgumentException(
-                        "Invalid pattern for attribute '" + attributeName + "': " + e.getMessage());
+                        "Invalid pattern for attribute '" + attributeName + "': " + e.getMessage(), e);
             }
 
             return this;

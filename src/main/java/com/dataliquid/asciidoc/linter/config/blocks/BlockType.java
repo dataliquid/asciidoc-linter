@@ -2,6 +2,7 @@ package com.dataliquid.asciidoc.linter.config.blocks;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+import java.util.Locale;
 
 public enum BlockType {
     PARAGRAPH, LISTING, TABLE, IMAGE, VERSE, ADMONITION, PASS, LITERAL, AUDIO, QUOTE, SIDEBAR, EXAMPLE, VIDEO, ULIST,
@@ -9,14 +10,14 @@ public enum BlockType {
 
     @JsonValue
     public String toValue() {
-        return name().toLowerCase();
+        return name().toLowerCase(Locale.ROOT);
     }
 
     @JsonCreator
     public static BlockType fromValue(String value) {
         if (value == null)
             return null;
-        return switch (value.toLowerCase()) {
+        return switch (value.toLowerCase(Locale.ROOT)) {
         case "paragraph" -> PARAGRAPH;
         case "listing" -> LISTING;
         case "table" -> TABLE;

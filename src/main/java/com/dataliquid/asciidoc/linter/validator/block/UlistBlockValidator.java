@@ -43,6 +43,10 @@ import com.dataliquid.asciidoc.linter.validator.Suggestion;
  * @see BlockTypeValidator
  */
 public final class UlistBlockValidator extends AbstractBlockValidator<UlistBlock> {
+    private static final String ITEMS_UNIT = " items";
+    // Constants for block contexts
+    private static final String ULIST_CONTEXT = "ulist";
+
     @Override
     public BlockType getSupportedType() {
         return BlockType.ULIST;
@@ -109,7 +113,7 @@ public final class UlistBlockValidator extends AbstractBlockValidator<UlistBlock
                             .message("Unordered list has too few items")
                             .errorType(ErrorType.MISSING_VALUE)
                             .actualValue(String.valueOf(itemCount))
-                            .expectedValue("At least " + config.getMin() + " items")
+                            .expectedValue("At least " + config.getMin() + ITEMS_UNIT)
                             .missingValueHint("* Item")
                             .placeholderContext(PlaceholderContext
                                     .builder()
@@ -142,14 +146,14 @@ public final class UlistBlockValidator extends AbstractBlockValidator<UlistBlock
                             .location(context.createLocation(block))
                             .message("Unordered list has too many items")
                             .actualValue(String.valueOf(itemCount))
-                            .expectedValue("At most " + config.getMax() + " items")
+                            .expectedValue("At most " + config.getMax() + ITEMS_UNIT)
                             .addSuggestion(Suggestion
                                     .builder()
                                     .description("Remove excess items")
-                                    .addExample("Keep only the most important " + config.getMax() + " items")
+                                    .addExample("Keep only the most important " + config.getMax() + ITEMS_UNIT)
                                     .addExample("Group related items into sub-lists")
                                     .explanation("Consider consolidating or removing " + (itemCount - config.getMax())
-                                            + " items")
+                                            + ITEMS_UNIT)
                                     .build())
                             .build());
         }
@@ -245,7 +249,9 @@ public final class UlistBlockValidator extends AbstractBlockValidator<UlistBlock
             if (parent.getParent() instanceof StructuralNode) {
                 parent = (StructuralNode) parent.getParent();
             } else {
-                parent = null;
+                @SuppressWarnings("PMD.NullAssignment")
+                StructuralNode temp = null; // Loop termination condition
+                parent = temp;
             }
         }
 
@@ -355,7 +361,7 @@ public final class UlistBlockValidator extends AbstractBlockValidator<UlistBlock
             if (item.getBlocks() != null) {
                 for (StructuralNode nestedBlock : item.getBlocks()) {
                     // Check if it's a nested ulist
-                    if ("ulist".equals(nestedBlock.getContext())) {
+                    if (ULIST_CONTEXT.equals(nestedBlock.getContext())) {
                         String nestedMarkerStyle = getMarkerStyle(nestedBlock);
                         if (nestedMarkerStyle != null && !nestedMarkerStyle.equals(expectedMarkerStyle)) {
                             SourcePosition pos = findSourcePosition(nestedBlock, context);

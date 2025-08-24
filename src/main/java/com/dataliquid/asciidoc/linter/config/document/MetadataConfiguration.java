@@ -15,15 +15,15 @@ import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.EMP
 
 @JsonDeserialize(builder = MetadataConfiguration.Builder.class)
 public final class MetadataConfiguration {
-    private final List<AttributeConfig> attributes;
+    private final List<AttributeConfig> _attributes;
 
     private MetadataConfiguration(Builder builder) {
-        this.attributes = Collections.unmodifiableList(new ArrayList<>(builder.attributes));
+        this._attributes = Collections.unmodifiableList(new ArrayList<>(builder._attributes));
     }
 
     @JsonProperty(ATTRIBUTES)
     public List<AttributeConfig> attributes() {
-        return attributes;
+        return this._attributes;
     }
 
     public static Builder builder() {
@@ -32,16 +32,16 @@ public final class MetadataConfiguration {
 
     @JsonPOJOBuilder(withPrefix = EMPTY)
     public static class Builder {
-        private List<AttributeConfig> attributes = new ArrayList<>();
+        private List<AttributeConfig> _attributes = new ArrayList<>();
 
         @JsonProperty(ATTRIBUTES)
         public Builder attributes(List<AttributeConfig> attributes) {
-            this.attributes = attributes != null ? new ArrayList<>(attributes) : new ArrayList<>();
+            this._attributes = attributes != null ? new ArrayList<>(attributes) : new ArrayList<>();
             return this;
         }
 
         public Builder addAttribute(AttributeConfig attribute) {
-            this.attributes.add(attribute);
+            this._attributes.add(attribute);
             return this;
         }
 
@@ -57,11 +57,11 @@ public final class MetadataConfiguration {
         if (o == null || getClass() != o.getClass())
             return false;
         MetadataConfiguration that = (MetadataConfiguration) o;
-        return Objects.equals(attributes, that.attributes);
+        return Objects.equals(_attributes, that._attributes);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(attributes);
+        return Objects.hash(_attributes);
     }
 }

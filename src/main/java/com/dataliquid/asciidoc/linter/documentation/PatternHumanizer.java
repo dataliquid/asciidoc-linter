@@ -1,6 +1,7 @@
 package com.dataliquid.asciidoc.linter.documentation;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -8,6 +9,11 @@ import java.util.regex.Pattern;
  * Converts regular expression patterns into human-readable descriptions.
  */
 public class PatternHumanizer {
+
+    // Common pattern constants
+    private static final String LETTERS_ONLY_PATTERN = "^[A-Za-z]+$";
+    private static final String NUMBERS_ONLY_PATTERN = "^[0-9]+$";
+    private static final String ALPHANUMERIC_PATTERN = "^[A-Za-z0-9]+$";
 
     private final Map<String, String> knownPatterns;
 
@@ -89,7 +95,7 @@ public class PatternHumanizer {
                     .replaceAll(".*\\\\\\.(\\()?", "")
                     .replaceAll("\\)\\$", "")
                     .replaceAll("\\|", ", ");
-            return "File extension must be: " + extensions.toUpperCase();
+            return "File extension must be: " + extensions.toUpperCase(Locale.ROOT);
         }
 
         // Handle simple starts-with patterns
@@ -117,13 +123,13 @@ public class PatternHumanizer {
         }
 
         // Handle character class patterns
-        if (pattern.equals("^[A-Za-z]+$")) {
+        if (LETTERS_ONLY_PATTERN.equals(pattern)) {
             return "Only letters allowed";
         }
-        if (pattern.equals("^[0-9]+$")) {
+        if (NUMBERS_ONLY_PATTERN.equals(pattern)) {
             return "Only numbers allowed";
         }
-        if (pattern.equals("^[A-Za-z0-9]+$")) {
+        if (ALPHANUMERIC_PATTERN.equals(pattern)) {
             return "Only letters and numbers allowed";
         }
 

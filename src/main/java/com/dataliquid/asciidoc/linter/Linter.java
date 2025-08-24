@@ -10,6 +10,9 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.Locale;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -39,6 +42,13 @@ import com.dataliquid.asciidoc.linter.validator.ValidationResult;
  */
 public class Linter {
 
+    private static final String CLASS_NAME_CONFIG_NULL_MSG = "] config must not be null";
+    private static final String CLASS_NAME_FILE_NULL_MSG = "] file must not be null";
+    private static final String CLASS_NAME_FILES_NULL_MSG = "] files must not be null";
+    private static final String CLASS_NAME_DIRECTORY_NULL_MSG = "] directory must not be null";
+    private static final String CLASS_NAME_PATTERN_NULL_MSG = "] pattern must not be null";
+    private static final String CLASS_NAME_CONTENT_NULL_MSG = "] content must not be null";
+
     private static final Logger logger = LogManager.getLogger(Linter.class);
 
     private final Asciidoctor asciidoctor;
@@ -58,8 +68,8 @@ public class Linter {
      * @throws IOException if the file cannot be read
      */
     public ValidationResult validateFile(Path file, LinterConfiguration config) throws IOException {
-        Objects.requireNonNull(file, "[" + getClass().getName() + "] file must not be null");
-        Objects.requireNonNull(config, "[" + getClass().getName() + "] config must not be null");
+        Objects.requireNonNull(file, "[" + getClass().getName() + CLASS_NAME_FILE_NULL_MSG);
+        Objects.requireNonNull(config, "[" + getClass().getName() + CLASS_NAME_CONFIG_NULL_MSG);
 
         if (!Files.exists(file)) {
             throw new IOException("File does not exist: " + file);
@@ -81,10 +91,10 @@ public class Linter {
      * @return        map of file to validation result
      */
     public Map<Path, ValidationResult> validateFiles(List<Path> files, LinterConfiguration config) {
-        Objects.requireNonNull(files, "[" + getClass().getName() + "] files must not be null");
-        Objects.requireNonNull(config, "[" + getClass().getName() + "] config must not be null");
+        Objects.requireNonNull(files, "[" + getClass().getName() + CLASS_NAME_FILES_NULL_MSG);
+        Objects.requireNonNull(config, "[" + getClass().getName() + CLASS_NAME_CONFIG_NULL_MSG);
 
-        Map<Path, ValidationResult> results = new LinkedHashMap<>();
+        Map<Path, ValidationResult> results = new ConcurrentHashMap<>();
 
         for (Path file : files) {
             try {
@@ -114,9 +124,9 @@ public class Linter {
      */
     public Map<Path, ValidationResult> validateDirectory(Path directory, String pattern, boolean recursive,
             LinterConfiguration config) throws IOException {
-        Objects.requireNonNull(directory, "[" + getClass().getName() + "] directory must not be null");
-        Objects.requireNonNull(pattern, "[" + getClass().getName() + "] pattern must not be null");
-        Objects.requireNonNull(config, "[" + getClass().getName() + "] config must not be null");
+        Objects.requireNonNull(directory, "[" + getClass().getName() + CLASS_NAME_DIRECTORY_NULL_MSG);
+        Objects.requireNonNull(pattern, "[" + getClass().getName() + CLASS_NAME_PATTERN_NULL_MSG);
+        Objects.requireNonNull(config, "[" + getClass().getName() + CLASS_NAME_CONFIG_NULL_MSG);
 
         if (!Files.isDirectory(directory)) {
             throw new IOException("Not a directory: " + directory);
@@ -135,8 +145,8 @@ public class Linter {
      * @return         validation result
      */
     public ValidationResult validateContent(String content, LinterConfiguration config) {
-        Objects.requireNonNull(content, "[" + getClass().getName() + "] content must not be null");
-        Objects.requireNonNull(config, "[" + getClass().getName() + "] config must not be null");
+        Objects.requireNonNull(content, "[" + getClass().getName() + CLASS_NAME_CONTENT_NULL_MSG);
+        Objects.requireNonNull(config, "[" + getClass().getName() + CLASS_NAME_CONFIG_NULL_MSG);
 
         String filename = "inline-content";
 
@@ -155,7 +165,7 @@ public class Linter {
 
             // Extract filename from document title if available
             if (document.getTitle() != null && !document.getTitle().isEmpty()) {
-                filename = document.getTitle().replaceAll("[^a-zA-Z0-9-_]", "_").toLowerCase() + ".adoc";
+                filename = document.getTitle().replaceAll("[^a-zA-Z0-9-_]", "_").toLowerCase(Locale.ROOT) + ".adoc";
             }
 
             return performValidation(document, filename, config);
@@ -248,9 +258,11 @@ public class Linter {
         List<SectionConfig> configsForLevel1Sections = determineConfigsForLevel1Sections(level0Configs, sectionConfigs);
 
         // Debug logging
-        logger
-                .debug("validateBlocks: level0Configs.size()={}, configsForLevel1Sections.size()={}",
-                        level0Configs.size(), configsForLevel1Sections.size());
+        if (logger.isDebugEnabled()) {
+            logger
+                    .debug("validateBlocks: level0Configs.size()={}, configsForLevel1Sections.size()={}",
+                            level0Configs.size(), configsForLevel1Sections.size());
+        }
 
         // Validate document-level blocks (only if Level 0 config exists)
         if (!level0Configs.isEmpty()) {
@@ -301,9 +313,11 @@ public class Linter {
                 validateSectionBlocks(section, sectionConfigs, blockValidator, filename, messages);
             } else {
                 // Debug: Log what we're skipping
-                logger
-                        .debug("validateDocumentSections: Skipping non-section node: context={}, nodeName={}",
-                                node.getContext(), node.getNodeName());
+                if (logger.isDebugEnabled()) {
+                    logger
+                            .debug("validateDocumentSections: Skipping non-section node: context={}, nodeName={}",
+                                    node.getContext(), node.getNodeName());
+                }
             }
             // Note: Document-level blocks (preamble) are handled by
             // validateDocumentLevelBlocks
@@ -367,22 +381,26 @@ public class Linter {
         PathMatcher pathMatcher = directory.getFileSystem().getPathMatcher("glob:" + pattern);
         int maxDepth = recursive ? Integer.MAX_VALUE : 1;
 
-        Files.walkFileTree(directory, new HashSet<>(), maxDepth, new SimpleFileVisitor<Path>() {
-            @Override
-            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
-                if (pathMatcher.matches(file.getFileName())) {
-                    matchingFiles.add(file);
-                }
-                return FileVisitResult.CONTINUE;
-            }
+        Files
+                .walkFileTree(directory, EnumSet.noneOf(java.nio.file.FileVisitOption.class), maxDepth,
+                        new SimpleFileVisitor<Path>() {
+                            @Override
+                            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
+                                if (pathMatcher.matches(file.getFileName())) {
+                                    matchingFiles.add(file);
+                                }
+                                return FileVisitResult.CONTINUE;
+                            }
 
-            @Override
-            public FileVisitResult visitFileFailed(Path file, IOException exc) {
-                // Log warning but continue
-                logger.warn("Could not access file: {} ({})", file, exc.getMessage());
-                return FileVisitResult.CONTINUE;
-            }
-        });
+                            @Override
+                            public FileVisitResult visitFileFailed(Path file, IOException exc) {
+                                // Log warning but continue
+                                if (logger.isWarnEnabled()) {
+                                    logger.warn("Could not access file: {} ({})", file, exc.getMessage());
+                                }
+                                return FileVisitResult.CONTINUE;
+                            }
+                        });
 
         return matchingFiles;
     }

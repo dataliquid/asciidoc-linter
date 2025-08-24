@@ -27,6 +27,8 @@ public class CLIRunner {
 
     private static final Logger logger = LogManager.getLogger(CLIRunner.class);
     private static final String DEFAULT_CONFIG_FILE = ".linter-rule-config.yaml";
+    private static final int MULTIPLE_FILES_THRESHOLD = 1;
+    private static final int SINGLE_FILE_COUNT = 1;
 
     private final FileDiscoveryService fileDiscoveryService;
     private final CLIOutputHandler outputHandler;
@@ -61,17 +63,21 @@ public class CLIRunner {
             List<Path> filesToValidate = fileDiscoveryService.discoverFiles(config);
 
             if (filesToValidate.isEmpty()) {
-                logger.error("No files found matching patterns: {}", String.join(", ", config.getInputPatterns()));
+                if (logger.isErrorEnabled()) {
+                    logger.error("No files found matching patterns: {}", String.join(", ", config.getInputPatterns()));
+                }
                 return 2;
             }
 
             // Print files being validated
-            if (filesToValidate.size() > 1) {
-                logger.info("Validating {} files...", filesToValidate.size());
+            if (filesToValidate.size() > MULTIPLE_FILES_THRESHOLD) {
+                if (logger.isInfoEnabled()) {
+                    logger.info("Validating {} files...", filesToValidate.size());
+                }
             }
 
             // Validate files
-            if (filesToValidate.size() == 1) {
+            if (filesToValidate.size() == SINGLE_FILE_COUNT) {
                 // Single file validation
                 ValidationResult result = linter.validateFile(filesToValidate.get(0), linterConfig);
                 outputHandler.writeReport(result, config, outputConfig);
@@ -85,10 +91,14 @@ public class CLIRunner {
             }
 
         } catch (IOException e) {
-            logger.error("I/O error: {}", e.getMessage());
+            if (logger.isErrorEnabled()) {
+                logger.error("I/O error: {}", e.getMessage());
+            }
             return 2;
         } catch (Exception e) {
-            logger.error("Error: {}", e.getMessage(), e);
+            if (logger.isErrorEnabled()) {
+                logger.error("Error: {}", e.getMessage(), e);
+            }
             return 2;
         } finally {
             linter.close();

@@ -19,6 +19,9 @@ import com.dataliquid.asciidoc.linter.documentation.VisualizationStyle;
  */
 public class TableVisualizer implements HierarchyVisualizer {
 
+    // Constants for duplicate literals
+    private static final String CONTAINER = "Container";
+
     private static final String INDENT = "{nbsp}{nbsp}";
 
     private static class TableRow {
@@ -78,7 +81,7 @@ public class TableVisualizer implements HierarchyVisualizer {
 
         // Add sections
         if (doc.sections() != null && !doc.sections().isEmpty()) {
-            rows.add(new TableRow("└ sections", 1, Severity.ERROR, "Container", "At least 1 section"));
+            rows.add(new TableRow("└ sections", 1, Severity.ERROR, CONTAINER, "At least 1 section"));
 
             for (SectionConfig section : doc.sections()) {
                 collectSectionRows(section, 2, rows);
@@ -89,7 +92,7 @@ public class TableVisualizer implements HierarchyVisualizer {
     }
 
     private void collectMetadataRows(MetadataConfiguration metadata, int level, List<TableRow> rows) {
-        rows.add(new TableRow("└ metadata", level, Severity.ERROR, "Container", "Required"));
+        rows.add(new TableRow("└ metadata", level, Severity.ERROR, CONTAINER, "Required"));
 
         if (metadata.attributes() != null) {
             for (int i = 0; i < metadata.attributes().size(); i++) {
@@ -115,7 +118,7 @@ public class TableVisualizer implements HierarchyVisualizer {
         rows.add(new TableRow("└ " + section.name(), level, severity, "Section", requirements));
 
         if (section.allowedBlocks() != null && !section.allowedBlocks().isEmpty()) {
-            rows.add(new TableRow("├ allowedBlocks", level + 1, null, "Container", "Block definitions"));
+            rows.add(new TableRow("├ allowedBlocks", level + 1, null, CONTAINER, "Block definitions"));
 
             for (int i = 0; i < section.allowedBlocks().size(); i++) {
                 Block block = section.allowedBlocks().get(i);
@@ -126,7 +129,7 @@ public class TableVisualizer implements HierarchyVisualizer {
         }
 
         if (section.subsections() != null && !section.subsections().isEmpty()) {
-            rows.add(new TableRow("└ subsections", level + 1, null, "Container", "Subsections"));
+            rows.add(new TableRow("└ subsections", level + 1, null, CONTAINER, "Subsections"));
 
             for (SectionConfig subsection : section.subsections()) {
                 collectSectionRows(subsection, level + 2, rows);

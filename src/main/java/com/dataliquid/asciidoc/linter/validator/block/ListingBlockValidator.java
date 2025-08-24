@@ -18,6 +18,7 @@ import static com.dataliquid.asciidoc.linter.validator.RuleIds.Listing.*;
 import com.dataliquid.asciidoc.linter.validator.SourceLocation;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
 import com.dataliquid.asciidoc.linter.validator.Suggestion;
+import com.dataliquid.asciidoc.linter.util.StringUtils;
 
 /**
  * Validator for listing (code) blocks in AsciiDoc documents.
@@ -122,7 +123,7 @@ public final class ListingBlockValidator extends AbstractBlockValidator<ListingB
         Severity severity = resolveSeverity(config.getSeverity(), blockConfig.getSeverity());
 
         // Check if language is required
-        if (config.isRequired() && (language == null || language.trim().isEmpty())) {
+        if (config.isRequired() && StringUtils.isBlank(language)) {
             // Find column position for missing language
             SourcePosition pos = findSourcePosition(block, context);
             messages
@@ -199,7 +200,7 @@ public final class ListingBlockValidator extends AbstractBlockValidator<ListingB
         // Get severity with fallback to block severity
         Severity severity = resolveSeverity(config.getSeverity(), blockConfig.getSeverity());
 
-        if (config.isRequired() && (title == null || title.trim().isEmpty())) {
+        if (config.isRequired() && StringUtils.isBlank(title)) {
             messages
                     .add(ValidationMessage
                             .builder()
@@ -384,7 +385,7 @@ public final class ListingBlockValidator extends AbstractBlockValidator<ListingB
         String sourceLine = fileLines.get(blockLineNum - 1);
 
         // Check if current line is the delimiter
-        if (sourceLine.trim().equals("----") && blockLineNum > 1) {
+        if ("----".equals(sourceLine.trim()) && blockLineNum > 1) {
             // Look at previous line for [source] attribute
             attributeLineNum = blockLineNum - 1;
             sourceLine = fileLines.get(attributeLineNum - 1);
@@ -393,7 +394,7 @@ public final class ListingBlockValidator extends AbstractBlockValidator<ListingB
         // Look for [source] or [source,language] pattern
         int sourceStart = sourceLine.indexOf("[source");
         if (sourceStart >= 0) {
-            int sourceEnd = sourceLine.indexOf("]", sourceStart);
+            int sourceEnd = sourceLine.indexOf(']', sourceStart);
             if (sourceEnd > sourceStart) {
                 if (language != null) {
                     // Find the specific language position
@@ -403,7 +404,7 @@ public final class ListingBlockValidator extends AbstractBlockValidator<ListingB
                     }
                 }
                 // For missing language, position after "[source"
-                int commaPos = sourceLine.indexOf(",", sourceStart);
+                int commaPos = sourceLine.indexOf(',', sourceStart);
                 if (commaPos > sourceStart && commaPos < sourceEnd) {
                     // Language should be after the comma
                     return new SourcePosition(commaPos + 2, commaPos + 2, attributeLineNum);
@@ -442,7 +443,7 @@ public final class ListingBlockValidator extends AbstractBlockValidator<ListingB
                 String line = fileLines.get(checkLine - 1);
                 if (line.trim().startsWith(".") && line.trim().substring(1).equals(title)) {
                     // Found the title line
-                    int titleStart = line.indexOf(".");
+                    int titleStart = line.indexOf('.');
                     int titleEnd = titleStart + 1 + title.length();
                     return new SourcePosition(titleStart + 1, titleEnd, checkLine);
                 }

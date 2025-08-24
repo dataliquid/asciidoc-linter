@@ -22,6 +22,7 @@ import static com.dataliquid.asciidoc.linter.validator.RuleIds.Table.*;
 import com.dataliquid.asciidoc.linter.validator.SourceLocation;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
 import com.dataliquid.asciidoc.linter.validator.Suggestion;
+import com.dataliquid.asciidoc.linter.util.StringUtils;
 
 /**
  * Validator for table blocks in AsciiDoc documents.
@@ -51,6 +52,10 @@ import com.dataliquid.asciidoc.linter.validator.Suggestion;
  * @see BlockTypeValidator
  */
 public final class TableBlockValidator extends AbstractBlockValidator<TableBlock> {
+
+    private static final String TABLE_DELIMITER = "|===";
+    private static final String CHARACTERS_UNIT = " characters";
+
     @Override
     public BlockType getSupportedType() {
         return BlockType.TABLE;
@@ -227,10 +232,10 @@ public final class TableBlockValidator extends AbstractBlockValidator<TableBlock
                                     .builder()
                                     .description("Add table header")
                                     .fixedValue("| Header 1 | Header 2 |")
-                                    .addExample("|====")
+                                    .addExample(TABLE_DELIMITER)
                                     .addExample("| Name | Description |")
                                     .addExample("| Item | Details     |")
-                                    .addExample("|====")
+                                    .addExample(TABLE_DELIMITER)
                                     .build())
                             .build());
         }
@@ -279,7 +284,7 @@ public final class TableBlockValidator extends AbstractBlockValidator<TableBlock
 
         String caption = table.getTitle();
 
-        if (config.isRequired() && (caption == null || caption.trim().isEmpty())) {
+        if (config.isRequired() && StringUtils.isBlank(caption)) {
             SourcePosition pos = findSourcePosition(table, context);
             messages
                     .add(ValidationMessage
@@ -307,7 +312,7 @@ public final class TableBlockValidator extends AbstractBlockValidator<TableBlock
             return;
         }
 
-        if (caption != null && !caption.trim().isEmpty()) {
+        if (caption != null && !StringUtils.isBlank(caption)) {
             // Validate caption pattern
             if (config.getPattern() != null) {
                 Pattern pattern = config.getPattern();
@@ -352,14 +357,15 @@ public final class TableBlockValidator extends AbstractBlockValidator<TableBlock
                                         .fromPosition(pos)
                                         .build())
                                 .message("Table caption is too short")
-                                .actualValue(caption.length() + " characters")
-                                .expectedValue("At least " + config.getMinLength() + " characters")
+                                .actualValue(caption.length() + CHARACTERS_UNIT)
+                                .expectedValue("At least " + config.getMinLength() + CHARACTERS_UNIT)
                                 .addSuggestion(Suggestion
                                         .builder()
                                         .description("Make caption more descriptive")
                                         .addExample(".Detailed User Information Table")
                                         .addExample(".System Configuration Parameters")
-                                        .explanation("Caption needs at least " + config.getMinLength() + " characters")
+                                        .explanation(
+                                                "Caption needs at least " + config.getMinLength() + CHARACTERS_UNIT)
                                         .build())
                                 .build());
             }
@@ -377,14 +383,15 @@ public final class TableBlockValidator extends AbstractBlockValidator<TableBlock
                                         .fromPosition(pos)
                                         .build())
                                 .message("Table caption is too long")
-                                .actualValue(caption.length() + " characters")
-                                .expectedValue("At most " + config.getMaxLength() + " characters")
+                                .actualValue(caption.length() + CHARACTERS_UNIT)
+                                .expectedValue("At most " + config.getMaxLength() + CHARACTERS_UNIT)
                                 .addSuggestion(Suggestion
                                         .builder()
                                         .description("Shorten caption")
                                         .addExample(".User Data")
                                         .addExample(".Config")
-                                        .explanation("Caption must be at most " + config.getMaxLength() + " characters")
+                                        .explanation(
+                                                "Caption must be at most " + config.getMaxLength() + CHARACTERS_UNIT)
                                         .build())
                                 .build());
             }
@@ -415,7 +422,7 @@ public final class TableBlockValidator extends AbstractBlockValidator<TableBlock
                                         .builder()
                                         .description("Add table style")
                                         .addExample("[options=\"" + config.getStyle() + "\"]")
-                                        .addExample("|====")
+                                        .addExample(TABLE_DELIMITER)
                                         .explanation("Apply style: " + config.getStyle())
                                         .build())
                                 .build());
@@ -440,7 +447,7 @@ public final class TableBlockValidator extends AbstractBlockValidator<TableBlock
                                         .builder()
                                         .description("Enable table borders")
                                         .addExample("[frame=\"all\"]")
-                                        .addExample("|====")
+                                        .addExample(TABLE_DELIMITER)
                                         .addExample("[grid=\"all\"]")
                                         .explanation("Add frame or grid attributes for borders")
                                         .build())
@@ -499,7 +506,7 @@ public final class TableBlockValidator extends AbstractBlockValidator<TableBlock
         // Find the line after |===
         for (int i = lineNum - 1; i < fileLines.size(); i++) {
             String line = fileLines.get(i);
-            if (line.trim().equals("|===")) {
+            if (TABLE_DELIMITER.equals(line.trim())) {
                 // Header should be on the next line
                 return new SourcePosition(1, 1, i + 2);
             }
@@ -526,7 +533,7 @@ public final class TableBlockValidator extends AbstractBlockValidator<TableBlock
         // Find the line after |===
         for (int i = lineNum - 1; i < fileLines.size(); i++) {
             String line = fileLines.get(i);
-            if (line.trim().equals("|===")) {
+            if (TABLE_DELIMITER.equals(line.trim())) {
                 // Header should be on the next line
                 int headerLineNum = i + 2;
                 if (headerLineNum <= fileLines.size()) {

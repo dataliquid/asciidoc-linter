@@ -1,5 +1,6 @@
 package com.dataliquid.asciidoc.linter.documentation;
 
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,7 +17,7 @@ public class HierarchyVisualizerFactory {
     private final Map<VisualizationStyle, HierarchyVisualizer> visualizers;
 
     public HierarchyVisualizerFactory() {
-        this.visualizers = new HashMap<>();
+        this.visualizers = new EnumMap<>(VisualizationStyle.class);
         registerVisualizers();
     }
 

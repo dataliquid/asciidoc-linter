@@ -5,6 +5,7 @@ import static com.dataliquid.asciidoc.linter.validator.RuleIds.Section.*;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -21,6 +22,7 @@ import com.dataliquid.asciidoc.linter.config.rule.SectionConfig;
 import com.dataliquid.asciidoc.linter.config.rule.TitleConfig;
 import com.dataliquid.asciidoc.linter.report.console.FileContentCache;
 import com.dataliquid.asciidoc.linter.validator.Suggestion;
+import com.dataliquid.asciidoc.linter.util.StringUtils;
 
 public final class SectionValidator {
     private final DocumentConfiguration configuration;
@@ -30,7 +32,8 @@ public final class SectionValidator {
 
     private SectionValidator(Builder builder) {
         this.configuration = Objects
-                .requireNonNull(builder.configuration, "[" + getClass().getName() + "] configuration must not be null");
+                .requireNonNull(builder._configuration,
+                        "[" + getClass().getName() + "] configuration must not be null");
         this.sectionOccurrences = new HashMap<>();
         this.rootSections = configuration.sections() != null ? configuration.sections() : Collections.emptyList();
         this.fileCache = new FileContentCache();
@@ -71,7 +74,7 @@ public final class SectionValidator {
         for (StructuralNode node : sections) {
             if (node instanceof Section) {
                 Section section = (Section) node;
-                validateSection(section, level1Configs, filename, resultBuilder, null);
+                validateSection(section, level1Configs, filename, resultBuilder);
             }
         }
     }
@@ -89,7 +92,7 @@ public final class SectionValidator {
     }
 
     private void validateSection(Section section, List<SectionConfig> allowedConfigs, String filename,
-            ValidationResult.Builder resultBuilder, SectionConfig parentConfig) {
+            ValidationResult.Builder resultBuilder) {
 
         int level = section.getLevel();
         String title = section.getTitle();
@@ -196,7 +199,7 @@ public final class SectionValidator {
                 subsectionConfigs = determineSubsectionConfigsFromParent(allowedConfigs, level);
             }
 
-            validateSection((Section) subsection, subsectionConfigs, filename, resultBuilder, matchingConfig);
+            validateSection((Section) subsection, subsectionConfigs, filename, resultBuilder);
         }
     }
 
@@ -308,7 +311,7 @@ public final class SectionValidator {
                     .ruleId(MIN_OCCURRENCES)
                     .location(location)
                     .message("Missing required section '" + config.name() + "' at level " + config.level() + context)
-                    .actualValue(String.valueOf(occurrences) + " occurrences")
+                    .actualValue(occurrences + " occurrences")
                     .expectedValue("At least " + config.occurrence().min() + " occurrence(s)")
                     .errorType(ErrorType.MISSING_VALUE)
                     .missingValueHint(sectionPlaceholder)
@@ -401,7 +404,7 @@ public final class SectionValidator {
 
         // Check if title is required
         if (titleConfig.occurrence() != null && titleConfig.occurrence().min() > 0
-                && (documentTitle == null || documentTitle.trim().isEmpty())) {
+                && StringUtils.isBlank(documentTitle)) {
             // If the config has a name, skip this validation - the min-occurrences check
             // will handle it
             // and provide a better error message with placeholder
@@ -460,7 +463,7 @@ public final class SectionValidator {
             return;
         }
 
-        Map<String, Integer> actualOrder = new HashMap<>();
+        Map<String, Integer> actualOrder = Collections.synchronizedMap(new LinkedHashMap<>());
         for (int i = 0; i < sections.size(); i++) {
             if (sections.get(i) instanceof Section) {
                 Section section = (Section) sections.get(i);
@@ -656,13 +659,13 @@ public final class SectionValidator {
     }
 
     public static final class Builder {
-        private DocumentConfiguration configuration;
+        private DocumentConfiguration _configuration;
 
         private Builder() {
         }
 
         public Builder configuration(DocumentConfiguration configuration) {
-            this.configuration = configuration;
+            this._configuration = configuration;
             return this;
         }
 
