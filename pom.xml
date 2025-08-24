@@ -29,7 +29,8 @@
     
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.release>17</maven.compiler.release>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
         <asciidoctorj.version>2.5.13</asciidoctorj.version>
         <jackson.version>2.19.2</jackson.version>
         <junit.version>5.13.4</junit.version>
