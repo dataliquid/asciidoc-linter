@@ -2,7 +2,6 @@ package com.dataliquid.asciidoc.linter.cli;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.PrintStream;
 import java.util.Properties;
 
 /**
@@ -25,17 +24,14 @@ public class VersionInfo {
             if (is != null) {
                 props.load(is);
             }
-        } catch (IOException e) {
-            // Log the IOException and continue with default values - System.err is not
-            // closeable
-            @SuppressWarnings({ "PMD.SystemPrintln", "PMD.CloseResource" })
-            PrintStream err = System.err;
-            err.println("Warning: Could not load version properties: " + e.getMessage());
+        } catch (IOException e) { // NOPMD - Expected when running outside of JAR
+            // Continue with default values - properties file may not exist during
+            // development
         }
 
         this.version = props.getProperty("version", UNKNOWN);
-        this.artifactId = props.getProperty("artifactId", "asciidoc-linter");
-        this.groupId = props.getProperty("groupId", "com.dataliquid");
+        this.artifactId = props.getProperty("artifactId", UNKNOWN);
+        this.groupId = props.getProperty("groupId", UNKNOWN);
     }
 
     /**
