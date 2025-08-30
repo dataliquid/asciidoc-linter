@@ -28,13 +28,12 @@ public class FileContentCache {
             if (Files.exists(path) && Files.isReadable(path)) {
                 return Files.readAllLines(path);
             }
+            // File doesn't exist or is not readable - return empty list
+            return List.of();
         } catch (IOException e) {
-            // Log error but don't fail - return empty list
-            // IOException handled by returning empty list - file may not exist or be
-            // readable
-            System.err.println("Warning: Could not read file: " + filename); // NOPMD - intentional debug output
+            // File exists but cannot be read - this is a fatal error
+            throw new RuntimeException("Failed to read file: " + filename, e);
         }
-        return List.of();
     }
 
     /**
