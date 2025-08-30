@@ -6,6 +6,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Set;
 
+import com.dataliquid.asciidoc.linter.config.SchemaConstants;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
@@ -33,34 +34,38 @@ public class OutputSchemaValidator {
     private JsonSchema loadSchema() {
         try {
             // Load the schema from classpath
-            InputStream schemaStream = getClass().getResourceAsStream(schemaPath);
-            if (schemaStream == null) {
-                throw new OutputConfigurationException("Schema not found: " + schemaPath);
+            try (InputStream schemaStream = getClass().getResourceAsStream(schemaPath)) {
+                if (schemaStream == null) {
+                    throw new OutputConfigurationException("Schema not found: " + schemaPath);
+                }
+
+                // Convert YAML schema to JSON
+                JsonNode schemaNode = yamlMapper.readTree(schemaStream);
+
+                // Get the current classloader base URL for mapping
+                String baseClasspathUrl = getClass().getResource("/schemas/").toString();
+
+                // Configure JsonSchemaFactory for JSON Schema 2020-12
+                JsonSchemaFactory factory = JsonSchemaFactory
+                        .builder()
+                        .defaultMetaSchemaIri(JsonMetaSchema.getV202012().getIri())
+                        .schemaMappers(schemaMappers -> {
+                            // Map HTTPS references to actual classpath URLs
+                            schemaMappers.mapPrefix(SchemaConstants.SCHEMA_URL_PREFIX, baseClasspathUrl);
+                        })
+                        .metaSchema(JsonMetaSchema.getV202012())
+                        .build();
+
+                // Configure validators
+                SchemaValidatorsConfig config = SchemaValidatorsConfig
+                        .builder()
+                        .pathType(PathType.JSON_POINTER)
+                        .build();
+
+                // Load schema with the resource URL as base URI
+                URI schemaUri = getClass().getResource(schemaPath).toURI();
+                return factory.getSchema(schemaUri, schemaNode, config);
             }
-
-            // Convert YAML schema to JSON
-            JsonNode schemaNode = yamlMapper.readTree(schemaStream);
-
-            // Get the current classloader base URL for mapping
-            String baseClasspathUrl = getClass().getResource("/schemas/").toString();
-
-            // Configure JsonSchemaFactory for JSON Schema 2020-12
-            JsonSchemaFactory factory = JsonSchemaFactory
-                    .builder()
-                    .defaultMetaSchemaIri(JsonMetaSchema.getV202012().getIri())
-                    .schemaMappers(schemaMappers -> {
-                        // Map HTTPS references to actual classpath URLs
-                        schemaMappers.mapPrefix("https://dataliquid.com/asciidoc/linter/schemas/", baseClasspathUrl);
-                    })
-                    .metaSchema(JsonMetaSchema.getV202012())
-                    .build();
-
-            // Configure validators
-            SchemaValidatorsConfig config = SchemaValidatorsConfig.builder().pathType(PathType.JSON_POINTER).build();
-
-            // Load schema with the resource URL as base URI
-            URI schemaUri = getClass().getResource(schemaPath).toURI();
-            return factory.getSchema(schemaUri, schemaNode, config);
 
         } catch (IOException | URISyntaxException e) {
             throw new OutputConfigurationException("Failed to load schema: " + schemaPath, e);
@@ -83,7 +88,7 @@ public class OutputSchemaValidator {
                             .append(error.getInstanceLocation())
                             .append(": ")
                             .append(error.getMessage())
-                            .append("\n");
+                            .append('\n');
                 }
                 throw new OutputConfigurationException(errorMessage.toString());
             }

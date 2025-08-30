@@ -31,9 +31,9 @@ public final class UlistBlock extends AbstractBlock {
 
     private UlistBlock(Builder builder) {
         super(builder);
-        this.items = builder.items;
-        this.nestingLevel = builder.nestingLevel;
-        this.markerStyle = builder.markerStyle;
+        this.items = builder._items;
+        this.nestingLevel = builder._nestingLevel;
+        this.markerStyle = builder._markerStyle;
     }
 
     @Override
@@ -70,9 +70,9 @@ public final class UlistBlock extends AbstractBlock {
         private final Severity severity;
 
         private ItemsConfig(ItemsConfigBuilder builder) {
-            this.min = builder.min;
-            this.max = builder.max;
-            this.severity = builder.severity;
+            this.min = builder._min;
+            this.max = builder._max;
+            this.severity = builder._severity;
         }
 
         public Integer getMin() {
@@ -93,22 +93,22 @@ public final class UlistBlock extends AbstractBlock {
 
         @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class ItemsConfigBuilder {
-            private Integer min;
-            private Integer max;
-            private Severity severity;
+            private Integer _min;
+            private Integer _max;
+            private Severity _severity;
 
             public ItemsConfigBuilder min(Integer min) {
-                this.min = min;
+                this._min = min;
                 return this;
             }
 
             public ItemsConfigBuilder max(Integer max) {
-                this.max = max;
+                this._max = max;
                 return this;
             }
 
             public ItemsConfigBuilder severity(Severity severity) {
-                this.severity = severity;
+                this._severity = severity;
                 return this;
             }
 
@@ -143,8 +143,8 @@ public final class UlistBlock extends AbstractBlock {
         private final Severity severity;
 
         private NestingLevelConfig(NestingLevelConfigBuilder builder) {
-            this.max = builder.max;
-            this.severity = builder.severity;
+            this.max = builder._max;
+            this.severity = builder._severity;
         }
 
         public Integer getMax() {
@@ -161,16 +161,16 @@ public final class UlistBlock extends AbstractBlock {
 
         @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class NestingLevelConfigBuilder {
-            private Integer max;
-            private Severity severity;
+            private Integer _max;
+            private Severity _severity;
 
             public NestingLevelConfigBuilder max(Integer max) {
-                this.max = max;
+                this._max = max;
                 return this;
             }
 
             public NestingLevelConfigBuilder severity(Severity severity) {
-                this.severity = severity;
+                this._severity = severity;
                 return this;
             }
 
@@ -196,28 +196,28 @@ public final class UlistBlock extends AbstractBlock {
 
     @JsonPOJOBuilder(withPrefix = EMPTY)
     public static class Builder extends AbstractBuilder<Builder> {
-        private ItemsConfig items;
-        private NestingLevelConfig nestingLevel;
-        private String markerStyle;
+        private ItemsConfig _items;
+        private NestingLevelConfig _nestingLevel;
+        private String _markerStyle;
 
         public Builder items(ItemsConfig items) {
-            this.items = items;
+            this._items = items;
             return this;
         }
 
         public Builder nestingLevel(NestingLevelConfig nestingLevel) {
-            this.nestingLevel = nestingLevel;
+            this._nestingLevel = nestingLevel;
             return this;
         }
 
         public Builder markerStyle(String markerStyle) {
-            this.markerStyle = markerStyle;
+            this._markerStyle = markerStyle;
             return this;
         }
 
         @Override
         public UlistBlock build() {
-            Objects.requireNonNull(severity, "[" + getClass().getName() + "] severity is required");
+            Objects.requireNonNull(_severity, "[" + getClass().getName() + "] severity is required");
             return new UlistBlock(this);
         }
     }

@@ -3,12 +3,20 @@ package com.dataliquid.asciidoc.linter.validator.block;
 import java.util.List;
 import org.asciidoctor.ast.StructuralNode;
 import com.dataliquid.asciidoc.linter.report.console.FileContentCache;
+import com.dataliquid.asciidoc.linter.util.StringUtils;
+
+import static com.dataliquid.asciidoc.linter.validator.block.AsciiDocConstants.*;
 
 /**
  * Utility class to calculate the actual end line of blocks by analyzing source
  * files. Provides generic support for all AsciiDoc block types.
  */
 public class BlockEndCalculator {
+    // Constants for whitespace characters
+    private static final char SPACE_CHAR = ' ';
+    private static final char TAB_CHAR = '\t';
+    private static final int TAB_SIZE = 4;
+
     private final FileContentCache fileCache;
 
     public BlockEndCalculator(FileContentCache fileCache) {
@@ -116,7 +124,8 @@ public class BlockEndCalculator {
                             // This empty line ends the dlist
                             return lastDlistLine + 1; // Return 1-based line number
                         }
-                    } else if (descLine.contains("::") || descLine.startsWith("=") || isBlockStart(descLine)) {
+                    } else if (descLine.contains("::") || descLine.startsWith(SECTION_START)
+                            || isBlockStart(descLine)) {
                         break;
                     } else {
                         // This is part of the description
@@ -180,28 +189,28 @@ public class BlockEndCalculator {
     private String getDelimiterForType(String type) {
         switch (type) {
         case "listing":
-            return "----";
+            return DELIMITER_LISTING;
         case "literal":
-            return "....";
+            return DELIMITER_LITERAL;
         case "example":
-            return "====";
+            return DELIMITER_EXAMPLE;
         case "sidebar":
-            return "****";
+            return DELIMITER_SIDEBAR;
         case "quote":
         case "verse":
-            return "____";
+            return DELIMITER_QUOTE;
         case "pass":
-            return "++++";
+            return DELIMITER_PASS;
         case "open":
-            return "--";
+            return DELIMITER_OPEN;
         case "comment":
-            return "////";
+            return DELIMITER_COMMENT;
         case "admonition":
-            return "====";
+            return DELIMITER_EXAMPLE;
         case "stem":
-            return "++++";
+            return DELIMITER_PASS;
         default:
-            return "----";
+            return DELIMITER_LISTING;
         }
     }
 
@@ -212,7 +221,7 @@ public class BlockEndCalculator {
         int line = startLine - 1;
 
         // Find opening |===
-        while (line < lines.size() && !lines.get(line).trim().equals("|===")) {
+        while (line < lines.size() && !DELIMITER_TABLE.equals(lines.get(line).trim())) {
             line++;
         }
 
@@ -220,7 +229,7 @@ public class BlockEndCalculator {
         line++;
 
         // Find closing |===
-        while (line < lines.size() && !lines.get(line).trim().equals("|===")) {
+        while (line < lines.size() && !DELIMITER_TABLE.equals(lines.get(line).trim())) {
             line++;
         }
 
@@ -287,7 +296,7 @@ public class BlockEndCalculator {
         while (line < lines.size()) {
             String current = lines.get(line);
 
-            if (current.trim().isEmpty()) {
+            if (StringUtils.isBlank(current)) {
                 // Empty line likely ends block
                 break;
             }
@@ -313,21 +322,21 @@ public class BlockEndCalculator {
      */
     private boolean isBlockStart(String line) {
         String trimmed = line.trim();
-        return trimmed.startsWith("=") || // Section
-                trimmed.startsWith("image::") || // Image
-                trimmed.startsWith("video::") || // Video
-                trimmed.startsWith("audio::") || // Audio
-                trimmed.startsWith("include::") || // Include
-                trimmed.startsWith("[") || // Block attribute
-                trimmed.startsWith("|===") || // Table
-                trimmed.equals("----") || // Listing
-                trimmed.equals("....") || // Literal
-                trimmed.equals("====") || // Example
-                trimmed.equals("****") || // Sidebar
-                trimmed.equals("____") || // Quote/Verse
-                trimmed.equals("++++") || // Pass
-                trimmed.equals("--") || // Open
-                trimmed.equals("////"); // Comment
+        return trimmed.startsWith(SECTION_START) || // Section
+                trimmed.startsWith(DIRECTIVE_IMAGE) || // Image
+                trimmed.startsWith(DIRECTIVE_VIDEO) || // Video
+                trimmed.startsWith(DIRECTIVE_AUDIO) || // Audio
+                trimmed.startsWith(DIRECTIVE_INCLUDE) || // Include
+                trimmed.startsWith(ATTRIBUTE_START) || // Block attribute
+                trimmed.startsWith(DELIMITER_TABLE) || // Table
+                DELIMITER_LISTING.equals(trimmed) || // Listing
+                DELIMITER_LITERAL.equals(trimmed) || // Literal
+                DELIMITER_EXAMPLE.equals(trimmed) || // Example
+                DELIMITER_SIDEBAR.equals(trimmed) || // Sidebar
+                DELIMITER_QUOTE.equals(trimmed) || // Quote/Verse
+                DELIMITER_PASS.equals(trimmed) || // Pass
+                DELIMITER_OPEN.equals(trimmed) || // Open
+                DELIMITER_COMMENT.equals(trimmed); // Comment
     }
 
     private String getListMarkerPattern(String listType) {
@@ -357,10 +366,10 @@ public class BlockEndCalculator {
     private int getIndentLevel(String line) {
         int indent = 0;
         for (char c : line.toCharArray()) {
-            if (c == ' ')
+            if (c == SPACE_CHAR)
                 indent++;
-            else if (c == '\t')
-                indent += 4;
+            else if (c == TAB_CHAR)
+                indent += TAB_SIZE;
             else
                 break;
         }

@@ -16,6 +16,7 @@ import com.dataliquid.asciidoc.linter.validator.PlaceholderContext;
 import static com.dataliquid.asciidoc.linter.validator.RuleIds.Image.*;
 import com.dataliquid.asciidoc.linter.validator.SourceLocation;
 import com.dataliquid.asciidoc.linter.validator.Suggestion;
+import com.dataliquid.asciidoc.linter.util.StringUtils;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -49,6 +50,9 @@ import org.apache.logging.log4j.Logger;
  * @see BlockTypeValidator
  */
 public final class ImageBlockValidator extends AbstractBlockValidator<ImageBlock> {
+
+    // Constants for duplicate literals
+    private static final String CHARACTERS_SUFFIX = " characters";
     private static final Logger logger = LogManager.getLogger(ImageBlockValidator.class);
 
     @Override
@@ -140,7 +144,7 @@ public final class ImageBlockValidator extends AbstractBlockValidator<ImageBlock
         SourcePosition pos = findSourcePosition(block, context, url);
 
         // Check if URL is required
-        if (urlConfig.isRequired() && (url == null || url.trim().isEmpty())) {
+        if (urlConfig.isRequired() && StringUtils.isBlank(url)) {
             messages
                     .add(ValidationMessage
                             .builder()
@@ -168,7 +172,7 @@ public final class ImageBlockValidator extends AbstractBlockValidator<ImageBlock
             return;
         }
 
-        if (url != null && !url.trim().isEmpty() && urlConfig.getPattern() != null) {
+        if (url != null && !StringUtils.isBlank(url) && urlConfig.getPattern() != null) {
             // Validate URL pattern
             if (!urlConfig.getPattern().matcher(url).matches()) {
                 messages
@@ -203,19 +207,19 @@ public final class ImageBlockValidator extends AbstractBlockValidator<ImageBlock
         String valueStr = value != null ? value.toString() : null;
         SourcePosition pos = findSourcePosition(block, context, dimensionName, valueStr);
 
-        if (dimConfig.isRequired() && (valueStr == null || valueStr.trim().isEmpty())) {
+        if (dimConfig.isRequired() && StringUtils.isBlank(valueStr)) {
             messages
                     .add(ValidationMessage
                             .builder()
                             .severity(imageConfig.getSeverity())
-                            .ruleId(dimensionName.equals(WIDTH) ? WIDTH_REQUIRED : HEIGHT_REQUIRED)
+                            .ruleId(WIDTH.equals(dimensionName) ? WIDTH_REQUIRED : HEIGHT_REQUIRED)
                             .location(
                                     SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
                             .message("Image must have " + dimensionName + " specified")
                             .actualValue("No " + dimensionName)
                             .expectedValue(dimensionName + " required")
                             .errorType(ErrorType.MISSING_VALUE)
-                            .missingValueHint(dimensionName.equals(WIDTH) ? "640" : "480")
+                            .missingValueHint(WIDTH.equals(dimensionName) ? "640" : "480")
                             .placeholderContext(PlaceholderContext
                                     .builder()
                                     .type(PlaceholderContext.PlaceholderType.ATTRIBUTE_IN_LIST)
@@ -242,7 +246,7 @@ public final class ImageBlockValidator extends AbstractBlockValidator<ImageBlock
                             .add(ValidationMessage
                                     .builder()
                                     .severity(imageConfig.getSeverity())
-                                    .ruleId(dimensionName.equals(WIDTH) ? WIDTH_MIN : HEIGHT_MIN)
+                                    .ruleId(WIDTH.equals(dimensionName) ? WIDTH_MIN : HEIGHT_MIN)
                                     .location(SourceLocation
                                             .builder()
                                             .filename(context.getFilename())
@@ -266,7 +270,7 @@ public final class ImageBlockValidator extends AbstractBlockValidator<ImageBlock
                             .add(ValidationMessage
                                     .builder()
                                     .severity(imageConfig.getSeverity())
-                                    .ruleId(dimensionName.equals(WIDTH) ? WIDTH_MAX : HEIGHT_MAX)
+                                    .ruleId(WIDTH.equals(dimensionName) ? WIDTH_MAX : HEIGHT_MAX)
                                     .location(SourceLocation
                                             .builder()
                                             .filename(context.getFilename())
@@ -309,7 +313,7 @@ public final class ImageBlockValidator extends AbstractBlockValidator<ImageBlock
 
         SourcePosition pos = findAltTextPosition(block, context, altText);
 
-        if (altConfig.isRequired() && (altText == null || altText.trim().isEmpty())) {
+        if (altConfig.isRequired() && StringUtils.isBlank(altText)) {
             messages
                     .add(ValidationMessage
                             .builder()
@@ -337,7 +341,7 @@ public final class ImageBlockValidator extends AbstractBlockValidator<ImageBlock
             return;
         }
 
-        if (altText != null && !altText.trim().isEmpty()) {
+        if (altText != null && !StringUtils.isBlank(altText)) {
             // Validate min length
             if (altConfig.getMinLength() != null && altText.length() < altConfig.getMinLength()) {
                 messages
@@ -351,8 +355,8 @@ public final class ImageBlockValidator extends AbstractBlockValidator<ImageBlock
                                         .fromPosition(pos)
                                         .build())
                                 .message("Image alt text is too short")
-                                .actualValue(altText.length() + " characters")
-                                .expectedValue("At least " + altConfig.getMinLength() + " characters")
+                                .actualValue(altText.length() + CHARACTERS_SUFFIX)
+                                .expectedValue("At least " + altConfig.getMinLength() + CHARACTERS_SUFFIX)
                                 .addSuggestion(Suggestion
                                         .builder()
                                         .description("Provide more descriptive alt text")
@@ -377,8 +381,8 @@ public final class ImageBlockValidator extends AbstractBlockValidator<ImageBlock
                                         .fromPosition(pos)
                                         .build())
                                 .message("Image alt text is too long")
-                                .actualValue(altText.length() + " characters")
-                                .expectedValue("At most " + altConfig.getMaxLength() + " characters")
+                                .actualValue(altText.length() + CHARACTERS_SUFFIX)
+                                .expectedValue("At most " + altConfig.getMaxLength() + CHARACTERS_SUFFIX)
                                 .addSuggestion(Suggestion
                                         .builder()
                                         .description("Shorten the alt text while keeping it descriptive")
@@ -411,9 +415,9 @@ public final class ImageBlockValidator extends AbstractBlockValidator<ImageBlock
         // Look for image:: macro pattern
         int imageStart = sourceLine.indexOf("image::");
         if (imageStart >= 0) {
-            int bracketStart = sourceLine.indexOf("[", imageStart);
+            int bracketStart = sourceLine.indexOf('[', imageStart);
             if (bracketStart > imageStart) {
-                int bracketEnd = sourceLine.indexOf("]", bracketStart);
+                int bracketEnd = sourceLine.indexOf(']', bracketStart);
                 if (bracketEnd > bracketStart) {
                     if (altText != null && !altText.isEmpty()) {
                         // Find the alt text position
@@ -460,7 +464,7 @@ public final class ImageBlockValidator extends AbstractBlockValidator<ImageBlock
         // Look for image:: macro pattern
         int imageStart = sourceLine.indexOf("image::");
         if (imageStart >= 0) {
-            int urlEnd = sourceLine.indexOf("[", imageStart);
+            int urlEnd = sourceLine.indexOf('[', imageStart);
             if (urlEnd == -1) {
                 urlEnd = sourceLine.length();
             }
@@ -517,7 +521,7 @@ public final class ImageBlockValidator extends AbstractBlockValidator<ImageBlock
         } else {
             // Dimension attribute not found - need to add it
             // Find position before closing bracket
-            int bracketEnd = sourceLine.lastIndexOf("]");
+            int bracketEnd = sourceLine.lastIndexOf(']');
             if (bracketEnd > 0) {
                 // Return position of the bracket (1-based)
                 return new SourcePosition(bracketEnd + 1, bracketEnd + 1, lineNum);

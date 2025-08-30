@@ -26,44 +26,44 @@ public final class DisplayConfig {
     private static final int DEFAULT_MAX_LINE_WIDTH = 120;
     private static final boolean DEFAULT_SHOW_HEADER = true;
 
-    private final int contextLines;
-    private final HighlightStyle highlightStyle;
-    private final boolean useColors;
-    private final boolean showLineNumbers;
-    private final int maxLineWidth;
-    private final boolean showHeader;
+    private final int _contextLines;
+    private final HighlightStyle _highlightStyle;
+    private final boolean _useColors;
+    private final boolean _showLineNumbers;
+    private final int _maxLineWidth;
+    private final boolean _showHeader;
 
     private DisplayConfig(Builder builder) {
-        this.contextLines = builder.contextLines;
-        this.highlightStyle = builder.highlightStyle;
-        this.useColors = builder.useColors;
-        this.showLineNumbers = builder.showLineNumbers;
-        this.maxLineWidth = builder.maxLineWidth;
-        this.showHeader = builder.showHeader;
+        this._contextLines = builder._contextLines;
+        this._highlightStyle = builder._highlightStyle;
+        this._useColors = builder._useColors;
+        this._showLineNumbers = builder._showLineNumbers;
+        this._maxLineWidth = builder._maxLineWidth;
+        this._showHeader = builder._showHeader;
     }
 
     public int getContextLines() {
-        return contextLines;
+        return this._contextLines;
     }
 
     public HighlightStyle getHighlightStyle() {
-        return highlightStyle;
+        return this._highlightStyle;
     }
 
     public boolean isUseColors() {
-        return useColors;
+        return this._useColors;
     }
 
     public boolean isShowLineNumbers() {
-        return showLineNumbers;
+        return this._showLineNumbers;
     }
 
     public int getMaxLineWidth() {
-        return maxLineWidth;
+        return this._maxLineWidth;
     }
 
     public boolean isShowHeader() {
-        return showHeader;
+        return this._showHeader;
     }
 
     @Override
@@ -73,14 +73,14 @@ public final class DisplayConfig {
         if (o == null || getClass() != o.getClass())
             return false;
         DisplayConfig that = (DisplayConfig) o;
-        return contextLines == that.contextLines && useColors == that.useColors
-                && showLineNumbers == that.showLineNumbers && maxLineWidth == that.maxLineWidth
-                && showHeader == that.showHeader && highlightStyle == that.highlightStyle;
+        return _contextLines == that._contextLines && _useColors == that._useColors
+                && _showLineNumbers == that._showLineNumbers && _maxLineWidth == that._maxLineWidth
+                && _showHeader == that._showHeader && _highlightStyle == that._highlightStyle;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(contextLines, highlightStyle, useColors, showLineNumbers, maxLineWidth, showHeader);
+        return Objects.hash(_contextLines, _highlightStyle, _useColors, _showLineNumbers, _maxLineWidth, _showHeader);
     }
 
     public static Builder builder() {
@@ -89,49 +89,49 @@ public final class DisplayConfig {
 
     @JsonPOJOBuilder(withPrefix = EMPTY)
     public static final class Builder {
-        private int contextLines = DEFAULT_CONTEXT_LINES;
-        private HighlightStyle highlightStyle = DEFAULT_HIGHLIGHT_STYLE;
-        private boolean useColors = DEFAULT_USE_COLORS;
-        private boolean showLineNumbers = DEFAULT_SHOW_LINE_NUMBERS;
-        private int maxLineWidth = DEFAULT_MAX_LINE_WIDTH;
-        private boolean showHeader = DEFAULT_SHOW_HEADER;
+        private int _contextLines = DEFAULT_CONTEXT_LINES;
+        private HighlightStyle _highlightStyle = DEFAULT_HIGHLIGHT_STYLE;
+        private boolean _useColors = DEFAULT_USE_COLORS;
+        private boolean _showLineNumbers = DEFAULT_SHOW_LINE_NUMBERS;
+        private int _maxLineWidth = DEFAULT_MAX_LINE_WIDTH;
+        private boolean _showHeader = DEFAULT_SHOW_HEADER;
 
         private Builder() {
         }
 
         @JsonProperty(CONTEXT_LINES)
         public Builder contextLines(int contextLines) {
-            this.contextLines = contextLines;
+            this._contextLines = contextLines;
             return this;
         }
 
         @JsonProperty(HIGHLIGHT_STYLE)
         public Builder highlightStyle(HighlightStyle highlightStyle) {
-            this.highlightStyle = highlightStyle != null ? highlightStyle : DEFAULT_HIGHLIGHT_STYLE;
+            this._highlightStyle = highlightStyle != null ? highlightStyle : DEFAULT_HIGHLIGHT_STYLE;
             return this;
         }
 
         @JsonProperty(USE_COLORS)
         public Builder useColors(boolean useColors) {
-            this.useColors = useColors;
+            this._useColors = useColors;
             return this;
         }
 
         @JsonProperty(SHOW_LINE_NUMBERS)
         public Builder showLineNumbers(boolean showLineNumbers) {
-            this.showLineNumbers = showLineNumbers;
+            this._showLineNumbers = showLineNumbers;
             return this;
         }
 
         @JsonProperty(MAX_LINE_WIDTH)
         public Builder maxLineWidth(int maxLineWidth) {
-            this.maxLineWidth = maxLineWidth;
+            this._maxLineWidth = maxLineWidth;
             return this;
         }
 
         @JsonProperty(SHOW_HEADER)
         public Builder showHeader(boolean showHeader) {
-            this.showHeader = showHeader;
+            this._showHeader = showHeader;
             return this;
         }
 

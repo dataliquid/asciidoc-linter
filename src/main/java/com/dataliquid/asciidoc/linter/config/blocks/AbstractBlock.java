@@ -19,61 +19,69 @@ public abstract class AbstractBlock implements Block {
     private final Integer order;
 
     protected AbstractBlock(AbstractBuilder<?> builder) {
-        this.name = builder.name;
-        this.severity = builder.severity;
-        this.occurrence = builder.occurrence;
-        this.order = builder.order;
+        this.name = builder._name;
+        this.severity = builder._severity;
+        this.occurrence = builder._occurrence;
+        this.order = builder._order;
     }
 
+    @Override
     public abstract BlockType getType();
 
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public Severity getSeverity() {
         return severity;
     }
 
+    @Override
     public OccurrenceConfig getOccurrence() {
         return occurrence;
     }
 
+    @Override
     public Integer getOrder() {
         return order;
     }
 
     protected abstract static class AbstractBuilder<T extends AbstractBuilder<T>> {
-        protected String name;
-        protected Severity severity;
-        protected OccurrenceConfig occurrence;
-        protected Integer order;
+        // Constants
+        private static final String UNCHECKED_CAST_WARNING = "unchecked";
+
+        protected String _name;
+        protected Severity _severity;
+        protected OccurrenceConfig _occurrence;
+        protected Integer _order;
 
         @JsonProperty(NAME)
-        @SuppressWarnings("unchecked")
+        @SuppressWarnings(UNCHECKED_CAST_WARNING)
         public T name(String name) {
-            this.name = name;
+            this._name = name;
             return (T) this;
         }
 
         @JsonProperty(SEVERITY)
-        @SuppressWarnings("unchecked")
+        @SuppressWarnings(UNCHECKED_CAST_WARNING)
         public T severity(Severity severity) {
-            this.severity = severity;
+            this._severity = severity;
             return (T) this;
         }
 
         @JsonProperty(OCCURRENCE)
-        @SuppressWarnings("unchecked")
+        @SuppressWarnings(UNCHECKED_CAST_WARNING)
         public T occurrence(OccurrenceConfig occurrence) {
-            this.occurrence = occurrence;
+            this._occurrence = occurrence;
             return (T) this;
         }
 
         @JsonProperty(ORDER)
-        @SuppressWarnings("unchecked")
+        @SuppressWarnings(UNCHECKED_CAST_WARNING)
         public T order(Integer order) {
-            this.order = order;
+            this._order = order;
             return (T) this;
         }
 

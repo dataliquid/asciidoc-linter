@@ -25,21 +25,21 @@ public final class SuggestionsConfig {
     private final boolean showExamples;
 
     private SuggestionsConfig(Builder builder) {
-        this.enabled = builder.enabled;
-        this.maxPerError = builder.maxPerError;
-        this.showExamples = builder.showExamples;
+        this.enabled = builder._enabled;
+        this.maxPerError = builder._maxPerError;
+        this.showExamples = builder._showExamples;
     }
 
     public boolean isEnabled() {
-        return enabled;
+        return this.enabled;
     }
 
     public int getMaxPerError() {
-        return maxPerError;
+        return this.maxPerError;
     }
 
     public boolean isShowExamples() {
-        return showExamples;
+        return this.showExamples;
     }
 
     @Override
@@ -62,29 +62,30 @@ public final class SuggestionsConfig {
     }
 
     @JsonPOJOBuilder(withPrefix = EMPTY)
+    @SuppressWarnings("PMD.AvoidFieldNameMatchingMethodName")
     public static final class Builder {
-        private boolean enabled = DEFAULT_ENABLED;
-        private int maxPerError = DEFAULT_MAX_PER_ERROR;
-        private boolean showExamples = DEFAULT_SHOW_EXAMPLES;
+        private boolean _enabled = DEFAULT_ENABLED;
+        private int _maxPerError = DEFAULT_MAX_PER_ERROR;
+        private boolean _showExamples = DEFAULT_SHOW_EXAMPLES;
 
         private Builder() {
         }
 
         @JsonProperty(ENABLED)
         public Builder enabled(boolean enabled) {
-            this.enabled = enabled;
+            this._enabled = enabled;
             return this;
         }
 
         @JsonProperty(MAX_PER_ERROR)
         public Builder maxPerError(int maxPerError) {
-            this.maxPerError = maxPerError;
+            this._maxPerError = maxPerError;
             return this;
         }
 
         @JsonProperty(SHOW_EXAMPLES)
         public Builder showExamples(boolean showExamples) {
-            this.showExamples = showExamples;
+            this._showExamples = showExamples;
             return this;
         }
 

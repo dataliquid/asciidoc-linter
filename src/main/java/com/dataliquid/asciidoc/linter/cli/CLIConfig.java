@@ -24,20 +24,22 @@ public class CLIConfig {
 
     private CLIConfig(Builder builder) {
         this.inputPatterns = Objects
-                .requireNonNull(builder.inputPatterns, "[" + getClass().getName() + "] inputPatterns must not be null");
+                .requireNonNull(builder._inputPatterns,
+                        "[" + getClass().getName() + "] inputPatterns must not be null");
         if (this.inputPatterns.isEmpty()) {
             throw new IllegalArgumentException("inputPatterns must not be empty");
         }
         this.baseDirectory = Objects
-                .requireNonNull(builder.baseDirectory, "[" + getClass().getName() + "] baseDirectory must not be null");
-        this.configFile = builder.configFile;
-        this.outputConfigFormat = builder.outputConfigFormat;
-        this.outputConfigFile = builder.outputConfigFile;
+                .requireNonNull(builder._baseDirectory,
+                        "[" + getClass().getName() + "] baseDirectory must not be null");
+        this.configFile = builder._configFile;
+        this.outputConfigFormat = builder._outputConfigFormat;
+        this.outputConfigFile = builder._outputConfigFile;
         this.reportFormat = Objects
-                .requireNonNull(builder.reportFormat, "[" + getClass().getName() + "] reportFormat must not be null");
-        this.reportOutput = builder.reportOutput;
+                .requireNonNull(builder._reportFormat, "[" + getClass().getName() + "] reportFormat must not be null");
+        this.reportOutput = builder._reportOutput;
         this.failLevel = Objects
-                .requireNonNull(builder.failLevel, "[" + getClass().getName() + "] failLevel must not be null");
+                .requireNonNull(builder._failLevel, "[" + getClass().getName() + "] failLevel must not be null");
     }
 
     public List<String> getInputPatterns() {
@@ -81,52 +83,52 @@ public class CLIConfig {
     }
 
     public static class Builder {
-        private List<String> inputPatterns;
-        private Path baseDirectory = Paths.get(System.getProperty("user.dir"));
-        private Path configFile;
-        private OutputFormat outputConfigFormat;
-        private Path outputConfigFile;
-        private String reportFormat = "console";
-        private Path reportOutput;
-        private Severity failLevel = Severity.ERROR;
+        private List<String> _inputPatterns;
+        private Path _baseDirectory = Paths.get(System.getProperty("user.dir"));
+        private Path _configFile;
+        private OutputFormat _outputConfigFormat;
+        private Path _outputConfigFile;
+        private String _reportFormat = "console";
+        private Path _reportOutput;
+        private Severity _failLevel = Severity.ERROR;
 
         public Builder inputPatterns(List<String> inputPatterns) {
-            this.inputPatterns = inputPatterns;
+            this._inputPatterns = inputPatterns;
             return this;
         }
 
         public Builder baseDirectory(Path baseDirectory) {
-            this.baseDirectory = baseDirectory;
+            this._baseDirectory = baseDirectory;
             return this;
         }
 
         public Builder configFile(Path configFile) {
-            this.configFile = configFile;
+            this._configFile = configFile;
             return this;
         }
 
         public Builder outputConfigFormat(OutputFormat outputConfigFormat) {
-            this.outputConfigFormat = outputConfigFormat;
+            this._outputConfigFormat = outputConfigFormat;
             return this;
         }
 
         public Builder outputConfigFile(Path outputConfigFile) {
-            this.outputConfigFile = outputConfigFile;
+            this._outputConfigFile = outputConfigFile;
             return this;
         }
 
         public Builder reportFormat(String reportFormat) {
-            this.reportFormat = reportFormat;
+            this._reportFormat = reportFormat;
             return this;
         }
 
         public Builder reportOutput(Path reportOutput) {
-            this.reportOutput = reportOutput;
+            this._reportOutput = reportOutput;
             return this;
         }
 
         public Builder failLevel(Severity failLevel) {
-            this.failLevel = failLevel;
+            this._failLevel = failLevel;
             return this;
         }
 

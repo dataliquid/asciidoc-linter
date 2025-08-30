@@ -18,6 +18,7 @@ import com.dataliquid.asciidoc.linter.validator.PlaceholderContext;
 import static com.dataliquid.asciidoc.linter.validator.RuleIds.Video.*;
 import com.dataliquid.asciidoc.linter.validator.SourceLocation;
 import com.dataliquid.asciidoc.linter.validator.Suggestion;
+import com.dataliquid.asciidoc.linter.util.StringUtils;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
 
 /**
@@ -83,7 +84,7 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
         Severity severity = resolveSeverity(urlConfig.getSeverity(), videoConfig.getSeverity());
 
         // Check if required
-        if (Boolean.TRUE.equals(urlConfig.getRequired()) && (url == null || url.trim().isEmpty())) {
+        if (Boolean.TRUE.equals(urlConfig.getRequired()) && StringUtils.isBlank(url)) {
             SourcePosition pos = findSourcePosition(node, context, url);
             messages
                     .add(ValidationMessage
@@ -149,16 +150,15 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
         Severity severity = resolveSeverity(dimensionConfig.getSeverity(), videoConfig.getSeverity());
 
         // Check if required
-        if (Boolean.TRUE.equals(dimensionConfig.getRequired())
-                && (dimensionStr == null || dimensionStr.trim().isEmpty())) {
+        if (Boolean.TRUE.equals(dimensionConfig.getRequired()) && StringUtils.isBlank(dimensionStr)) {
             SourcePosition pos = findSourcePosition(node, context, dimensionType, dimensionStr);
 
             // Check if there are existing attributes
             boolean hasOtherAttributes = false;
-            if (dimensionType.equals(WIDTH)) {
+            if (WIDTH.equals(dimensionType)) {
                 hasOtherAttributes = node.getAttribute(HEIGHT) != null || node.getAttribute(POSTER) != null
                         || node.getAttribute(OPTIONS) != null;
-            } else if (dimensionType.equals(HEIGHT)) {
+            } else if (HEIGHT.equals(dimensionType)) {
                 hasOtherAttributes = node.getAttribute(WIDTH) != null || node.getAttribute(POSTER) != null
                         || node.getAttribute(OPTIONS) != null;
             }
@@ -167,12 +167,12 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
                     .add(ValidationMessage
                             .builder()
                             .severity(severity)
-                            .ruleId(dimensionType.equals(WIDTH) ? WIDTH_REQUIRED : HEIGHT_REQUIRED)
+                            .ruleId(WIDTH.equals(dimensionType) ? WIDTH_REQUIRED : HEIGHT_REQUIRED)
                             .message(String.format("Video %s is required but not provided", dimensionType))
                             .location(
                                     SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
                             .errorType(ErrorType.MISSING_VALUE)
-                            .missingValueHint(dimensionType.equals(WIDTH) ? "640" : "360")
+                            .missingValueHint(WIDTH.equals(dimensionType) ? "640" : "360")
                             .placeholderContext(PlaceholderContext
                                     .builder()
                                     .type(hasOtherAttributes ? PlaceholderContext.PlaceholderType.ATTRIBUTE_IN_LIST
@@ -200,7 +200,7 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
                             .add(ValidationMessage
                                     .builder()
                                     .severity(severity)
-                                    .ruleId(dimensionType.equals(WIDTH) ? WIDTH_MIN : HEIGHT_MIN)
+                                    .ruleId(WIDTH.equals(dimensionType) ? WIDTH_MIN : HEIGHT_MIN)
                                     .message(String.format("Video %s is below minimum value", dimensionType))
                                     .location(context.createLocation(node))
                                     .errorType(ErrorType.OUT_OF_RANGE)
@@ -222,7 +222,7 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
                             .add(ValidationMessage
                                     .builder()
                                     .severity(severity)
-                                    .ruleId(dimensionType.equals(WIDTH) ? WIDTH_MAX : HEIGHT_MAX)
+                                    .ruleId(WIDTH.equals(dimensionType) ? WIDTH_MAX : HEIGHT_MAX)
                                     .message(String.format("Video %s exceeds maximum value", dimensionType))
                                     .location(context.createLocation(node))
                                     .errorType(ErrorType.OUT_OF_RANGE)
@@ -243,7 +243,7 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
                         .add(ValidationMessage
                                 .builder()
                                 .severity(severity)
-                                .ruleId(dimensionType.equals(WIDTH) ? WIDTH_INVALID : HEIGHT_INVALID)
+                                .ruleId(WIDTH.equals(dimensionType) ? WIDTH_INVALID : HEIGHT_INVALID)
                                 .message(String.format("Video %s is not a valid number", dimensionType))
                                 .location(context.createLocation(node))
                                 .errorType(ErrorType.INVALID_PATTERN)
@@ -268,7 +268,7 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
         Severity severity = resolveSeverity(posterConfig.getSeverity(), videoConfig.getSeverity());
 
         // Check if required
-        if (Boolean.TRUE.equals(posterConfig.getRequired()) && (poster == null || poster.trim().isEmpty())) {
+        if (Boolean.TRUE.equals(posterConfig.getRequired()) && StringUtils.isBlank(poster)) {
             SourcePosition pos = findPosterPosition(node, context, poster);
 
             // Check if there are existing attributes
@@ -397,7 +397,7 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
         Severity severity = resolveSeverity(captionConfig.getSeverity(), videoConfig.getSeverity());
 
         // Check if required
-        if (Boolean.TRUE.equals(captionConfig.getRequired()) && (caption == null || caption.trim().isEmpty())) {
+        if (Boolean.TRUE.equals(captionConfig.getRequired()) && StringUtils.isBlank(caption)) {
             SourcePosition pos = findCaptionPosition(node, context);
             messages
                     .add(ValidationMessage
@@ -501,7 +501,7 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
         // Look for video:: macro pattern
         int videoStart = sourceLine.indexOf("video::");
         if (videoStart >= 0) {
-            int urlEnd = sourceLine.indexOf("[", videoStart);
+            int urlEnd = sourceLine.indexOf('[', videoStart);
             if (urlEnd == -1) {
                 urlEnd = sourceLine.length();
             }
@@ -541,9 +541,9 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
         String sourceLine = fileLines.get(lineNum - 1);
 
         // Look for attributes bracket
-        int bracketStart = sourceLine.indexOf("[");
+        int bracketStart = sourceLine.indexOf('[');
         if (bracketStart >= 0) {
-            int bracketEnd = sourceLine.indexOf("]", bracketStart);
+            int bracketEnd = sourceLine.indexOf(']', bracketStart);
             if (bracketEnd > bracketStart) {
                 String attributes = sourceLine.substring(bracketStart + 1, bracketEnd);
 
@@ -583,9 +583,9 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
         String sourceLine = fileLines.get(lineNum - 1);
 
         // Look for attributes bracket
-        int bracketStart = sourceLine.indexOf("[");
+        int bracketStart = sourceLine.indexOf('[');
         if (bracketStart >= 0) {
-            int bracketEnd = sourceLine.indexOf("]", bracketStart);
+            int bracketEnd = sourceLine.indexOf(']', bracketStart);
             if (bracketEnd > bracketStart) {
                 String attributes = sourceLine.substring(bracketStart + 1, bracketEnd);
 
@@ -626,9 +626,9 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
         String sourceLine = fileLines.get(lineNum - 1);
 
         // Look for attributes bracket
-        int bracketStart = sourceLine.indexOf("[");
+        int bracketStart = sourceLine.indexOf('[');
         if (bracketStart >= 0) {
-            int bracketEnd = sourceLine.indexOf("]", bracketStart);
+            int bracketEnd = sourceLine.indexOf(']', bracketStart);
             if (bracketEnd > bracketStart) {
                 return new SourcePosition(bracketEnd + 1, bracketEnd + 1, lineNum);
             }

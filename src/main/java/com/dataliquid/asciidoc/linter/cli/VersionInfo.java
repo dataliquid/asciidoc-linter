@@ -24,13 +24,14 @@ public class VersionInfo {
             if (is != null) {
                 props.load(is);
             }
-        } catch (IOException e) {
-            // Properties remain empty
+        } catch (IOException e) { // NOPMD - Expected when running outside of JAR
+            // Continue with default values - properties file may not exist during
+            // development
         }
 
         this.version = props.getProperty("version", UNKNOWN);
-        this.artifactId = props.getProperty("artifactId", "asciidoc-linter");
-        this.groupId = props.getProperty("groupId", "com.dataliquid");
+        this.artifactId = props.getProperty("artifactId", UNKNOWN);
+        this.groupId = props.getProperty("groupId", UNKNOWN);
     }
 
     /**
@@ -39,10 +40,12 @@ public class VersionInfo {
      * @return the VersionInfo instance
      */
     public static VersionInfo getInstance() {
-        if (instance == null) {
-            instance = new VersionInfo();
+        synchronized (VersionInfo.class) {
+            if (instance == null) {
+                instance = new VersionInfo();
+            }
+            return instance;
         }
-        return instance;
     }
 
     /**

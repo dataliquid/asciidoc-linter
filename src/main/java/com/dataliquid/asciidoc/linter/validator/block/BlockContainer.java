@@ -74,7 +74,7 @@ public final class BlockContainer {
 
         // First, check if there's a preamble - it contains the document-level blocks
         for (StructuralNode child : docBlocks) {
-            if (child != null && child.getContext() != null && child.getContext().equals("preamble")) {
+            if (child != null && child.getContext() != null && "preamble".equals(child.getContext())) {
                 // The preamble contains all document-level blocks
                 List<StructuralNode> preambleBlocks = child.getBlocks();
                 if (preambleBlocks != null) {

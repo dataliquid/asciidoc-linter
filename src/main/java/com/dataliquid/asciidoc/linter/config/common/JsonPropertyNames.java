@@ -52,7 +52,7 @@ public final class JsonPropertyNames {
      * Property names for document configuration
      */
     public static final class Document {
-        public static final String DOCUMENT = "document";
+        public static final String DOCUMENT_CONFIG = "document";
         public static final String METADATA = "metadata";
         public static final String SECTIONS = "sections";
         public static final String ATTRIBUTES = "attributes";
@@ -171,7 +171,7 @@ public final class JsonPropertyNames {
      * Property names for output configuration
      */
     public static final class Output {
-        public static final String OUTPUT = "output";
+        public static final String OUTPUT_CONFIG = "output";
         public static final String FORMAT = "format";
         public static final String DISPLAY = "display";
         public static final String SUGGESTIONS = "suggestions";

@@ -31,6 +31,7 @@ public class MessageRenderer {
         case ENHANCED -> renderEnhanced(message, writer);
         case SIMPLE -> renderSimple(message, writer);
         case COMPACT -> renderCompact(message, writer);
+        default -> renderEnhanced(message, writer); // Default to enhanced format
         }
     }
 
@@ -97,7 +98,7 @@ public class MessageRenderer {
 
     private void renderCompact(ValidationMessage message, PrintWriter writer) {
         // Single-line output for CI/CD
-        StringBuilder compact = new StringBuilder();
+        StringBuilder compact = new StringBuilder(50); // Increased buffer size
         compact
                 .append(message.getLocation().formatLocation())
                 .append(": ")
@@ -106,7 +107,7 @@ public class MessageRenderer {
                 .append(message.getMessage())
                 .append(" [")
                 .append(message.getRuleId())
-                .append("]");
+                .append(']');
 
         // Add actual/expected values inline if present
         if (message.getActualValue().isPresent() || message.getExpectedValue().isPresent()) {
@@ -120,7 +121,7 @@ public class MessageRenderer {
             if (message.getExpectedValue().isPresent()) {
                 compact.append("expected: ").append(message.getExpectedValue().get());
             }
-            compact.append(")");
+            compact.append(')');
         }
 
         // Add inline fix suggestion if available

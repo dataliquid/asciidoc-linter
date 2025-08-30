@@ -4,6 +4,7 @@ import static com.dataliquid.asciidoc.linter.validator.RuleIds.Block.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import com.dataliquid.asciidoc.linter.config.blocks.Block;
 import com.dataliquid.asciidoc.linter.config.rule.OrderConfig;
@@ -13,6 +14,9 @@ import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
  * Validates block order constraints within sections.
  */
 public final class BlockOrderValidator {
+
+    // Constants for duplicate literals
+    private static final String AT_POSITION_SUFFIX = "' at position ";
 
     /**
      * Validates order constraints for blocks in a section.
@@ -121,8 +125,8 @@ public final class BlockOrderValidator {
                             .location(createSectionLocation(context))
                             .message("Block '" + constraint.first() + "' must appear before '" + constraint.second()
                                     + "'")
-                            .actualValue("'" + constraint.first() + "' at position " + (firstPos + 1) + ", '"
-                                    + constraint.second() + "' at position " + (secondPos + 1))
+                            .actualValue("'" + constraint.first() + AT_POSITION_SUFFIX + (firstPos + 1) + ", '"
+                                    + constraint.second() + AT_POSITION_SUFFIX + (secondPos + 1))
                             .expectedValue("'" + constraint.first() + "' before '" + constraint.second() + "'")
                             .build());
         }
@@ -167,8 +171,8 @@ public final class BlockOrderValidator {
                             .location(createSectionLocation(context))
                             .message("Block '" + constraint.first() + "' must appear after '" + constraint.second()
                                     + "'")
-                            .actualValue("'" + constraint.first() + "' at position " + (firstPos + 1) + ", '"
-                                    + constraint.second() + "' at position " + (secondPos + 1))
+                            .actualValue("'" + constraint.first() + AT_POSITION_SUFFIX + (firstPos + 1) + ", '"
+                                    + constraint.second() + AT_POSITION_SUFFIX + (secondPos + 1))
                             .expectedValue("'" + constraint.first() + "' after '" + constraint.second() + "'")
                             .build());
         }
@@ -181,7 +185,7 @@ public final class BlockOrderValidator {
         if (block.getName() != null) {
             return block.getName();
         }
-        return block.getType().toString().toLowerCase();
+        return block.getType().toString().toLowerCase(Locale.ROOT);
     }
 
     /**

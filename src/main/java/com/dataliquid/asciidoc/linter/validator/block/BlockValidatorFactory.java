@@ -1,5 +1,6 @@
 package com.dataliquid.asciidoc.linter.validator.block;
 
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -43,7 +44,8 @@ public final class BlockValidatorFactory {
      * Creates and registers all available validators.
      */
     private Map<BlockType, BlockTypeValidator> createValidators() {
-        Map<BlockType, BlockTypeValidator> map = new HashMap<>();
+        @SuppressWarnings("PMD.UseConcurrentHashMap") // EnumMap is appropriate for enum keys, no concurrency needed
+        Map<BlockType, BlockTypeValidator> map = new EnumMap<>(BlockType.class);
 
         // Register all validators
         registerValidator(map, new ParagraphBlockValidator());

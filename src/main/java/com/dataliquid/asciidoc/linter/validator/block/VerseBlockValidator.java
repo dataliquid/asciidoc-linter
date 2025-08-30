@@ -17,6 +17,7 @@ import static com.dataliquid.asciidoc.linter.validator.RuleIds.Verse.*;
 import com.dataliquid.asciidoc.linter.validator.SourceLocation;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
 import com.dataliquid.asciidoc.linter.validator.Suggestion;
+import com.dataliquid.asciidoc.linter.util.StringUtils;
 
 /**
  * Validator for verse/quote blocks in AsciiDoc documents.
@@ -46,6 +47,10 @@ import com.dataliquid.asciidoc.linter.validator.Suggestion;
  * @see BlockTypeValidator
  */
 public final class VerseBlockValidator extends AbstractBlockValidator<VerseBlock> {
+    private static final String CHARACTERS_UNIT = " characters";
+    // Constants for attribution parsing
+    private static final int ATTRIBUTION_QUOTE_COUNT = 2;
+
     @Override
     public BlockType getSupportedType() {
         return BlockType.VERSE;
@@ -136,7 +141,7 @@ public final class VerseBlockValidator extends AbstractBlockValidator<VerseBlock
             StructuralNode block, List<ValidationMessage> messages, VerseBlock verseConfig) {
 
         // Check if author is required
-        if (config.isRequired() && (author == null || author.trim().isEmpty())) {
+        if (config.isRequired() && StringUtils.isBlank(author)) {
             // Create location pointing to where author should be in [verse] line
             SourceLocation verseLocation = context.createLocation(block);
             // The [verse] line is typically one line before the block delimiter
@@ -176,7 +181,7 @@ public final class VerseBlockValidator extends AbstractBlockValidator<VerseBlock
             return;
         }
 
-        if (author != null && !author.trim().isEmpty()) {
+        if (author != null && !StringUtils.isBlank(author)) {
             // Validate author length
             if (config.getMinLength() != null && author.length() < config.getMinLength()) {
                 SourcePosition pos = findSourcePosition(block, context);
@@ -191,8 +196,8 @@ public final class VerseBlockValidator extends AbstractBlockValidator<VerseBlock
                                         .fromPosition(pos)
                                         .build())
                                 .message("Verse author is too short")
-                                .actualValue(author.length() + " characters")
-                                .expectedValue("At least " + config.getMinLength() + " characters")
+                                .actualValue(author.length() + CHARACTERS_UNIT)
+                                .expectedValue("At least " + config.getMinLength() + CHARACTERS_UNIT)
                                 .addSuggestion(Suggestion
                                         .builder()
                                         .description("Use longer author name")
@@ -217,8 +222,8 @@ public final class VerseBlockValidator extends AbstractBlockValidator<VerseBlock
                                         .fromPosition(pos)
                                         .build())
                                 .message("Verse author is too long")
-                                .actualValue(author.length() + " characters")
-                                .expectedValue("At most " + config.getMaxLength() + " characters")
+                                .actualValue(author.length() + CHARACTERS_UNIT)
+                                .expectedValue("At most " + config.getMaxLength() + CHARACTERS_UNIT)
                                 .addSuggestion(Suggestion
                                         .builder()
                                         .description("Shorten author name")
@@ -266,7 +271,7 @@ public final class VerseBlockValidator extends AbstractBlockValidator<VerseBlock
             VerseBlock verseConfig) {
 
         // Check if attribution is required
-        if (config.isRequired() && (attribution == null || attribution.trim().isEmpty())) {
+        if (config.isRequired() && StringUtils.isBlank(attribution)) {
             // Create location pointing to where attribution should be in [verse] line
             SourceLocation verseLocation = context.createLocation(block);
             // The [verse] line is typically one line before the block delimiter
@@ -306,7 +311,7 @@ public final class VerseBlockValidator extends AbstractBlockValidator<VerseBlock
             return;
         }
 
-        if (attribution != null && !attribution.trim().isEmpty()) {
+        if (attribution != null && !StringUtils.isBlank(attribution)) {
             // Validate attribution length
             if (config.getMinLength() != null && attribution.length() < config.getMinLength()) {
                 SourcePosition pos = findAttributionPosition(block, context);
@@ -321,8 +326,8 @@ public final class VerseBlockValidator extends AbstractBlockValidator<VerseBlock
                                         .fromPosition(pos)
                                         .build())
                                 .message("Verse attribution is too short")
-                                .actualValue(attribution.length() + " characters")
-                                .expectedValue("At least " + config.getMinLength() + " characters")
+                                .actualValue(attribution.length() + CHARACTERS_UNIT)
+                                .expectedValue("At least " + config.getMinLength() + CHARACTERS_UNIT)
                                 .addSuggestion(Suggestion
                                         .builder()
                                         .description("Use longer attribution source")
@@ -347,8 +352,8 @@ public final class VerseBlockValidator extends AbstractBlockValidator<VerseBlock
                                         .fromPosition(pos)
                                         .build())
                                 .message("Verse attribution is too long")
-                                .actualValue(attribution.length() + " characters")
-                                .expectedValue("At most " + config.getMaxLength() + " characters")
+                                .actualValue(attribution.length() + CHARACTERS_UNIT)
+                                .expectedValue("At most " + config.getMaxLength() + CHARACTERS_UNIT)
                                 .addSuggestion(Suggestion
                                         .builder()
                                         .description("Shorten attribution source")
@@ -395,7 +400,7 @@ public final class VerseBlockValidator extends AbstractBlockValidator<VerseBlock
             StructuralNode block, List<ValidationMessage> messages, VerseBlock verseConfig) {
 
         // Check if content is required
-        if (config.isRequired() && (content == null || content.trim().isEmpty())) {
+        if (config.isRequired() && StringUtils.isBlank(content)) {
             // Report error on the [verse] line, not the block delimiter
             SourceLocation verseLocation = context.createLocation(block, 1, 1);
             SourceLocation contentLocation = SourceLocation
@@ -446,8 +451,8 @@ public final class VerseBlockValidator extends AbstractBlockValidator<VerseBlock
                             .location(
                                     SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
                             .message("Verse content is too short")
-                            .actualValue(contentLength + " characters")
-                            .expectedValue("At least " + config.getMinLength() + " characters")
+                            .actualValue(contentLength + CHARACTERS_UNIT)
+                            .expectedValue("At least " + config.getMinLength() + CHARACTERS_UNIT)
                             .addSuggestion(Suggestion
                                     .builder()
                                     .description("Add more content to verse block")
@@ -473,8 +478,8 @@ public final class VerseBlockValidator extends AbstractBlockValidator<VerseBlock
                                         .fromPosition(pos)
                                         .build())
                                 .message("Verse content is too long")
-                                .actualValue(content.length() + " characters")
-                                .expectedValue("At most " + config.getMaxLength() + " characters")
+                                .actualValue(content.length() + CHARACTERS_UNIT)
+                                .expectedValue("At most " + config.getMaxLength() + CHARACTERS_UNIT)
                                 .addSuggestion(Suggestion
                                         .builder()
                                         .description("Shorten verse content")
@@ -537,15 +542,15 @@ public final class VerseBlockValidator extends AbstractBlockValidator<VerseBlock
                 if (line.trim().startsWith("[verse")) {
                     // Found the [verse] line
                     // Author is the first quoted parameter after [verse,
-                    int authorStart = line.indexOf("\"");
+                    int authorStart = line.indexOf('"');
                     if (authorStart >= 0) {
-                        int authorEnd = line.indexOf("\"", authorStart + 1);
+                        int authorEnd = line.indexOf('"', authorStart + 1);
                         if (authorEnd > authorStart) {
                             return new SourcePosition(authorStart + 2, authorEnd, checkLine);
                         }
                     }
                     // No quotes found, position after comma
-                    int commaPos = line.indexOf(",");
+                    int commaPos = line.indexOf(',');
                     if (commaPos >= 0) {
                         return new SourcePosition(commaPos + 2, commaPos + 2, checkLine);
                     }
@@ -585,12 +590,12 @@ public final class VerseBlockValidator extends AbstractBlockValidator<VerseBlock
 
                     // Find the second quoted string (first is author, second is attribution)
                     while (searchPos < line.length() && quoteCount < 2) {
-                        int nextQuoteStart = line.indexOf("\"", searchPos);
+                        int nextQuoteStart = line.indexOf('"', searchPos);
                         if (nextQuoteStart >= 0) {
-                            int nextQuoteEnd = line.indexOf("\"", nextQuoteStart + 1);
+                            int nextQuoteEnd = line.indexOf('"', nextQuoteStart + 1);
                             if (nextQuoteEnd > nextQuoteStart) {
                                 quoteCount++;
-                                if (quoteCount == 2) {
+                                if (quoteCount == ATTRIBUTION_QUOTE_COUNT) {
                                     // This is the attribution (second quoted string)
                                     quoteStart = nextQuoteStart;
                                     quoteEnd = nextQuoteEnd;
@@ -638,7 +643,7 @@ public final class VerseBlockValidator extends AbstractBlockValidator<VerseBlock
             // Find the first line of actual content
             for (int i = blockLineNum; i < fileLines.size() && i < blockLineNum + 10; i++) {
                 String line = fileLines.get(i - 1);
-                if (!line.trim().equals("____") && !line.trim().isEmpty()) {
+                if (!"____".equals(line.trim()) && !StringUtils.isBlank(line)) {
                     // Found content line
                     return new SourcePosition(1, line.length(), i);
                 }
