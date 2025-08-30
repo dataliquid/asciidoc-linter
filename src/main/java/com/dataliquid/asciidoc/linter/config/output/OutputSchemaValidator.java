@@ -6,6 +6,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Set;
 
+import com.dataliquid.asciidoc.linter.config.SchemaConstants;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
@@ -50,8 +51,7 @@ public class OutputSchemaValidator {
                         .defaultMetaSchemaIri(JsonMetaSchema.getV202012().getIri())
                         .schemaMappers(schemaMappers -> {
                             // Map HTTPS references to actual classpath URLs
-                            schemaMappers
-                                    .mapPrefix("https://dataliquid.com/asciidoc/linter/schemas/", baseClasspathUrl);
+                            schemaMappers.mapPrefix(SchemaConstants.SCHEMA_URL_PREFIX, baseClasspathUrl);
                         })
                         .metaSchema(JsonMetaSchema.getV202012())
                         .build();
