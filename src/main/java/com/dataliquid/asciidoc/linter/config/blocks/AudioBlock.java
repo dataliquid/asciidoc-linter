@@ -30,10 +30,10 @@ public final class AudioBlock extends AbstractBlock {
     private final TitleConfig title;
 
     @JsonCreator
-    public AudioBlock(@JsonProperty("name") String name, @JsonProperty("severity") Severity severity,
+    public AudioBlock(@JsonProperty("name") String name, @JsonProperty(SEVERITY) Severity severity,
             @JsonProperty("occurrence") OccurrenceConfig occurrence, @JsonProperty("order") Integer order,
-            @JsonProperty("url") UrlConfig url, @JsonProperty("options") OptionsConfig options,
-            @JsonProperty("title") TitleConfig title) {
+            @JsonProperty(URL) UrlConfig url, @JsonProperty(OPTIONS) OptionsConfig options,
+            @JsonProperty(TITLE) TitleConfig title) {
         super(name, severity, occurrence, order);
         this.url = url;
         this.options = options;
@@ -65,8 +65,8 @@ public final class AudioBlock extends AbstractBlock {
 
         @JsonCreator
         @SuppressWarnings("PMD.NullAssignment")
-        public UrlConfig(@JsonProperty("required") boolean required, @JsonProperty("pattern") String patternString,
-                @JsonProperty("severity") Severity severity) {
+        public UrlConfig(@JsonProperty(REQUIRED) boolean required, @JsonProperty(PATTERN) String patternString,
+                @JsonProperty(SEVERITY) Severity severity) {
             this.required = required;
             this.pattern = patternString != null ? Pattern.compile(patternString) : null;
             this.severity = severity;
@@ -151,7 +151,7 @@ public final class AudioBlock extends AbstractBlock {
         private final Severity severity;
 
         @JsonCreator
-        public AutoplayConfig(@JsonProperty("allowed") boolean allowed, @JsonProperty("severity") Severity severity) {
+        public AutoplayConfig(@JsonProperty(ALLOWED) boolean allowed, @JsonProperty(SEVERITY) Severity severity) {
             this.allowed = allowed;
             this.severity = severity;
         }
@@ -185,7 +185,7 @@ public final class AudioBlock extends AbstractBlock {
         private final Severity severity;
 
         @JsonCreator
-        public ControlsConfig(@JsonProperty("required") boolean required, @JsonProperty("severity") Severity severity) {
+        public ControlsConfig(@JsonProperty(REQUIRED) boolean required, @JsonProperty(SEVERITY) Severity severity) {
             this.required = required;
             this.severity = severity;
         }
@@ -219,7 +219,7 @@ public final class AudioBlock extends AbstractBlock {
         private final Severity severity;
 
         @JsonCreator
-        public LoopConfig(@JsonProperty("allowed") boolean allowed, @JsonProperty("severity") Severity severity) {
+        public LoopConfig(@JsonProperty(ALLOWED) boolean allowed, @JsonProperty(SEVERITY) Severity severity) {
             this.allowed = allowed;
             this.severity = severity;
         }
@@ -255,8 +255,8 @@ public final class AudioBlock extends AbstractBlock {
         private final Severity severity;
 
         @JsonCreator
-        public TitleConfig(@JsonProperty("required") boolean required, @JsonProperty("minLength") Integer minLength,
-                @JsonProperty("maxLength") Integer maxLength, @JsonProperty("severity") Severity severity) {
+        public TitleConfig(@JsonProperty(REQUIRED) boolean required, @JsonProperty(MIN_LENGTH) Integer minLength,
+                @JsonProperty(MAX_LENGTH) Integer maxLength, @JsonProperty(SEVERITY) Severity severity) {
             this.required = required;
             this.minLength = minLength;
             this.maxLength = maxLength;

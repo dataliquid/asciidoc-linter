@@ -40,11 +40,11 @@ public class VideoBlock extends AbstractBlock {
     }
 
     @JsonCreator
-    public VideoBlock(@JsonProperty("name") String name, @JsonProperty("severity") Severity severity,
+    public VideoBlock(@JsonProperty("name") String name, @JsonProperty(SEVERITY) Severity severity,
             @JsonProperty("occurrence") OccurrenceConfig occurrence, @JsonProperty("order") Integer order,
-            @JsonProperty("url") UrlConfig url, @JsonProperty("width") DimensionConfig width,
-            @JsonProperty("height") DimensionConfig height, @JsonProperty("poster") PosterConfig poster,
-            @JsonProperty("options") OptionsConfig options, @JsonProperty("caption") CaptionConfig caption) {
+            @JsonProperty(URL) UrlConfig url, @JsonProperty(WIDTH) DimensionConfig width,
+            @JsonProperty(HEIGHT) DimensionConfig height, @JsonProperty(POSTER) PosterConfig poster,
+            @JsonProperty(OPTIONS) OptionsConfig options, @JsonProperty(CAPTION) CaptionConfig caption) {
         super(name, severity, occurrence, order);
         this.url = url;
         this.width = width;
@@ -105,8 +105,8 @@ public class VideoBlock extends AbstractBlock {
 
         @JsonCreator
         @SuppressWarnings("PMD.NullAssignment")
-        public UrlConfig(@JsonProperty("required") Boolean required, @JsonProperty("pattern") String patternString,
-                @JsonProperty("severity") Severity severity) {
+        public UrlConfig(@JsonProperty(REQUIRED) Boolean required, @JsonProperty(PATTERN) String patternString,
+                @JsonProperty(SEVERITY) Severity severity) {
             this.required = required;
             this.pattern = patternString != null ? Pattern.compile(patternString) : null;
             this.severity = severity;
@@ -163,8 +163,8 @@ public class VideoBlock extends AbstractBlock {
         private final Severity severity;
 
         @JsonCreator
-        public DimensionConfig(@JsonProperty("required") Boolean required, @JsonProperty("minValue") Integer minValue,
-                @JsonProperty("maxValue") Integer maxValue, @JsonProperty("severity") Severity severity) {
+        public DimensionConfig(@JsonProperty(REQUIRED) Boolean required, @JsonProperty(MIN_VALUE) Integer minValue,
+                @JsonProperty(MAX_VALUE) Integer maxValue, @JsonProperty(SEVERITY) Severity severity) {
             this.required = required;
             this.minValue = minValue;
             this.maxValue = maxValue;
@@ -213,8 +213,8 @@ public class VideoBlock extends AbstractBlock {
 
         @JsonCreator
         @SuppressWarnings("PMD.NullAssignment")
-        public PosterConfig(@JsonProperty("required") Boolean required, @JsonProperty("pattern") String patternString,
-                @JsonProperty("severity") Severity severity) {
+        public PosterConfig(@JsonProperty(REQUIRED) Boolean required, @JsonProperty(PATTERN) String patternString,
+                @JsonProperty(SEVERITY) Severity severity) {
             this.required = required;
             this.pattern = patternString != null ? Pattern.compile(patternString) : null;
             this.severity = severity;
@@ -299,7 +299,7 @@ public class VideoBlock extends AbstractBlock {
         private final Severity severity;
 
         @JsonCreator
-        public ControlsConfig(@JsonProperty("required") Boolean required, @JsonProperty("severity") Severity severity) {
+        public ControlsConfig(@JsonProperty(REQUIRED) Boolean required, @JsonProperty(SEVERITY) Severity severity) {
             this.required = required;
             this.severity = severity;
         }
@@ -337,8 +337,8 @@ public class VideoBlock extends AbstractBlock {
         private final Severity severity;
 
         @JsonCreator
-        public CaptionConfig(@JsonProperty("required") Boolean required, @JsonProperty("minLength") Integer minLength,
-                @JsonProperty("maxLength") Integer maxLength, @JsonProperty("severity") Severity severity) {
+        public CaptionConfig(@JsonProperty(REQUIRED) Boolean required, @JsonProperty(MIN_LENGTH) Integer minLength,
+                @JsonProperty(MAX_LENGTH) Integer maxLength, @JsonProperty(SEVERITY) Severity severity) {
             this.required = required;
             this.minLength = minLength;
             this.maxLength = maxLength;

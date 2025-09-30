@@ -35,10 +35,10 @@ public class QuoteBlock extends AbstractBlock {
     private final ContentConfig content;
 
     @JsonCreator
-    public QuoteBlock(@JsonProperty("name") String name, @JsonProperty("severity") Severity severity,
+    public QuoteBlock(@JsonProperty("name") String name, @JsonProperty(SEVERITY) Severity severity,
             @JsonProperty("occurrence") OccurrenceConfig occurrence, @JsonProperty("order") Integer order,
-            @JsonProperty("attribution") AttributionConfig attribution,
-            @JsonProperty("citation") CitationConfig citation, @JsonProperty("content") ContentConfig content) {
+            @JsonProperty(ATTRIBUTION) AttributionConfig attribution, @JsonProperty(CITATION) CitationConfig citation,
+            @JsonProperty(CONTENT) ContentConfig content) {
         super(name, severity, occurrence, order);
         this.attribution = attribution;
         this.citation = citation;
@@ -78,9 +78,9 @@ public class QuoteBlock extends AbstractBlock {
 
         @JsonCreator
         @SuppressWarnings("PMD.NullAssignment")
-        public AttributionConfig(@JsonProperty("required") boolean required,
-                @JsonProperty("minLength") Integer minLength, @JsonProperty("maxLength") Integer maxLength,
-                @JsonProperty("pattern") String patternString, @JsonProperty("severity") Severity severity) {
+        public AttributionConfig(@JsonProperty(REQUIRED) boolean required, @JsonProperty(MIN_LENGTH) Integer minLength,
+                @JsonProperty(MAX_LENGTH) Integer maxLength, @JsonProperty(PATTERN) String patternString,
+                @JsonProperty(SEVERITY) Severity severity) {
             this.required = required;
             this.minLength = minLength;
             this.maxLength = maxLength;
@@ -154,9 +154,9 @@ public class QuoteBlock extends AbstractBlock {
 
         @JsonCreator
         @SuppressWarnings("PMD.NullAssignment")
-        public CitationConfig(@JsonProperty("required") boolean required, @JsonProperty("minLength") Integer minLength,
-                @JsonProperty("maxLength") Integer maxLength, @JsonProperty("pattern") String patternString,
-                @JsonProperty("severity") Severity severity) {
+        public CitationConfig(@JsonProperty(REQUIRED) boolean required, @JsonProperty(MIN_LENGTH) Integer minLength,
+                @JsonProperty(MAX_LENGTH) Integer maxLength, @JsonProperty(PATTERN) String patternString,
+                @JsonProperty(SEVERITY) Severity severity) {
             this.required = required;
             this.minLength = minLength;
             this.maxLength = maxLength;
