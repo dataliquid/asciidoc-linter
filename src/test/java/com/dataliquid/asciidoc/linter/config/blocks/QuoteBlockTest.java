@@ -16,26 +16,26 @@ import com.dataliquid.asciidoc.linter.config.blocks.BlockType;
 import com.dataliquid.asciidoc.linter.config.common.Severity;
 import com.dataliquid.asciidoc.linter.config.rule.OccurrenceConfig;
 
-@DisplayName("QuoteBlock Configuration Tests")
 class QuoteBlockTest {
 
     @Test
-    @DisplayName("should return QUOTE as block type")
     void shouldReturnCorrectBlockType() {
-        QuoteBlock block = QuoteBlock.builder().severity(Severity.INFO).build();
+        // when
+        QuoteBlock block = new QuoteBlock(null, Severity.INFO, null, null, null, null, null);
 
+        // then
         assertEquals(BlockType.QUOTE, block.getType());
     }
 
     @Nested
-    @DisplayName("Builder Tests")
     class BuilderTests {
 
         @Test
-        @DisplayName("should build with minimal configuration")
         void shouldBuildWithMinimalConfig() {
-            QuoteBlock block = QuoteBlock.builder().severity(Severity.WARN).build();
+            // when
+            QuoteBlock block = new QuoteBlock(null, Severity.WARN, null, null, null, null, null);
 
+            // then
             assertNotNull(block);
             assertEquals(Severity.WARN, block.getSeverity());
             assertNull(block.getAttribution());
@@ -44,7 +44,6 @@ class QuoteBlockTest {
         }
 
         @Test
-        @DisplayName("should build with complete configuration")
         void shouldBuildWithCompleteConfig() {
             QuoteBlock.AttributionConfig attribution = QuoteBlock.AttributionConfig
                     .builder()

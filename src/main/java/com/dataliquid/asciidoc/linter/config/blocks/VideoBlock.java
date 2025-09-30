@@ -4,6 +4,7 @@ import java.util.Objects;
 import java.util.regex.Pattern;
 
 import com.dataliquid.asciidoc.linter.config.blocks.BlockType;
+import com.dataliquid.asciidoc.linter.config.rule.OccurrenceConfig;
 import com.dataliquid.asciidoc.linter.config.common.Severity;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -22,11 +23,9 @@ import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Com
 import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Media.CONTROLS;
 import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.MIN_LENGTH;
 import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.MAX_LENGTH;
-import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.EMPTY;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
-@JsonDeserialize(builder = VideoBlock.Builder.class)
+@JsonDeserialize
 public class VideoBlock extends AbstractBlock {
     private final UrlConfig url;
     private final DimensionConfig width;
@@ -40,14 +39,19 @@ public class VideoBlock extends AbstractBlock {
         return BlockType.VIDEO;
     }
 
-    private VideoBlock(Builder builder) {
-        super(builder);
-        this.url = builder._url;
-        this.width = builder._width;
-        this.height = builder._height;
-        this.poster = builder._poster;
-        this.options = builder._options;
-        this.caption = builder._caption;
+    @JsonCreator
+    public VideoBlock(@JsonProperty("name") String name, @JsonProperty("severity") Severity severity,
+            @JsonProperty("occurrence") OccurrenceConfig occurrence, @JsonProperty("order") Integer order,
+            @JsonProperty("url") UrlConfig url, @JsonProperty("width") DimensionConfig width,
+            @JsonProperty("height") DimensionConfig height, @JsonProperty("poster") PosterConfig poster,
+            @JsonProperty("options") OptionsConfig options, @JsonProperty("caption") CaptionConfig caption) {
+        super(name, severity, occurrence, order);
+        this.url = url;
+        this.width = width;
+        this.height = height;
+        this.poster = poster;
+        this.options = options;
+        this.caption = caption;
     }
 
     public UrlConfig getUrl() {
@@ -74,10 +78,6 @@ public class VideoBlock extends AbstractBlock {
         return caption;
     }
 
-    public static Builder builder() {
-        return new Builder();
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o)
@@ -97,68 +97,19 @@ public class VideoBlock extends AbstractBlock {
         return Objects.hash(super.hashCode(), url, width, height, poster, options, caption);
     }
 
-    @JsonPOJOBuilder(withPrefix = EMPTY)
-    public static class Builder extends AbstractBuilder<Builder> {
-        private UrlConfig _url;
-        private DimensionConfig _width;
-        private DimensionConfig _height;
-        private PosterConfig _poster;
-        private OptionsConfig _options;
-        private CaptionConfig _caption;
-
-        @JsonProperty(URL)
-        public Builder url(UrlConfig url) {
-            this._url = url;
-            return this;
-        }
-
-        @JsonProperty(WIDTH)
-        public Builder width(DimensionConfig width) {
-            this._width = width;
-            return this;
-        }
-
-        @JsonProperty(HEIGHT)
-        public Builder height(DimensionConfig height) {
-            this._height = height;
-            return this;
-        }
-
-        @JsonProperty(POSTER)
-        public Builder poster(PosterConfig poster) {
-            this._poster = poster;
-            return this;
-        }
-
-        @JsonProperty(OPTIONS)
-        public Builder options(OptionsConfig options) {
-            this._options = options;
-            return this;
-        }
-
-        @JsonProperty(CAPTION)
-        public Builder caption(CaptionConfig caption) {
-            this._caption = caption;
-            return this;
-        }
-
-        @Override
-        public VideoBlock build() {
-            Objects.requireNonNull(_severity, "[" + getClass().getName() + "] severity must not be null");
-            return new VideoBlock(this);
-        }
-    }
-
-    @JsonDeserialize(builder = UrlConfig.Builder.class)
+    @JsonDeserialize
     public static class UrlConfig {
         private final Boolean required;
         private final Pattern pattern;
         private final Severity severity;
 
-        private UrlConfig(Builder builder) {
-            this.required = builder._required;
-            this.pattern = builder._pattern;
-            this.severity = builder._severity;
+        @JsonCreator
+        @SuppressWarnings("PMD.NullAssignment")
+        public UrlConfig(@JsonProperty("required") Boolean required, @JsonProperty("pattern") String patternString,
+                @JsonProperty("severity") Severity severity) {
+            this.required = required;
+            this.pattern = patternString != null ? Pattern.compile(patternString) : null;
+            this.severity = severity;
         }
 
         public Boolean getRequired() {
@@ -171,10 +122,6 @@ public class VideoBlock extends AbstractBlock {
 
         public Severity getSeverity() {
             return severity;
-        }
-
-        public static Builder builder() {
-            return new Builder();
         }
 
         @Override
@@ -206,55 +153,22 @@ public class VideoBlock extends AbstractBlock {
             return p != null ? p.pattern() : null;
         }
 
-        @JsonPOJOBuilder(withPrefix = EMPTY)
-        public static class Builder {
-            private Boolean _required;
-            private Pattern _pattern;
-            private Severity _severity;
-
-            @JsonProperty(REQUIRED)
-            public Builder required(Boolean required) {
-                this._required = required;
-                return this;
-            }
-
-            @JsonProperty(PATTERN)
-            public Builder pattern(Pattern pattern) {
-                this._pattern = pattern;
-                return this;
-            }
-
-            @JsonCreator
-            @SuppressWarnings("PMD.NullAssignment")
-            public Builder pattern(String pattern) {
-                this._pattern = pattern != null ? Pattern.compile(pattern) : null;
-                return this;
-            }
-
-            @JsonProperty(SEVERITY)
-            public Builder severity(Severity severity) {
-                this._severity = severity;
-                return this;
-            }
-
-            public UrlConfig build() {
-                return new UrlConfig(this);
-            }
-        }
     }
 
-    @JsonDeserialize(builder = DimensionConfig.Builder.class)
+    @JsonDeserialize
     public static class DimensionConfig {
         private final Boolean required;
         private final Integer minValue;
         private final Integer maxValue;
         private final Severity severity;
 
-        private DimensionConfig(Builder builder) {
-            this.required = builder._required;
-            this.minValue = builder._minValue;
-            this.maxValue = builder._maxValue;
-            this.severity = builder._severity;
+        @JsonCreator
+        public DimensionConfig(@JsonProperty("required") Boolean required, @JsonProperty("minValue") Integer minValue,
+                @JsonProperty("maxValue") Integer maxValue, @JsonProperty("severity") Severity severity) {
+            this.required = required;
+            this.minValue = minValue;
+            this.maxValue = maxValue;
+            this.severity = severity;
         }
 
         public Boolean getRequired() {
@@ -273,10 +187,6 @@ public class VideoBlock extends AbstractBlock {
             return severity;
         }
 
-        public static Builder builder() {
-            return new Builder();
-        }
-
         @Override
         public boolean equals(Object o) {
             if (this == o)
@@ -293,53 +203,21 @@ public class VideoBlock extends AbstractBlock {
             return Objects.hash(required, minValue, maxValue, severity);
         }
 
-        @JsonPOJOBuilder(withPrefix = EMPTY)
-        public static class Builder {
-            private Boolean _required;
-            private Integer _minValue;
-            private Integer _maxValue;
-            private Severity _severity;
-
-            @JsonProperty(REQUIRED)
-            public Builder required(Boolean required) {
-                this._required = required;
-                return this;
-            }
-
-            @JsonProperty(MIN_VALUE)
-            public Builder minValue(Integer minValue) {
-                this._minValue = minValue;
-                return this;
-            }
-
-            @JsonProperty(MAX_VALUE)
-            public Builder maxValue(Integer maxValue) {
-                this._maxValue = maxValue;
-                return this;
-            }
-
-            @JsonProperty(SEVERITY)
-            public Builder severity(Severity severity) {
-                this._severity = severity;
-                return this;
-            }
-
-            public DimensionConfig build() {
-                return new DimensionConfig(this);
-            }
-        }
     }
 
-    @JsonDeserialize(builder = PosterConfig.Builder.class)
+    @JsonDeserialize
     public static class PosterConfig {
         private final Boolean required;
         private final Pattern pattern;
         private final Severity severity;
 
-        private PosterConfig(Builder builder) {
-            this.required = builder._required;
-            this.pattern = builder._pattern;
-            this.severity = builder._severity;
+        @JsonCreator
+        @SuppressWarnings("PMD.NullAssignment")
+        public PosterConfig(@JsonProperty("required") Boolean required, @JsonProperty("pattern") String patternString,
+                @JsonProperty("severity") Severity severity) {
+            this.required = required;
+            this.pattern = patternString != null ? Pattern.compile(patternString) : null;
+            this.severity = severity;
         }
 
         public Boolean getRequired() {
@@ -352,10 +230,6 @@ public class VideoBlock extends AbstractBlock {
 
         public Severity getSeverity() {
             return severity;
-        }
-
-        public static Builder builder() {
-            return new Builder();
         }
 
         @Override
@@ -387,57 +261,19 @@ public class VideoBlock extends AbstractBlock {
             return p != null ? p.pattern() : null;
         }
 
-        @JsonPOJOBuilder(withPrefix = EMPTY)
-        public static class Builder {
-            private Boolean _required;
-            private Pattern _pattern;
-            private Severity _severity;
-
-            @JsonProperty(REQUIRED)
-            public Builder required(Boolean required) {
-                this._required = required;
-                return this;
-            }
-
-            @JsonProperty(PATTERN)
-            public Builder pattern(Pattern pattern) {
-                this._pattern = pattern;
-                return this;
-            }
-
-            @JsonCreator
-            @SuppressWarnings("PMD.NullAssignment")
-            public Builder pattern(String pattern) {
-                this._pattern = pattern != null ? Pattern.compile(pattern) : null;
-                return this;
-            }
-
-            @JsonProperty(SEVERITY)
-            public Builder severity(Severity severity) {
-                this._severity = severity;
-                return this;
-            }
-
-            public PosterConfig build() {
-                return new PosterConfig(this);
-            }
-        }
     }
 
-    @JsonDeserialize(builder = OptionsConfig.Builder.class)
+    @JsonDeserialize
     public static class OptionsConfig {
         private final ControlsConfig controls;
 
-        private OptionsConfig(Builder builder) {
-            this.controls = builder._controls;
+        @JsonCreator
+        public OptionsConfig(@JsonProperty("controls") ControlsConfig controls) {
+            this.controls = controls;
         }
 
         public ControlsConfig getControls() {
             return controls;
-        }
-
-        public static Builder builder() {
-            return new Builder();
         }
 
         @Override
@@ -455,30 +291,17 @@ public class VideoBlock extends AbstractBlock {
             return Objects.hash(controls);
         }
 
-        @JsonPOJOBuilder(withPrefix = EMPTY)
-        public static class Builder {
-            private ControlsConfig _controls;
-
-            @JsonProperty(CONTROLS)
-            public Builder controls(ControlsConfig controls) {
-                this._controls = controls;
-                return this;
-            }
-
-            public OptionsConfig build() {
-                return new OptionsConfig(this);
-            }
-        }
     }
 
-    @JsonDeserialize(builder = ControlsConfig.Builder.class)
+    @JsonDeserialize
     public static class ControlsConfig {
         private final Boolean required;
         private final Severity severity;
 
-        private ControlsConfig(Builder builder) {
-            this.required = builder._required;
-            this.severity = builder._severity;
+        @JsonCreator
+        public ControlsConfig(@JsonProperty("required") Boolean required, @JsonProperty("severity") Severity severity) {
+            this.required = required;
+            this.severity = severity;
         }
 
         public Boolean getRequired() {
@@ -487,10 +310,6 @@ public class VideoBlock extends AbstractBlock {
 
         public Severity getSeverity() {
             return severity;
-        }
-
-        public static Builder builder() {
-            return new Builder();
         }
 
         @Override
@@ -508,41 +327,22 @@ public class VideoBlock extends AbstractBlock {
             return Objects.hash(required, severity);
         }
 
-        @JsonPOJOBuilder(withPrefix = EMPTY)
-        public static class Builder {
-            private Boolean _required;
-            private Severity _severity;
-
-            @JsonProperty(REQUIRED)
-            public Builder required(Boolean required) {
-                this._required = required;
-                return this;
-            }
-
-            @JsonProperty(SEVERITY)
-            public Builder severity(Severity severity) {
-                this._severity = severity;
-                return this;
-            }
-
-            public ControlsConfig build() {
-                return new ControlsConfig(this);
-            }
-        }
     }
 
-    @JsonDeserialize(builder = CaptionConfig.Builder.class)
+    @JsonDeserialize
     public static class CaptionConfig {
         private final Boolean required;
         private final Integer minLength;
         private final Integer maxLength;
         private final Severity severity;
 
-        private CaptionConfig(Builder builder) {
-            this.required = builder._required;
-            this.minLength = builder._minLength;
-            this.maxLength = builder._maxLength;
-            this.severity = builder._severity;
+        @JsonCreator
+        public CaptionConfig(@JsonProperty("required") Boolean required, @JsonProperty("minLength") Integer minLength,
+                @JsonProperty("maxLength") Integer maxLength, @JsonProperty("severity") Severity severity) {
+            this.required = required;
+            this.minLength = minLength;
+            this.maxLength = maxLength;
+            this.severity = severity;
         }
 
         public Boolean getRequired() {
@@ -561,10 +361,6 @@ public class VideoBlock extends AbstractBlock {
             return severity;
         }
 
-        public static Builder builder() {
-            return new Builder();
-        }
-
         @Override
         public boolean equals(Object o) {
             if (this == o)
@@ -581,40 +377,5 @@ public class VideoBlock extends AbstractBlock {
             return Objects.hash(required, minLength, maxLength, severity);
         }
 
-        @JsonPOJOBuilder(withPrefix = EMPTY)
-        public static class Builder {
-            private Boolean _required;
-            private Integer _minLength;
-            private Integer _maxLength;
-            private Severity _severity;
-
-            @JsonProperty(REQUIRED)
-            public Builder required(Boolean required) {
-                this._required = required;
-                return this;
-            }
-
-            @JsonProperty(MIN_LENGTH)
-            public Builder minLength(Integer minLength) {
-                this._minLength = minLength;
-                return this;
-            }
-
-            @JsonProperty(MAX_LENGTH)
-            public Builder maxLength(Integer maxLength) {
-                this._maxLength = maxLength;
-                return this;
-            }
-
-            @JsonProperty(SEVERITY)
-            public Builder severity(Severity severity) {
-                this._severity = severity;
-                return this;
-            }
-
-            public CaptionConfig build() {
-                return new CaptionConfig(this);
-            }
-        }
     }
 }

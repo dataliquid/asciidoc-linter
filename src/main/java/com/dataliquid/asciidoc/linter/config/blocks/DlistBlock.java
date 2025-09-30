@@ -4,7 +4,9 @@ import java.util.Objects;
 
 import com.dataliquid.asciidoc.linter.config.blocks.BlockType;
 import com.dataliquid.asciidoc.linter.config.common.Severity;
+import com.dataliquid.asciidoc.linter.config.rule.OccurrenceConfig;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Literal.CONSISTENT;
@@ -12,6 +14,9 @@ import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Com
 import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.MAX_LENGTH;
 import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.MIN;
 import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.MIN_LENGTH;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.NAME;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.OCCURRENCE;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.ORDER;
 import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.PATTERN;
 import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.REQUIRED;
 import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.SEVERITY;
@@ -20,14 +25,12 @@ import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Lis
 import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.List.TERMS;
 import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.List.DELIMITER_STYLE;
 import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.List.ALLOWED_DELIMITERS;
-import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.EMPTY;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
 /**
  * Configuration for definition list (dlist) blocks in AsciiDoc. Represents
  * lists with term-description pairs using :: delimiters.
  */
-@JsonDeserialize(builder = DlistBlock.Builder.class)
+@JsonDeserialize
 public final class DlistBlock extends AbstractBlock {
     @JsonProperty(TERMS)
     private final TermsConfig terms;
@@ -38,12 +41,17 @@ public final class DlistBlock extends AbstractBlock {
     @JsonProperty(DELIMITER_STYLE)
     private final DelimiterStyleConfig delimiterStyle;
 
-    private DlistBlock(Builder builder) {
-        super(builder);
-        this.terms = builder._terms;
-        this.descriptions = builder._descriptions;
-        this.nestingLevel = builder._nestingLevel;
-        this.delimiterStyle = builder._delimiterStyle;
+    @JsonCreator
+    public DlistBlock(@JsonProperty(NAME) String name, @JsonProperty(SEVERITY) Severity severity,
+            @JsonProperty(OCCURRENCE) OccurrenceConfig occurrence, @JsonProperty(ORDER) Integer order,
+            @JsonProperty(TERMS) TermsConfig terms, @JsonProperty(DESCRIPTIONS) DescriptionsConfig descriptions,
+            @JsonProperty(NESTING_LEVEL) NestingLevelConfig nestingLevel,
+            @JsonProperty(DELIMITER_STYLE) DelimiterStyleConfig delimiterStyle) {
+        super(name, severity, occurrence, order);
+        this.terms = terms;
+        this.descriptions = descriptions;
+        this.nestingLevel = nestingLevel;
+        this.delimiterStyle = delimiterStyle;
     }
 
     @Override
@@ -67,14 +75,10 @@ public final class DlistBlock extends AbstractBlock {
         return delimiterStyle;
     }
 
-    public static Builder builder() {
-        return new Builder();
-    }
-
     /**
      * Configuration for term validation.
      */
-    @JsonDeserialize(builder = TermsConfig.TermsConfigBuilder.class)
+    @JsonDeserialize
     public static class TermsConfig {
         @JsonProperty(MIN)
         private final Integer min;
@@ -89,13 +93,16 @@ public final class DlistBlock extends AbstractBlock {
         @JsonProperty(SEVERITY)
         private final Severity severity;
 
-        private TermsConfig(TermsConfigBuilder builder) {
-            this.min = builder._min;
-            this.max = builder._max;
-            this.pattern = builder._pattern;
-            this.minLength = builder._minLength;
-            this.maxLength = builder._maxLength;
-            this.severity = builder._severity;
+        @JsonCreator
+        public TermsConfig(@JsonProperty(MIN) Integer min, @JsonProperty(MAX) Integer max,
+                @JsonProperty(PATTERN) String pattern, @JsonProperty(MIN_LENGTH) Integer minLength,
+                @JsonProperty(MAX_LENGTH) Integer maxLength, @JsonProperty(SEVERITY) Severity severity) {
+            this.min = min;
+            this.max = max;
+            this.pattern = pattern;
+            this.minLength = minLength;
+            this.maxLength = maxLength;
+            this.severity = severity;
         }
 
         public Integer getMin() {
@@ -122,54 +129,6 @@ public final class DlistBlock extends AbstractBlock {
             return severity;
         }
 
-        public static TermsConfigBuilder builder() {
-            return new TermsConfigBuilder();
-        }
-
-        @JsonPOJOBuilder(withPrefix = EMPTY)
-        public static class TermsConfigBuilder {
-            private Integer _min;
-            private Integer _max;
-            private String _pattern;
-            private Integer _minLength;
-            private Integer _maxLength;
-            private Severity _severity;
-
-            public TermsConfigBuilder min(Integer min) {
-                this._min = min;
-                return this;
-            }
-
-            public TermsConfigBuilder max(Integer max) {
-                this._max = max;
-                return this;
-            }
-
-            public TermsConfigBuilder pattern(String pattern) {
-                this._pattern = pattern;
-                return this;
-            }
-
-            public TermsConfigBuilder minLength(Integer minLength) {
-                this._minLength = minLength;
-                return this;
-            }
-
-            public TermsConfigBuilder maxLength(Integer maxLength) {
-                this._maxLength = maxLength;
-                return this;
-            }
-
-            public TermsConfigBuilder severity(Severity severity) {
-                this._severity = severity;
-                return this;
-            }
-
-            public TermsConfig build() {
-                return new TermsConfig(this);
-            }
-        }
-
         @Override
         public boolean equals(Object o) {
             if (this == o)
@@ -190,7 +149,7 @@ public final class DlistBlock extends AbstractBlock {
     /**
      * Configuration for description validation.
      */
-    @JsonDeserialize(builder = DescriptionsConfig.DescriptionsConfigBuilder.class)
+    @JsonDeserialize
     public static class DescriptionsConfig {
         @JsonProperty(REQUIRED)
         private final Boolean required;
@@ -203,12 +162,15 @@ public final class DlistBlock extends AbstractBlock {
         @JsonProperty(SEVERITY)
         private final Severity severity;
 
-        private DescriptionsConfig(DescriptionsConfigBuilder builder) {
-            this.required = builder._required;
-            this.min = builder._min;
-            this.max = builder._max;
-            this.pattern = builder._pattern;
-            this.severity = builder._severity;
+        @JsonCreator
+        public DescriptionsConfig(@JsonProperty(REQUIRED) Boolean required, @JsonProperty(MIN) Integer min,
+                @JsonProperty(MAX) Integer max, @JsonProperty(PATTERN) String pattern,
+                @JsonProperty(SEVERITY) Severity severity) {
+            this.required = required;
+            this.min = min;
+            this.max = max;
+            this.pattern = pattern;
+            this.severity = severity;
         }
 
         public Boolean getRequired() {
@@ -231,48 +193,6 @@ public final class DlistBlock extends AbstractBlock {
             return severity;
         }
 
-        public static DescriptionsConfigBuilder builder() {
-            return new DescriptionsConfigBuilder();
-        }
-
-        @JsonPOJOBuilder(withPrefix = EMPTY)
-        public static class DescriptionsConfigBuilder {
-            private Boolean _required;
-            private Integer _min;
-            private Integer _max;
-            private String _pattern;
-            private Severity _severity;
-
-            public DescriptionsConfigBuilder required(Boolean required) {
-                this._required = required;
-                return this;
-            }
-
-            public DescriptionsConfigBuilder min(Integer min) {
-                this._min = min;
-                return this;
-            }
-
-            public DescriptionsConfigBuilder max(Integer max) {
-                this._max = max;
-                return this;
-            }
-
-            public DescriptionsConfigBuilder pattern(String pattern) {
-                this._pattern = pattern;
-                return this;
-            }
-
-            public DescriptionsConfigBuilder severity(Severity severity) {
-                this._severity = severity;
-                return this;
-            }
-
-            public DescriptionsConfig build() {
-                return new DescriptionsConfig(this);
-            }
-        }
-
         @Override
         public boolean equals(Object o) {
             if (this == o)
@@ -293,16 +213,17 @@ public final class DlistBlock extends AbstractBlock {
     /**
      * Configuration for nesting level validation.
      */
-    @JsonDeserialize(builder = NestingLevelConfig.NestingLevelConfigBuilder.class)
+    @JsonDeserialize
     public static class NestingLevelConfig {
         @JsonProperty(MAX)
         private final Integer max;
         @JsonProperty(SEVERITY)
         private final Severity severity;
 
-        private NestingLevelConfig(NestingLevelConfigBuilder builder) {
-            this.max = builder._max;
-            this.severity = builder._severity;
+        @JsonCreator
+        public NestingLevelConfig(@JsonProperty(MAX) Integer max, @JsonProperty(SEVERITY) Severity severity) {
+            this.max = max;
+            this.severity = severity;
         }
 
         public Integer getMax() {
@@ -311,30 +232,6 @@ public final class DlistBlock extends AbstractBlock {
 
         public Severity getSeverity() {
             return severity;
-        }
-
-        public static NestingLevelConfigBuilder builder() {
-            return new NestingLevelConfigBuilder();
-        }
-
-        @JsonPOJOBuilder(withPrefix = EMPTY)
-        public static class NestingLevelConfigBuilder {
-            private Integer _max;
-            private Severity _severity;
-
-            public NestingLevelConfigBuilder max(Integer max) {
-                this._max = max;
-                return this;
-            }
-
-            public NestingLevelConfigBuilder severity(Severity severity) {
-                this._severity = severity;
-                return this;
-            }
-
-            public NestingLevelConfig build() {
-                return new NestingLevelConfig(this);
-            }
         }
 
         @Override
@@ -355,7 +252,7 @@ public final class DlistBlock extends AbstractBlock {
     /**
      * Configuration for delimiter style validation.
      */
-    @JsonDeserialize(builder = DelimiterStyleConfig.DelimiterStyleConfigBuilder.class)
+    @JsonDeserialize
     public static class DelimiterStyleConfig {
         @JsonProperty(ALLOWED_DELIMITERS)
         private final String[] allowedDelimiters;
@@ -364,10 +261,13 @@ public final class DlistBlock extends AbstractBlock {
         @JsonProperty(SEVERITY)
         private final Severity severity;
 
-        private DelimiterStyleConfig(DelimiterStyleConfigBuilder builder) {
-            this.allowedDelimiters = builder._allowedDelimiters;
-            this.consistent = builder._consistent;
-            this.severity = builder._severity;
+        @JsonCreator
+        @SuppressWarnings({ "PMD.ArrayIsStoredDirectly", "PMD.NullAssignment" })
+        public DelimiterStyleConfig(@JsonProperty(ALLOWED_DELIMITERS) String[] allowedDelimiters,
+                @JsonProperty(CONSISTENT) Boolean consistent, @JsonProperty(SEVERITY) Severity severity) {
+            this.allowedDelimiters = allowedDelimiters != null ? allowedDelimiters.clone() : null;
+            this.consistent = consistent;
+            this.severity = severity;
         }
 
         @SuppressWarnings("PMD.MethodReturnsInternalArray")
@@ -381,36 +281,6 @@ public final class DlistBlock extends AbstractBlock {
 
         public Severity getSeverity() {
             return severity;
-        }
-
-        public static DelimiterStyleConfigBuilder builder() {
-            return new DelimiterStyleConfigBuilder();
-        }
-
-        @JsonPOJOBuilder(withPrefix = EMPTY)
-        public static class DelimiterStyleConfigBuilder {
-            private String[] _allowedDelimiters;
-            private Boolean _consistent;
-            private Severity _severity;
-
-            public DelimiterStyleConfigBuilder allowedDelimiters(String... allowedDelimiters) {
-                this._allowedDelimiters = allowedDelimiters.clone(); // Defensive copy to avoid external modification
-                return this;
-            }
-
-            public DelimiterStyleConfigBuilder consistent(Boolean consistent) {
-                this._consistent = consistent;
-                return this;
-            }
-
-            public DelimiterStyleConfigBuilder severity(Severity severity) {
-                this._severity = severity;
-                return this;
-            }
-
-            public DelimiterStyleConfig build() {
-                return new DelimiterStyleConfig(this);
-            }
         }
 
         @Override
@@ -428,40 +298,6 @@ public final class DlistBlock extends AbstractBlock {
             int result = Objects.hash(consistent, severity);
             result = 31 * result + java.util.Arrays.hashCode(allowedDelimiters);
             return result;
-        }
-    }
-
-    @JsonPOJOBuilder(withPrefix = EMPTY)
-    public static class Builder extends AbstractBuilder<Builder> {
-        private TermsConfig _terms;
-        private DescriptionsConfig _descriptions;
-        private NestingLevelConfig _nestingLevel;
-        private DelimiterStyleConfig _delimiterStyle;
-
-        public Builder terms(TermsConfig terms) {
-            this._terms = terms;
-            return this;
-        }
-
-        public Builder descriptions(DescriptionsConfig descriptions) {
-            this._descriptions = descriptions;
-            return this;
-        }
-
-        public Builder nestingLevel(NestingLevelConfig nestingLevel) {
-            this._nestingLevel = nestingLevel;
-            return this;
-        }
-
-        public Builder delimiterStyle(DelimiterStyleConfig delimiterStyle) {
-            this._delimiterStyle = delimiterStyle;
-            return this;
-        }
-
-        @Override
-        public DlistBlock build() {
-            Objects.requireNonNull(_severity, "[" + getClass().getName() + "] severity is required");
-            return new DlistBlock(this);
         }
     }
 

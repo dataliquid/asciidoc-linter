@@ -8,8 +8,10 @@ import java.util.regex.Pattern;
 
 import com.dataliquid.asciidoc.linter.config.blocks.BlockType;
 import com.dataliquid.asciidoc.linter.config.common.Severity;
+import com.dataliquid.asciidoc.linter.config.rule.OccurrenceConfig;
 import com.dataliquid.asciidoc.linter.config.rule.LineConfig;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Admonition.ICON;
@@ -19,14 +21,15 @@ import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Com
 import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.LINES;
 import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.MAX_LENGTH;
 import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.MIN_LENGTH;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.NAME;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.OCCURRENCE;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.ORDER;
 import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.PATTERN;
 import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.REQUIRED;
 import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.SEVERITY;
 import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.TITLE;
-import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.EMPTY;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
-@JsonDeserialize(builder = AdmonitionBlock.Builder.class)
+@JsonDeserialize
 public final class AdmonitionBlock extends AbstractBlock {
     @JsonProperty(TYPE)
     private final TypeConfig type;
@@ -37,12 +40,16 @@ public final class AdmonitionBlock extends AbstractBlock {
     @JsonProperty(ICON)
     private final IconConfig icon;
 
-    private AdmonitionBlock(Builder builder) {
-        super(builder);
-        this.type = builder._type;
-        this.title = builder._title;
-        this.content = builder._content;
-        this.icon = builder._icon;
+    @JsonCreator
+    public AdmonitionBlock(@JsonProperty(NAME) String name, @JsonProperty(SEVERITY) Severity severity,
+            @JsonProperty(OCCURRENCE) OccurrenceConfig occurrence, @JsonProperty(ORDER) Integer order,
+            @JsonProperty(TYPE) TypeConfig type, @JsonProperty(TITLE) TitleConfig title,
+            @JsonProperty(CONTENT) ContentConfig content, @JsonProperty(ICON) IconConfig icon) {
+        super(name, severity, occurrence, order);
+        this.type = type;
+        this.title = title;
+        this.content = content;
+        this.icon = icon;
     }
 
     @Override
@@ -66,11 +73,7 @@ public final class AdmonitionBlock extends AbstractBlock {
         return icon;
     }
 
-    public static Builder builder() {
-        return new Builder();
-    }
-
-    @JsonDeserialize(builder = TypeConfig.TypeConfigBuilder.class)
+    @JsonDeserialize
     public static class TypeConfig {
         @JsonProperty(REQUIRED)
         private final boolean required;
@@ -79,11 +82,13 @@ public final class AdmonitionBlock extends AbstractBlock {
         @JsonProperty(SEVERITY)
         private final Severity severity;
 
-        private TypeConfig(TypeConfigBuilder builder) {
-            this.required = builder._required;
-            this.allowed = builder._allowed != null ? Collections.unmodifiableList(new ArrayList<>(builder._allowed))
+        @JsonCreator
+        public TypeConfig(@JsonProperty(REQUIRED) boolean required, @JsonProperty(ALLOWED) List<String> allowed,
+                @JsonProperty(SEVERITY) Severity severity) {
+            this.required = required;
+            this.allowed = allowed != null ? Collections.unmodifiableList(new ArrayList<>(allowed))
                     : Collections.emptyList();
-            this.severity = builder._severity;
+            this.severity = severity;
         }
 
         public boolean isRequired() {
@@ -96,36 +101,6 @@ public final class AdmonitionBlock extends AbstractBlock {
 
         public Severity getSeverity() {
             return severity;
-        }
-
-        public static TypeConfigBuilder builder() {
-            return new TypeConfigBuilder();
-        }
-
-        @JsonPOJOBuilder(withPrefix = EMPTY)
-        public static class TypeConfigBuilder {
-            private boolean _required;
-            private List<String> _allowed;
-            private Severity _severity;
-
-            public TypeConfigBuilder required(boolean required) {
-                this._required = required;
-                return this;
-            }
-
-            public TypeConfigBuilder allowed(List<String> allowed) {
-                this._allowed = allowed;
-                return this;
-            }
-
-            public TypeConfigBuilder severity(Severity severity) {
-                this._severity = severity;
-                return this;
-            }
-
-            public TypeConfig build() {
-                return new TypeConfig(this);
-            }
         }
 
         @Override
@@ -143,7 +118,7 @@ public final class AdmonitionBlock extends AbstractBlock {
         }
     }
 
-    @JsonDeserialize(builder = TitleConfig.TitleConfigBuilder.class)
+    @JsonDeserialize
     public static class TitleConfig {
         @JsonProperty(REQUIRED)
         private final boolean required;
@@ -156,12 +131,16 @@ public final class AdmonitionBlock extends AbstractBlock {
         @JsonProperty(SEVERITY)
         private final Severity severity;
 
-        private TitleConfig(TitleConfigBuilder builder) {
-            this.required = builder._required;
-            this.pattern = builder._pattern;
-            this.minLength = builder._minLength;
-            this.maxLength = builder._maxLength;
-            this.severity = builder._severity;
+        @JsonCreator
+        @SuppressWarnings("PMD.NullAssignment")
+        public TitleConfig(@JsonProperty(REQUIRED) boolean required, @JsonProperty(PATTERN) String patternString,
+                @JsonProperty(MIN_LENGTH) Integer minLength, @JsonProperty(MAX_LENGTH) Integer maxLength,
+                @JsonProperty(SEVERITY) Severity severity) {
+            this.required = required;
+            this.pattern = patternString != null ? Pattern.compile(patternString) : null;
+            this.minLength = minLength;
+            this.maxLength = maxLength;
+            this.severity = severity;
         }
 
         public boolean isRequired() {
@@ -182,54 +161,6 @@ public final class AdmonitionBlock extends AbstractBlock {
 
         public Severity getSeverity() {
             return severity;
-        }
-
-        public static TitleConfigBuilder builder() {
-            return new TitleConfigBuilder();
-        }
-
-        @JsonPOJOBuilder(withPrefix = EMPTY)
-        public static class TitleConfigBuilder {
-            private boolean _required;
-            private Pattern _pattern;
-            private Integer _minLength;
-            private Integer _maxLength;
-            private Severity _severity;
-
-            public TitleConfigBuilder required(boolean required) {
-                this._required = required;
-                return this;
-            }
-
-            public TitleConfigBuilder pattern(Pattern pattern) {
-                this._pattern = pattern;
-                return this;
-            }
-
-            @SuppressWarnings("PMD.NullAssignment")
-            public TitleConfigBuilder pattern(String pattern) {
-                this._pattern = pattern != null ? Pattern.compile(pattern) : null;
-                return this;
-            }
-
-            public TitleConfigBuilder minLength(Integer minLength) {
-                this._minLength = minLength;
-                return this;
-            }
-
-            public TitleConfigBuilder maxLength(Integer maxLength) {
-                this._maxLength = maxLength;
-                return this;
-            }
-
-            public TitleConfigBuilder severity(Severity severity) {
-                this._severity = severity;
-                return this;
-            }
-
-            public TitleConfig build() {
-                return new TitleConfig(this);
-            }
         }
 
         @Override
@@ -252,7 +183,7 @@ public final class AdmonitionBlock extends AbstractBlock {
         }
     }
 
-    @JsonDeserialize(builder = ContentConfig.ContentConfigBuilder.class)
+    @JsonDeserialize
     public static class ContentConfig {
         @JsonProperty(REQUIRED)
         private final boolean required;
@@ -265,12 +196,15 @@ public final class AdmonitionBlock extends AbstractBlock {
         @JsonProperty(SEVERITY)
         private final Severity severity;
 
-        private ContentConfig(ContentConfigBuilder builder) {
-            this.required = builder._required;
-            this.minLength = builder._minLength;
-            this.maxLength = builder._maxLength;
-            this.lines = builder._lines;
-            this.severity = builder._severity;
+        @JsonCreator
+        public ContentConfig(@JsonProperty(REQUIRED) boolean required, @JsonProperty(MIN_LENGTH) Integer minLength,
+                @JsonProperty(MAX_LENGTH) Integer maxLength, @JsonProperty(LINES) LineConfig lines,
+                @JsonProperty(SEVERITY) Severity severity) {
+            this.required = required;
+            this.minLength = minLength;
+            this.maxLength = maxLength;
+            this.lines = lines;
+            this.severity = severity;
         }
 
         public boolean isRequired() {
@@ -293,48 +227,6 @@ public final class AdmonitionBlock extends AbstractBlock {
             return severity;
         }
 
-        public static ContentConfigBuilder builder() {
-            return new ContentConfigBuilder();
-        }
-
-        @JsonPOJOBuilder(withPrefix = EMPTY)
-        public static class ContentConfigBuilder {
-            private boolean _required;
-            private Integer _minLength;
-            private Integer _maxLength;
-            private LineConfig _lines;
-            private Severity _severity;
-
-            public ContentConfigBuilder required(boolean required) {
-                this._required = required;
-                return this;
-            }
-
-            public ContentConfigBuilder minLength(Integer minLength) {
-                this._minLength = minLength;
-                return this;
-            }
-
-            public ContentConfigBuilder maxLength(Integer maxLength) {
-                this._maxLength = maxLength;
-                return this;
-            }
-
-            public ContentConfigBuilder lines(LineConfig lines) {
-                this._lines = lines;
-                return this;
-            }
-
-            public ContentConfigBuilder severity(Severity severity) {
-                this._severity = severity;
-                return this;
-            }
-
-            public ContentConfig build() {
-                return new ContentConfig(this);
-            }
-        }
-
         @Override
         public boolean equals(Object o) {
             if (this == o)
@@ -352,7 +244,7 @@ public final class AdmonitionBlock extends AbstractBlock {
         }
     }
 
-    @JsonDeserialize(builder = IconConfig.IconConfigBuilder.class)
+    @JsonDeserialize
     public static class IconConfig {
         @JsonProperty(REQUIRED)
         private final boolean required;
@@ -361,10 +253,13 @@ public final class AdmonitionBlock extends AbstractBlock {
         @JsonProperty(SEVERITY)
         private final Severity severity;
 
-        private IconConfig(IconConfigBuilder builder) {
-            this.required = builder._required;
-            this.pattern = builder._pattern;
-            this.severity = builder._severity;
+        @JsonCreator
+        @SuppressWarnings("PMD.NullAssignment")
+        public IconConfig(@JsonProperty(REQUIRED) boolean required, @JsonProperty(PATTERN) String patternString,
+                @JsonProperty(SEVERITY) Severity severity) {
+            this.required = required;
+            this.pattern = patternString != null ? Pattern.compile(patternString) : null;
+            this.severity = severity;
         }
 
         public boolean isRequired() {
@@ -377,42 +272,6 @@ public final class AdmonitionBlock extends AbstractBlock {
 
         public Severity getSeverity() {
             return severity;
-        }
-
-        public static IconConfigBuilder builder() {
-            return new IconConfigBuilder();
-        }
-
-        @JsonPOJOBuilder(withPrefix = EMPTY)
-        public static class IconConfigBuilder {
-            private boolean _required;
-            private Pattern _pattern;
-            private Severity _severity;
-
-            public IconConfigBuilder required(boolean required) {
-                this._required = required;
-                return this;
-            }
-
-            public IconConfigBuilder pattern(Pattern pattern) {
-                this._pattern = pattern;
-                return this;
-            }
-
-            @SuppressWarnings("PMD.NullAssignment")
-            public IconConfigBuilder pattern(String pattern) {
-                this._pattern = pattern != null ? Pattern.compile(pattern) : null;
-                return this;
-            }
-
-            public IconConfigBuilder severity(Severity severity) {
-                this._severity = severity;
-                return this;
-            }
-
-            public IconConfig build() {
-                return new IconConfig(this);
-            }
         }
 
         @Override
@@ -430,40 +289,6 @@ public final class AdmonitionBlock extends AbstractBlock {
         @Override
         public int hashCode() {
             return Objects.hash(required, pattern == null ? null : pattern.pattern(), severity);
-        }
-    }
-
-    @JsonPOJOBuilder(withPrefix = EMPTY)
-    public static class Builder extends AbstractBuilder<Builder> {
-        private TypeConfig _type;
-        private TitleConfig _title;
-        private ContentConfig _content;
-        private IconConfig _icon;
-
-        public Builder type(TypeConfig type) {
-            this._type = type;
-            return this;
-        }
-
-        public Builder title(TitleConfig title) {
-            this._title = title;
-            return this;
-        }
-
-        public Builder content(ContentConfig content) {
-            this._content = content;
-            return this;
-        }
-
-        public Builder icon(IconConfig icon) {
-            this._icon = icon;
-            return this;
-        }
-
-        @Override
-        public AdmonitionBlock build() {
-            Objects.requireNonNull(_severity, "[" + getClass().getName() + "] severity is required");
-            return new AdmonitionBlock(this);
         }
     }
 

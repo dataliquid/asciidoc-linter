@@ -8,27 +8,27 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.regex.Pattern;
-
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import com.dataliquid.asciidoc.linter.config.common.Severity;
 import com.dataliquid.asciidoc.linter.config.rule.OccurrenceConfig;
 
-@DisplayName("VideoBlock")
 class VideoBlockTest {
 
     @Nested
-    @DisplayName("Builder Tests")
     class BuilderTests {
 
         @Test
-        @DisplayName("should build with minimal required fields")
         void shouldBuildWithMinimalRequiredFields() {
-            VideoBlock block = VideoBlock.builder().name("test-video").severity(Severity.WARN).build();
+            // given
+            String name = "test-video";
+            Severity severity = Severity.WARN;
 
+            // when
+            VideoBlock block = new VideoBlock(name, severity, null, null, null, null, null, null, null, null);
+
+            // then
             assertNotNull(block);
             assertEquals("test-video", block.getName());
             assertEquals(Severity.WARN, block.getSeverity());
@@ -41,46 +41,24 @@ class VideoBlockTest {
         }
 
         @Test
-        @DisplayName("should build with all fields")
         void shouldBuildWithAllFields() {
-            VideoBlock block = VideoBlock
-                    .builder()
-                    .name("full-video")
-                    .severity(Severity.ERROR)
-                    .occurrence(new OccurrenceConfig(null, 1, 3, null))
-                    .url(VideoBlock.UrlConfig
-                            .builder()
-                            .required(true)
-                            .pattern("^https?://.*\\.(mp4|webm)$")
-                            .severity(Severity.ERROR)
-                            .build())
-                    .width(VideoBlock.DimensionConfig
-                            .builder()
-                            .minValue(320)
-                            .maxValue(1920)
-                            .severity(Severity.INFO)
-                            .build())
-                    .height(VideoBlock.DimensionConfig
-                            .builder()
-                            .minValue(180)
-                            .maxValue(1080)
-                            .severity(Severity.INFO)
-                            .build())
-                    .poster(VideoBlock.PosterConfig.builder().pattern(".*\\.(jpg|jpeg|png)$").build())
-                    .options(VideoBlock.OptionsConfig
-                            .builder()
-                            .controls(
-                                    VideoBlock.ControlsConfig.builder().required(true).severity(Severity.ERROR).build())
-                            .build())
-                    .caption(VideoBlock.CaptionConfig
-                            .builder()
-                            .required(true)
-                            .minLength(15)
-                            .maxLength(200)
-                            .severity(Severity.WARN)
-                            .build())
-                    .build();
+            // given
+            String name = "full-video";
+            Severity severity = Severity.ERROR;
+            OccurrenceConfig occurrence = new OccurrenceConfig(null, 1, 3, null);
+            VideoBlock.UrlConfig url = new VideoBlock.UrlConfig(true, "^https?://.*\\.(mp4|webm)$", Severity.ERROR);
+            VideoBlock.DimensionConfig width = new VideoBlock.DimensionConfig(null, 320, 1920, Severity.INFO);
+            VideoBlock.DimensionConfig height = new VideoBlock.DimensionConfig(null, 180, 1080, Severity.INFO);
+            VideoBlock.PosterConfig poster = new VideoBlock.PosterConfig(null, ".*\\.(jpg|jpeg|png)$", null);
+            VideoBlock.ControlsConfig controls = new VideoBlock.ControlsConfig(true, Severity.ERROR);
+            VideoBlock.OptionsConfig options = new VideoBlock.OptionsConfig(controls);
+            VideoBlock.CaptionConfig caption = new VideoBlock.CaptionConfig(true, 15, 200, Severity.WARN);
 
+            // when
+            VideoBlock block = new VideoBlock(name, severity, occurrence, null, url, width, height, poster, options,
+                    caption);
+
+            // then
             assertNotNull(block);
             assertNotNull(block.getUrl());
             assertNotNull(block.getWidth());
@@ -91,35 +69,33 @@ class VideoBlockTest {
         }
 
         @Test
-        @DisplayName("should build successfully without name")
         void shouldBuildSuccessfullyWithoutName() {
-            VideoBlock block = VideoBlock.builder().severity(Severity.WARN).build();
+            // when
+            VideoBlock block = new VideoBlock(null, Severity.WARN, null, null, null, null, null, null, null, null);
 
+            // then
             assertNull(block.getName());
             assertEquals(Severity.WARN, block.getSeverity());
         }
 
         @Test
-        @DisplayName("should throw when severity is null")
-        void shouldThrowWhenSeverityIsNull() {
-            assertThrows(NullPointerException.class, () -> VideoBlock.builder().name("test").build());
+        void shouldHandleNullSeverity() {
+            // when & then - no longer throws, just accepts null
+            VideoBlock block = new VideoBlock("test", null, null, null, null, null, null, null, null, null);
+            assertEquals("test", block.getName());
+            assertNull(block.getSeverity());
         }
     }
 
     @Nested
-    @DisplayName("UrlConfig Tests")
     class UrlConfigTests {
 
         @Test
-        @DisplayName("should build url config with all fields")
         void shouldBuildUrlConfigWithAllFields() {
-            VideoBlock.UrlConfig config = VideoBlock.UrlConfig
-                    .builder()
-                    .required(true)
-                    .pattern("^https?://.*\\.(mp4|webm)$")
-                    .severity(Severity.ERROR)
-                    .build();
+            // when
+            VideoBlock.UrlConfig config = new VideoBlock.UrlConfig(true, "^https?://.*\\.(mp4|webm)$", Severity.ERROR);
 
+            // then
             assertTrue(config.getRequired());
             assertNotNull(config.getPattern());
             assertEquals("^https?://.*\\.(mp4|webm)$", config.getPattern().pattern());
@@ -127,38 +103,37 @@ class VideoBlockTest {
         }
 
         @Test
-        @DisplayName("should build with Pattern object")
-        void shouldBuildWithPatternObject() {
-            Pattern pattern = Pattern.compile("test.*");
-            VideoBlock.UrlConfig config = VideoBlock.UrlConfig.builder().pattern(pattern).build();
+        void shouldBuildWithPatternString() {
+            // given
+            String patternString = "test.*";
 
-            assertEquals(pattern, config.getPattern());
+            // when
+            VideoBlock.UrlConfig config = new VideoBlock.UrlConfig(null, patternString, null);
+
+            // then
+            assertNotNull(config.getPattern());
+            assertEquals("test.*", config.getPattern().pattern());
         }
 
         @Test
-        @DisplayName("should handle null pattern string")
         void shouldHandleNullPatternString() {
-            VideoBlock.UrlConfig config = VideoBlock.UrlConfig.builder().pattern((String) null).build();
+            // when
+            VideoBlock.UrlConfig config = new VideoBlock.UrlConfig(null, null, null);
 
+            // then
             assertNull(config.getPattern());
         }
     }
 
     @Nested
-    @DisplayName("DimensionConfig Tests")
     class DimensionConfigTests {
 
         @Test
-        @DisplayName("should build dimension config with all fields")
         void shouldBuildDimensionConfigWithAllFields() {
-            VideoBlock.DimensionConfig config = VideoBlock.DimensionConfig
-                    .builder()
-                    .required(false)
-                    .minValue(320)
-                    .maxValue(1920)
-                    .severity(Severity.INFO)
-                    .build();
+            // when
+            VideoBlock.DimensionConfig config = new VideoBlock.DimensionConfig(false, 320, 1920, Severity.INFO);
 
+            // then
             assertFalse(config.getRequired());
             assertEquals(320, config.getMinValue());
             assertEquals(1920, config.getMaxValue());
@@ -167,20 +142,14 @@ class VideoBlockTest {
     }
 
     @Nested
-    @DisplayName("CaptionConfig Tests")
     class CaptionConfigTests {
 
         @Test
-        @DisplayName("should build caption config with all fields")
         void shouldBuildCaptionConfigWithAllFields() {
-            VideoBlock.CaptionConfig config = VideoBlock.CaptionConfig
-                    .builder()
-                    .required(true)
-                    .minLength(15)
-                    .maxLength(200)
-                    .severity(Severity.WARN)
-                    .build();
+            // when
+            VideoBlock.CaptionConfig config = new VideoBlock.CaptionConfig(true, 15, 200, Severity.WARN);
 
+            // then
             assertTrue(config.getRequired());
             assertEquals(15, config.getMinLength());
             assertEquals(200, config.getMaxLength());
@@ -189,58 +158,51 @@ class VideoBlockTest {
     }
 
     @Nested
-    @DisplayName("Equals and HashCode Tests")
     class EqualsHashCodeTests {
 
         @Test
-        @DisplayName("should be equal for same values")
         void shouldBeEqualForSameValues() {
-            VideoBlock block1 = VideoBlock
-                    .builder()
-                    .name("test")
-                    .severity(Severity.WARN)
-                    .url(VideoBlock.UrlConfig.builder().required(true).pattern("test.*").build())
-                    .build();
+            // given
+            VideoBlock.UrlConfig url1 = new VideoBlock.UrlConfig(true, "test.*", null);
+            VideoBlock.UrlConfig url2 = new VideoBlock.UrlConfig(true, "test.*", null);
 
-            VideoBlock block2 = VideoBlock
-                    .builder()
-                    .name("test")
-                    .severity(Severity.WARN)
-                    .url(VideoBlock.UrlConfig.builder().required(true).pattern("test.*").build())
-                    .build();
+            // when
+            VideoBlock block1 = new VideoBlock("test", Severity.WARN, null, null, url1, null, null, null, null, null);
+            VideoBlock block2 = new VideoBlock("test", Severity.WARN, null, null, url2, null, null, null, null, null);
 
+            // then
             assertEquals(block1, block2);
             assertEquals(block1.hashCode(), block2.hashCode());
         }
 
         @Test
-        @DisplayName("should not be equal for different values")
         void shouldNotBeEqualForDifferentValues() {
-            VideoBlock block1 = VideoBlock.builder().name("test1").severity(Severity.WARN).build();
+            // when
+            VideoBlock block1 = new VideoBlock("test1", Severity.WARN, null, null, null, null, null, null, null, null);
+            VideoBlock block2 = new VideoBlock("test2", Severity.WARN, null, null, null, null, null, null, null, null);
 
-            VideoBlock block2 = VideoBlock.builder().name("test2").severity(Severity.WARN).build();
-
+            // then
             assertNotEquals(block1, block2);
         }
 
         @Test
-        @DisplayName("should handle pattern equality correctly")
         void shouldHandlePatternEqualityCorrectly() {
-            VideoBlock.UrlConfig config1 = VideoBlock.UrlConfig.builder().pattern("test.*").build();
+            // when
+            VideoBlock.UrlConfig config1 = new VideoBlock.UrlConfig(null, "test.*", null);
+            VideoBlock.UrlConfig config2 = new VideoBlock.UrlConfig(null, "test.*", null);
 
-            VideoBlock.UrlConfig config2 = VideoBlock.UrlConfig.builder().pattern("test.*").build();
-
+            // then
             assertEquals(config1, config2);
             assertEquals(config1.hashCode(), config2.hashCode());
         }
 
         @Test
-        @DisplayName("should handle null patterns in equals")
         void shouldHandleNullPatternsInEquals() {
-            VideoBlock.UrlConfig config1 = VideoBlock.UrlConfig.builder().pattern((Pattern) null).build();
+            // when
+            VideoBlock.UrlConfig config1 = new VideoBlock.UrlConfig(null, null, null);
+            VideoBlock.UrlConfig config2 = new VideoBlock.UrlConfig(null, null, null);
 
-            VideoBlock.UrlConfig config2 = VideoBlock.UrlConfig.builder().pattern((Pattern) null).build();
-
+            // then
             assertEquals(config1, config2);
         }
     }

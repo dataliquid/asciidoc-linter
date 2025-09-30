@@ -4,7 +4,9 @@ import java.util.Objects;
 import java.util.regex.Pattern;
 
 import com.dataliquid.asciidoc.linter.config.blocks.BlockType;
+import com.dataliquid.asciidoc.linter.config.rule.OccurrenceConfig;
 import com.dataliquid.asciidoc.linter.config.common.Severity;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Quote.ATTRIBUTION;
@@ -18,27 +20,29 @@ import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Com
 import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.LINES;
 import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.MIN;
 import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.MAX;
-import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.EMPTY;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
 /**
  * Configuration for quote blocks. Based on the YAML schema structure for
  * validating AsciiDoc quote blocks. Syntax: [quote, Autor, Quelle] ____ Quote
  * content here ____
  */
-@JsonDeserialize(builder = QuoteBlock.Builder.class)
+@JsonDeserialize
 public class QuoteBlock extends AbstractBlock {
 
     private final AttributionConfig attribution;
     private final CitationConfig citation;
     private final ContentConfig content;
 
-    private QuoteBlock(Builder builder) {
-        super(builder);
-        this.attribution = builder._attribution;
-        this.citation = builder._citation;
-        this.content = builder._content;
+    @JsonCreator
+    public QuoteBlock(@JsonProperty("name") String name, @JsonProperty("severity") Severity severity,
+            @JsonProperty("occurrence") OccurrenceConfig occurrence, @JsonProperty("order") Integer order,
+            @JsonProperty("attribution") AttributionConfig attribution,
+            @JsonProperty("citation") CitationConfig citation, @JsonProperty("content") ContentConfig content) {
+        super(name, severity, occurrence, order);
+        this.attribution = attribution;
+        this.citation = citation;
+        this.content = content;
     }
 
     @Override
@@ -64,7 +68,7 @@ public class QuoteBlock extends AbstractBlock {
     /**
      * Configuration for quote attribution validation.
      */
-    @JsonDeserialize(builder = AttributionConfig.Builder.class)
+    @JsonDeserialize
     public static class AttributionConfig {
         private final boolean required;
         private final Integer minLength;
@@ -72,12 +76,16 @@ public class QuoteBlock extends AbstractBlock {
         private final Pattern pattern;
         private final Severity severity;
 
-        private AttributionConfig(Builder builder) {
-            this.required = builder._required;
-            this.minLength = builder._minLength;
-            this.maxLength = builder._maxLength;
-            this.pattern = builder._pattern;
-            this.severity = builder._severity;
+        @JsonCreator
+        @SuppressWarnings("PMD.NullAssignment")
+        public AttributionConfig(@JsonProperty("required") boolean required,
+                @JsonProperty("minLength") Integer minLength, @JsonProperty("maxLength") Integer maxLength,
+                @JsonProperty("pattern") String patternString, @JsonProperty("severity") Severity severity) {
+            this.required = required;
+            this.minLength = minLength;
+            this.maxLength = maxLength;
+            this.pattern = patternString != null ? Pattern.compile(patternString) : null;
+            this.severity = severity;
         }
 
         @JsonProperty(REQUIRED)
@@ -131,59 +139,12 @@ public class QuoteBlock extends AbstractBlock {
             return p1.pattern().equals(p2.pattern());
         }
 
-        public static Builder builder() {
-            return new Builder();
-        }
-
-        @JsonPOJOBuilder(withPrefix = EMPTY)
-        public static class Builder {
-            private boolean _required;
-            private Integer _minLength;
-            private Integer _maxLength;
-            private Pattern _pattern;
-            private Severity _severity;
-
-            @JsonProperty(REQUIRED)
-            public Builder required(boolean required) {
-                this._required = required;
-                return this;
-            }
-
-            @JsonProperty(MIN_LENGTH)
-            public Builder minLength(Integer minLength) {
-                this._minLength = minLength;
-                return this;
-            }
-
-            @JsonProperty(MAX_LENGTH)
-            public Builder maxLength(Integer maxLength) {
-                this._maxLength = maxLength;
-                return this;
-            }
-
-            @JsonProperty(PATTERN)
-            @SuppressWarnings("PMD.NullAssignment")
-            public Builder pattern(String pattern) {
-                this._pattern = pattern != null ? Pattern.compile(pattern) : null;
-                return this;
-            }
-
-            @JsonProperty(SEVERITY)
-            public Builder severity(Severity severity) {
-                this._severity = severity;
-                return this;
-            }
-
-            public AttributionConfig build() {
-                return new AttributionConfig(this);
-            }
-        }
     }
 
     /**
      * Configuration for quote citation validation.
      */
-    @JsonDeserialize(builder = CitationConfig.Builder.class)
+    @JsonDeserialize
     public static class CitationConfig {
         private final boolean required;
         private final Integer minLength;
@@ -191,12 +152,16 @@ public class QuoteBlock extends AbstractBlock {
         private final Pattern pattern;
         private final Severity severity;
 
-        private CitationConfig(Builder builder) {
-            this.required = builder._required;
-            this.minLength = builder._minLength;
-            this.maxLength = builder._maxLength;
-            this.pattern = builder._pattern;
-            this.severity = builder._severity;
+        @JsonCreator
+        @SuppressWarnings("PMD.NullAssignment")
+        public CitationConfig(@JsonProperty("required") boolean required, @JsonProperty("minLength") Integer minLength,
+                @JsonProperty("maxLength") Integer maxLength, @JsonProperty("pattern") String patternString,
+                @JsonProperty("severity") Severity severity) {
+            this.required = required;
+            this.minLength = minLength;
+            this.maxLength = maxLength;
+            this.pattern = patternString != null ? Pattern.compile(patternString) : null;
+            this.severity = severity;
         }
 
         @JsonProperty(REQUIRED)
@@ -250,70 +215,25 @@ public class QuoteBlock extends AbstractBlock {
             return p1.pattern().equals(p2.pattern());
         }
 
-        public static Builder builder() {
-            return new Builder();
-        }
-
-        @JsonPOJOBuilder(withPrefix = EMPTY)
-        public static class Builder {
-            private boolean _required;
-            private Integer _minLength;
-            private Integer _maxLength;
-            private Pattern _pattern;
-            private Severity _severity;
-
-            @JsonProperty(REQUIRED)
-            public Builder required(boolean required) {
-                this._required = required;
-                return this;
-            }
-
-            @JsonProperty(MIN_LENGTH)
-            public Builder minLength(Integer minLength) {
-                this._minLength = minLength;
-                return this;
-            }
-
-            @JsonProperty(MAX_LENGTH)
-            public Builder maxLength(Integer maxLength) {
-                this._maxLength = maxLength;
-                return this;
-            }
-
-            @JsonProperty(PATTERN)
-            @SuppressWarnings("PMD.NullAssignment")
-            public Builder pattern(String pattern) {
-                this._pattern = pattern != null ? Pattern.compile(pattern) : null;
-                return this;
-            }
-
-            @JsonProperty(SEVERITY)
-            public Builder severity(Severity severity) {
-                this._severity = severity;
-                return this;
-            }
-
-            public CitationConfig build() {
-                return new CitationConfig(this);
-            }
-        }
     }
 
     /**
      * Configuration for quote content validation.
      */
-    @JsonDeserialize(builder = ContentConfig.Builder.class)
+    @JsonDeserialize
     public static class ContentConfig {
         private final boolean required;
         private final Integer minLength;
         private final Integer maxLength;
         private final LinesConfig lines;
 
-        private ContentConfig(Builder builder) {
-            this.required = builder._required;
-            this.minLength = builder._minLength;
-            this.maxLength = builder._maxLength;
-            this.lines = builder._lines;
+        @JsonCreator
+        public ContentConfig(@JsonProperty("required") boolean required, @JsonProperty("minLength") Integer minLength,
+                @JsonProperty("maxLength") Integer maxLength, @JsonProperty("lines") LinesConfig lines) {
+            this.required = required;
+            this.minLength = minLength;
+            this.maxLength = maxLength;
+            this.lines = lines;
         }
 
         @JsonProperty(REQUIRED)
@@ -352,60 +272,23 @@ public class QuoteBlock extends AbstractBlock {
             return Objects.hash(required, minLength, maxLength, lines);
         }
 
-        public static Builder builder() {
-            return new Builder();
-        }
-
-        @JsonPOJOBuilder(withPrefix = EMPTY)
-        public static class Builder {
-            private boolean _required;
-            private Integer _minLength;
-            private Integer _maxLength;
-            private LinesConfig _lines;
-
-            @JsonProperty(REQUIRED)
-            public Builder required(boolean required) {
-                this._required = required;
-                return this;
-            }
-
-            @JsonProperty(MIN_LENGTH)
-            public Builder minLength(Integer minLength) {
-                this._minLength = minLength;
-                return this;
-            }
-
-            @JsonProperty(MAX_LENGTH)
-            public Builder maxLength(Integer maxLength) {
-                this._maxLength = maxLength;
-                return this;
-            }
-
-            @JsonProperty(LINES)
-            public Builder lines(LinesConfig lines) {
-                this._lines = lines;
-                return this;
-            }
-
-            public ContentConfig build() {
-                return new ContentConfig(this);
-            }
-        }
     }
 
     /**
      * Configuration for content line count validation.
      */
-    @JsonDeserialize(builder = LinesConfig.Builder.class)
+    @JsonDeserialize
     public static class LinesConfig {
         private final Integer min;
         private final Integer max;
         private final Severity severity;
 
-        private LinesConfig(Builder builder) {
-            this.min = builder._min;
-            this.max = builder._max;
-            this.severity = builder._severity;
+        @JsonCreator
+        public LinesConfig(@JsonProperty("min") Integer min, @JsonProperty("max") Integer max,
+                @JsonProperty("severity") Severity severity) {
+            this.min = min;
+            this.max = max;
+            this.severity = severity;
         }
 
         @JsonProperty(MIN)
@@ -438,38 +321,6 @@ public class QuoteBlock extends AbstractBlock {
             return Objects.hash(min, max, severity);
         }
 
-        public static Builder builder() {
-            return new Builder();
-        }
-
-        @JsonPOJOBuilder(withPrefix = EMPTY)
-        public static class Builder {
-            private Integer _min;
-            private Integer _max;
-            private Severity _severity;
-
-            @JsonProperty(MIN)
-            public Builder min(Integer min) {
-                this._min = min;
-                return this;
-            }
-
-            @JsonProperty(MAX)
-            public Builder max(Integer max) {
-                this._max = max;
-                return this;
-            }
-
-            @JsonProperty(SEVERITY)
-            public Builder severity(Severity severity) {
-                this._severity = severity;
-                return this;
-            }
-
-            public LinesConfig build() {
-                return new LinesConfig(this);
-            }
-        }
     }
 
     @Override
@@ -488,38 +339,4 @@ public class QuoteBlock extends AbstractBlock {
         return Objects.hash(super.hashCode(), attribution, citation, content);
     }
 
-    public static Builder builder() {
-        return new Builder();
-    }
-
-    @JsonPOJOBuilder(withPrefix = EMPTY)
-    public static class Builder extends AbstractBlock.AbstractBuilder<Builder> {
-        private AttributionConfig _attribution;
-        private CitationConfig _citation;
-        private ContentConfig _content;
-
-        @JsonProperty(ATTRIBUTION)
-        public Builder attribution(AttributionConfig attribution) {
-            this._attribution = attribution;
-            return this;
-        }
-
-        @JsonProperty(CITATION)
-        public Builder citation(CitationConfig citation) {
-            this._citation = citation;
-            return this;
-        }
-
-        @JsonProperty(CONTENT)
-        public Builder content(ContentConfig content) {
-            this._content = content;
-            return this;
-        }
-
-        @Override
-        public QuoteBlock build() {
-            Objects.requireNonNull(_severity, "[" + getClass().getName() + "] severity is required");
-            return new QuoteBlock(this);
-        }
-    }
 }
