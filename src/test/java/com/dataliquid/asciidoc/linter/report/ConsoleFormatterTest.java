@@ -217,11 +217,10 @@ class ConsoleFormatterTest {
         @DisplayName("should add colors when enabled")
         void shouldAddColorsWhenEnabled() {
             // Given
-            OutputConfiguration colorConfig = OutputConfiguration
-                    .builder()
-                    .format(OutputFormat.SIMPLE)
-                    .display(new DisplayConfig(null, null, true, null, null, null))
-                    .build();
+            OutputConfiguration colorConfig = new OutputConfiguration(
+                    OutputFormat.SIMPLE,
+                    new DisplayConfig(null, null, true, null, null, null),
+                    null, null, null);
             ConsoleFormatter colorFormatter = new ConsoleFormatter(colorConfig);
 
             ValidationMessage error = ValidationMessage
