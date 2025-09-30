@@ -8,8 +8,6 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.regex.Pattern;
-
 import org.junit.jupiter.api.Test;
 
 import com.dataliquid.asciidoc.linter.config.common.Severity;
@@ -18,40 +16,19 @@ class VerseBlockTest {
 
     @Test
     void testBuilder() {
-        VerseBlock.AuthorConfig authorRule = VerseBlock.AuthorConfig
-                .builder()
-                .defaultValue("Carl Sandburg")
-                .required(true)
-                .minLength(3)
-                .maxLength(50)
-                .pattern("^[A-Z][a-zA-Z\\s\\.]+$")
-                .build();
+        // given
+        VerseBlock.AuthorConfig authorRule = new VerseBlock.AuthorConfig("Carl Sandburg", 3, 50,
+                "^[A-Z][a-zA-Z\\s\\.]+$", true);
 
-        VerseBlock.AttributionConfig attributionRule = VerseBlock.AttributionConfig
-                .builder()
-                .defaultValue("Fog")
-                .required(false)
-                .minLength(5)
-                .maxLength(100)
-                .pattern("^[A-Za-z0-9\\s,\\.]+$")
-                .build();
+        VerseBlock.AttributionConfig attributionRule = new VerseBlock.AttributionConfig("Fog", 5, 100,
+                "^[A-Za-z0-9\\s,\\.]+$", false);
 
-        VerseBlock.ContentConfig contentRule = VerseBlock.ContentConfig
-                .builder()
-                .required(true)
-                .minLength(20)
-                .maxLength(500)
-                .pattern(".*\\n.*")
-                .build();
+        VerseBlock.ContentConfig contentRule = new VerseBlock.ContentConfig(20, 500, ".*\\n.*", true);
 
-        VerseBlock verse = VerseBlock
-                .builder()
-                .severity(Severity.WARN)
-                .author(authorRule)
-                .attribution(attributionRule)
-                .content(contentRule)
-                .build();
+        // when
+        VerseBlock verse = new VerseBlock(null, Severity.WARN, null, null, authorRule, attributionRule, contentRule);
 
+        // then
         assertEquals(Severity.WARN, verse.getSeverity());
 
         assertNotNull(verse.getAuthor());
@@ -77,20 +54,15 @@ class VerseBlockTest {
 
     @Test
     void testPatternStringConstructor() {
-        VerseBlock.AuthorConfig authorRule = VerseBlock.AuthorConfig.builder().pattern("^[A-Z].*").build();
+        // given
+        VerseBlock.AuthorConfig authorRule = new VerseBlock.AuthorConfig(null, null, null, "^[A-Z].*", false);
+        VerseBlock.AttributionConfig attributionRule = new VerseBlock.AttributionConfig(null, null, null, "[0-9]+",
+                false);
 
-        VerseBlock.AttributionConfig attributionRule = VerseBlock.AttributionConfig
-                .builder()
-                .pattern(Pattern.compile("[0-9]+"))
-                .build();
+        // when
+        VerseBlock verse = new VerseBlock(null, Severity.ERROR, null, null, authorRule, attributionRule, null);
 
-        VerseBlock verse = VerseBlock
-                .builder()
-                .severity(Severity.ERROR)
-                .author(authorRule)
-                .attribution(attributionRule)
-                .build();
-
+        // then
         assertNotNull(verse.getAuthor().getPattern());
         assertEquals("^[A-Z].*", verse.getAuthor().getPattern().pattern());
         assertNotNull(verse.getAttribution().getPattern());
@@ -99,59 +71,31 @@ class VerseBlockTest {
 
     @Test
     void testNullPatterns() {
-        VerseBlock.AuthorConfig authorRule = VerseBlock.AuthorConfig.builder().pattern((String) null).build();
+        // given
+        VerseBlock.AuthorConfig authorRule = new VerseBlock.AuthorConfig(null, null, null, null, false);
+        VerseBlock.AttributionConfig attributionRule = new VerseBlock.AttributionConfig(null, null, null, null, false);
 
-        VerseBlock.AttributionConfig attributionRule = VerseBlock.AttributionConfig
-                .builder()
-                .pattern((Pattern) null)
-                .build();
+        // when
+        VerseBlock verse = new VerseBlock(null, Severity.INFO, null, null, authorRule, attributionRule, null);
 
-        VerseBlock verse = VerseBlock
-                .builder()
-                .severity(Severity.INFO)
-                .author(authorRule)
-                .attribution(attributionRule)
-                .build();
-
+        // then
         assertNull(verse.getAuthor().getPattern());
         assertNull(verse.getAttribution().getPattern());
     }
 
     @Test
     void testEqualsAndHashCode() {
-        VerseBlock.AuthorConfig authorRule1 = VerseBlock.AuthorConfig
-                .builder()
-                .defaultValue("Author1")
-                .required(true)
-                .minLength(5)
-                .maxLength(50)
-                .pattern("^[A-Z].*")
-                .build();
+        // given
+        VerseBlock.AuthorConfig authorRule1 = new VerseBlock.AuthorConfig("Author1", 5, 50, "^[A-Z].*", true);
+        VerseBlock.AuthorConfig authorRule2 = new VerseBlock.AuthorConfig("Author1", 5, 50, "^[A-Z].*", true);
+        VerseBlock.AuthorConfig authorRule3 = new VerseBlock.AuthorConfig("Author2", 5, 50, "^[A-Z].*", true);
 
-        VerseBlock.AuthorConfig authorRule2 = VerseBlock.AuthorConfig
-                .builder()
-                .defaultValue("Author1")
-                .required(true)
-                .minLength(5)
-                .maxLength(50)
-                .pattern("^[A-Z].*")
-                .build();
+        // when
+        VerseBlock verse1 = new VerseBlock(null, Severity.WARN, null, null, authorRule1, null, null);
+        VerseBlock verse2 = new VerseBlock(null, Severity.WARN, null, null, authorRule2, null, null);
+        VerseBlock verse3 = new VerseBlock(null, Severity.WARN, null, null, authorRule3, null, null);
 
-        VerseBlock.AuthorConfig authorRule3 = VerseBlock.AuthorConfig
-                .builder()
-                .defaultValue("Author2")
-                .required(true)
-                .minLength(5)
-                .maxLength(50)
-                .pattern("^[A-Z].*")
-                .build();
-
-        VerseBlock verse1 = VerseBlock.builder().severity(Severity.WARN).author(authorRule1).build();
-
-        VerseBlock verse2 = VerseBlock.builder().severity(Severity.WARN).author(authorRule2).build();
-
-        VerseBlock verse3 = VerseBlock.builder().severity(Severity.WARN).author(authorRule3).build();
-
+        // then
         assertEquals(verse1, verse2);
         assertNotEquals(verse1, verse3);
         assertEquals(verse1.hashCode(), verse2.hashCode());
@@ -160,47 +104,25 @@ class VerseBlockTest {
 
     @Test
     void testRequiredSeverity() {
+        // given, when, then
         assertThrows(NullPointerException.class, () -> {
-            VerseBlock.builder().build();
+            new VerseBlock(null, null, null, null, null, null, null);
         });
     }
 
     @Test
     void testInnerClassEqualsAndHashCode() {
-        VerseBlock.AuthorConfig author1 = VerseBlock.AuthorConfig
-                .builder()
-                .defaultValue("Test")
-                .required(true)
-                .minLength(5)
-                .maxLength(50)
-                .pattern("^[A-Z].*")
-                .build();
+        // given
+        VerseBlock.AuthorConfig author1 = new VerseBlock.AuthorConfig("Test", 5, 50, "^[A-Z].*", true);
+        VerseBlock.AuthorConfig author2 = new VerseBlock.AuthorConfig("Test", 5, 50, "^[A-Z].*", true);
 
-        VerseBlock.AuthorConfig author2 = VerseBlock.AuthorConfig
-                .builder()
-                .defaultValue("Test")
-                .required(true)
-                .minLength(5)
-                .maxLength(50)
-                .pattern("^[A-Z].*")
-                .build();
+        VerseBlock.AttributionConfig attr1 = new VerseBlock.AttributionConfig("Source", null, null, null, false);
+        VerseBlock.AttributionConfig attr2 = new VerseBlock.AttributionConfig("Source", null, null, null, false);
 
-        VerseBlock.AttributionConfig attr1 = VerseBlock.AttributionConfig
-                .builder()
-                .defaultValue("Source")
-                .required(false)
-                .build();
+        VerseBlock.ContentConfig content1 = new VerseBlock.ContentConfig(10, null, null, true);
+        VerseBlock.ContentConfig content2 = new VerseBlock.ContentConfig(10, null, null, true);
 
-        VerseBlock.AttributionConfig attr2 = VerseBlock.AttributionConfig
-                .builder()
-                .defaultValue("Source")
-                .required(false)
-                .build();
-
-        VerseBlock.ContentConfig content1 = VerseBlock.ContentConfig.builder().required(true).minLength(10).build();
-
-        VerseBlock.ContentConfig content2 = VerseBlock.ContentConfig.builder().required(true).minLength(10).build();
-
+        // when, then
         assertEquals(author1, author2);
         assertEquals(author1.hashCode(), author2.hashCode());
 

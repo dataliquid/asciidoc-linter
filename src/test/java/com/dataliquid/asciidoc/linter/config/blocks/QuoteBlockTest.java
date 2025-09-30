@@ -8,7 +8,6 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -45,42 +44,38 @@ class QuoteBlockTest {
 
         @Test
         void shouldBuildWithCompleteConfig() {
-            QuoteBlock.AttributionConfig attribution = QuoteBlock.AttributionConfig
-                    .builder()
-                    .required(true)
-                    .minLength(3)
-                    .maxLength(100)
-                    .pattern("^[A-Z][a-zA-Z\\s\\.\\-,]+$")
-                    .severity(Severity.ERROR)
-                    .build();
+            // given
+            QuoteBlock.AttributionConfig attribution = new QuoteBlock.AttributionConfig(true, // required
+                    3, // minLength
+                    100, // maxLength
+                    "^[A-Z][a-zA-Z\\s\\.\\-,]+$", // pattern
+                    Severity.ERROR); // severity
 
-            QuoteBlock.CitationConfig citation = QuoteBlock.CitationConfig
-                    .builder()
-                    .required(false)
-                    .minLength(5)
-                    .maxLength(200)
-                    .pattern("^[A-Za-z0-9\\s,\\.\\-\\(\\)]+$")
-                    .severity(Severity.WARN)
-                    .build();
+            QuoteBlock.CitationConfig citation = new QuoteBlock.CitationConfig(false, // required
+                    5, // minLength
+                    200, // maxLength
+                    "^[A-Za-z0-9\\s,\\.\\-\\(\\)]+$", // pattern
+                    Severity.WARN); // severity
 
-            QuoteBlock.ContentConfig content = QuoteBlock.ContentConfig
-                    .builder()
-                    .required(true)
-                    .minLength(20)
-                    .maxLength(1000)
-                    .lines(QuoteBlock.LinesConfig.builder().min(1).max(20).severity(Severity.INFO).build())
-                    .build();
+            QuoteBlock.LinesConfig lines = new QuoteBlock.LinesConfig(1, // min
+                    20, // max
+                    Severity.INFO); // severity
 
-            QuoteBlock block = QuoteBlock
-                    .builder()
-                    .name("important-quote")
-                    .severity(Severity.INFO)
-                    .occurrence(new OccurrenceConfig(null, 0, 3, null))
-                    .attribution(attribution)
-                    .citation(citation)
-                    .content(content)
-                    .build();
+            QuoteBlock.ContentConfig content = new QuoteBlock.ContentConfig(true, // required
+                    20, // minLength
+                    1000, // maxLength
+                    lines); // lines
 
+            // when
+            QuoteBlock block = new QuoteBlock("important-quote", // name
+                    Severity.INFO, // severity
+                    new OccurrenceConfig(null, 0, 3, null), // occurrence
+                    null, // order
+                    attribution, // attribution
+                    citation, // citation
+                    content); // content
+
+            // then
             assertNotNull(block);
             assertEquals("important-quote", block.getName());
             assertEquals(Severity.INFO, block.getSeverity());
@@ -96,21 +91,26 @@ class QuoteBlockTest {
         }
 
         @Test
-        @DisplayName("should throw exception when severity is null")
         void shouldThrowWhenSeverityNull() {
-            assertThrows(NullPointerException.class, () -> QuoteBlock.builder().build(), "severity is required");
+            // when & then
+            assertThrows(NullPointerException.class, () -> new QuoteBlock(null, null, null, null, null, null, null),
+                    "severity is required");
         }
     }
 
     @Nested
-    @DisplayName("AttributionConfig Tests")
     class AttributionConfigTests {
 
         @Test
-        @DisplayName("should build with default values")
         void shouldBuildWithDefaults() {
-            QuoteBlock.AttributionConfig config = QuoteBlock.AttributionConfig.builder().build();
+            // when
+            QuoteBlock.AttributionConfig config = new QuoteBlock.AttributionConfig(false, // required (default)
+                    null, // minLength
+                    null, // maxLength
+                    null, // pattern
+                    null); // severity
 
+            // then
             assertFalse(config.isRequired());
             assertNull(config.getMinLength());
             assertNull(config.getMaxLength());
@@ -119,17 +119,15 @@ class QuoteBlockTest {
         }
 
         @Test
-        @DisplayName("should build with all values")
         void shouldBuildWithAllValues() {
-            QuoteBlock.AttributionConfig config = QuoteBlock.AttributionConfig
-                    .builder()
-                    .required(true)
-                    .minLength(5)
-                    .maxLength(50)
-                    .pattern("^[A-Z].*")
-                    .severity(Severity.ERROR)
-                    .build();
+            // when
+            QuoteBlock.AttributionConfig config = new QuoteBlock.AttributionConfig(true, // required
+                    5, // minLength
+                    50, // maxLength
+                    "^[A-Z].*", // pattern
+                    Severity.ERROR); // severity
 
+            // then
             assertTrue(config.isRequired());
             assertEquals(5, config.getMinLength());
             assertEquals(50, config.getMaxLength());
@@ -139,29 +137,27 @@ class QuoteBlockTest {
         }
 
         @Test
-        @DisplayName("should implement equals and hashCode correctly")
         void shouldImplementEqualsAndHashCode() {
-            QuoteBlock.AttributionConfig config1 = QuoteBlock.AttributionConfig
-                    .builder()
-                    .required(true)
-                    .minLength(5)
-                    .pattern("^[A-Z].*")
-                    .build();
+            // given
+            QuoteBlock.AttributionConfig config1 = new QuoteBlock.AttributionConfig(true, // required
+                    5, // minLength
+                    null, // maxLength
+                    "^[A-Z].*", // pattern
+                    null); // severity
 
-            QuoteBlock.AttributionConfig config2 = QuoteBlock.AttributionConfig
-                    .builder()
-                    .required(true)
-                    .minLength(5)
-                    .pattern("^[A-Z].*")
-                    .build();
+            QuoteBlock.AttributionConfig config2 = new QuoteBlock.AttributionConfig(true, // required
+                    5, // minLength
+                    null, // maxLength
+                    "^[A-Z].*", // pattern
+                    null); // severity
 
-            QuoteBlock.AttributionConfig config3 = QuoteBlock.AttributionConfig
-                    .builder()
-                    .required(false)
-                    .minLength(5)
-                    .pattern("^[A-Z].*")
-                    .build();
+            QuoteBlock.AttributionConfig config3 = new QuoteBlock.AttributionConfig(false, // required
+                    5, // minLength
+                    null, // maxLength
+                    "^[A-Z].*", // pattern
+                    null); // severity
 
+            // then
             assertEquals(config1, config2);
             assertEquals(config1.hashCode(), config2.hashCode());
             assertNotEquals(config1, config3);
@@ -169,14 +165,18 @@ class QuoteBlockTest {
     }
 
     @Nested
-    @DisplayName("CitationConfig Tests")
     class CitationConfigTests {
 
         @Test
-        @DisplayName("should build with default values")
         void shouldBuildWithDefaults() {
-            QuoteBlock.CitationConfig config = QuoteBlock.CitationConfig.builder().build();
+            // when
+            QuoteBlock.CitationConfig config = new QuoteBlock.CitationConfig(false, // required (default)
+                    null, // minLength
+                    null, // maxLength
+                    null, // pattern
+                    null); // severity
 
+            // then
             assertFalse(config.isRequired());
             assertNull(config.getMinLength());
             assertNull(config.getMaxLength());
@@ -185,17 +185,15 @@ class QuoteBlockTest {
         }
 
         @Test
-        @DisplayName("should build with all values")
         void shouldBuildWithAllValues() {
-            QuoteBlock.CitationConfig config = QuoteBlock.CitationConfig
-                    .builder()
-                    .required(true)
-                    .minLength(10)
-                    .maxLength(100)
-                    .pattern("^[A-Za-z0-9\\\\s]+$")
-                    .severity(Severity.WARN)
-                    .build();
+            // when
+            QuoteBlock.CitationConfig config = new QuoteBlock.CitationConfig(true, // required
+                    10, // minLength
+                    100, // maxLength
+                    "^[A-Za-z0-9\\\\s]+$", // pattern
+                    Severity.WARN); // severity
 
+            // then
             assertTrue(config.isRequired());
             assertEquals(10, config.getMinLength());
             assertEquals(100, config.getMaxLength());
@@ -206,14 +204,17 @@ class QuoteBlockTest {
     }
 
     @Nested
-    @DisplayName("ContentConfig Tests")
     class ContentConfigTests {
 
         @Test
-        @DisplayName("should build with default values")
         void shouldBuildWithDefaults() {
-            QuoteBlock.ContentConfig config = QuoteBlock.ContentConfig.builder().build();
+            // when
+            QuoteBlock.ContentConfig config = new QuoteBlock.ContentConfig(false, // required (default)
+                    null, // minLength
+                    null, // maxLength
+                    null); // lines
 
+            // then
             assertFalse(config.isRequired());
             assertNull(config.getMinLength());
             assertNull(config.getMaxLength());
@@ -221,23 +222,19 @@ class QuoteBlockTest {
         }
 
         @Test
-        @DisplayName("should build with all values")
         void shouldBuildWithAllValues() {
-            QuoteBlock.LinesConfig lines = QuoteBlock.LinesConfig
-                    .builder()
-                    .min(2)
-                    .max(10)
-                    .severity(Severity.INFO)
-                    .build();
+            // given
+            QuoteBlock.LinesConfig lines = new QuoteBlock.LinesConfig(2, // min
+                    10, // max
+                    Severity.INFO); // severity
 
-            QuoteBlock.ContentConfig config = QuoteBlock.ContentConfig
-                    .builder()
-                    .required(true)
-                    .minLength(50)
-                    .maxLength(500)
-                    .lines(lines)
-                    .build();
+            // when
+            QuoteBlock.ContentConfig config = new QuoteBlock.ContentConfig(true, // required
+                    50, // minLength
+                    500, // maxLength
+                    lines); // lines
 
+            // then
             assertTrue(config.isRequired());
             assertEquals(50, config.getMinLength());
             assertEquals(500, config.getMaxLength());
@@ -248,58 +245,50 @@ class QuoteBlockTest {
     }
 
     @Nested
-    @DisplayName("LinesConfig Tests")
     class LinesConfigTests {
 
         @Test
-        @DisplayName("should build with default values")
         void shouldBuildWithDefaults() {
-            QuoteBlock.LinesConfig config = QuoteBlock.LinesConfig.builder().build();
+            // when
+            QuoteBlock.LinesConfig config = new QuoteBlock.LinesConfig(null, // min
+                    null, // max
+                    null); // severity
 
+            // then
             assertNull(config.getMin());
             assertNull(config.getMax());
             assertNull(config.getSeverity());
         }
 
         @Test
-        @DisplayName("should build with all values")
         void shouldBuildWithAllValues() {
-            QuoteBlock.LinesConfig config = QuoteBlock.LinesConfig
-                    .builder()
-                    .min(1)
-                    .max(20)
-                    .severity(Severity.WARN)
-                    .build();
+            // when
+            QuoteBlock.LinesConfig config = new QuoteBlock.LinesConfig(1, // min
+                    20, // max
+                    Severity.WARN); // severity
 
+            // then
             assertEquals(1, config.getMin());
             assertEquals(20, config.getMax());
             assertEquals(Severity.WARN, config.getSeverity());
         }
 
         @Test
-        @DisplayName("should implement equals and hashCode correctly")
         void shouldImplementEqualsAndHashCode() {
-            QuoteBlock.LinesConfig config1 = QuoteBlock.LinesConfig
-                    .builder()
-                    .min(5)
-                    .max(10)
-                    .severity(Severity.INFO)
-                    .build();
+            // given
+            QuoteBlock.LinesConfig config1 = new QuoteBlock.LinesConfig(5, // min
+                    10, // max
+                    Severity.INFO); // severity
 
-            QuoteBlock.LinesConfig config2 = QuoteBlock.LinesConfig
-                    .builder()
-                    .min(5)
-                    .max(10)
-                    .severity(Severity.INFO)
-                    .build();
+            QuoteBlock.LinesConfig config2 = new QuoteBlock.LinesConfig(5, // min
+                    10, // max
+                    Severity.INFO); // severity
 
-            QuoteBlock.LinesConfig config3 = QuoteBlock.LinesConfig
-                    .builder()
-                    .min(5)
-                    .max(15)
-                    .severity(Severity.INFO)
-                    .build();
+            QuoteBlock.LinesConfig config3 = new QuoteBlock.LinesConfig(5, // min
+                    15, // max
+                    Severity.INFO); // severity
 
+            // then
             assertEquals(config1, config2);
             assertEquals(config1.hashCode(), config2.hashCode());
             assertNotEquals(config1, config3);
@@ -307,33 +296,39 @@ class QuoteBlockTest {
     }
 
     @Nested
-    @DisplayName("Equals and HashCode Tests")
     class EqualsHashCodeTests {
 
         @Test
-        @DisplayName("should implement equals correctly")
         void shouldImplementEquals() {
-            QuoteBlock block1 = QuoteBlock
-                    .builder()
-                    .name("quote1")
-                    .severity(Severity.WARN)
-                    .attribution(QuoteBlock.AttributionConfig.builder().required(true).build())
-                    .build();
+            // given
+            QuoteBlock.AttributionConfig attribution = new QuoteBlock.AttributionConfig(true, null, null, null, null);
 
-            QuoteBlock block2 = QuoteBlock
-                    .builder()
-                    .name("quote1")
-                    .severity(Severity.WARN)
-                    .attribution(QuoteBlock.AttributionConfig.builder().required(true).build())
-                    .build();
+            // when
+            QuoteBlock block1 = new QuoteBlock("quote1", // name
+                    Severity.WARN, // severity
+                    null, // occurrence
+                    null, // order
+                    attribution, // attribution
+                    null, // citation
+                    null); // content
 
-            QuoteBlock block3 = QuoteBlock
-                    .builder()
-                    .name("quote2")
-                    .severity(Severity.WARN)
-                    .attribution(QuoteBlock.AttributionConfig.builder().required(true).build())
-                    .build();
+            QuoteBlock block2 = new QuoteBlock("quote1", // name
+                    Severity.WARN, // severity
+                    null, // occurrence
+                    null, // order
+                    attribution, // attribution
+                    null, // citation
+                    null); // content
 
+            QuoteBlock block3 = new QuoteBlock("quote2", // name
+                    Severity.WARN, // severity
+                    null, // occurrence
+                    null, // order
+                    attribution, // attribution
+                    null, // citation
+                    null); // content
+
+            // then
             assertEquals(block1, block2);
             assertNotEquals(block1, block3);
             assertNotEquals(block1, null);
@@ -341,20 +336,28 @@ class QuoteBlockTest {
         }
 
         @Test
-        @DisplayName("should implement hashCode consistently")
         void shouldImplementHashCode() {
-            QuoteBlock block1 = QuoteBlock
-                    .builder()
-                    .severity(Severity.ERROR)
-                    .citation(QuoteBlock.CitationConfig.builder().required(false).maxLength(100).build())
-                    .build();
+            // given
+            QuoteBlock.CitationConfig citation = new QuoteBlock.CitationConfig(false, null, 100, null, null);
 
-            QuoteBlock block2 = QuoteBlock
-                    .builder()
-                    .severity(Severity.ERROR)
-                    .citation(QuoteBlock.CitationConfig.builder().required(false).maxLength(100).build())
-                    .build();
+            // when
+            QuoteBlock block1 = new QuoteBlock(null, // name
+                    Severity.ERROR, // severity
+                    null, // occurrence
+                    null, // order
+                    null, // attribution
+                    citation, // citation
+                    null); // content
 
+            QuoteBlock block2 = new QuoteBlock(null, // name
+                    Severity.ERROR, // severity
+                    null, // occurrence
+                    null, // order
+                    null, // attribution
+                    citation, // citation
+                    null); // content
+
+            // then
             assertEquals(block1.hashCode(), block2.hashCode());
         }
     }
