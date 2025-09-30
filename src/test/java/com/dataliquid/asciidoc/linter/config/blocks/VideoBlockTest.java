@@ -80,10 +80,10 @@ class VideoBlockTest {
 
         @Test
         void shouldHandleNullSeverity() {
-            // when & then - no longer throws, just accepts null
-            VideoBlock block = new VideoBlock("test", null, null, null, null, null, null, null, null, null);
-            assertEquals("test", block.getName());
-            assertNull(block.getSeverity());
+            // when & then
+            assertThrows(NullPointerException.class, () -> {
+                new VideoBlock("test", null, null, null, null, null, null, null, null, null);
+            });
         }
     }
 
