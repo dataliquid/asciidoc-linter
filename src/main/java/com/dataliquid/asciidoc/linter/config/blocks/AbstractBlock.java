@@ -18,11 +18,15 @@ public abstract class AbstractBlock implements Block {
     private final OccurrenceConfig occurrence;
     private final Integer order;
 
+    protected AbstractBlock(String name, Severity severity, OccurrenceConfig occurrence, Integer order) {
+        this.name = name;
+        this.severity = severity;
+        this.occurrence = occurrence;
+        this.order = order;
+    }
+
     protected AbstractBlock(AbstractBuilder<?> builder) {
-        this.name = builder._name;
-        this.severity = builder._severity;
-        this.occurrence = builder._occurrence;
-        this.order = builder._order;
+        this(builder._name, builder._severity, builder._occurrence, builder._order);
     }
 
     @Override
