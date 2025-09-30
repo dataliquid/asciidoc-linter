@@ -299,7 +299,7 @@ class BlockValidatorTest {
         void shouldHandleNullBlocksList() {
             // Given
             SectionConfig config = new SectionConfig("Section", null, 0, null, null,
-                    Arrays.asList(ParagraphBlock.builder().severity(Severity.ERROR).build()), null);
+                    Arrays.asList(new ParagraphBlock(null, Severity.ERROR, null, null, null, null)), null);
 
             when(mockSection.getBlocks()).thenReturn(null);
 

@@ -59,7 +59,7 @@ class VideoBlockValidatorTest {
     @Test
     void shouldReturnEmptyListForNonVideoBlockConfig() {
         // given
-        ParagraphBlock config = new ParagraphBlock("test", Severity.WARN, null, null, null, null, null, null);
+        ParagraphBlock config = new ParagraphBlock("test", Severity.WARN, null, null, null, null);
 
         // when
         var messages = validator.validate(node, config, context);
