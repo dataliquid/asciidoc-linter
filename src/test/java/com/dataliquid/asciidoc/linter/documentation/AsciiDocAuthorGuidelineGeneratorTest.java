@@ -144,7 +144,7 @@ class AsciiDocAuthorGuidelineGeneratorTest {
             ParagraphBlock paragraph = ParagraphBlock
                     .builder()
                     .severity(Severity.WARN)
-                    .occurrence(OccurrenceConfig.builder().min(1).max(3).build())
+                    .occurrence(new OccurrenceConfig(null, 1, 3, null))
                     .build();
 
             SectionConfig section = SectionConfig
@@ -152,7 +152,7 @@ class AsciiDocAuthorGuidelineGeneratorTest {
                     .name("introduction")
                     .level(1)
                     .order(1)
-                    .occurrence(OccurrenceConfig.builder().min(1).max(1).build())
+                    .occurrence(new OccurrenceConfig(null, 1, 1, null))
                     .allowedBlocks(List.of(paragraph))
                     .build();
 

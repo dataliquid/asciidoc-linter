@@ -46,7 +46,7 @@ class SectionValidatorTest {
             SectionConfig titleConfig = SectionConfig
                     .builder()
                     .level(0)
-                    .occurrence(OccurrenceConfig.builder().min(1).max(1).build())
+                    .occurrence(new OccurrenceConfig(null, 1, 1, null))
                     .title(TitleConfig.builder().pattern("^[A-Z].*").severity(Severity.ERROR).build())
                     .build();
 
@@ -78,7 +78,7 @@ class SectionValidatorTest {
             SectionConfig titleConfig = SectionConfig
                     .builder()
                     .level(0)
-                    .occurrence(OccurrenceConfig.builder().min(1).max(1).build())
+                    .occurrence(new OccurrenceConfig(null, 1, 1, null))
                     .build();
 
             DocumentConfiguration docConfig = DocumentConfiguration
@@ -110,7 +110,7 @@ class SectionValidatorTest {
             SectionConfig titleConfig = SectionConfig
                     .builder()
                     .level(0)
-                    .occurrence(OccurrenceConfig.builder().min(1).max(1).build())
+                    .occurrence(new OccurrenceConfig(null, 1, 1, null))
                     .title(TitleConfig.builder().pattern("^[A-Z].*").severity(Severity.ERROR).build())
                     .build();
 
@@ -152,7 +152,7 @@ class SectionValidatorTest {
                     .builder()
                     .name("introduction")
                     .level(1)
-                    .occurrence(OccurrenceConfig.builder().min(1).max(1).build())
+                    .occurrence(new OccurrenceConfig(null, 1, 1, null))
                     .title(TitleConfig.builder().pattern("^Introduction$").severity(Severity.ERROR).build())
                     .build();
 
@@ -160,7 +160,7 @@ class SectionValidatorTest {
                     .builder()
                     .name("getting-started")
                     .level(1)
-                    .occurrence(OccurrenceConfig.builder().min(0).max(1).build())
+                    .occurrence(new OccurrenceConfig(null, 0, 1, null))
                     .title(TitleConfig.builder().pattern("^Getting Started$").severity(Severity.ERROR).build())
                     .build();
 
@@ -194,7 +194,7 @@ class SectionValidatorTest {
                     .builder()
                     .name("introduction")
                     .level(1)
-                    .occurrence(OccurrenceConfig.builder().min(1).max(1).build())
+                    .occurrence(new OccurrenceConfig(null, 1, 1, null))
                     .title(TitleConfig.builder().pattern("^Introduction$").severity(Severity.ERROR).build())
                     .build();
 
@@ -241,7 +241,7 @@ class SectionValidatorTest {
                     .builder()
                     .name("introduction")
                     .level(1)
-                    .occurrence(OccurrenceConfig.builder().min(0).max(1).build())
+                    .occurrence(new OccurrenceConfig(null, 0, 1, null))
                     .build();
 
             DocumentConfiguration config = DocumentConfiguration.builder().sections(Arrays.asList(section)).build();
@@ -285,7 +285,7 @@ class SectionValidatorTest {
                     .builder()
                     .name("conclusion")
                     .level(1)
-                    .occurrence(OccurrenceConfig.builder().min(0).max(1).build())
+                    .occurrence(new OccurrenceConfig(null, 0, 1, null))
                     .title(TitleConfig.builder().pattern("^Conclusion$").severity(Severity.ERROR).build())
                     .build();
 
@@ -331,7 +331,7 @@ class SectionValidatorTest {
                     .builder()
                     .name("conclusion")
                     .level(1)
-                    .occurrence(OccurrenceConfig.builder().min(0).max(1).build())
+                    .occurrence(new OccurrenceConfig(null, 0, 1, null))
                     .title(TitleConfig.builder().pattern("^Conclusion$").severity(Severity.ERROR).build())
                     .build();
 
@@ -379,7 +379,7 @@ class SectionValidatorTest {
                     .builder()
                     .name("chapter")
                     .level(1)
-                    .occurrence(OccurrenceConfig.builder().min(1).max(10).build())
+                    .occurrence(new OccurrenceConfig(null, 1, 10, null))
                     .title(TitleConfig.builder().pattern("Chapter \\d+: .*").severity(Severity.ERROR).build())
                     .build();
 
@@ -413,7 +413,7 @@ class SectionValidatorTest {
                     .builder()
                     .name("chapter")
                     .level(1)
-                    .occurrence(OccurrenceConfig.builder().min(0).max(10).build())
+                    .occurrence(new OccurrenceConfig(null, 0, 10, null))
                     .title(TitleConfig.builder().pattern("Chapter \\d+: .*").severity(Severity.ERROR).build())
                     .build();
 
@@ -460,7 +460,7 @@ class SectionValidatorTest {
                     .builder()
                     .name("introduction")
                     .level(1)
-                    .occurrence(OccurrenceConfig.builder().min(0).max(1).build())
+                    .occurrence(new OccurrenceConfig(null, 0, 1, null))
                     .build();
 
             DocumentConfiguration config = DocumentConfiguration.builder().sections(Arrays.asList(section)).build();
@@ -623,7 +623,7 @@ class SectionValidatorTest {
                     .builder()
                     .name("core-features")
                     .level(2)
-                    .occurrence(OccurrenceConfig.builder().min(1).max(1).build())
+                    .occurrence(new OccurrenceConfig(null, 1, 1, null))
                     .title(TitleConfig.builder().pattern("^Core Features$").severity(Severity.ERROR).build())
                     .build();
 
@@ -631,7 +631,7 @@ class SectionValidatorTest {
                     .builder()
                     .name("advanced-features")
                     .level(2)
-                    .occurrence(OccurrenceConfig.builder().min(0).max(1).build())
+                    .occurrence(new OccurrenceConfig(null, 0, 1, null))
                     .title(TitleConfig.builder().pattern("^Advanced Features$").severity(Severity.ERROR).build())
                     .build();
 
@@ -639,7 +639,7 @@ class SectionValidatorTest {
                     .builder()
                     .name("features")
                     .level(1)
-                    .occurrence(OccurrenceConfig.builder().min(1).max(1).build())
+                    .occurrence(new OccurrenceConfig(null, 1, 1, null))
                     .title(TitleConfig.builder().pattern("^Features$").severity(Severity.ERROR).build())
                     .subsections(Arrays.asList(coreFeatures, advancedFeatures))
                     .build();
@@ -677,7 +677,7 @@ class SectionValidatorTest {
                     .builder()
                     .name("core-features")
                     .level(2)
-                    .occurrence(OccurrenceConfig.builder().min(1).max(1).build())
+                    .occurrence(new OccurrenceConfig(null, 1, 1, null))
                     .title(TitleConfig.builder().pattern("^Core Features$").severity(Severity.ERROR).build())
                     .build();
 
@@ -685,7 +685,7 @@ class SectionValidatorTest {
                     .builder()
                     .name("features")
                     .level(1)
-                    .occurrence(OccurrenceConfig.builder().min(1).max(1).build())
+                    .occurrence(new OccurrenceConfig(null, 1, 1, null))
                     .title(TitleConfig.builder().pattern("^Features$").severity(Severity.ERROR).build())
                     .subsections(Arrays.asList(coreFeatures))
                     .build();
@@ -730,7 +730,7 @@ class SectionValidatorTest {
                     .builder()
                     .name("introduction")
                     .level(1)
-                    .occurrence(OccurrenceConfig.builder().min(0).max(1).build())
+                    .occurrence(new OccurrenceConfig(null, 0, 1, null))
                     .build();
 
             DocumentConfiguration config = DocumentConfiguration.builder().sections(Arrays.asList(section)).build();

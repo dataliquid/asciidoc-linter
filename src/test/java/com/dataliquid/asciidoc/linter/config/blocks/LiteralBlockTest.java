@@ -294,7 +294,7 @@ class LiteralBlockTest {
         @DisplayName("should inherit occurrence from AbstractBlock")
         void shouldInheritOccurrenceFromAbstractBlock() {
             // Given
-            OccurrenceConfig occurrence = OccurrenceConfig.builder().min(0).max(3).severity(Severity.INFO).build();
+            OccurrenceConfig occurrence = new OccurrenceConfig(null, 0, 3, Severity.INFO);
 
             // When
             LiteralBlock block = LiteralBlock.builder().severity(Severity.INFO).occurrence(occurrence).build();
@@ -326,7 +326,7 @@ class LiteralBlockTest {
                     .severity(Severity.INFO)
                     .build();
 
-            OccurrenceConfig occurrence = OccurrenceConfig.builder().min(0).max(3).severity(Severity.INFO).build();
+            OccurrenceConfig occurrence = new OccurrenceConfig(null, 0, 3, Severity.INFO);
 
             // When
             LiteralBlock block = LiteralBlock

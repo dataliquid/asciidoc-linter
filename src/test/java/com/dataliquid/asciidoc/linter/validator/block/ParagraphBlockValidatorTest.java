@@ -291,7 +291,7 @@ class ParagraphBlockValidatorTest {
                 // Given
                 ParagraphBlock.SentenceConfig sentenceConfig = ParagraphBlock.SentenceConfig
                         .builder()
-                        .occurrence(OccurrenceConfig.builder().min(3).severity(Severity.ERROR).build())
+                        .occurrence(new OccurrenceConfig(null, 3, null, Severity.ERROR))
                         .build();
                 ParagraphBlock config = ParagraphBlock
                         .builder()
@@ -321,7 +321,7 @@ class ParagraphBlockValidatorTest {
                 // Given
                 ParagraphBlock.SentenceConfig sentenceConfig = ParagraphBlock.SentenceConfig
                         .builder()
-                        .occurrence(OccurrenceConfig.builder().max(2).severity(Severity.WARN).build())
+                        .occurrence(new OccurrenceConfig(null, null, 2, Severity.WARN))
                         .build();
                 ParagraphBlock config = ParagraphBlock
                         .builder()
@@ -351,11 +351,8 @@ class ParagraphBlockValidatorTest {
                 // Given
                 ParagraphBlock.SentenceConfig sentenceConfig = ParagraphBlock.SentenceConfig
                         .builder()
-                        .occurrence(OccurrenceConfig
-                                .builder()
-                                .min(2)
-                                // No severity set
-                                .build())
+                        .occurrence(new OccurrenceConfig(null, 2, null, null) // No severity set
+                        )
                         .build();
                 ParagraphBlock config = ParagraphBlock
                         .builder()
@@ -381,7 +378,7 @@ class ParagraphBlockValidatorTest {
                 // Given
                 ParagraphBlock.SentenceConfig sentenceConfig = ParagraphBlock.SentenceConfig
                         .builder()
-                        .occurrence(OccurrenceConfig.builder().min(1).severity(Severity.ERROR).build())
+                        .occurrence(new OccurrenceConfig(null, 1, null, Severity.ERROR))
                         .build();
                 ParagraphBlock config = ParagraphBlock
                         .builder()
@@ -535,7 +532,7 @@ class ParagraphBlockValidatorTest {
                 // Given
                 ParagraphBlock.SentenceConfig sentenceConfig = ParagraphBlock.SentenceConfig
                         .builder()
-                        .occurrence(OccurrenceConfig.builder().min(3).max(3).severity(Severity.ERROR).build())
+                        .occurrence(new OccurrenceConfig(null, 3, 3, Severity.ERROR))
                         .build();
                 ParagraphBlock config = ParagraphBlock
                         .builder()
@@ -559,7 +556,7 @@ class ParagraphBlockValidatorTest {
                 // Given
                 ParagraphBlock.SentenceConfig sentenceConfig = ParagraphBlock.SentenceConfig
                         .builder()
-                        .occurrence(OccurrenceConfig.builder().min(2).max(2).severity(Severity.ERROR).build())
+                        .occurrence(new OccurrenceConfig(null, 2, 2, Severity.ERROR))
                         .build();
                 ParagraphBlock config = ParagraphBlock
                         .builder()
@@ -585,7 +582,7 @@ class ParagraphBlockValidatorTest {
                 // Given
                 ParagraphBlock.SentenceConfig sentenceConfig = ParagraphBlock.SentenceConfig
                         .builder()
-                        .occurrence(OccurrenceConfig.builder().min(1).max(1).severity(Severity.ERROR).build())
+                        .occurrence(new OccurrenceConfig(null, 1, 1, Severity.ERROR))
                         .build();
                 ParagraphBlock config = ParagraphBlock
                         .builder()
@@ -614,7 +611,7 @@ class ParagraphBlockValidatorTest {
                 // Given
                 ParagraphBlock.SentenceConfig sentenceConfig = ParagraphBlock.SentenceConfig
                         .builder()
-                        .occurrence(OccurrenceConfig.builder().min(2).max(4).severity(Severity.WARN).build())
+                        .occurrence(new OccurrenceConfig(null, 2, 4, Severity.WARN))
                         .words(ParagraphBlock.WordsConfig.builder().min(5).max(10).severity(Severity.ERROR).build())
                         .build();
                 ParagraphBlock config = ParagraphBlock

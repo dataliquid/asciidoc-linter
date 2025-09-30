@@ -47,7 +47,7 @@ class VideoBlockTest {
                     .builder()
                     .name("full-video")
                     .severity(Severity.ERROR)
-                    .occurrence(OccurrenceConfig.builder().min(1).max(3).build())
+                    .occurrence(new OccurrenceConfig(null, 1, 3, null))
                     .url(VideoBlock.UrlConfig
                             .builder()
                             .required(true)

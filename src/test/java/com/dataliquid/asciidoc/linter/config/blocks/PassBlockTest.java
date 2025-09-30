@@ -342,7 +342,7 @@ class PassBlockTest {
         @DisplayName("should inherit occurrence from AbstractBlock")
         void shouldInheritOccurrenceFromAbstractBlock() {
             // Given
-            OccurrenceConfig occurrence = OccurrenceConfig.builder().min(0).max(1).severity(Severity.ERROR).build();
+            OccurrenceConfig occurrence = new OccurrenceConfig(null, 0, 1, Severity.ERROR);
 
             // When
             PassBlock block = PassBlock.builder().severity(Severity.ERROR).occurrence(occurrence).build();
@@ -378,7 +378,7 @@ class PassBlockTest {
                     .severity(Severity.ERROR)
                     .build();
 
-            OccurrenceConfig occurrence = OccurrenceConfig.builder().min(0).max(1).severity(Severity.ERROR).build();
+            OccurrenceConfig occurrence = new OccurrenceConfig(null, 0, 1, Severity.ERROR);
 
             // When
             PassBlock block = PassBlock

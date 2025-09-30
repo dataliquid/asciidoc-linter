@@ -115,12 +115,7 @@ class BlockValidatorTest {
         @DisplayName("should validate block occurrences")
         void shouldValidateBlockOccurrences() {
             // Given
-            OccurrenceConfig occurrenceConfig = OccurrenceConfig
-                    .builder()
-                    .min(2)
-                    .max(3)
-                    .severity(Severity.ERROR)
-                    .build();
+            OccurrenceConfig occurrenceConfig = new OccurrenceConfig(null, 2, 3, Severity.ERROR);
             ParagraphBlock paragraphConfig = ParagraphBlock
                     .builder()
                     .name("content")
@@ -151,12 +146,7 @@ class BlockValidatorTest {
         @DisplayName("should track occurrences across multiple blocks")
         void shouldTrackOccurrencesAcrossMultipleBlocks() {
             // Given
-            OccurrenceConfig occurrenceConfig = OccurrenceConfig
-                    .builder()
-                    .min(1)
-                    .max(2)
-                    .severity(Severity.WARN)
-                    .build();
+            OccurrenceConfig occurrenceConfig = new OccurrenceConfig(null, 1, 2, Severity.WARN);
             ParagraphBlock paragraphConfig = ParagraphBlock
                     .builder()
                     .occurrence(occurrenceConfig)
@@ -233,12 +223,7 @@ class BlockValidatorTest {
         @DisplayName("should validate multiple rules together")
         void shouldValidateMultipleRulesTogether() {
             // Given
-            OccurrenceConfig occurrenceConfig = OccurrenceConfig
-                    .builder()
-                    .min(1)
-                    .max(2)
-                    .severity(Severity.ERROR)
-                    .build();
+            OccurrenceConfig occurrenceConfig = new OccurrenceConfig(null, 1, 2, Severity.ERROR);
 
             ParagraphBlock paragraphConfig = ParagraphBlock
                     .builder()

@@ -76,7 +76,7 @@ class QuoteBlockTest {
                     .builder()
                     .name("important-quote")
                     .severity(Severity.INFO)
-                    .occurrence(OccurrenceConfig.builder().min(0).max(3).build())
+                    .occurrence(new OccurrenceConfig(null, 0, 3, null))
                     .attribution(attribution)
                     .citation(citation)
                     .content(content)
