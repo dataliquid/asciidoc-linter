@@ -88,9 +88,10 @@ class BlockOrderValidatorTest {
                     Severity.ERROR);
 
             // Add blocks in correct order
-            ParagraphBlock introBlock = ParagraphBlock.builder().name("intro").severity(Severity.ERROR).build();
-            ParagraphBlock contentBlock = ParagraphBlock.builder().name("content").severity(Severity.ERROR).build();
-            TableBlock summaryBlock = TableBlock.builder().name("summary").severity(Severity.ERROR).build();
+            ParagraphBlock introBlock = new ParagraphBlock("intro", Severity.ERROR, null, null, null, null);
+            ParagraphBlock contentBlock = new ParagraphBlock("content", Severity.ERROR, null, null, null, null);
+            TableBlock summaryBlock = new TableBlock("summary", Severity.ERROR, null, null, null, null, null, null,
+                    null);
 
             StructuralNode node1 = mock(StructuralNode.class);
             StructuralNode node2 = mock(StructuralNode.class);
@@ -115,8 +116,8 @@ class BlockOrderValidatorTest {
                     Severity.ERROR);
 
             // Add blocks in wrong order (content before intro)
-            ParagraphBlock introBlock = ParagraphBlock.builder().name("intro").severity(Severity.ERROR).build();
-            ParagraphBlock contentBlock = ParagraphBlock.builder().name("content").severity(Severity.ERROR).build();
+            ParagraphBlock introBlock = new ParagraphBlock("intro", Severity.ERROR, null, null, null, null);
+            ParagraphBlock contentBlock = new ParagraphBlock("content", Severity.ERROR, null, null, null, null);
 
             StructuralNode node1 = mock(StructuralNode.class);
             StructuralNode node2 = mock(StructuralNode.class);
@@ -144,9 +145,9 @@ class BlockOrderValidatorTest {
             OrderConfig orderConfig = new OrderConfig(Arrays.asList("header", "content"), null, null, Severity.WARN);
 
             // Add blocks including some not in fixed order
-            ParagraphBlock headerBlock = ParagraphBlock.builder().name("header").severity(Severity.ERROR).build();
+            ParagraphBlock headerBlock = new ParagraphBlock("header", Severity.ERROR, null, null, null, null);
             ImageBlock imageBlock = new ImageBlock("diagram", Severity.ERROR, null, null, null, null, null, null);
-            ParagraphBlock contentBlock = ParagraphBlock.builder().name("content").severity(Severity.ERROR).build();
+            ParagraphBlock contentBlock = new ParagraphBlock("content", Severity.ERROR, null, null, null, null);
 
             StructuralNode node1 = mock(StructuralNode.class);
             StructuralNode node2 = mock(StructuralNode.class);
@@ -177,12 +178,8 @@ class BlockOrderValidatorTest {
             OrderConfig orderConfig = new OrderConfig(null, Arrays.asList(constraint), null, Severity.ERROR);
 
             // Add blocks in correct order
-            ParagraphBlock introBlock = ParagraphBlock.builder().name("introduction").severity(Severity.ERROR).build();
-            ParagraphBlock conclusionBlock = ParagraphBlock
-                    .builder()
-                    .name("conclusion")
-                    .severity(Severity.ERROR)
-                    .build();
+            ParagraphBlock introBlock = new ParagraphBlock("introduction", Severity.ERROR, null, null, null, null);
+            ParagraphBlock conclusionBlock = new ParagraphBlock("conclusion", Severity.ERROR, null, null, null, null);
 
             StructuralNode node1 = mock(StructuralNode.class);
             StructuralNode node2 = mock(StructuralNode.class);
@@ -206,12 +203,8 @@ class BlockOrderValidatorTest {
             OrderConfig orderConfig = new OrderConfig(null, Arrays.asList(constraint), null, Severity.ERROR);
 
             // Add blocks in wrong order
-            ParagraphBlock introBlock = ParagraphBlock.builder().name("introduction").severity(Severity.ERROR).build();
-            ParagraphBlock conclusionBlock = ParagraphBlock
-                    .builder()
-                    .name("conclusion")
-                    .severity(Severity.ERROR)
-                    .build();
+            ParagraphBlock introBlock = new ParagraphBlock("introduction", Severity.ERROR, null, null, null, null);
+            ParagraphBlock conclusionBlock = new ParagraphBlock("conclusion", Severity.ERROR, null, null, null, null);
 
             StructuralNode node1 = mock(StructuralNode.class);
             StructuralNode node2 = mock(StructuralNode.class);
@@ -241,7 +234,7 @@ class BlockOrderValidatorTest {
             OrderConfig orderConfig = new OrderConfig(null, Arrays.asList(constraint), null, Severity.ERROR);
 
             // Add only one of the blocks
-            ParagraphBlock introBlock = ParagraphBlock.builder().name("introduction").severity(Severity.ERROR).build();
+            ParagraphBlock introBlock = new ParagraphBlock("introduction", Severity.ERROR, null, null, null, null);
 
             StructuralNode node = mock(StructuralNode.class);
             context.trackBlock(introBlock, node);
@@ -267,8 +260,9 @@ class BlockOrderValidatorTest {
             OrderConfig orderConfig = new OrderConfig(null, null, Arrays.asList(constraint), Severity.ERROR);
 
             // Add blocks in correct order (summary after header)
-            ParagraphBlock headerBlock = ParagraphBlock.builder().name("header").severity(Severity.ERROR).build();
-            TableBlock summaryBlock = TableBlock.builder().name("summary").severity(Severity.ERROR).build();
+            ParagraphBlock headerBlock = new ParagraphBlock("header", Severity.ERROR, null, null, null, null);
+            TableBlock summaryBlock = new TableBlock("summary", Severity.ERROR, null, null, null, null, null, null,
+                    null);
 
             StructuralNode node1 = mock(StructuralNode.class);
             StructuralNode node2 = mock(StructuralNode.class);
@@ -291,8 +285,9 @@ class BlockOrderValidatorTest {
             OrderConfig orderConfig = new OrderConfig(null, null, Arrays.asList(constraint), Severity.ERROR);
 
             // Add blocks in wrong order (summary before header)
-            ParagraphBlock headerBlock = ParagraphBlock.builder().name("header").severity(Severity.ERROR).build();
-            TableBlock summaryBlock = TableBlock.builder().name("summary").severity(Severity.ERROR).build();
+            ParagraphBlock headerBlock = new ParagraphBlock("header", Severity.ERROR, null, null, null, null);
+            TableBlock summaryBlock = new TableBlock("summary", Severity.ERROR, null, null, null, null, null, null,
+                    null);
 
             StructuralNode node1 = mock(StructuralNode.class);
             StructuralNode node2 = mock(StructuralNode.class);
@@ -328,9 +323,9 @@ class BlockOrderValidatorTest {
                     Arrays.asList(beforeConstraint), Arrays.asList(afterConstraint), Severity.ERROR);
 
             // Add blocks violating multiple constraints
-            ParagraphBlock headerBlock = ParagraphBlock.builder().name("header").severity(Severity.ERROR).build();
-            ParagraphBlock contentBlock = ParagraphBlock.builder().name("content").severity(Severity.ERROR).build();
-            ParagraphBlock footerBlock = ParagraphBlock.builder().name("footer").severity(Severity.ERROR).build();
+            ParagraphBlock headerBlock = new ParagraphBlock("header", Severity.ERROR, null, null, null, null);
+            ParagraphBlock contentBlock = new ParagraphBlock("content", Severity.ERROR, null, null, null, null);
+            ParagraphBlock footerBlock = new ParagraphBlock("footer", Severity.ERROR, null, null, null, null);
 
             StructuralNode node1 = mock(StructuralNode.class);
             StructuralNode node2 = mock(StructuralNode.class);
@@ -359,8 +354,8 @@ class BlockOrderValidatorTest {
             OrderConfig orderConfig = new OrderConfig(null, Arrays.asList(constraint), null, Severity.ERROR);
 
             // Add blocks without names (uses type)
-            ParagraphBlock paragraphBlock = ParagraphBlock.builder().severity(Severity.ERROR).build();
-            TableBlock tableBlock = TableBlock.builder().severity(Severity.ERROR).build();
+            ParagraphBlock paragraphBlock = new ParagraphBlock(null, Severity.ERROR, null, null, null, null);
+            TableBlock tableBlock = new TableBlock(null, Severity.ERROR, null, null, null, null, null, null, null);
 
             StructuralNode node1 = mock(StructuralNode.class);
             StructuralNode node2 = mock(StructuralNode.class);

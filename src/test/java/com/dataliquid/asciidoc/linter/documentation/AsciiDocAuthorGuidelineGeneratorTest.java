@@ -120,11 +120,8 @@ class AsciiDocAuthorGuidelineGeneratorTest {
         @DisplayName("should generate section documentation")
         void shouldGenerateSectionDocumentation() {
             // Given
-            ParagraphBlock paragraph = ParagraphBlock
-                    .builder()
-                    .severity(Severity.WARN)
-                    .occurrence(new OccurrenceConfig(null, 1, 3, null))
-                    .build();
+            ParagraphBlock paragraph = new ParagraphBlock(null, Severity.WARN, new OccurrenceConfig(null, 1, 3, null),
+                    null, null, null);
 
             SectionConfig section = new SectionConfig("introduction", 1, 1, new OccurrenceConfig(null, 1, 1, null),
                     null, List.of(paragraph), null);

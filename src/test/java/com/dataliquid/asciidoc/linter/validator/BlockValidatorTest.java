@@ -58,7 +58,7 @@ class BlockValidatorTest {
         @DisplayName("should validate all blocks in section")
         void shouldValidateAllBlocksInSection() {
             // Given
-            ParagraphBlock paragraphConfig = ParagraphBlock.builder().severity(Severity.ERROR).build();
+            ParagraphBlock paragraphConfig = new ParagraphBlock(null, Severity.ERROR, null, null, null, null);
 
             SectionConfig config = new SectionConfig("Introduction", null, 0, null, null,
                     Arrays.asList(paragraphConfig), null);
@@ -80,7 +80,7 @@ class BlockValidatorTest {
         @DisplayName("should validate unknown block types")
         void shouldValidateUnknownBlockTypes() {
             // Given
-            ParagraphBlock paragraphConfig = ParagraphBlock.builder().severity(Severity.ERROR).build();
+            ParagraphBlock paragraphConfig = new ParagraphBlock(null, Severity.ERROR, null, null, null, null);
 
             SectionConfig config = new SectionConfig("Section", null, 0, null, null, Arrays.asList(paragraphConfig),
                     null);
@@ -110,12 +110,8 @@ class BlockValidatorTest {
         void shouldValidateBlockOccurrences() {
             // Given
             OccurrenceConfig occurrenceConfig = new OccurrenceConfig(null, 2, 3, Severity.ERROR);
-            ParagraphBlock paragraphConfig = ParagraphBlock
-                    .builder()
-                    .name("content")
-                    .occurrence(occurrenceConfig)
-                    .severity(Severity.ERROR)
-                    .build();
+            ParagraphBlock paragraphConfig = new ParagraphBlock("content", Severity.ERROR, occurrenceConfig, null, null,
+                    null);
 
             SectionConfig config = new SectionConfig("Section", null, 0, null, null, Arrays.asList(paragraphConfig),
                     null);
@@ -138,11 +134,8 @@ class BlockValidatorTest {
         void shouldTrackOccurrencesAcrossMultipleBlocks() {
             // Given
             OccurrenceConfig occurrenceConfig = new OccurrenceConfig(null, 1, 2, Severity.WARN);
-            ParagraphBlock paragraphConfig = ParagraphBlock
-                    .builder()
-                    .occurrence(occurrenceConfig)
-                    .severity(Severity.ERROR)
-                    .build();
+            ParagraphBlock paragraphConfig = new ParagraphBlock(null, Severity.ERROR, occurrenceConfig, null, null,
+                    null);
 
             SectionConfig config = new SectionConfig("Section", null, 0, null, null, Arrays.asList(paragraphConfig),
                     null);
@@ -173,13 +166,8 @@ class BlockValidatorTest {
         @DisplayName("should validate block order using order attribute")
         void shouldValidateBlockOrderUsingOrderAttribute() {
             // Given
-            ParagraphBlock headerBlock = ParagraphBlock
-                    .builder()
-                    .name("header")
-                    .severity(Severity.ERROR)
-                    .order(1)
-                    .build();
-            TableBlock dataBlock = TableBlock.builder().name("data").severity(Severity.ERROR).order(2).build();
+            ParagraphBlock headerBlock = new ParagraphBlock("header", Severity.ERROR, null, 1, null, null);
+            TableBlock dataBlock = new TableBlock("data", Severity.ERROR, null, 2, null, null, null, null, null);
 
             SectionConfig config = new SectionConfig("Section", null, 0, null, null,
                     Arrays.asList(headerBlock, dataBlock), null);
@@ -210,13 +198,10 @@ class BlockValidatorTest {
             // Given
             OccurrenceConfig occurrenceConfig = new OccurrenceConfig(null, 1, 2, Severity.ERROR);
 
-            ParagraphBlock paragraphConfig = ParagraphBlock
-                    .builder()
-                    .occurrence(occurrenceConfig)
-                    .severity(Severity.ERROR)
-                    .build();
+            ParagraphBlock paragraphConfig = new ParagraphBlock(null, Severity.ERROR, occurrenceConfig, null, null,
+                    null);
 
-            TableBlock tableConfig = TableBlock.builder().severity(Severity.ERROR).build();
+            TableBlock tableConfig = new TableBlock(null, Severity.ERROR, null, null, null, null, null, null, null);
 
             SectionConfig config = new SectionConfig("Section", null, 0, null, null,
                     Arrays.asList(paragraphConfig, tableConfig), null);
@@ -242,8 +227,8 @@ class BlockValidatorTest {
         @DisplayName("should handle sections with mixed block types")
         void shouldHandleSectionsWithMixedBlockTypes() {
             // Given
-            ParagraphBlock paragraphConfig = ParagraphBlock.builder().severity(Severity.ERROR).build();
-            TableBlock tableConfig = TableBlock.builder().severity(Severity.ERROR).build();
+            ParagraphBlock paragraphConfig = new ParagraphBlock(null, Severity.ERROR, null, null, null, null);
+            TableBlock tableConfig = new TableBlock(null, Severity.ERROR, null, null, null, null, null, null, null);
 
             SectionConfig config = new SectionConfig("Mixed Content", null, 0, null, null,
                     Arrays.asList(paragraphConfig, tableConfig), null);
@@ -293,7 +278,7 @@ class BlockValidatorTest {
         @DisplayName("should handle validation exceptions gracefully")
         void shouldHandleValidationExceptionsGracefully() {
             // Given
-            ParagraphBlock paragraphConfig = ParagraphBlock.builder().severity(Severity.ERROR).build();
+            ParagraphBlock paragraphConfig = new ParagraphBlock(null, Severity.ERROR, null, null, null, null);
 
             SectionConfig config = new SectionConfig("Section", null, 0, null, null, Arrays.asList(paragraphConfig),
                     null);
