@@ -33,18 +33,14 @@ class MetadataValidatorIntegrationTest {
         asciidoctor = Asciidoctor.Factory.create();
         tempDir = Files.createTempDirectory("asciidoc-test");
 
-        MetadataConfiguration config = MetadataConfiguration
-                .builder()
-                .attributes(Arrays
-                        .asList(new AttributeConfig("author", null, true, 5, 50, "^[A-Z][a-zA-Z\\s\\.]+$",
+        MetadataConfiguration config = new MetadataConfiguration(Arrays
+                .asList(new AttributeConfig("author", null, true, 5, 50, "^[A-Z][a-zA-Z\\s\\.]+$", Severity.ERROR),
+                        new AttributeConfig("revdate", null, true, null, null, "^\\d{4}-\\d{2}-\\d{2}$",
                                 Severity.ERROR),
-                                new AttributeConfig("revdate", null, true, null, null, "^\\d{4}-\\d{2}-\\d{2}$",
-                                        Severity.ERROR),
-                                new AttributeConfig("version", null, true, null, null, "^\\d+\\.\\d+(\\.\\d+)?$",
-                                        Severity.ERROR),
-                                new AttributeConfig("email", null, false, null, null,
-                                        "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", Severity.WARN)))
-                .build();
+                        new AttributeConfig("version", null, true, null, null, "^\\d+\\.\\d+(\\.\\d+)?$",
+                                Severity.ERROR),
+                        new AttributeConfig("email", null, false, null, null,
+                                "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", Severity.WARN)));
 
         validator = MetadataValidator.fromConfiguration(config).build();
     }

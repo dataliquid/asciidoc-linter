@@ -135,7 +135,7 @@ class AsciiDocAuthorGuidelineGeneratorTest {
                     .allowedBlocks(List.of(paragraph))
                     .build();
 
-            DocumentConfiguration document = DocumentConfiguration.builder().sections(List.of(section)).build();
+            DocumentConfiguration document = new DocumentConfiguration(null, List.of(section));
 
             LinterConfiguration config = new LinterConfiguration(document);
 
@@ -162,7 +162,7 @@ class AsciiDocAuthorGuidelineGeneratorTest {
             // Given
             SectionConfig section = SectionConfig.builder().name("test").level(1).build();
 
-            DocumentConfiguration document = DocumentConfiguration.builder().sections(List.of(section)).build();
+            DocumentConfiguration document = new DocumentConfiguration(null, List.of(section));
 
             LinterConfiguration config = new LinterConfiguration(document);
 
@@ -185,7 +185,7 @@ class AsciiDocAuthorGuidelineGeneratorTest {
 
             SectionConfig section = SectionConfig.builder().name("test").level(1).build();
 
-            DocumentConfiguration document = DocumentConfiguration.builder().sections(List.of(section)).build();
+            DocumentConfiguration document = new DocumentConfiguration(null, List.of(section));
 
             LinterConfiguration config = new LinterConfiguration(document);
 

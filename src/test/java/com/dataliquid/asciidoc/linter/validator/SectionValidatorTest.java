@@ -50,10 +50,7 @@ class SectionValidatorTest {
                     .title(new TitleConfig("^[A-Z].*", Severity.ERROR))
                     .build();
 
-            DocumentConfiguration docConfig = DocumentConfiguration
-                    .builder()
-                    .sections(Arrays.asList(titleConfig))
-                    .build();
+            DocumentConfiguration docConfig = new DocumentConfiguration(null, Arrays.asList(titleConfig));
 
             Document document = asciidoctor.load(content, Options.builder().sourcemap(true).toFile(false).build());
             SectionValidator validator = SectionValidator.fromConfiguration(docConfig).build();
@@ -81,10 +78,7 @@ class SectionValidatorTest {
                     .occurrence(new OccurrenceConfig(null, 1, 1, null))
                     .build();
 
-            DocumentConfiguration docConfig = DocumentConfiguration
-                    .builder()
-                    .sections(Arrays.asList(titleConfig))
-                    .build();
+            DocumentConfiguration docConfig = new DocumentConfiguration(null, Arrays.asList(titleConfig));
 
             Document document = asciidoctor.load(content, Options.builder().sourcemap(true).toFile(false).build());
             SectionValidator validator = SectionValidator.fromConfiguration(docConfig).build();
@@ -114,10 +108,7 @@ class SectionValidatorTest {
                     .title(new TitleConfig("^[A-Z].*", Severity.ERROR))
                     .build();
 
-            DocumentConfiguration docConfig = DocumentConfiguration
-                    .builder()
-                    .sections(Arrays.asList(titleConfig))
-                    .build();
+            DocumentConfiguration docConfig = new DocumentConfiguration(null, Arrays.asList(titleConfig));
 
             Document document = asciidoctor.load(content, Options.builder().sourcemap(true).toFile(false).build());
             SectionValidator validator = SectionValidator.fromConfiguration(docConfig).build();
@@ -164,10 +155,8 @@ class SectionValidatorTest {
                     .title(new TitleConfig("^Getting Started$", Severity.ERROR))
                     .build();
 
-            DocumentConfiguration config = DocumentConfiguration
-                    .builder()
-                    .sections(Arrays.asList(introSection, gettingStartedSection))
-                    .build();
+            DocumentConfiguration config = new DocumentConfiguration(null,
+                    Arrays.asList(introSection, gettingStartedSection));
 
             // When
             SectionValidator validator = SectionValidator.fromConfiguration(config).build();
@@ -198,10 +187,7 @@ class SectionValidatorTest {
                     .title(new TitleConfig("^Introduction$", Severity.ERROR))
                     .build();
 
-            DocumentConfiguration config = DocumentConfiguration
-                    .builder()
-                    .sections(Arrays.asList(requiredSection))
-                    .build();
+            DocumentConfiguration config = new DocumentConfiguration(null, Arrays.asList(requiredSection));
 
             // When
             SectionValidator validator = SectionValidator.fromConfiguration(config).build();
@@ -289,10 +275,7 @@ class SectionValidatorTest {
                     .title(new TitleConfig("^Conclusion$", Severity.ERROR))
                     .build();
 
-            DocumentConfiguration config = DocumentConfiguration
-                    .builder()
-                    .sections(Arrays.asList(conclusionSection))
-                    .build();
+            DocumentConfiguration config = new DocumentConfiguration(null, Arrays.asList(conclusionSection));
 
             // When
             SectionValidator validator = SectionValidator.fromConfiguration(config).build();
@@ -335,10 +318,7 @@ class SectionValidatorTest {
                     .title(new TitleConfig("^Conclusion$", Severity.ERROR))
                     .build();
 
-            DocumentConfiguration config = DocumentConfiguration
-                    .builder()
-                    .sections(Arrays.asList(conclusionSection))
-                    .build();
+            DocumentConfiguration config = new DocumentConfiguration(null, Arrays.asList(conclusionSection));
 
             // When
             SectionValidator validator = SectionValidator.fromConfiguration(config).build();
@@ -383,10 +363,7 @@ class SectionValidatorTest {
                     .title(new TitleConfig("Chapter \\d+: .*", Severity.ERROR))
                     .build();
 
-            DocumentConfiguration config = DocumentConfiguration
-                    .builder()
-                    .sections(Arrays.asList(chapterSection))
-                    .build();
+            DocumentConfiguration config = new DocumentConfiguration(null, Arrays.asList(chapterSection));
 
             // When
             SectionValidator validator = SectionValidator.fromConfiguration(config).build();
@@ -531,10 +508,7 @@ class SectionValidatorTest {
                     .title(new TitleConfig("^Installation$", Severity.ERROR))
                     .build();
 
-            DocumentConfiguration config = DocumentConfiguration
-                    .builder()
-                    .sections(Arrays.asList(intro, prereq, install))
-                    .build();
+            DocumentConfiguration config = new DocumentConfiguration(null, Arrays.asList(intro, prereq, install));
 
             // When
             SectionValidator validator = SectionValidator.fromConfiguration(config).build();
@@ -576,10 +550,7 @@ class SectionValidatorTest {
                     .title(new TitleConfig("^Installation$", Severity.ERROR))
                     .build();
 
-            DocumentConfiguration config = DocumentConfiguration
-                    .builder()
-                    .sections(Arrays.asList(intro, install))
-                    .build();
+            DocumentConfiguration config = new DocumentConfiguration(null, Arrays.asList(intro, install));
 
             // When
             SectionValidator validator = SectionValidator.fromConfiguration(config).build();
@@ -644,10 +615,7 @@ class SectionValidatorTest {
                     .subsections(Arrays.asList(coreFeatures, advancedFeatures))
                     .build();
 
-            DocumentConfiguration config = DocumentConfiguration
-                    .builder()
-                    .sections(Arrays.asList(featuresSection))
-                    .build();
+            DocumentConfiguration config = new DocumentConfiguration(null, Arrays.asList(featuresSection));
 
             // When
             SectionValidator validator = SectionValidator.fromConfiguration(config).build();
@@ -690,10 +658,7 @@ class SectionValidatorTest {
                     .subsections(Arrays.asList(coreFeatures))
                     .build();
 
-            DocumentConfiguration config = DocumentConfiguration
-                    .builder()
-                    .sections(Arrays.asList(featuresSection))
-                    .build();
+            DocumentConfiguration config = new DocumentConfiguration(null, Arrays.asList(featuresSection));
 
             // When
             SectionValidator validator = SectionValidator.fromConfiguration(config).build();
