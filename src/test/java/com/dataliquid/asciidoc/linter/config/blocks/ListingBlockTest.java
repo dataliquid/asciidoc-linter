@@ -37,7 +37,7 @@ class ListingBlockTest {
                     .severity(Severity.ERROR)
                     .build();
 
-            LineConfig linesRule = LineConfig.builder().min(3).max(100).build();
+            LineConfig linesRule = new LineConfig(3, 100, null);
 
             ListingBlock.TitleConfig titleRule = ListingBlock.TitleConfig
                     .builder()

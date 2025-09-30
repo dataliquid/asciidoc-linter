@@ -99,7 +99,7 @@ class ParagraphBlockValidatorTest {
         @DisplayName("should validate minimum lines")
         void shouldValidateMinimumLines() {
             // Given
-            LineConfig lineConfig = LineConfig.builder().min(3).severity(Severity.ERROR).build();
+            LineConfig lineConfig = new LineConfig(3, null, Severity.ERROR);
             ParagraphBlock config = ParagraphBlock.builder().lines(lineConfig).severity(Severity.ERROR).build();
             when(mockBlock.getContent()).thenReturn("Line 1\nLine 2");
 
@@ -123,7 +123,7 @@ class ParagraphBlockValidatorTest {
             // without any errors."
             BlockValidationContext testContext = new BlockValidationContext(mockSection, "test-errors.adoc");
 
-            LineConfig lineConfig = LineConfig.builder().min(2).severity(Severity.INFO).build();
+            LineConfig lineConfig = new LineConfig(2, null, Severity.INFO);
             ParagraphBlock config = ParagraphBlock.builder().lines(lineConfig).severity(Severity.ERROR).build();
 
             // Mock source location
@@ -153,7 +153,7 @@ class ParagraphBlockValidatorTest {
         @DisplayName("should validate maximum lines")
         void shouldValidateMaximumLines() {
             // Given
-            LineConfig lineConfig = LineConfig.builder().max(2).severity(Severity.WARN).build();
+            LineConfig lineConfig = new LineConfig(null, 2, Severity.WARN);
             ParagraphBlock config = ParagraphBlock.builder().lines(lineConfig).severity(Severity.ERROR).build();
             when(mockBlock.getContent()).thenReturn("Line 1\nLine 2\nLine 3");
 
@@ -174,11 +174,7 @@ class ParagraphBlockValidatorTest {
         @DisplayName("should use block severity when lines severity is not defined")
         void shouldUseBlockSeverityWhenLinesSeverityNotDefined() {
             // Given - lines has no severity, block has INFO
-            LineConfig lineConfig = LineConfig
-                    .builder()
-                    .max(2)
-                    // No severity set
-                    .build();
+            LineConfig lineConfig = new LineConfig(null, 2, null); // No severity set
             ParagraphBlock config = ParagraphBlock.builder().lines(lineConfig).severity(Severity.INFO).build();
 
             when(mockBlock.getContent()).thenReturn("Line 1\nLine 2\nLine 3");
@@ -198,7 +194,7 @@ class ParagraphBlockValidatorTest {
         @DisplayName("should pass when lines within range")
         void shouldPassWhenLinesWithinRange() {
             // Given
-            LineConfig lineConfig = LineConfig.builder().min(2).max(5).severity(Severity.ERROR).build();
+            LineConfig lineConfig = new LineConfig(2, 5, Severity.ERROR);
             ParagraphBlock config = ParagraphBlock.builder().lines(lineConfig).severity(Severity.ERROR).build();
             when(mockBlock.getContent()).thenReturn("Line 1\nLine 2\nLine 3");
 
@@ -213,7 +209,7 @@ class ParagraphBlockValidatorTest {
         @DisplayName("should count only non-empty lines")
         void shouldCountOnlyNonEmptyLines() {
             // Given
-            LineConfig lineConfig = LineConfig.builder().min(2).severity(Severity.ERROR).build();
+            LineConfig lineConfig = new LineConfig(2, null, Severity.ERROR);
             ParagraphBlock config = ParagraphBlock.builder().lines(lineConfig).severity(Severity.ERROR).build();
             when(mockBlock.getContent()).thenReturn("Line 1\n\n  \nLine 2");
 
@@ -228,7 +224,7 @@ class ParagraphBlockValidatorTest {
         @DisplayName("should handle empty content")
         void shouldHandleEmptyContent() {
             // Given
-            LineConfig lineConfig = LineConfig.builder().min(1).severity(Severity.ERROR).build();
+            LineConfig lineConfig = new LineConfig(1, null, Severity.ERROR);
             ParagraphBlock config = ParagraphBlock.builder().lines(lineConfig).severity(Severity.ERROR).build();
             when(mockBlock.getContent()).thenReturn("");
 
@@ -244,7 +240,7 @@ class ParagraphBlockValidatorTest {
         @DisplayName("should handle null content")
         void shouldHandleNullContent() {
             // Given
-            LineConfig lineConfig = LineConfig.builder().min(1).severity(Severity.ERROR).build();
+            LineConfig lineConfig = new LineConfig(1, null, Severity.ERROR);
             ParagraphBlock config = ParagraphBlock.builder().lines(lineConfig).severity(Severity.ERROR).build();
             when(mockBlock.getContent()).thenReturn(null);
             when(mockBlock.getBlocks()).thenReturn(null);
@@ -261,7 +257,7 @@ class ParagraphBlockValidatorTest {
         @DisplayName("should get content from blocks when direct content is null")
         void shouldGetContentFromBlocksWhenDirectContentIsNull() {
             // Given
-            LineConfig lineConfig = LineConfig.builder().min(1).severity(Severity.ERROR).build();
+            LineConfig lineConfig = new LineConfig(1, null, Severity.ERROR);
             ParagraphBlock config = ParagraphBlock.builder().lines(lineConfig).severity(Severity.ERROR).build();
 
             StructuralNode childBlock = mock(StructuralNode.class);

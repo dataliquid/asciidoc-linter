@@ -183,7 +183,7 @@ class AdmonitionBlockValidatorTest {
                     .severity(Severity.ERROR)
                     .content(AdmonitionBlock.ContentConfig
                             .builder()
-                            .lines(LineConfig.builder().min(2).severity(Severity.INFO).build())
+                            .lines(new LineConfig(2, null, Severity.INFO))
                             .build())
                     .build();
 
@@ -206,7 +206,7 @@ class AdmonitionBlockValidatorTest {
             AdmonitionBlock config = AdmonitionBlock
                     .builder()
                     .severity(Severity.ERROR)
-                    .content(AdmonitionBlock.ContentConfig.builder().lines(LineConfig.builder().max(3).build()).build())
+                    .content(AdmonitionBlock.ContentConfig.builder().lines(new LineConfig(null, 3, null)).build())
                     .build();
 
             // When
@@ -487,12 +487,7 @@ class AdmonitionBlockValidatorTest {
                     .content(AdmonitionBlock.ContentConfig
                             .builder()
                             .severity(Severity.WARN) // Content-level severity
-                            .lines(LineConfig
-                                    .builder()
-                                    .max(3)
-                                    .severity(Severity.INFO) // Line-level severity overrides
-                                                             // all
-                                    .build())
+                            .lines(new LineConfig(null, 3, Severity.INFO)) // Line-level severity overrides all
                             .build())
                     .build();
 
@@ -518,11 +513,8 @@ class AdmonitionBlockValidatorTest {
                             .builder()
                             .minLength(10)
                             // No content severity, should fallback to block
-                            .lines(LineConfig
-                                    .builder()
-                                    .min(2)
-                                    // No line severity, should fallback to content, then block
-                                    .build())
+                            .lines(new LineConfig(2, null, null)) // No line severity, should fallback to content, then
+                                                                  // block
                             .build())
                     .build();
 

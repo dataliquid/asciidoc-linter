@@ -175,7 +175,7 @@ class AdmonitionBlockTest {
         @DisplayName("should build content config with all properties")
         void shouldBuildCompleteContentConfig() {
             // Given
-            LineConfig lineConfig = LineConfig.builder().min(1).max(10).severity(Severity.INFO).build();
+            LineConfig lineConfig = new LineConfig(1, 10, Severity.INFO);
 
             // When
             AdmonitionBlock.ContentConfig config = AdmonitionBlock.ContentConfig

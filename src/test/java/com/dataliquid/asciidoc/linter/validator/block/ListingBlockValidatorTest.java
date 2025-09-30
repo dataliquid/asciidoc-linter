@@ -540,7 +540,7 @@ class ListingBlockValidatorTest {
         @DisplayName("should validate minimum lines")
         void shouldValidateMinimumLines() {
             // Given
-            LineConfig lineConfig = LineConfig.builder().min(5).severity(Severity.INFO).build();
+            LineConfig lineConfig = new LineConfig(5, null, Severity.INFO);
             ListingBlock config = ListingBlock.builder().lines(lineConfig).severity(Severity.ERROR).build();
 
             when(mockBlock.getContent()).thenReturn("line1\nline2\nline3");
@@ -562,7 +562,7 @@ class ListingBlockValidatorTest {
         @DisplayName("should validate maximum lines")
         void shouldValidateMaximumLines() {
             // Given
-            LineConfig lineConfig = LineConfig.builder().max(50).severity(Severity.WARN).build();
+            LineConfig lineConfig = new LineConfig(null, 50, Severity.WARN);
             ListingBlock config = ListingBlock.builder().lines(lineConfig).severity(Severity.ERROR).build();
 
             // Create content with 51 lines
@@ -603,7 +603,7 @@ class ListingBlockValidatorTest {
                             .severity(Severity.ERROR)
                             .build())
                     .title(ListingBlock.TitleConfig.builder().required(true).severity(Severity.WARN).build())
-                    .lines(LineConfig.builder().max(10).severity(Severity.INFO).build())
+                    .lines(new LineConfig(null, 10, Severity.INFO))
                     .severity(Severity.ERROR)
                     .build();
 
@@ -628,7 +628,7 @@ class ListingBlockValidatorTest {
         @DisplayName("should handle empty content")
         void shouldHandleEmptyContent() {
             // Given
-            LineConfig lineConfig = LineConfig.builder().min(1).severity(Severity.ERROR).build();
+            LineConfig lineConfig = new LineConfig(1, null, Severity.ERROR);
             ListingBlock config = ListingBlock.builder().lines(lineConfig).severity(Severity.ERROR).build();
 
             when(mockBlock.getContent()).thenReturn("");
