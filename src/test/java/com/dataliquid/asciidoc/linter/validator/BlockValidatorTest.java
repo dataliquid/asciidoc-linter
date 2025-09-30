@@ -60,11 +60,8 @@ class BlockValidatorTest {
             // Given
             ParagraphBlock paragraphConfig = ParagraphBlock.builder().severity(Severity.ERROR).build();
 
-            SectionConfig config = SectionConfig
-                    .builder()
-                    .name("Introduction")
-                    .allowedBlocks(Arrays.asList(paragraphConfig))
-                    .build();
+            SectionConfig config = new SectionConfig("Introduction", null, 0, null, null,
+                    Arrays.asList(paragraphConfig), null);
 
             Block block1 = mock(Block.class);
             Block block2 = mock(Block.class);
@@ -85,11 +82,8 @@ class BlockValidatorTest {
             // Given
             ParagraphBlock paragraphConfig = ParagraphBlock.builder().severity(Severity.ERROR).build();
 
-            SectionConfig config = SectionConfig
-                    .builder()
-                    .name("Section")
-                    .allowedBlocks(Arrays.asList(paragraphConfig))
-                    .build();
+            SectionConfig config = new SectionConfig("Section", null, 0, null, null,
+                    Arrays.asList(paragraphConfig), null);
 
             Block unknownBlock = mock(Block.class);
             when(unknownBlock.getContext()).thenReturn("unknown-type");
@@ -123,11 +117,8 @@ class BlockValidatorTest {
                     .severity(Severity.ERROR)
                     .build();
 
-            SectionConfig config = SectionConfig
-                    .builder()
-                    .name("Section")
-                    .allowedBlocks(Arrays.asList(paragraphConfig))
-                    .build();
+            SectionConfig config = new SectionConfig("Section", null, 0, null, null,
+                    Arrays.asList(paragraphConfig), null);
 
             // Only one paragraph block (violates min)
             Block block = mock(Block.class);
@@ -153,11 +144,8 @@ class BlockValidatorTest {
                     .severity(Severity.ERROR)
                     .build();
 
-            SectionConfig config = SectionConfig
-                    .builder()
-                    .name("Section")
-                    .allowedBlocks(Arrays.asList(paragraphConfig))
-                    .build();
+            SectionConfig config = new SectionConfig("Section", null, 0, null, null,
+                    Arrays.asList(paragraphConfig), null);
 
             // Three paragraph blocks (violates max)
             Block block1 = mock(Block.class);
@@ -193,11 +181,8 @@ class BlockValidatorTest {
                     .build();
             TableBlock dataBlock = TableBlock.builder().name("data").severity(Severity.ERROR).order(2).build();
 
-            SectionConfig config = SectionConfig
-                    .builder()
-                    .name("Section")
-                    .allowedBlocks(Arrays.asList(headerBlock, dataBlock))
-                    .build();
+            SectionConfig config = new SectionConfig("Section", null, 0, null, null,
+                    Arrays.asList(headerBlock, dataBlock), null);
 
             // Wrong order: data before header
             Block block1 = mock(Block.class);
@@ -233,11 +218,8 @@ class BlockValidatorTest {
 
             TableBlock tableConfig = TableBlock.builder().severity(Severity.ERROR).build();
 
-            SectionConfig config = SectionConfig
-                    .builder()
-                    .name("Section")
-                    .allowedBlocks(Arrays.asList(paragraphConfig, tableConfig))
-                    .build();
+            SectionConfig config = new SectionConfig("Section", null, 0, null, null,
+                    Arrays.asList(paragraphConfig, tableConfig), null);
 
             // Setup blocks: table, then paragraph
             Block tableBlock = mock(Block.class);
@@ -263,11 +245,8 @@ class BlockValidatorTest {
             ParagraphBlock paragraphConfig = ParagraphBlock.builder().severity(Severity.ERROR).build();
             TableBlock tableConfig = TableBlock.builder().severity(Severity.ERROR).build();
 
-            SectionConfig config = SectionConfig
-                    .builder()
-                    .name("Mixed Content")
-                    .allowedBlocks(Arrays.asList(paragraphConfig, tableConfig))
-                    .build();
+            SectionConfig config = new SectionConfig("Mixed Content", null, 0, null, null,
+                    Arrays.asList(paragraphConfig, tableConfig), null);
 
             // Mix of configured and unconfigured block types
             Block para1 = mock(Block.class);
@@ -316,11 +295,8 @@ class BlockValidatorTest {
             // Given
             ParagraphBlock paragraphConfig = ParagraphBlock.builder().severity(Severity.ERROR).build();
 
-            SectionConfig config = SectionConfig
-                    .builder()
-                    .name("Section")
-                    .allowedBlocks(Arrays.asList(paragraphConfig))
-                    .build();
+            SectionConfig config = new SectionConfig("Section", null, 0, null, null,
+                    Arrays.asList(paragraphConfig), null);
 
             Block block = mock(Block.class);
             when(block.getContext()).thenThrow(new RuntimeException("Test exception"));
@@ -337,11 +313,8 @@ class BlockValidatorTest {
         @DisplayName("should handle null blocks list")
         void shouldHandleNullBlocksList() {
             // Given
-            SectionConfig config = SectionConfig
-                    .builder()
-                    .name("Section")
-                    .allowedBlocks(Arrays.asList(ParagraphBlock.builder().severity(Severity.ERROR).build()))
-                    .build();
+            SectionConfig config = new SectionConfig("Section", null, 0, null, null,
+                    Arrays.asList(ParagraphBlock.builder().severity(Severity.ERROR).build()), null);
 
             when(mockSection.getBlocks()).thenReturn(null);
 
