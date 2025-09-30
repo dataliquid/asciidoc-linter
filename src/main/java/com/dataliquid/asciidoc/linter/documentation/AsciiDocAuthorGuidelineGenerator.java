@@ -196,7 +196,9 @@ public class AsciiDocAuthorGuidelineGenerator implements RuleDocumentationGenera
             HierarchyVisualizer visualizer = visualizerFactory.create(style);
             writer.println("=== " + style.getDescription());
             writer.println();
-            visualizer.visualize(LinterConfiguration.builder().document(document).build(), writer);
+            @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops") // Config wrapper needed per visualization
+            LinterConfiguration config = new LinterConfiguration(document);
+            visualizer.visualize(config, writer);
             writer.println();
         }
 

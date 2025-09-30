@@ -63,10 +63,7 @@ class AsciiDocAuthorGuidelineGeneratorTest {
         @Test
         @DisplayName("should require non-null writer")
         void shouldRequireNonNullWriter() {
-            LinterConfiguration config = LinterConfiguration
-                    .builder()
-                    .document(DocumentConfiguration.builder().build())
-                    .build();
+            LinterConfiguration config = new LinterConfiguration(new DocumentConfiguration(null, null));
 
             assertThrows(NullPointerException.class, () -> generator.generate(config, null));
         }
@@ -75,10 +72,7 @@ class AsciiDocAuthorGuidelineGeneratorTest {
         @DisplayName("should generate basic documentation structure")
         void shouldGenerateBasicDocumentationStructure() {
             // Given
-            LinterConfiguration config = LinterConfiguration
-                    .builder()
-                    .document(DocumentConfiguration.builder().build())
-                    .build();
+            LinterConfiguration config = new LinterConfiguration(new DocumentConfiguration(null, null));
 
             // When
             generator.generate(config, printWriter);
@@ -101,14 +95,11 @@ class AsciiDocAuthorGuidelineGeneratorTest {
             AttributeConfig authorAttr = new AttributeConfig("author", null, false, null, null, "^[A-Z].*",
                     Severity.WARN);
 
-            MetadataConfiguration metadata = MetadataConfiguration
-                    .builder()
-                    .attributes(List.of(titleAttr, authorAttr))
-                    .build();
+            MetadataConfiguration metadata = new MetadataConfiguration(List.of(titleAttr, authorAttr));
 
-            DocumentConfiguration document = DocumentConfiguration.builder().metadata(metadata).build();
+            DocumentConfiguration document = new DocumentConfiguration(metadata, null);
 
-            LinterConfiguration config = LinterConfiguration.builder().document(document).build();
+            LinterConfiguration config = new LinterConfiguration(document);
 
             // When
             generator.generate(config, printWriter);
@@ -146,7 +137,7 @@ class AsciiDocAuthorGuidelineGeneratorTest {
 
             DocumentConfiguration document = DocumentConfiguration.builder().sections(List.of(section)).build();
 
-            LinterConfiguration config = LinterConfiguration.builder().document(document).build();
+            LinterConfiguration config = new LinterConfiguration(document);
 
             // When
             generator.generate(config, printWriter);
@@ -173,7 +164,7 @@ class AsciiDocAuthorGuidelineGeneratorTest {
 
             DocumentConfiguration document = DocumentConfiguration.builder().sections(List.of(section)).build();
 
-            LinterConfiguration config = LinterConfiguration.builder().document(document).build();
+            LinterConfiguration config = new LinterConfiguration(document);
 
             // When
             generator.generate(config, printWriter);
@@ -196,7 +187,7 @@ class AsciiDocAuthorGuidelineGeneratorTest {
 
             DocumentConfiguration document = DocumentConfiguration.builder().sections(List.of(section)).build();
 
-            LinterConfiguration config = LinterConfiguration.builder().document(document).build();
+            LinterConfiguration config = new LinterConfiguration(document);
 
             // When
             assertDoesNotThrow(() -> {

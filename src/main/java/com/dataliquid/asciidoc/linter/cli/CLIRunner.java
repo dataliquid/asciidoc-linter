@@ -115,7 +115,7 @@ public class CLIRunner {
                 configFile = defaultConfig;
             } else {
                 // Return empty configuration
-                return LinterConfiguration.builder().build();
+                return new LinterConfiguration(null);
             }
         }
 

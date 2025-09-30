@@ -244,7 +244,7 @@ class SectionValidatorTest {
                     .occurrence(new OccurrenceConfig(null, 0, 1, null))
                     .build();
 
-            DocumentConfiguration config = DocumentConfiguration.builder().sections(Arrays.asList(section)).build();
+            DocumentConfiguration config = new DocumentConfiguration(null, Arrays.asList(section));
 
             // When
             SectionValidator validator = SectionValidator.fromConfiguration(config).build();
@@ -417,7 +417,7 @@ class SectionValidatorTest {
                     .title(new TitleConfig("Chapter \\d+: .*", Severity.ERROR))
                     .build();
 
-            DocumentConfiguration config = DocumentConfiguration.builder().sections(Arrays.asList(section)).build();
+            DocumentConfiguration config = new DocumentConfiguration(null, Arrays.asList(section));
 
             // When
             SectionValidator validator = SectionValidator.fromConfiguration(config).build();
@@ -463,7 +463,7 @@ class SectionValidatorTest {
                     .occurrence(new OccurrenceConfig(null, 0, 1, null))
                     .build();
 
-            DocumentConfiguration config = DocumentConfiguration.builder().sections(Arrays.asList(section)).build();
+            DocumentConfiguration config = new DocumentConfiguration(null, Arrays.asList(section));
 
             // When
             SectionValidator validator = SectionValidator.fromConfiguration(config).build();
@@ -733,7 +733,7 @@ class SectionValidatorTest {
                     .occurrence(new OccurrenceConfig(null, 0, 1, null))
                     .build();
 
-            DocumentConfiguration config = DocumentConfiguration.builder().sections(Arrays.asList(section)).build();
+            DocumentConfiguration config = new DocumentConfiguration(null, Arrays.asList(section));
 
             // When
             SectionValidator validator = SectionValidator.fromConfiguration(config).build();
@@ -756,7 +756,7 @@ class SectionValidatorTest {
                     Content here.
                     """;
 
-            DocumentConfiguration config = DocumentConfiguration.builder().build();
+            DocumentConfiguration config = new DocumentConfiguration(null, null);
 
             // When
             SectionValidator validator = SectionValidator.fromConfiguration(config).build();
