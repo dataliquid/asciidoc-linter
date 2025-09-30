@@ -96,22 +96,10 @@ class AsciiDocAuthorGuidelineGeneratorTest {
         @DisplayName("should generate metadata documentation")
         void shouldGenerateMetadataDocumentation() {
             // Given
-            AttributeConfig titleAttr = AttributeConfig
-                    .builder()
-                    .name("title")
-                    .required(true)
-                    .minLength(10)
-                    .maxLength(100)
-                    .severity(Severity.ERROR)
-                    .build();
+            AttributeConfig titleAttr = new AttributeConfig("title", null, true, 10, 100, null, Severity.ERROR);
 
-            AttributeConfig authorAttr = AttributeConfig
-                    .builder()
-                    .name("author")
-                    .required(false)
-                    .pattern("^[A-Z].*")
-                    .severity(Severity.WARN)
-                    .build();
+            AttributeConfig authorAttr = new AttributeConfig("author", null, false, null, null, "^[A-Z].*",
+                    Severity.WARN);
 
             MetadataConfiguration metadata = MetadataConfiguration
                     .builder()

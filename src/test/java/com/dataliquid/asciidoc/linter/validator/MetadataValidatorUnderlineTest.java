@@ -51,12 +51,8 @@ class MetadataValidatorUnderlineTest {
         MetadataConfiguration config = MetadataConfiguration
                 .builder()
                 .attributes(java.util.Arrays
-                        .asList(AttributeConfig
-                                .builder()
-                                .name("author")
-                                .pattern("^[A-Z][a-z]+ [A-Z][a-z]+$")
-                                .severity(Severity.ERROR)
-                                .build()))
+                        .asList(new AttributeConfig("author", null, null, null, null, "^[A-Z][a-z]+ [A-Z][a-z]+$",
+                                Severity.ERROR)))
                 .build();
 
         MetadataValidator validator = MetadataValidator.fromConfiguration(config).build();

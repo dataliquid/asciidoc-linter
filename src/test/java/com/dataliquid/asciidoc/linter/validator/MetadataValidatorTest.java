@@ -29,13 +29,7 @@ class MetadataValidatorTest {
     void setUp() {
         testConfig = MetadataConfiguration
                 .builder()
-                .attributes(Arrays
-                        .asList(AttributeConfig
-                                .builder()
-                                .name("author")
-                                .required(true)
-                                .severity(Severity.ERROR)
-                                .build()))
+                .attributes(Arrays.asList(new AttributeConfig("author", null, true, null, null, null, Severity.ERROR)))
                 .build();
     }
 
@@ -120,8 +114,8 @@ class MetadataValidatorTest {
         MetadataConfiguration config = MetadataConfiguration
                 .builder()
                 .attributes(Arrays
-                        .asList(AttributeConfig.builder().name("author").order(1).severity(Severity.ERROR).build(),
-                                AttributeConfig.builder().name("version").order(2).severity(Severity.ERROR).build()))
+                        .asList(new AttributeConfig("author", 1, null, null, null, null, Severity.ERROR),
+                                new AttributeConfig("version", 2, null, null, null, null, Severity.ERROR)))
                 .build();
         MetadataValidator validator = MetadataValidator.fromConfiguration(config).build();
 
