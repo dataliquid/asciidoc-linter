@@ -58,14 +58,12 @@ class UnderlineHighlightIntegrationTest {
      * Creates the default output configuration for underline display.
      */
     private OutputConfiguration createDefaultOutputConfig() {
-        return OutputConfiguration
-                .builder()
-                .format(OutputFormat.ENHANCED)
-                .display(new DisplayConfig(3, HighlightStyle.UNDERLINE, false, true, 120, true))
-                .suggestions(new SuggestionsConfig(false, null, null))
-                .errorGrouping(new ErrorGroupingConfig(false, null)) // Disable error grouping for predictable output
-                .summary(new SummaryConfig(false, null, null, null))
-                .build();
+        return new OutputConfiguration(
+                OutputFormat.ENHANCED,
+                new DisplayConfig(3, HighlightStyle.UNDERLINE, false, true, 120, true),
+                new SuggestionsConfig(false, null, null),
+                new ErrorGroupingConfig(false, null), // Disable error grouping for predictable output
+                new SummaryConfig(false, null, null, null));
     }
 
     /**

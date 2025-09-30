@@ -29,11 +29,10 @@ class ConsoleFormatterTest {
     @BeforeEach
     void setUp() {
         // Create formatter with no colors for testing
-        OutputConfiguration config = OutputConfiguration
-                .builder()
-                .format(OutputFormat.SIMPLE)
-                .display(new DisplayConfig(null, null, false, null, null, null))
-                .build();
+        OutputConfiguration config = new OutputConfiguration(
+                OutputFormat.SIMPLE,
+                new DisplayConfig(null, null, false, null, null, null),
+                null, null, null);
         formatter = new ConsoleFormatter(config);
         stringWriter = new StringWriter();
         printWriter = new PrintWriter(stringWriter);
@@ -217,10 +216,8 @@ class ConsoleFormatterTest {
         @DisplayName("should add colors when enabled")
         void shouldAddColorsWhenEnabled() {
             // Given
-            OutputConfiguration colorConfig = new OutputConfiguration(
-                    OutputFormat.SIMPLE,
-                    new DisplayConfig(null, null, true, null, null, null),
-                    null, null, null);
+            OutputConfiguration colorConfig = new OutputConfiguration(OutputFormat.SIMPLE,
+                    new DisplayConfig(null, null, true, null, null, null), null, null, null);
             ConsoleFormatter colorFormatter = new ConsoleFormatter(colorConfig);
 
             ValidationMessage error = ValidationMessage

@@ -63,15 +63,12 @@ class PlaceholderHighlightIntegrationTest {
      * Creates output configuration with specified context lines.
      */
     private OutputConfiguration createDefaultOutputConfig(int contextLines) {
-        return OutputConfiguration
-                .builder()
-                .format(OutputFormat.ENHANCED)
-                .display(new DisplayConfig(contextLines, HighlightStyle.UNDERLINE, false, true, 120, true))
-                .errorGrouping(new ErrorGroupingConfig(false, null)) // Disable grouping for tests to show each error
-                                                                     // individually
-                .suggestions(new SuggestionsConfig(false, null, null))
-                .summary(new SummaryConfig(false, null, null, null))
-                .build();
+        return new OutputConfiguration(
+                OutputFormat.ENHANCED,
+                new DisplayConfig(contextLines, HighlightStyle.UNDERLINE, false, true, 120, true),
+                new SuggestionsConfig(false, null, null),
+                new ErrorGroupingConfig(false, null), // Disable grouping for tests to show each error individually
+                new SummaryConfig(false, null, null, null));
     }
 
     /**
