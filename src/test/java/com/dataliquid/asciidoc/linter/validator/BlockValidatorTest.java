@@ -43,7 +43,7 @@ class BlockValidatorTest {
         @DisplayName("should return success when section has no blocks")
         void shouldReturnSuccessWhenSectionHasNoBlocks() {
             // Given
-            SectionConfig config = SectionConfig.builder().name("Introduction").build();
+            SectionConfig config = new SectionConfig("Introduction", null, 0, null, null, null, null);
             when(mockSection.getBlocks()).thenReturn(null);
 
             // When

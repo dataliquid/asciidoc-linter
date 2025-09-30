@@ -126,14 +126,8 @@ class AsciiDocAuthorGuidelineGeneratorTest {
                     .occurrence(new OccurrenceConfig(null, 1, 3, null))
                     .build();
 
-            SectionConfig section = SectionConfig
-                    .builder()
-                    .name("introduction")
-                    .level(1)
-                    .order(1)
-                    .occurrence(new OccurrenceConfig(null, 1, 1, null))
-                    .allowedBlocks(List.of(paragraph))
-                    .build();
+            SectionConfig section = new SectionConfig("introduction", 1, 1, new OccurrenceConfig(null, 1, 1, null),
+                    null, List.of(paragraph), null);
 
             DocumentConfiguration document = new DocumentConfiguration(null, List.of(section));
 
@@ -160,7 +154,7 @@ class AsciiDocAuthorGuidelineGeneratorTest {
         @DisplayName("should use default tree visualization")
         void shouldUseDefaultTreeVisualization() {
             // Given
-            SectionConfig section = SectionConfig.builder().name("test").level(1).build();
+            SectionConfig section = new SectionConfig("test", null, 1, null, null, null, null);
 
             DocumentConfiguration document = new DocumentConfiguration(null, List.of(section));
 
@@ -183,7 +177,7 @@ class AsciiDocAuthorGuidelineGeneratorTest {
             AsciiDocAuthorGuidelineGenerator multiStyleGenerator = new AsciiDocAuthorGuidelineGenerator(
                     Set.of(VisualizationStyle.TREE, VisualizationStyle.TABLE));
 
-            SectionConfig section = SectionConfig.builder().name("test").level(1).build();
+            SectionConfig section = new SectionConfig("test", null, 1, null, null, null, null);
 
             DocumentConfiguration document = new DocumentConfiguration(null, List.of(section));
 

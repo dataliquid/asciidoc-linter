@@ -2,64 +2,72 @@ package com.dataliquid.asciidoc.linter.config.output;
 
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Output.DISPLAY;
 import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Output.ERROR_GROUPING;
 import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Output.FORMAT;
 import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Output.SUGGESTIONS;
 import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Output.SUMMARY;
-import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.EMPTY;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
 /**
  * Root configuration for console output formatting. This configuration is
  * loaded from a separate YAML file and controls how validation results are
  * displayed to the user.
  */
-@JsonDeserialize(builder = OutputConfiguration.Builder.class)
 public final class OutputConfiguration {
     private static final OutputFormat DEFAULT_FORMAT = OutputFormat.ENHANCED;
 
-    private final OutputFormat _format;
-    private final DisplayConfig _display;
-    private final SuggestionsConfig _suggestions;
-    private final ErrorGroupingConfig _errorGrouping;
-    private final SummaryConfig _summary;
+    private final OutputFormat formatValue;
+    private final DisplayConfig displayValue;
+    private final SuggestionsConfig suggestionsValue;
+    private final ErrorGroupingConfig errorGroupingValue;
+    private final SummaryConfig summaryValue;
 
-    private OutputConfiguration(Builder builder) {
-        this._format = Objects
-                .requireNonNull(builder._format, "[" + getClass().getName() + "] format must not be null");
-        this._display = Objects
-                .requireNonNull(builder._display, "[" + getClass().getName() + "] display must not be null");
-        this._suggestions = Objects
-                .requireNonNull(builder._suggestions, "[" + getClass().getName() + "] suggestions must not be null");
-        this._errorGrouping = Objects
-                .requireNonNull(builder._errorGrouping,
+    @JsonCreator
+    public OutputConfiguration(@JsonProperty(FORMAT) OutputFormat format, @JsonProperty(DISPLAY) DisplayConfig display,
+            @JsonProperty(SUGGESTIONS) SuggestionsConfig suggestions,
+            @JsonProperty(ERROR_GROUPING) ErrorGroupingConfig errorGrouping,
+            @JsonProperty(SUMMARY) SummaryConfig summary) {
+        this.formatValue = format != null ? format : DEFAULT_FORMAT;
+        this.displayValue = display != null ? display : new DisplayConfig(null, null, null, null, null, null);
+        this.suggestionsValue = suggestions != null ? suggestions : new SuggestionsConfig(null, null, null);
+        this.errorGroupingValue = errorGrouping != null ? errorGrouping : new ErrorGroupingConfig(null, null);
+        this.summaryValue = summary != null ? summary : new SummaryConfig(null, null, null, null);
+
+        Objects.requireNonNull(this.formatValue, "[" + getClass().getName() + "] format must not be null");
+        Objects.requireNonNull(this.displayValue, "[" + getClass().getName() + "] display must not be null");
+        Objects.requireNonNull(this.suggestionsValue, "[" + getClass().getName() + "] suggestions must not be null");
+        Objects
+                .requireNonNull(this.errorGroupingValue,
                         "[" + getClass().getName() + "] errorGrouping must not be null");
-        this._summary = Objects
-                .requireNonNull(builder._summary, "[" + getClass().getName() + "] summary must not be null");
+        Objects.requireNonNull(this.summaryValue, "[" + getClass().getName() + "] summary must not be null");
     }
 
+    @JsonProperty(FORMAT)
     public OutputFormat getFormat() {
-        return this._format;
+        return this.formatValue;
     }
 
+    @JsonProperty(DISPLAY)
     public DisplayConfig getDisplay() {
-        return this._display;
+        return this.displayValue;
     }
 
+    @JsonProperty(SUGGESTIONS)
     public SuggestionsConfig getSuggestions() {
-        return this._suggestions;
+        return this.suggestionsValue;
     }
 
+    @JsonProperty(ERROR_GROUPING)
     public ErrorGroupingConfig getErrorGrouping() {
-        return this._errorGrouping;
+        return this.errorGroupingValue;
     }
 
+    @JsonProperty(SUMMARY)
     public SummaryConfig getSummary() {
-        return this._summary;
+        return this.summaryValue;
     }
 
     @Override
@@ -69,83 +77,30 @@ public final class OutputConfiguration {
         if (o == null || getClass() != o.getClass())
             return false;
         OutputConfiguration that = (OutputConfiguration) o;
-        return _format == that._format && Objects.equals(_display, that._display)
-                && Objects.equals(_suggestions, that._suggestions)
-                && Objects.equals(_errorGrouping, that._errorGrouping) && Objects.equals(_summary, that._summary);
+        return formatValue == that.formatValue && Objects.equals(displayValue, that.displayValue)
+                && Objects.equals(suggestionsValue, that.suggestionsValue)
+                && Objects.equals(errorGroupingValue, that.errorGroupingValue)
+                && Objects.equals(summaryValue, that.summaryValue);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(_format, _display, _suggestions, _errorGrouping, _summary);
+        return Objects.hash(formatValue, displayValue, suggestionsValue, errorGroupingValue, summaryValue);
     }
 
     /**
      * Creates a default output configuration with enhanced format.
      */
     public static OutputConfiguration defaultConfig() {
-        return builder().build();
+        return new OutputConfiguration(null, null, null, null, null);
     }
 
     /**
      * Creates a compact output configuration for CI/CD environments.
      */
     public static OutputConfiguration compactConfig() {
-        return builder()
-                .format(OutputFormat.COMPACT)
-                .display(new DisplayConfig(0, null, false, null, null, false))
-                .suggestions(new SuggestionsConfig(false, null, null))
-                .errorGrouping(new ErrorGroupingConfig(false, null))
-                .summary(new SummaryConfig(false, null, null, null))
-                .build();
-    }
-
-    public static Builder builder() {
-        return new Builder();
-    }
-
-    @JsonPOJOBuilder(withPrefix = EMPTY)
-    public static final class Builder {
-        private OutputFormat _format = DEFAULT_FORMAT;
-        private DisplayConfig _display = new DisplayConfig(null, null, null, null, null, null);
-        private SuggestionsConfig _suggestions = new SuggestionsConfig(null, null, null);
-        private ErrorGroupingConfig _errorGrouping = new ErrorGroupingConfig(null, null);
-        private SummaryConfig _summary = new SummaryConfig(null, null, null, null);
-
-        private Builder() {
-        }
-
-        @JsonProperty(FORMAT)
-        public Builder format(OutputFormat format) {
-            this._format = format != null ? format : DEFAULT_FORMAT;
-            return this;
-        }
-
-        @JsonProperty(DISPLAY)
-        public Builder display(DisplayConfig display) {
-            this._display = display != null ? display : new DisplayConfig(null, null, null, null, null, null);
-            return this;
-        }
-
-        @JsonProperty(SUGGESTIONS)
-        public Builder suggestions(SuggestionsConfig suggestions) {
-            this._suggestions = suggestions != null ? suggestions : new SuggestionsConfig(null, null, null);
-            return this;
-        }
-
-        @JsonProperty(ERROR_GROUPING)
-        public Builder errorGrouping(ErrorGroupingConfig errorGrouping) {
-            this._errorGrouping = errorGrouping != null ? errorGrouping : new ErrorGroupingConfig(null, null);
-            return this;
-        }
-
-        @JsonProperty(SUMMARY)
-        public Builder summary(SummaryConfig summary) {
-            this._summary = summary != null ? summary : new SummaryConfig(null, null, null, null);
-            return this;
-        }
-
-        public OutputConfiguration build() {
-            return new OutputConfiguration(this);
-        }
+        return new OutputConfiguration(OutputFormat.COMPACT, new DisplayConfig(0, null, false, null, null, false),
+                new SuggestionsConfig(false, null, null), new ErrorGroupingConfig(false, null),
+                new SummaryConfig(false, null, null, null));
     }
 }
