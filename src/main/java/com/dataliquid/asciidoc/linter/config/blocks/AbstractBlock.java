@@ -20,7 +20,7 @@ public abstract class AbstractBlock implements Block {
 
     protected AbstractBlock(String name, Severity severity, OccurrenceConfig occurrence, Integer order) {
         this.name = name;
-        this.severity = severity;
+        this.severity = Objects.requireNonNull(severity, "severity is required");
         this.occurrence = occurrence;
         this.order = order;
     }

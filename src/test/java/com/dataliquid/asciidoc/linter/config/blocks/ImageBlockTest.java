@@ -27,42 +27,17 @@ class ImageBlockTest {
         @DisplayName("should build ImageBlock with all attributes")
         void shouldBuildImageBlockWithAllAttributes() {
             // Given
-            ImageBlock.UrlConfig urlRule = ImageBlock.UrlConfig
-                    .builder()
-                    .pattern("^https?://.*\\.(jpg|jpeg|png|gif|svg)$")
-                    .required(true)
-                    .build();
+            ImageBlock.UrlConfig urlRule = new ImageBlock.UrlConfig("^https?://.*\\.(jpg|jpeg|png|gif|svg)$", true);
 
-            ImageBlock.DimensionConfig heightRule = ImageBlock.DimensionConfig
-                    .builder()
-                    .minValue(100)
-                    .maxValue(2000)
-                    .required(false)
-                    .build();
+            ImageBlock.DimensionConfig heightRule = new ImageBlock.DimensionConfig(100, 2000, false);
 
-            ImageBlock.DimensionConfig widthRule = ImageBlock.DimensionConfig
-                    .builder()
-                    .minValue(100)
-                    .maxValue(3000)
-                    .required(false)
-                    .build();
+            ImageBlock.DimensionConfig widthRule = new ImageBlock.DimensionConfig(100, 3000, false);
 
-            ImageBlock.AltTextConfig altRule = ImageBlock.AltTextConfig
-                    .builder()
-                    .required(true)
-                    .minLength(10)
-                    .maxLength(200)
-                    .build();
+            ImageBlock.AltTextConfig altRule = new ImageBlock.AltTextConfig(true, 10, 200);
 
             // When
-            ImageBlock image = ImageBlock
-                    .builder()
-                    .severity(Severity.ERROR)
-                    .url(urlRule)
-                    .height(heightRule)
-                    .width(widthRule)
-                    .alt(altRule)
-                    .build();
+            ImageBlock image = new ImageBlock(null, Severity.ERROR, null, null, urlRule, heightRule, widthRule,
+                    altRule);
 
             // Then
             assertEquals(Severity.ERROR, image.getSeverity());
@@ -92,7 +67,7 @@ class ImageBlockTest {
         void shouldRequireSeverity() {
             // When & Then
             assertThrows(NullPointerException.class, () -> {
-                ImageBlock.builder().build();
+                new ImageBlock(null, null, null, null, null, null, null, null);
             });
         }
     }
@@ -105,7 +80,7 @@ class ImageBlockTest {
         @DisplayName("should create UrlConfig with string pattern")
         void shouldCreateUrlConfigWithStringPattern() {
             // Given & When
-            ImageBlock.UrlConfig urlRule = ImageBlock.UrlConfig.builder().pattern("^https://.*").required(true).build();
+            ImageBlock.UrlConfig urlRule = new ImageBlock.UrlConfig("^https://.*", true);
 
             // Then
             assertNotNull(urlRule.getPattern());
@@ -120,10 +95,10 @@ class ImageBlockTest {
             Pattern pattern = Pattern.compile(".*\\.png$");
 
             // When
-            ImageBlock.UrlConfig urlRule = ImageBlock.UrlConfig.builder().pattern(pattern).required(false).build();
+            ImageBlock.UrlConfig urlRule = new ImageBlock.UrlConfig(pattern.pattern(), false);
 
             // Then
-            assertEquals(pattern, urlRule.getPattern());
+            assertEquals(pattern.pattern(), urlRule.getPattern().pattern());
             assertFalse(urlRule.isRequired());
         }
 
@@ -131,7 +106,7 @@ class ImageBlockTest {
         @DisplayName("should handle null pattern")
         void shouldHandleNullPattern() {
             // Given & When
-            ImageBlock.UrlConfig urlRule = ImageBlock.UrlConfig.builder().pattern((String) null).build();
+            ImageBlock.UrlConfig urlRule = new ImageBlock.UrlConfig(null, false);
 
             // Then
             assertNull(urlRule.getPattern());
@@ -146,12 +121,7 @@ class ImageBlockTest {
         @DisplayName("should create DimensionConfig with min and max values")
         void shouldCreateDimensionConfigWithMinAndMaxValues() {
             // Given & When
-            ImageBlock.DimensionConfig dimension = ImageBlock.DimensionConfig
-                    .builder()
-                    .minValue(50)
-                    .maxValue(1000)
-                    .required(true)
-                    .build();
+            ImageBlock.DimensionConfig dimension = new ImageBlock.DimensionConfig(50, 1000, true);
 
             // Then
             assertEquals(50, dimension.getMinValue());
@@ -163,7 +133,7 @@ class ImageBlockTest {
         @DisplayName("should allow optional dimensions")
         void shouldAllowOptionalDimensions() {
             // Given & When
-            ImageBlock.DimensionConfig dimension = ImageBlock.DimensionConfig.builder().required(false).build();
+            ImageBlock.DimensionConfig dimension = new ImageBlock.DimensionConfig(null, null, false);
 
             // Then
             assertNull(dimension.getMinValue());
@@ -180,12 +150,7 @@ class ImageBlockTest {
         @DisplayName("should create AltTextConfig with length constraints")
         void shouldCreateAltTextConfigWithLengthConstraints() {
             // Given & When
-            ImageBlock.AltTextConfig altText = ImageBlock.AltTextConfig
-                    .builder()
-                    .required(true)
-                    .minLength(5)
-                    .maxLength(150)
-                    .build();
+            ImageBlock.AltTextConfig altText = new ImageBlock.AltTextConfig(true, 5, 150);
 
             // Then
             assertTrue(altText.isRequired());
@@ -197,7 +162,7 @@ class ImageBlockTest {
         @DisplayName("should allow optional alt text")
         void shouldAllowOptionalAltText() {
             // Given & When
-            ImageBlock.AltTextConfig altText = ImageBlock.AltTextConfig.builder().required(false).build();
+            ImageBlock.AltTextConfig altText = new ImageBlock.AltTextConfig(false, null, null);
 
             // Then
             assertFalse(altText.isRequired());
@@ -214,20 +179,20 @@ class ImageBlockTest {
         @DisplayName("should correctly implement equals and hashCode")
         void shouldCorrectlyImplementEqualsAndHashCode() {
             // Given
-            ImageBlock.UrlConfig url1 = ImageBlock.UrlConfig.builder().pattern(".*\\.jpg$").required(true).build();
+            ImageBlock.UrlConfig url1 = new ImageBlock.UrlConfig(".*\\.jpg$", true);
 
-            ImageBlock.UrlConfig url2 = ImageBlock.UrlConfig.builder().pattern(".*\\.jpg$").required(true).build();
+            ImageBlock.UrlConfig url2 = new ImageBlock.UrlConfig(".*\\.jpg$", true);
 
-            ImageBlock.AltTextConfig alt1 = ImageBlock.AltTextConfig.builder().required(true).minLength(10).build();
+            ImageBlock.AltTextConfig alt1 = new ImageBlock.AltTextConfig(true, 10, null);
 
-            ImageBlock.AltTextConfig alt2 = ImageBlock.AltTextConfig.builder().required(true).minLength(10).build();
+            ImageBlock.AltTextConfig alt2 = new ImageBlock.AltTextConfig(true, 10, null);
 
             // When
-            ImageBlock image1 = ImageBlock.builder().severity(Severity.WARN).url(url1).alt(alt1).build();
+            ImageBlock image1 = new ImageBlock(null, Severity.WARN, null, null, url1, null, null, alt1);
 
-            ImageBlock image2 = ImageBlock.builder().severity(Severity.WARN).url(url2).alt(alt2).build();
+            ImageBlock image2 = new ImageBlock(null, Severity.WARN, null, null, url2, null, null, alt2);
 
-            ImageBlock image3 = ImageBlock.builder().severity(Severity.ERROR).url(url1).alt(alt1).build();
+            ImageBlock image3 = new ImageBlock(null, Severity.ERROR, null, null, url1, null, null, alt1);
 
             // Then
             assertEquals(image1, image2);
@@ -240,37 +205,17 @@ class ImageBlockTest {
         @DisplayName("should test inner class equals and hashCode")
         void shouldTestInnerClassEqualsAndHashCode() {
             // Given
-            ImageBlock.UrlConfig url1 = ImageBlock.UrlConfig.builder().pattern("test").required(true).build();
+            ImageBlock.UrlConfig url1 = new ImageBlock.UrlConfig("test", true);
 
-            ImageBlock.UrlConfig url2 = ImageBlock.UrlConfig.builder().pattern("test").required(true).build();
+            ImageBlock.UrlConfig url2 = new ImageBlock.UrlConfig("test", true);
 
-            ImageBlock.DimensionConfig dim1 = ImageBlock.DimensionConfig
-                    .builder()
-                    .minValue(100)
-                    .maxValue(200)
-                    .required(false)
-                    .build();
+            ImageBlock.DimensionConfig dim1 = new ImageBlock.DimensionConfig(100, 200, false);
 
-            ImageBlock.DimensionConfig dim2 = ImageBlock.DimensionConfig
-                    .builder()
-                    .minValue(100)
-                    .maxValue(200)
-                    .required(false)
-                    .build();
+            ImageBlock.DimensionConfig dim2 = new ImageBlock.DimensionConfig(100, 200, false);
 
-            ImageBlock.AltTextConfig alt1 = ImageBlock.AltTextConfig
-                    .builder()
-                    .required(true)
-                    .minLength(5)
-                    .maxLength(50)
-                    .build();
+            ImageBlock.AltTextConfig alt1 = new ImageBlock.AltTextConfig(true, 5, 50);
 
-            ImageBlock.AltTextConfig alt2 = ImageBlock.AltTextConfig
-                    .builder()
-                    .required(true)
-                    .minLength(5)
-                    .maxLength(50)
-                    .build();
+            ImageBlock.AltTextConfig alt2 = new ImageBlock.AltTextConfig(true, 5, 50);
 
             // Then
             assertEquals(url1, url2);

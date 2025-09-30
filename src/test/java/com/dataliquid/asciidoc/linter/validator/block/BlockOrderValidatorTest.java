@@ -145,7 +145,7 @@ class BlockOrderValidatorTest {
 
             // Add blocks including some not in fixed order
             ParagraphBlock headerBlock = ParagraphBlock.builder().name("header").severity(Severity.ERROR).build();
-            ImageBlock imageBlock = ImageBlock.builder().name("diagram").severity(Severity.ERROR).build();
+            ImageBlock imageBlock = new ImageBlock("diagram", Severity.ERROR, null, null, null, null, null, null);
             ParagraphBlock contentBlock = ParagraphBlock.builder().name("content").severity(Severity.ERROR).build();
 
             StructuralNode node1 = mock(StructuralNode.class);

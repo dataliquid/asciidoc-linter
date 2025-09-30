@@ -85,7 +85,7 @@ class ListingBlockValidatorTest {
         void shouldReturnEmptyListWhenNotBlockInstance() {
             // Given
             StructuralNode notABlock = mock(StructuralNode.class);
-            ListingBlock config = ListingBlock.builder().severity(Severity.ERROR).build();
+            ListingBlock config = new ListingBlock(null, Severity.ERROR, null, null, null, null, null, null);
 
             // When
             List<ValidationMessage> messages = validator.validate(notABlock, config, context);
@@ -98,7 +98,7 @@ class ListingBlockValidatorTest {
         @DisplayName("should return empty list when no validations configured")
         void shouldReturnEmptyListWhenNoValidationsConfigured() {
             // Given
-            ListingBlock config = ListingBlock.builder().severity(Severity.ERROR).build();
+            ListingBlock config = new ListingBlock(null, Severity.ERROR, null, null, null, null, null, null);
 
             // When
             List<ValidationMessage> messages = validator.validate(mockBlock, config, context);
@@ -116,12 +116,8 @@ class ListingBlockValidatorTest {
         @DisplayName("should validate required language")
         void shouldValidateRequiredLanguage() {
             // Given
-            ListingBlock.LanguageConfig languageConfig = ListingBlock.LanguageConfig
-                    .builder()
-                    .required(true)
-                    .severity(Severity.ERROR)
-                    .build();
-            ListingBlock config = ListingBlock.builder().language(languageConfig).severity(Severity.ERROR).build();
+            ListingBlock.LanguageConfig languageConfig = new ListingBlock.LanguageConfig(true, null, Severity.ERROR);
+            ListingBlock config = new ListingBlock(null, Severity.ERROR, null, null, languageConfig, null, null, null);
 
             when(mockBlock.hasAttribute("language")).thenReturn(false);
 
@@ -142,12 +138,9 @@ class ListingBlockValidatorTest {
         @DisplayName("should validate allowed languages")
         void shouldValidateAllowedLanguages() {
             // Given
-            ListingBlock.LanguageConfig languageConfig = ListingBlock.LanguageConfig
-                    .builder()
-                    .allowed(Arrays.asList("java", "python", "javascript"))
-                    .severity(Severity.WARN)
-                    .build();
-            ListingBlock config = ListingBlock.builder().language(languageConfig).severity(Severity.ERROR).build();
+            ListingBlock.LanguageConfig languageConfig = new ListingBlock.LanguageConfig(false,
+                    Arrays.asList("java", "python", "javascript"), Severity.WARN);
+            ListingBlock config = new ListingBlock(null, Severity.ERROR, null, null, languageConfig, null, null, null);
 
             when(mockBlock.hasAttribute("language")).thenReturn(true);
             when(mockBlock.getAttribute("language")).thenReturn("ruby");
@@ -169,12 +162,8 @@ class ListingBlockValidatorTest {
         @DisplayName("should use language severity over block severity")
         void shouldUseLanguageSeverityOverBlockSeverity() {
             // Given - language has WARN, block has ERROR
-            ListingBlock.LanguageConfig languageConfig = ListingBlock.LanguageConfig
-                    .builder()
-                    .required(true)
-                    .severity(Severity.WARN)
-                    .build();
-            ListingBlock config = ListingBlock.builder().language(languageConfig).severity(Severity.ERROR).build();
+            ListingBlock.LanguageConfig languageConfig = new ListingBlock.LanguageConfig(true, null, Severity.WARN);
+            ListingBlock config = new ListingBlock(null, Severity.ERROR, null, null, languageConfig, null, null, null);
 
             when(mockBlock.hasAttribute("language")).thenReturn(false);
 
@@ -192,12 +181,9 @@ class ListingBlockValidatorTest {
         @DisplayName("should use block severity when language severity is not defined")
         void shouldUseBlockSeverityWhenLanguageSeverityNotDefined() {
             // Given - language has no severity, block has INFO
-            ListingBlock.LanguageConfig languageConfig = ListingBlock.LanguageConfig
-                    .builder()
-                    .required(true)
-                    // No severity set
-                    .build();
-            ListingBlock config = ListingBlock.builder().language(languageConfig).severity(Severity.INFO).build();
+            ListingBlock.LanguageConfig languageConfig = new ListingBlock.LanguageConfig(true, null, null);
+            // No severity set
+            ListingBlock config = new ListingBlock(null, Severity.INFO, null, null, languageConfig, null, null, null);
 
             when(mockBlock.hasAttribute("language")).thenReturn(false);
 
@@ -218,12 +204,8 @@ class ListingBlockValidatorTest {
             // Given - Based on test-errors.adoc line 17: [source]
             BlockValidationContext testContext = new BlockValidationContext(mockSection, "test-errors.adoc");
 
-            ListingBlock.LanguageConfig languageConfig = ListingBlock.LanguageConfig
-                    .builder()
-                    .required(true)
-                    .severity(Severity.ERROR)
-                    .build();
-            ListingBlock config = ListingBlock.builder().language(languageConfig).severity(Severity.ERROR).build();
+            ListingBlock.LanguageConfig languageConfig = new ListingBlock.LanguageConfig(true, null, Severity.ERROR);
+            ListingBlock config = new ListingBlock(null, Severity.ERROR, null, null, languageConfig, null, null, null);
 
             // Mock source location for line 17 from test-errors.adoc
             Cursor mockCursor = mock(Cursor.class);
@@ -256,12 +238,9 @@ class ListingBlockValidatorTest {
             // Given - Based on test-errors.adoc line 25: [source,invalidlang]
             BlockValidationContext testContext = new BlockValidationContext(mockSection, "test-errors.adoc");
 
-            ListingBlock.LanguageConfig languageConfig = ListingBlock.LanguageConfig
-                    .builder()
-                    .allowed(Arrays.asList("java", "python", "yaml", "bash"))
-                    .severity(Severity.ERROR)
-                    .build();
-            ListingBlock config = ListingBlock.builder().language(languageConfig).severity(Severity.ERROR).build();
+            ListingBlock.LanguageConfig languageConfig = new ListingBlock.LanguageConfig(false,
+                    Arrays.asList("java", "python", "yaml", "bash"), Severity.ERROR);
+            ListingBlock config = new ListingBlock(null, Severity.ERROR, null, null, languageConfig, null, null, null);
 
             // Mock source location for line 25
             Cursor mockCursor = mock(Cursor.class);
@@ -289,12 +268,9 @@ class ListingBlockValidatorTest {
         @DisplayName("should pass when language is allowed")
         void shouldPassWhenLanguageIsAllowed() {
             // Given
-            ListingBlock.LanguageConfig languageConfig = ListingBlock.LanguageConfig
-                    .builder()
-                    .allowed(Arrays.asList("java", "python"))
-                    .severity(Severity.ERROR)
-                    .build();
-            ListingBlock config = ListingBlock.builder().language(languageConfig).severity(Severity.ERROR).build();
+            ListingBlock.LanguageConfig languageConfig = new ListingBlock.LanguageConfig(false,
+                    Arrays.asList("java", "python"), Severity.ERROR);
+            ListingBlock config = new ListingBlock(null, Severity.ERROR, null, null, languageConfig, null, null, null);
 
             when(mockBlock.hasAttribute("language")).thenReturn(true);
             when(mockBlock.getAttribute("language")).thenReturn("java");
@@ -315,12 +291,8 @@ class ListingBlockValidatorTest {
         @DisplayName("should validate required title")
         void shouldValidateRequiredTitle() {
             // Given
-            ListingBlock.TitleConfig titleConfig = ListingBlock.TitleConfig
-                    .builder()
-                    .required(true)
-                    .severity(Severity.ERROR)
-                    .build();
-            ListingBlock config = ListingBlock.builder().title(titleConfig).severity(Severity.ERROR).build();
+            ListingBlock.TitleConfig titleConfig = new ListingBlock.TitleConfig(true, null, Severity.ERROR);
+            ListingBlock config = new ListingBlock(null, Severity.ERROR, null, null, null, null, titleConfig, null);
 
             when(mockBlock.getTitle()).thenReturn(null);
 
@@ -338,12 +310,9 @@ class ListingBlockValidatorTest {
         @DisplayName("should validate title pattern")
         void shouldValidateTitlePattern() {
             // Given
-            ListingBlock.TitleConfig titleConfig = ListingBlock.TitleConfig
-                    .builder()
-                    .pattern(Pattern.compile("^Listing \\d+:.*"))
-                    .severity(Severity.INFO)
-                    .build();
-            ListingBlock config = ListingBlock.builder().title(titleConfig).severity(Severity.ERROR).build();
+            ListingBlock.TitleConfig titleConfig = new ListingBlock.TitleConfig(false, "^Listing \\d+:.*",
+                    Severity.INFO);
+            ListingBlock config = new ListingBlock(null, Severity.ERROR, null, null, null, null, titleConfig, null);
 
             when(mockBlock.getTitle()).thenReturn("Code Example");
 
@@ -364,12 +333,8 @@ class ListingBlockValidatorTest {
         @DisplayName("should use title severity over block severity")
         void shouldUseTitleSeverityOverBlockSeverity() {
             // Given - title has INFO, block has ERROR
-            ListingBlock.TitleConfig titleConfig = ListingBlock.TitleConfig
-                    .builder()
-                    .required(true)
-                    .severity(Severity.INFO)
-                    .build();
-            ListingBlock config = ListingBlock.builder().title(titleConfig).severity(Severity.ERROR).build();
+            ListingBlock.TitleConfig titleConfig = new ListingBlock.TitleConfig(true, null, Severity.INFO);
+            ListingBlock config = new ListingBlock(null, Severity.ERROR, null, null, null, null, titleConfig, null);
 
             when(mockBlock.getTitle()).thenReturn(null);
 
@@ -387,12 +352,9 @@ class ListingBlockValidatorTest {
         @DisplayName("should use block severity when title severity is not defined")
         void shouldUseBlockSeverityWhenTitleSeverityNotDefined() {
             // Given - title has no severity, block has WARN
-            ListingBlock.TitleConfig titleConfig = ListingBlock.TitleConfig
-                    .builder()
-                    .required(true)
-                    // No severity set
-                    .build();
-            ListingBlock config = ListingBlock.builder().title(titleConfig).severity(Severity.WARN).build();
+            ListingBlock.TitleConfig titleConfig = new ListingBlock.TitleConfig(true, null, null);
+            // No severity set
+            ListingBlock config = new ListingBlock(null, Severity.WARN, null, null, null, null, titleConfig, null);
 
             when(mockBlock.getTitle()).thenReturn(null);
 
@@ -416,12 +378,8 @@ class ListingBlockValidatorTest {
         @DisplayName("should validate callouts not allowed")
         void shouldValidateCalloutsNotAllowed() {
             // Given
-            ListingBlock.CalloutsConfig calloutsConfig = ListingBlock.CalloutsConfig
-                    .builder()
-                    .allowed(false)
-                    .severity(Severity.WARN)
-                    .build();
-            ListingBlock config = ListingBlock.builder().callouts(calloutsConfig).severity(Severity.ERROR).build();
+            ListingBlock.CalloutsConfig calloutsConfig = new ListingBlock.CalloutsConfig(false, null, Severity.WARN);
+            ListingBlock config = new ListingBlock(null, Severity.ERROR, null, null, null, null, null, calloutsConfig);
 
             when(mockBlock.getContent()).thenReturn("public class Test { // <1>\n    // code\n}");
 
@@ -442,12 +400,8 @@ class ListingBlockValidatorTest {
         @DisplayName("should use callouts severity over block severity")
         void shouldUseCalloutsSeverityOverBlockSeverity() {
             // Given - callouts has WARN, block has ERROR
-            ListingBlock.CalloutsConfig calloutsConfig = ListingBlock.CalloutsConfig
-                    .builder()
-                    .allowed(false)
-                    .severity(Severity.WARN)
-                    .build();
-            ListingBlock config = ListingBlock.builder().callouts(calloutsConfig).severity(Severity.ERROR).build();
+            ListingBlock.CalloutsConfig calloutsConfig = new ListingBlock.CalloutsConfig(false, null, Severity.WARN);
+            ListingBlock config = new ListingBlock(null, Severity.ERROR, null, null, null, null, null, calloutsConfig);
 
             when(mockBlock.getContent()).thenReturn("public class Test { // <1>\n    // code\n}");
 
@@ -465,12 +419,9 @@ class ListingBlockValidatorTest {
         @DisplayName("should use block severity when callouts severity is not defined")
         void shouldUseBlockSeverityWhenCalloutsSeverityNotDefined() {
             // Given - callouts has no severity, block has ERROR
-            ListingBlock.CalloutsConfig calloutsConfig = ListingBlock.CalloutsConfig
-                    .builder()
-                    .allowed(false)
-                    // No severity set
-                    .build();
-            ListingBlock config = ListingBlock.builder().callouts(calloutsConfig).severity(Severity.ERROR).build();
+            ListingBlock.CalloutsConfig calloutsConfig = new ListingBlock.CalloutsConfig(false, null, null);
+            // No severity set
+            ListingBlock config = new ListingBlock(null, Severity.ERROR, null, null, null, null, null, calloutsConfig);
 
             when(mockBlock.getContent()).thenReturn("public class Test { // <1>\n    // code\n}");
 
@@ -489,12 +440,8 @@ class ListingBlockValidatorTest {
         @DisplayName("should allow callouts when allowed is true")
         void shouldAllowCalloutsWhenAllowedIsTrue() {
             // Given
-            ListingBlock.CalloutsConfig calloutsConfig = ListingBlock.CalloutsConfig
-                    .builder()
-                    .allowed(true)
-                    .severity(Severity.WARN)
-                    .build();
-            ListingBlock config = ListingBlock.builder().callouts(calloutsConfig).severity(Severity.ERROR).build();
+            ListingBlock.CalloutsConfig calloutsConfig = new ListingBlock.CalloutsConfig(true, null, Severity.WARN);
+            ListingBlock config = new ListingBlock(null, Severity.ERROR, null, null, null, null, null, calloutsConfig);
 
             when(mockBlock.getContent()).thenReturn("public class Test { // <1>\n    // code\n}");
 
@@ -509,13 +456,8 @@ class ListingBlockValidatorTest {
         @DisplayName("should validate maximum callout count")
         void shouldValidateMaximumCalloutCount() {
             // Given
-            ListingBlock.CalloutsConfig calloutsConfig = ListingBlock.CalloutsConfig
-                    .builder()
-                    .allowed(true)
-                    .max(2)
-                    .severity(Severity.ERROR)
-                    .build();
-            ListingBlock config = ListingBlock.builder().callouts(calloutsConfig).severity(Severity.ERROR).build();
+            ListingBlock.CalloutsConfig calloutsConfig = new ListingBlock.CalloutsConfig(true, 2, Severity.ERROR);
+            ListingBlock config = new ListingBlock(null, Severity.ERROR, null, null, null, null, null, calloutsConfig);
 
             when(mockBlock.getContent()).thenReturn("code // <1>\nmore // <2>\nagain // <3>");
 
@@ -541,7 +483,7 @@ class ListingBlockValidatorTest {
         void shouldValidateMinimumLines() {
             // Given
             LineConfig lineConfig = new LineConfig(5, null, Severity.INFO);
-            ListingBlock config = ListingBlock.builder().lines(lineConfig).severity(Severity.ERROR).build();
+            ListingBlock config = new ListingBlock(null, Severity.ERROR, null, null, null, lineConfig, null, null);
 
             when(mockBlock.getContent()).thenReturn("line1\nline2\nline3");
 
@@ -563,7 +505,7 @@ class ListingBlockValidatorTest {
         void shouldValidateMaximumLines() {
             // Given
             LineConfig lineConfig = new LineConfig(null, 50, Severity.WARN);
-            ListingBlock config = ListingBlock.builder().lines(lineConfig).severity(Severity.ERROR).build();
+            ListingBlock config = new ListingBlock(null, Severity.ERROR, null, null, null, lineConfig, null, null);
 
             // Create content with 51 lines
             StringBuilder content = new StringBuilder();
@@ -594,18 +536,10 @@ class ListingBlockValidatorTest {
         @DisplayName("should validate multiple rules together")
         void shouldValidateMultipleRules() {
             // Given
-            ListingBlock config = ListingBlock
-                    .builder()
-                    .language(ListingBlock.LanguageConfig
-                            .builder()
-                            .required(true)
-                            .allowed(Arrays.asList("java", "python"))
-                            .severity(Severity.ERROR)
-                            .build())
-                    .title(ListingBlock.TitleConfig.builder().required(true).severity(Severity.WARN).build())
-                    .lines(new LineConfig(null, 10, Severity.INFO))
-                    .severity(Severity.ERROR)
-                    .build();
+            ListingBlock config = new ListingBlock(null, Severity.ERROR, null, null,
+                    new ListingBlock.LanguageConfig(true, Arrays.asList("java", "python"), Severity.ERROR),
+                    new LineConfig(null, 10, Severity.INFO), new ListingBlock.TitleConfig(true, null, Severity.WARN),
+                    null);
 
             when(mockBlock.hasAttribute("language")).thenReturn(true);
             when(mockBlock.getAttribute("language")).thenReturn("javascript"); // Not allowed
@@ -629,7 +563,7 @@ class ListingBlockValidatorTest {
         void shouldHandleEmptyContent() {
             // Given
             LineConfig lineConfig = new LineConfig(1, null, Severity.ERROR);
-            ListingBlock config = ListingBlock.builder().lines(lineConfig).severity(Severity.ERROR).build();
+            ListingBlock config = new ListingBlock(null, Severity.ERROR, null, null, null, lineConfig, null, null);
 
             when(mockBlock.getContent()).thenReturn("");
 
@@ -645,12 +579,8 @@ class ListingBlockValidatorTest {
         @DisplayName("should handle null content")
         void shouldHandleNullContent() {
             // Given
-            ListingBlock.CalloutsConfig calloutsConfig = ListingBlock.CalloutsConfig
-                    .builder()
-                    .allowed(false)
-                    .severity(Severity.ERROR)
-                    .build();
-            ListingBlock config = ListingBlock.builder().callouts(calloutsConfig).severity(Severity.ERROR).build();
+            ListingBlock.CalloutsConfig calloutsConfig = new ListingBlock.CalloutsConfig(false, null, Severity.ERROR);
+            ListingBlock config = new ListingBlock(null, Severity.ERROR, null, null, null, null, null, calloutsConfig);
 
             when(mockBlock.getContent()).thenReturn(null);
 
