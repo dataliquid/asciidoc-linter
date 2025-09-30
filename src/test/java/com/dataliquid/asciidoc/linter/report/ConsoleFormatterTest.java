@@ -29,10 +29,8 @@ class ConsoleFormatterTest {
     @BeforeEach
     void setUp() {
         // Create formatter with no colors for testing
-        OutputConfiguration config = new OutputConfiguration(
-                OutputFormat.SIMPLE,
-                new DisplayConfig(null, null, false, null, null, null),
-                null, null, null);
+        OutputConfiguration config = new OutputConfiguration(OutputFormat.SIMPLE,
+                new DisplayConfig(null, null, false, null, null, null), null, null, null);
         formatter = new ConsoleFormatter(config);
         stringWriter = new StringWriter();
         printWriter = new PrintWriter(stringWriter);

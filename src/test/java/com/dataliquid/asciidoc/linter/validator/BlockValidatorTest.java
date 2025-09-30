@@ -82,8 +82,8 @@ class BlockValidatorTest {
             // Given
             ParagraphBlock paragraphConfig = ParagraphBlock.builder().severity(Severity.ERROR).build();
 
-            SectionConfig config = new SectionConfig("Section", null, 0, null, null,
-                    Arrays.asList(paragraphConfig), null);
+            SectionConfig config = new SectionConfig("Section", null, 0, null, null, Arrays.asList(paragraphConfig),
+                    null);
 
             Block unknownBlock = mock(Block.class);
             when(unknownBlock.getContext()).thenReturn("unknown-type");
@@ -117,8 +117,8 @@ class BlockValidatorTest {
                     .severity(Severity.ERROR)
                     .build();
 
-            SectionConfig config = new SectionConfig("Section", null, 0, null, null,
-                    Arrays.asList(paragraphConfig), null);
+            SectionConfig config = new SectionConfig("Section", null, 0, null, null, Arrays.asList(paragraphConfig),
+                    null);
 
             // Only one paragraph block (violates min)
             Block block = mock(Block.class);
@@ -144,8 +144,8 @@ class BlockValidatorTest {
                     .severity(Severity.ERROR)
                     .build();
 
-            SectionConfig config = new SectionConfig("Section", null, 0, null, null,
-                    Arrays.asList(paragraphConfig), null);
+            SectionConfig config = new SectionConfig("Section", null, 0, null, null, Arrays.asList(paragraphConfig),
+                    null);
 
             // Three paragraph blocks (violates max)
             Block block1 = mock(Block.class);
@@ -295,8 +295,8 @@ class BlockValidatorTest {
             // Given
             ParagraphBlock paragraphConfig = ParagraphBlock.builder().severity(Severity.ERROR).build();
 
-            SectionConfig config = new SectionConfig("Section", null, 0, null, null,
-                    Arrays.asList(paragraphConfig), null);
+            SectionConfig config = new SectionConfig("Section", null, 0, null, null, Arrays.asList(paragraphConfig),
+                    null);
 
             Block block = mock(Block.class);
             when(block.getContext()).thenThrow(new RuntimeException("Test exception"));
