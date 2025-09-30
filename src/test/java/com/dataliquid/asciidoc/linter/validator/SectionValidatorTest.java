@@ -43,12 +43,8 @@ class SectionValidatorTest {
                     Content here.
                     """;
 
-            SectionConfig titleConfig = SectionConfig
-                    .builder()
-                    .level(0)
-                    .occurrence(new OccurrenceConfig(null, 1, 1, null))
-                    .title(new TitleConfig("^[A-Z].*", Severity.ERROR))
-                    .build();
+            SectionConfig titleConfig = new SectionConfig(null, null, 0, new OccurrenceConfig(null, 1, 1, null),
+                    new TitleConfig("^[A-Z].*", Severity.ERROR), null, null);
 
             DocumentConfiguration docConfig = new DocumentConfiguration(null, Arrays.asList(titleConfig));
 
@@ -72,11 +68,8 @@ class SectionValidatorTest {
                     Content without title.
                     """;
 
-            SectionConfig titleConfig = SectionConfig
-                    .builder()
-                    .level(0)
-                    .occurrence(new OccurrenceConfig(null, 1, 1, null))
-                    .build();
+            SectionConfig titleConfig = new SectionConfig(null, null, 0, new OccurrenceConfig(null, 1, 1, null), null,
+                    null, null);
 
             DocumentConfiguration docConfig = new DocumentConfiguration(null, Arrays.asList(titleConfig));
 
@@ -101,12 +94,8 @@ class SectionValidatorTest {
                     Content here.
                     """;
 
-            SectionConfig titleConfig = SectionConfig
-                    .builder()
-                    .level(0)
-                    .occurrence(new OccurrenceConfig(null, 1, 1, null))
-                    .title(new TitleConfig("^[A-Z].*", Severity.ERROR))
-                    .build();
+            SectionConfig titleConfig = new SectionConfig(null, null, 0, new OccurrenceConfig(null, 1, 1, null),
+                    new TitleConfig("^[A-Z].*", Severity.ERROR), null, null);
 
             DocumentConfiguration docConfig = new DocumentConfiguration(null, Arrays.asList(titleConfig));
 
@@ -139,21 +128,13 @@ class SectionValidatorTest {
                     This is how to get started.
                     """;
 
-            SectionConfig introSection = SectionConfig
-                    .builder()
-                    .name("introduction")
-                    .level(1)
-                    .occurrence(new OccurrenceConfig(null, 1, 1, null))
-                    .title(new TitleConfig("^Introduction$", Severity.ERROR))
-                    .build();
+            SectionConfig introSection = new SectionConfig("introduction", null, 1,
+                    new OccurrenceConfig(null, 1, 1, null), new TitleConfig("^Introduction$", Severity.ERROR), null,
+                    null);
 
-            SectionConfig gettingStartedSection = SectionConfig
-                    .builder()
-                    .name("getting-started")
-                    .level(1)
-                    .occurrence(new OccurrenceConfig(null, 0, 1, null))
-                    .title(new TitleConfig("^Getting Started$", Severity.ERROR))
-                    .build();
+            SectionConfig gettingStartedSection = new SectionConfig("getting-started", null, 1,
+                    new OccurrenceConfig(null, 0, 1, null), new TitleConfig("^Getting Started$", Severity.ERROR), null,
+                    null);
 
             DocumentConfiguration config = new DocumentConfiguration(null,
                     Arrays.asList(introSection, gettingStartedSection));
@@ -179,13 +160,9 @@ class SectionValidatorTest {
                     This is how to get started.
                     """;
 
-            SectionConfig requiredSection = SectionConfig
-                    .builder()
-                    .name("introduction")
-                    .level(1)
-                    .occurrence(new OccurrenceConfig(null, 1, 1, null))
-                    .title(new TitleConfig("^Introduction$", Severity.ERROR))
-                    .build();
+            SectionConfig requiredSection = new SectionConfig("introduction", null, 1,
+                    new OccurrenceConfig(null, 1, 1, null), new TitleConfig("^Introduction$", Severity.ERROR), null,
+                    null);
 
             DocumentConfiguration config = new DocumentConfiguration(null, Arrays.asList(requiredSection));
 
@@ -223,12 +200,8 @@ class SectionValidatorTest {
                     Second intro.
                     """;
 
-            SectionConfig section = SectionConfig
-                    .builder()
-                    .name("introduction")
-                    .level(1)
-                    .occurrence(new OccurrenceConfig(null, 0, 1, null))
-                    .build();
+            SectionConfig section = new SectionConfig("introduction", null, 1, new OccurrenceConfig(null, 0, 1, null),
+                    null, null, null);
 
             DocumentConfiguration config = new DocumentConfiguration(null, Arrays.asList(section));
 
@@ -267,13 +240,9 @@ class SectionValidatorTest {
                     This is at level 2.
                     """;
 
-            SectionConfig conclusionSection = SectionConfig
-                    .builder()
-                    .name("conclusion")
-                    .level(1)
-                    .occurrence(new OccurrenceConfig(null, 0, 1, null))
-                    .title(new TitleConfig("^Conclusion$", Severity.ERROR))
-                    .build();
+            SectionConfig conclusionSection = new SectionConfig("conclusion", null, 1,
+                    new OccurrenceConfig(null, 0, 1, null), new TitleConfig("^Conclusion$", Severity.ERROR), null,
+                    null);
 
             DocumentConfiguration config = new DocumentConfiguration(null, Arrays.asList(conclusionSection));
 
@@ -310,13 +279,9 @@ class SectionValidatorTest {
                     This is the conclusion with lowercase title.
                     """;
 
-            SectionConfig conclusionSection = SectionConfig
-                    .builder()
-                    .name("conclusion")
-                    .level(1)
-                    .occurrence(new OccurrenceConfig(null, 0, 1, null))
-                    .title(new TitleConfig("^Conclusion$", Severity.ERROR))
-                    .build();
+            SectionConfig conclusionSection = new SectionConfig("conclusion", null, 1,
+                    new OccurrenceConfig(null, 0, 1, null), new TitleConfig("^Conclusion$", Severity.ERROR), null,
+                    null);
 
             DocumentConfiguration config = new DocumentConfiguration(null, Arrays.asList(conclusionSection));
 
@@ -355,13 +320,9 @@ class SectionValidatorTest {
                     This is chapter 2.
                     """;
 
-            SectionConfig chapterSection = SectionConfig
-                    .builder()
-                    .name("chapter")
-                    .level(1)
-                    .occurrence(new OccurrenceConfig(null, 1, 10, null))
-                    .title(new TitleConfig("Chapter \\d+: .*", Severity.ERROR))
-                    .build();
+            SectionConfig chapterSection = new SectionConfig("chapter", null, 1,
+                    new OccurrenceConfig(null, 1, 10, null), new TitleConfig("Chapter \\d+: .*", Severity.ERROR), null,
+                    null);
 
             DocumentConfiguration config = new DocumentConfiguration(null, Arrays.asList(chapterSection));
 
@@ -386,13 +347,8 @@ class SectionValidatorTest {
                     This doesn't match the pattern.
                     """;
 
-            SectionConfig section = SectionConfig
-                    .builder()
-                    .name("chapter")
-                    .level(1)
-                    .occurrence(new OccurrenceConfig(null, 0, 10, null))
-                    .title(new TitleConfig("Chapter \\d+: .*", Severity.ERROR))
-                    .build();
+            SectionConfig section = new SectionConfig("chapter", null, 1, new OccurrenceConfig(null, 0, 10, null),
+                    new TitleConfig("Chapter \\d+: .*", Severity.ERROR), null, null);
 
             DocumentConfiguration config = new DocumentConfiguration(null, Arrays.asList(section));
 
@@ -433,12 +389,8 @@ class SectionValidatorTest {
                     This is at level 2 instead of level 1.
                     """;
 
-            SectionConfig section = SectionConfig
-                    .builder()
-                    .name("introduction")
-                    .level(1)
-                    .occurrence(new OccurrenceConfig(null, 0, 1, null))
-                    .build();
+            SectionConfig section = new SectionConfig("introduction", null, 1, new OccurrenceConfig(null, 0, 1, null),
+                    null, null, null);
 
             DocumentConfiguration config = new DocumentConfiguration(null, Arrays.asList(section));
 
@@ -484,29 +436,14 @@ class SectionValidatorTest {
                     This is how to install.
                     """;
 
-            SectionConfig intro = SectionConfig
-                    .builder()
-                    .name("introduction")
-                    .level(1)
-                    .order(1)
-                    .title(new TitleConfig("^Introduction$", Severity.ERROR))
-                    .build();
+            SectionConfig intro = new SectionConfig("introduction", 1, 1, null,
+                    new TitleConfig("^Introduction$", Severity.ERROR), null, null);
 
-            SectionConfig prereq = SectionConfig
-                    .builder()
-                    .name("prerequisites")
-                    .level(1)
-                    .order(2)
-                    .title(new TitleConfig("^Prerequisites$", Severity.ERROR))
-                    .build();
+            SectionConfig prereq = new SectionConfig("prerequisites", 2, 1, null,
+                    new TitleConfig("^Prerequisites$", Severity.ERROR), null, null);
 
-            SectionConfig install = SectionConfig
-                    .builder()
-                    .name("installation")
-                    .level(1)
-                    .order(3)
-                    .title(new TitleConfig("^Installation$", Severity.ERROR))
-                    .build();
+            SectionConfig install = new SectionConfig("installation", 3, 1, null,
+                    new TitleConfig("^Installation$", Severity.ERROR), null, null);
 
             DocumentConfiguration config = new DocumentConfiguration(null, Arrays.asList(intro, prereq, install));
 
@@ -534,21 +471,11 @@ class SectionValidatorTest {
                     This is the introduction.
                     """;
 
-            SectionConfig intro = SectionConfig
-                    .builder()
-                    .name("introduction")
-                    .level(1)
-                    .order(1)
-                    .title(new TitleConfig("^Introduction$", Severity.ERROR))
-                    .build();
+            SectionConfig intro = new SectionConfig("introduction", 1, 1, null,
+                    new TitleConfig("^Introduction$", Severity.ERROR), null, null);
 
-            SectionConfig install = SectionConfig
-                    .builder()
-                    .name("installation")
-                    .level(1)
-                    .order(2)
-                    .title(new TitleConfig("^Installation$", Severity.ERROR))
-                    .build();
+            SectionConfig install = new SectionConfig("installation", 2, 1, null,
+                    new TitleConfig("^Installation$", Severity.ERROR), null, null);
 
             DocumentConfiguration config = new DocumentConfiguration(null, Arrays.asList(intro, install));
 
@@ -590,30 +517,17 @@ class SectionValidatorTest {
                     These are advanced features.
                     """;
 
-            SectionConfig coreFeatures = SectionConfig
-                    .builder()
-                    .name("core-features")
-                    .level(2)
-                    .occurrence(new OccurrenceConfig(null, 1, 1, null))
-                    .title(new TitleConfig("^Core Features$", Severity.ERROR))
-                    .build();
+            SectionConfig coreFeatures = new SectionConfig("core-features", null, 2,
+                    new OccurrenceConfig(null, 1, 1, null), new TitleConfig("^Core Features$", Severity.ERROR), null,
+                    null);
 
-            SectionConfig advancedFeatures = SectionConfig
-                    .builder()
-                    .name("advanced-features")
-                    .level(2)
-                    .occurrence(new OccurrenceConfig(null, 0, 1, null))
-                    .title(new TitleConfig("^Advanced Features$", Severity.ERROR))
-                    .build();
+            SectionConfig advancedFeatures = new SectionConfig("advanced-features", null, 2,
+                    new OccurrenceConfig(null, 0, 1, null), new TitleConfig("^Advanced Features$", Severity.ERROR),
+                    null, null);
 
-            SectionConfig featuresSection = SectionConfig
-                    .builder()
-                    .name("features")
-                    .level(1)
-                    .occurrence(new OccurrenceConfig(null, 1, 1, null))
-                    .title(new TitleConfig("^Features$", Severity.ERROR))
-                    .subsections(Arrays.asList(coreFeatures, advancedFeatures))
-                    .build();
+            SectionConfig featuresSection = new SectionConfig("features", null, 1,
+                    new OccurrenceConfig(null, 1, 1, null), new TitleConfig("^Features$", Severity.ERROR), null,
+                    Arrays.asList(coreFeatures, advancedFeatures));
 
             DocumentConfiguration config = new DocumentConfiguration(null, Arrays.asList(featuresSection));
 
@@ -641,22 +555,13 @@ class SectionValidatorTest {
                     These are advanced features.
                     """;
 
-            SectionConfig coreFeatures = SectionConfig
-                    .builder()
-                    .name("core-features")
-                    .level(2)
-                    .occurrence(new OccurrenceConfig(null, 1, 1, null))
-                    .title(new TitleConfig("^Core Features$", Severity.ERROR))
-                    .build();
+            SectionConfig coreFeatures = new SectionConfig("core-features", null, 2,
+                    new OccurrenceConfig(null, 1, 1, null), new TitleConfig("^Core Features$", Severity.ERROR), null,
+                    null);
 
-            SectionConfig featuresSection = SectionConfig
-                    .builder()
-                    .name("features")
-                    .level(1)
-                    .occurrence(new OccurrenceConfig(null, 1, 1, null))
-                    .title(new TitleConfig("^Features$", Severity.ERROR))
-                    .subsections(Arrays.asList(coreFeatures))
-                    .build();
+            SectionConfig featuresSection = new SectionConfig("features", null, 1,
+                    new OccurrenceConfig(null, 1, 1, null), new TitleConfig("^Features$", Severity.ERROR), null,
+                    Arrays.asList(coreFeatures));
 
             DocumentConfiguration config = new DocumentConfiguration(null, Arrays.asList(featuresSection));
 
@@ -691,12 +596,8 @@ class SectionValidatorTest {
             // Given
             String content = "= Document Title\n";
 
-            SectionConfig section = SectionConfig
-                    .builder()
-                    .name("introduction")
-                    .level(1)
-                    .occurrence(new OccurrenceConfig(null, 0, 1, null))
-                    .build();
+            SectionConfig section = new SectionConfig("introduction", null, 1, new OccurrenceConfig(null, 0, 1, null),
+                    null, null, null);
 
             DocumentConfiguration config = new DocumentConfiguration(null, Arrays.asList(section));
 
