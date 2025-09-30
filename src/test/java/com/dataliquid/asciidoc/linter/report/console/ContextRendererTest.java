@@ -25,14 +25,7 @@ class ContextRendererTest {
 
     @BeforeEach
     void setUp() {
-        displayConfig = DisplayConfig
-                .builder()
-                .contextLines(2)
-                .useColors(true)
-                .showLineNumbers(true)
-                .maxLineWidth(120)
-                .showHeader(true)
-                .build();
+        displayConfig = new DisplayConfig(2, null, true, true, 120, true);
         renderer = new ContextRenderer(displayConfig);
     }
 

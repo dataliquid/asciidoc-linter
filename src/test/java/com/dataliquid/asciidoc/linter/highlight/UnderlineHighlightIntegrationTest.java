@@ -61,22 +61,10 @@ class UnderlineHighlightIntegrationTest {
         return OutputConfiguration
                 .builder()
                 .format(OutputFormat.ENHANCED)
-                .display(DisplayConfig
-                        .builder()
-                        .contextLines(3)
-                        .useColors(false) // No colors for easier testing
-                        .showLineNumbers(true)
-                        .showHeader(true) // Enable header to match expected output
-                        .highlightStyle(HighlightStyle.UNDERLINE) // Enable underline highlighting
-                        .maxLineWidth(120)
-                        .build())
-                .suggestions(SuggestionsConfig.builder().enabled(false).build())
-                .errorGrouping(ErrorGroupingConfig
-                        .builder()
-                        .enabled(false) // Disable error grouping for predictable
-                                        // output
-                        .build())
-                .summary(SummaryConfig.builder().enabled(false).build())
+                .display(new DisplayConfig(3, HighlightStyle.UNDERLINE, false, true, 120, true))
+                .suggestions(new SuggestionsConfig(false, null, null))
+                .errorGrouping(new ErrorGroupingConfig(false, null)) // Disable error grouping for predictable output
+                .summary(new SummaryConfig(false, null, null, null))
                 .build();
     }
 

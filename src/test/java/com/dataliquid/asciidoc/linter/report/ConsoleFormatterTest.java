@@ -32,7 +32,7 @@ class ConsoleFormatterTest {
         OutputConfiguration config = OutputConfiguration
                 .builder()
                 .format(OutputFormat.SIMPLE)
-                .display(DisplayConfig.builder().useColors(false).build())
+                .display(new DisplayConfig(null, null, false, null, null, null))
                 .build();
         formatter = new ConsoleFormatter(config);
         stringWriter = new StringWriter();
@@ -220,7 +220,7 @@ class ConsoleFormatterTest {
             OutputConfiguration colorConfig = OutputConfiguration
                     .builder()
                     .format(OutputFormat.SIMPLE)
-                    .display(DisplayConfig.builder().useColors(true).build())
+                    .display(new DisplayConfig(null, null, true, null, null, null))
                     .build();
             ConsoleFormatter colorFormatter = new ConsoleFormatter(colorConfig);
 

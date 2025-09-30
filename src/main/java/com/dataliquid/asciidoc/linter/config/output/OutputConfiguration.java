@@ -92,10 +92,10 @@ public final class OutputConfiguration {
     public static OutputConfiguration compactConfig() {
         return builder()
                 .format(OutputFormat.COMPACT)
-                .display(DisplayConfig.builder().contextLines(0).useColors(false).showHeader(false).build())
-                .suggestions(SuggestionsConfig.builder().enabled(false).build())
-                .errorGrouping(ErrorGroupingConfig.builder().enabled(false).build())
-                .summary(SummaryConfig.builder().enabled(false).build())
+                .display(new DisplayConfig(0, null, false, null, null, false))
+                .suggestions(new SuggestionsConfig(false, null, null))
+                .errorGrouping(new ErrorGroupingConfig(false, null))
+                .summary(new SummaryConfig(false, null, null, null))
                 .build();
     }
 
@@ -106,10 +106,10 @@ public final class OutputConfiguration {
     @JsonPOJOBuilder(withPrefix = EMPTY)
     public static final class Builder {
         private OutputFormat _format = DEFAULT_FORMAT;
-        private DisplayConfig _display = DisplayConfig.builder().build();
-        private SuggestionsConfig _suggestions = SuggestionsConfig.builder().build();
-        private ErrorGroupingConfig _errorGrouping = ErrorGroupingConfig.builder().build();
-        private SummaryConfig _summary = SummaryConfig.builder().build();
+        private DisplayConfig _display = new DisplayConfig(null, null, null, null, null, null);
+        private SuggestionsConfig _suggestions = new SuggestionsConfig(null, null, null);
+        private ErrorGroupingConfig _errorGrouping = new ErrorGroupingConfig(null, null);
+        private SummaryConfig _summary = new SummaryConfig(null, null, null, null);
 
         private Builder() {
         }
@@ -122,25 +122,25 @@ public final class OutputConfiguration {
 
         @JsonProperty(DISPLAY)
         public Builder display(DisplayConfig display) {
-            this._display = display != null ? display : DisplayConfig.builder().build();
+            this._display = display != null ? display : new DisplayConfig(null, null, null, null, null, null);
             return this;
         }
 
         @JsonProperty(SUGGESTIONS)
         public Builder suggestions(SuggestionsConfig suggestions) {
-            this._suggestions = suggestions != null ? suggestions : SuggestionsConfig.builder().build();
+            this._suggestions = suggestions != null ? suggestions : new SuggestionsConfig(null, null, null);
             return this;
         }
 
         @JsonProperty(ERROR_GROUPING)
         public Builder errorGrouping(ErrorGroupingConfig errorGrouping) {
-            this._errorGrouping = errorGrouping != null ? errorGrouping : ErrorGroupingConfig.builder().build();
+            this._errorGrouping = errorGrouping != null ? errorGrouping : new ErrorGroupingConfig(null, null);
             return this;
         }
 
         @JsonProperty(SUMMARY)
         public Builder summary(SummaryConfig summary) {
-            this._summary = summary != null ? summary : SummaryConfig.builder().build();
+            this._summary = summary != null ? summary : new SummaryConfig(null, null, null, null);
             return this;
         }
 
