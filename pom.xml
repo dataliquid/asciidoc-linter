@@ -34,7 +34,7 @@
         <asciidoctorj.version>2.5.13</asciidoctorj.version>
         <jackson.version>2.20.0</jackson.version>
         <junit.version>6.0.0</junit.version>
-        <jacoco.version>0.8.13</jacoco.version>
+        <jacoco.version>0.8.14</jacoco.version>
     </properties>
     
     <dependencies>
