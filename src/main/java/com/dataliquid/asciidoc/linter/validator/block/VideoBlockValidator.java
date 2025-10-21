@@ -18,6 +18,7 @@ import com.dataliquid.asciidoc.linter.validator.PlaceholderContext;
 import static com.dataliquid.asciidoc.linter.validator.RuleIds.Video.*;
 import com.dataliquid.asciidoc.linter.validator.SourceLocation;
 import com.dataliquid.asciidoc.linter.validator.Suggestion;
+import com.dataliquid.asciidoc.linter.util.MediaMacroPositionFinder;
 import com.dataliquid.asciidoc.linter.util.StringUtils;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
 
@@ -485,40 +486,7 @@ public final class VideoBlockValidator extends AbstractBlockValidator<VideoBlock
      * Finds the column position of URL in video macro.
      */
     private SourcePosition findSourcePosition(StructuralNode block, BlockValidationContext context, String url) {
-        List<String> fileLines = fileCache.getFileLines(context.getFilename());
-        if (fileLines.isEmpty() || block.getSourceLocation() == null) {
-            return new SourcePosition(1, 1,
-                    block.getSourceLocation() != null ? block.getSourceLocation().getLineNumber() : 1);
-        }
-
-        int lineNum = block.getSourceLocation().getLineNumber();
-        if (lineNum <= 0 || lineNum > fileLines.size()) {
-            return new SourcePosition(1, 1, lineNum);
-        }
-
-        String sourceLine = fileLines.get(lineNum - 1);
-
-        // Look for video:: macro pattern
-        int videoStart = sourceLine.indexOf("video::");
-        if (videoStart >= 0) {
-            int urlEnd = sourceLine.indexOf('[', videoStart);
-            if (urlEnd == -1) {
-                urlEnd = sourceLine.length();
-            }
-
-            if (url != null && !url.isEmpty()) {
-                // Find the specific URL position
-                int urlStart = sourceLine.indexOf(url, videoStart + 7);
-                if (urlStart > videoStart && urlStart < urlEnd) {
-                    return new SourcePosition(urlStart + 1, urlStart + url.length(), lineNum);
-                }
-            } else {
-                // No URL - position after "video::"
-                return new SourcePosition(videoStart + 8, videoStart + 8, lineNum);
-            }
-        }
-
-        return new SourcePosition(1, 1, lineNum);
+        return MediaMacroPositionFinder.findMacroUrlPosition(block, context, "video", url, fileCache);
     }
 
     /**

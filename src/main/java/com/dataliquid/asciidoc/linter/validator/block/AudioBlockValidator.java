@@ -18,6 +18,7 @@ import static com.dataliquid.asciidoc.linter.validator.RuleIds.Audio.*;
 import com.dataliquid.asciidoc.linter.validator.SourceLocation;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
 import com.dataliquid.asciidoc.linter.validator.Suggestion;
+import com.dataliquid.asciidoc.linter.util.MediaMacroPositionFinder;
 import com.dataliquid.asciidoc.linter.util.StringUtils;
 
 /**
@@ -384,40 +385,7 @@ public final class AudioBlockValidator extends AbstractBlockValidator<AudioBlock
      * Finds the column position of URL in audio macro.
      */
     private SourcePosition findSourcePosition(StructuralNode block, BlockValidationContext context, String url) {
-        List<String> fileLines = fileCache.getFileLines(context.getFilename());
-        if (fileLines.isEmpty() || block.getSourceLocation() == null) {
-            return new SourcePosition(1, 1,
-                    block.getSourceLocation() != null ? block.getSourceLocation().getLineNumber() : 1);
-        }
-
-        int lineNum = block.getSourceLocation().getLineNumber();
-        if (lineNum <= 0 || lineNum > fileLines.size()) {
-            return new SourcePosition(1, 1, lineNum);
-        }
-
-        String sourceLine = fileLines.get(lineNum - 1);
-
-        // Look for audio:: macro pattern
-        int audioStart = sourceLine.indexOf("audio::");
-        if (audioStart >= 0) {
-            int urlEnd = sourceLine.indexOf('[', audioStart);
-            if (urlEnd == -1) {
-                urlEnd = sourceLine.length();
-            }
-
-            if (url != null && !url.isEmpty()) {
-                // Find the specific URL position
-                int urlStart = sourceLine.indexOf(url, audioStart + 7);
-                if (urlStart > audioStart && urlStart < urlEnd) {
-                    return new SourcePosition(urlStart + 1, urlStart + url.length(), lineNum);
-                }
-            } else {
-                // No URL - position after "audio::"
-                return new SourcePosition(audioStart + 8, audioStart + 8, lineNum);
-            }
-        }
-
-        return new SourcePosition(1, 1, lineNum);
+        return MediaMacroPositionFinder.findMacroUrlPosition(block, context, "audio", url, fileCache);
     }
 
     /**
