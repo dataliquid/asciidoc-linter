@@ -17,6 +17,7 @@ import static com.dataliquid.asciidoc.linter.validator.RuleIds.Image.*;
 import com.dataliquid.asciidoc.linter.validator.SourceLocation;
 import com.dataliquid.asciidoc.linter.validator.Suggestion;
 import com.dataliquid.asciidoc.linter.util.MediaMacroPositionFinder;
+import com.dataliquid.asciidoc.linter.util.StringConstants;
 import com.dataliquid.asciidoc.linter.util.StringUtils;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
 import org.apache.logging.log4j.LogManager;
@@ -52,8 +53,6 @@ import org.apache.logging.log4j.Logger;
  */
 public final class ImageBlockValidator extends AbstractBlockValidator<ImageBlock> {
 
-    // Constants for duplicate literals
-    private static final String CHARACTERS_SUFFIX = " characters";
     private static final Logger logger = LogManager.getLogger(ImageBlockValidator.class);
 
     @Override
@@ -356,8 +355,9 @@ public final class ImageBlockValidator extends AbstractBlockValidator<ImageBlock
                                         .fromPosition(pos)
                                         .build())
                                 .message("Image alt text is too short")
-                                .actualValue(altText.length() + CHARACTERS_SUFFIX)
-                                .expectedValue("At least " + altConfig.getMinLength() + CHARACTERS_SUFFIX)
+                                .actualValue(altText.length() + StringConstants.CHARACTERS_SUFFIX)
+                                .expectedValue(
+                                        "At least " + altConfig.getMinLength() + StringConstants.CHARACTERS_SUFFIX)
                                 .addSuggestion(Suggestion
                                         .builder()
                                         .description("Provide more descriptive alt text")
@@ -382,8 +382,9 @@ public final class ImageBlockValidator extends AbstractBlockValidator<ImageBlock
                                         .fromPosition(pos)
                                         .build())
                                 .message("Image alt text is too long")
-                                .actualValue(altText.length() + CHARACTERS_SUFFIX)
-                                .expectedValue("At most " + altConfig.getMaxLength() + CHARACTERS_SUFFIX)
+                                .actualValue(altText.length() + StringConstants.CHARACTERS_SUFFIX)
+                                .expectedValue(
+                                        "At most " + altConfig.getMaxLength() + StringConstants.CHARACTERS_SUFFIX)
                                 .addSuggestion(Suggestion
                                         .builder()
                                         .description("Shorten the alt text while keeping it descriptive")
