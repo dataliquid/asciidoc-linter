@@ -6,6 +6,7 @@ import java.util.regex.Pattern;
 import com.dataliquid.asciidoc.linter.config.blocks.BlockType;
 import com.dataliquid.asciidoc.linter.config.rule.OccurrenceConfig;
 import com.dataliquid.asciidoc.linter.config.common.Severity;
+import com.dataliquid.asciidoc.linter.util.PatternUtils;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -131,26 +132,13 @@ public class VideoBlock extends AbstractBlock {
             if (!(o instanceof UrlConfig))
                 return false;
             UrlConfig urlConfig = (UrlConfig) o;
-            return Objects.equals(required, urlConfig.required) && patternEquals(pattern, urlConfig.pattern)
-                    && severity == urlConfig.severity;
+            return Objects.equals(required, urlConfig.required)
+                    && PatternUtils.patternEquals(pattern, urlConfig.pattern) && severity == urlConfig.severity;
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(required, patternToString(pattern), severity);
-        }
-
-        @SuppressWarnings("PMD.CompareObjectsWithEquals") // Pattern comparison optimization
-        private boolean patternEquals(Pattern p1, Pattern p2) {
-            if (p1 == p2)
-                return true;
-            if (p1 == null || p2 == null)
-                return false;
-            return p1.pattern().equals(p2.pattern());
-        }
-
-        private String patternToString(Pattern p) {
-            return p != null ? p.pattern() : null;
+            return Objects.hash(required, PatternUtils.patternHashCode(pattern), severity);
         }
 
     }
@@ -239,26 +227,13 @@ public class VideoBlock extends AbstractBlock {
             if (!(o instanceof PosterConfig))
                 return false;
             PosterConfig that = (PosterConfig) o;
-            return Objects.equals(required, that.required) && patternEquals(pattern, that.pattern)
+            return Objects.equals(required, that.required) && PatternUtils.patternEquals(pattern, that.pattern)
                     && severity == that.severity;
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(required, patternToString(pattern), severity);
-        }
-
-        @SuppressWarnings("PMD.CompareObjectsWithEquals") // Pattern comparison optimization
-        private boolean patternEquals(Pattern p1, Pattern p2) {
-            if (p1 == p2)
-                return true;
-            if (p1 == null || p2 == null)
-                return false;
-            return p1.pattern().equals(p2.pattern());
-        }
-
-        private String patternToString(Pattern p) {
-            return p != null ? p.pattern() : null;
+            return Objects.hash(required, PatternUtils.patternHashCode(pattern), severity);
         }
 
     }

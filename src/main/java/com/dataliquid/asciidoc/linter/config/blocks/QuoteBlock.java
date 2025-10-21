@@ -6,6 +6,7 @@ import java.util.regex.Pattern;
 import com.dataliquid.asciidoc.linter.config.blocks.BlockType;
 import com.dataliquid.asciidoc.linter.config.rule.OccurrenceConfig;
 import com.dataliquid.asciidoc.linter.config.common.Severity;
+import com.dataliquid.asciidoc.linter.util.PatternUtils;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -121,22 +122,13 @@ public class QuoteBlock extends AbstractBlock {
                 return false;
             AttributionConfig that = (AttributionConfig) o;
             return required == that.required && Objects.equals(minLength, that.minLength)
-                    && Objects.equals(maxLength, that.maxLength) && patternEquals(pattern, that.pattern)
+                    && Objects.equals(maxLength, that.maxLength) && PatternUtils.patternEquals(pattern, that.pattern)
                     && severity == that.severity;
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(required, minLength, maxLength, pattern != null ? pattern.pattern() : null, severity);
-        }
-
-        @SuppressWarnings("PMD.CompareObjectsWithEquals") // Pattern comparison optimization
-        private boolean patternEquals(Pattern p1, Pattern p2) {
-            if (p1 == p2)
-                return true;
-            if (p1 == null || p2 == null)
-                return false;
-            return p1.pattern().equals(p2.pattern());
+            return Objects.hash(required, minLength, maxLength, PatternUtils.patternHashCode(pattern), severity);
         }
 
     }
@@ -197,22 +189,13 @@ public class QuoteBlock extends AbstractBlock {
                 return false;
             CitationConfig that = (CitationConfig) o;
             return required == that.required && Objects.equals(minLength, that.minLength)
-                    && Objects.equals(maxLength, that.maxLength) && patternEquals(pattern, that.pattern)
+                    && Objects.equals(maxLength, that.maxLength) && PatternUtils.patternEquals(pattern, that.pattern)
                     && severity == that.severity;
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(required, minLength, maxLength, pattern != null ? pattern.pattern() : null, severity);
-        }
-
-        @SuppressWarnings("PMD.CompareObjectsWithEquals") // Pattern comparison optimization
-        private boolean patternEquals(Pattern p1, Pattern p2) {
-            if (p1 == p2)
-                return true;
-            if (p1 == null || p2 == null)
-                return false;
-            return p1.pattern().equals(p2.pattern());
+            return Objects.hash(required, minLength, maxLength, PatternUtils.patternHashCode(pattern), severity);
         }
 
     }
