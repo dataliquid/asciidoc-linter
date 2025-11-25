@@ -2,22 +2,21 @@ package com.dataliquid.asciidoc.linter.config.validation;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Set;
+import java.util.List;
 
 import com.dataliquid.asciidoc.linter.config.SchemaConstants;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import com.networknt.schema.JsonMetaSchema;
-import com.networknt.schema.JsonSchema;
-import com.networknt.schema.JsonSchemaFactory;
-import com.networknt.schema.PathType;
-import com.networknt.schema.SchemaValidatorsConfig;
-import com.networknt.schema.ValidationMessage;
+import com.networknt.schema.Error;
+import com.networknt.schema.Schema;
+import com.networknt.schema.SchemaLocation;
+import com.networknt.schema.SchemaRegistry;
+import com.networknt.schema.SchemaRegistryConfig;
+import com.networknt.schema.SpecificationVersion;
+import com.networknt.schema.path.PathType;
 
 /**
  * Validates user configuration files against the linter configuration schema.
@@ -25,11 +24,11 @@ import com.networknt.schema.ValidationMessage;
 public class RuleSchemaValidator {
     private static final String SCHEMA_PATH = "/schemas/rules/linter-config-schema.yaml";
 
-    // Constants for validation message types
-    private static final String MSG_TYPE_ENUM = "enum";
-    private static final String MSG_TYPE_REQUIRED = "required";
+    // Constants for validation message keys
+    private static final String MSG_KEY_ENUM = "enum";
+    private static final String MSG_KEY_REQUIRED = "required";
 
-    private final JsonSchema schema;
+    private final Schema schema;
     private final ObjectMapper yamlMapper;
 
     public RuleSchemaValidator() {
@@ -37,7 +36,7 @@ public class RuleSchemaValidator {
         this.schema = loadSchema();
     }
 
-    private JsonSchema loadSchema() {
+    private Schema loadSchema() {
         try {
             // Load the main schema from classpath
             try (InputStream schemaStream = getClass().getResourceAsStream(SCHEMA_PATH)) {
@@ -48,32 +47,26 @@ public class RuleSchemaValidator {
                 // Convert YAML schema to JSON
                 JsonNode schemaNode = yamlMapper.readTree(schemaStream);
 
-                // Get the current classloader base URL for mapping
-                String baseClasspathUrl = getClass().getResource("/schemas/").toString();
+                // Map HTTPS schema URLs to classpath resources
+                String classpathBaseUrl = "classpath:/schemas/";
 
-                // Configure JsonSchemaFactory for JSON Schema 2020-12 with schema mappings
-                JsonSchemaFactory factory = JsonSchemaFactory
-                        .builder()
-                        .defaultMetaSchemaIri(JsonMetaSchema.getV202012().getIri())
-                        .schemaMappers(schemaMappers -> {
-                            // Map HTTPS references to actual classpath URLs
-                            schemaMappers.mapPrefix(SchemaConstants.SCHEMA_URL_PREFIX, baseClasspathUrl);
-                        })
-                        .metaSchema(JsonMetaSchema.getV202012())
-                        .build();
+                // Configure SchemaRegistryConfig for path type
+                SchemaRegistryConfig config = SchemaRegistryConfig.builder().pathType(PathType.JSON_POINTER).build();
 
-                // Configure validators
-                SchemaValidatorsConfig config = SchemaValidatorsConfig
-                        .builder()
-                        .pathType(PathType.JSON_POINTER)
-                        .build();
+                // Configure SchemaRegistry for JSON Schema 2020-12 with schema mappings
+                SchemaRegistry registry = SchemaRegistry
+                        .withDefaultDialect(SpecificationVersion.DRAFT_2020_12,
+                                builder -> builder
+                                        .schemaRegistryConfig(config)
+                                        .schemaIdResolvers(resolvers -> resolvers
+                                                .mapPrefix(SchemaConstants.SCHEMA_URL_PREFIX, classpathBaseUrl)));
 
-                // Load schema with the resource URL as base URI
-                URI schemaUri = getClass().getResource(SCHEMA_PATH).toURI();
-                return factory.getSchema(schemaUri, schemaNode, config);
+                // Load schema with classpath URI as base
+                String schemaUri = "classpath:" + SCHEMA_PATH;
+                return registry.getSchema(SchemaLocation.of(schemaUri), schemaNode);
             }
 
-        } catch (IOException | URISyntaxException e) {
+        } catch (IOException e) {
             throw new RuleValidationException("Failed to load schema", e);
         }
     }
@@ -106,10 +99,10 @@ public class RuleSchemaValidator {
      * @throws RuleValidationException if validation fails
      */
     public void validateUserConfig(JsonNode userConfigNode) throws RuleValidationException {
-        Set<ValidationMessage> messages = schema.validate(userConfigNode);
+        List<Error> errors = schema.validate(userConfigNode);
 
-        if (!messages.isEmpty()) {
-            throw new RuleValidationException(formatErrors(messages));
+        if (!errors.isEmpty()) {
+            throw new RuleValidationException(formatErrors(errors));
         }
     }
 
@@ -145,20 +138,27 @@ public class RuleSchemaValidator {
         }
     }
 
-    private String formatErrors(Set<ValidationMessage> messages) {
+    private String formatErrors(List<Error> errors) {
         StringBuilder sb = new StringBuilder(150); // Increased buffer size
         sb.append("User configuration does not match schema:");
 
-        for (ValidationMessage msg : messages) {
-            sb.append("\n\n  Error at ").append(msg.getInstanceLocation()).append(":\n    ").append(msg.getMessage());
+        for (Error error : errors) {
+            sb
+                    .append("\n\n  Error at ")
+                    .append(error.getInstanceLocation())
+                    .append(":\n    ")
+                    .append(error.getMessage());
 
-            // Add helpful context for common errors
-            if (MSG_TYPE_ENUM.equals(msg.getType())) {
-                sb.append("\n    Valid values: error, warn, info");
-            } else if (MSG_TYPE_REQUIRED.equals(msg.getType())) {
-                sb.append("\n    This field is required");
-            } else if ("minimum".equals(msg.getType()) || "maximum".equals(msg.getType())) {
-                sb.append("\n    Check the allowed range");
+            // Add helpful context for common errors based on messageKey
+            String messageKey = error.getMessageKey();
+            if (messageKey != null) {
+                if (messageKey.contains(MSG_KEY_ENUM)) {
+                    sb.append("\n    Valid values: error, warn, info");
+                } else if (messageKey.contains(MSG_KEY_REQUIRED)) {
+                    sb.append("\n    This field is required");
+                } else if (messageKey.contains("minimum") || messageKey.contains("maximum")) {
+                    sb.append("\n    Check the allowed range");
+                }
             }
         }
 
