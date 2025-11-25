@@ -11,123 +11,130 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.*;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Document.ALLOWED_BLOCKS;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Document.SUBSECTIONS;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.EMPTY;
+
 @JsonDeserialize(builder = SectionConfig.Builder.class)
 public final class SectionConfig {
-    private final String name;
-    private final Integer order;
-    private final int level;
-    private final int min;
-    private final int max;
-    private final TitleConfig title;
-    private final List<Block> allowedBlocks;
-    private final List<SectionConfig> subsections;
+    private final String _name;
+    private final Integer _order;
+    private final int _level;
+    private final OccurrenceConfig _occurrence;
+    private final TitleConfig _title;
+    private final List<Block> _allowedBlocks;
+    private final List<SectionConfig> _subsections;
 
     private SectionConfig(Builder builder) {
-        this.name = builder.name;
-        this.order = builder.order;
-        this.level = builder.level;
-        this.min = builder.min;
-        this.max = builder.max;
-        this.title = builder.title;
-        this.allowedBlocks = Collections.unmodifiableList(new ArrayList<>(builder.allowedBlocks));
-        this.subsections = Collections.unmodifiableList(new ArrayList<>(builder.subsections));
+        this._name = builder._name;
+        this._order = builder._order;
+        this._level = builder._level;
+        this._occurrence = builder._occurrence;
+        this._title = builder._title;
+        this._allowedBlocks = Collections.unmodifiableList(new ArrayList<>(builder._allowedBlocks));
+        this._subsections = Collections.unmodifiableList(new ArrayList<>(builder._subsections));
     }
 
-    @JsonProperty("name")
-    public String name() { return name; }
-    
-    @JsonProperty("order")
-    public Integer order() { return order; }
-    
-    @JsonProperty("level")
-    public int level() { return level; }
-    
-    @JsonProperty("min")
-    public int min() { return min; }
-    
-    @JsonProperty("max")
-    public int max() { return max; }
-    
-    @JsonProperty("title")
-    public TitleConfig title() { return title; }
-    
-    @JsonProperty("allowedBlocks")
-    public List<Block> allowedBlocks() { return allowedBlocks; }
-    
-    @JsonProperty("subsections")
-    public List<SectionConfig> subsections() { return subsections; }
+    @JsonProperty(NAME)
+    public String name() {
+        return this._name;
+    }
+
+    @JsonProperty(ORDER)
+    public Integer order() {
+        return this._order;
+    }
+
+    @JsonProperty(LEVEL)
+    public int level() {
+        return this._level;
+    }
+
+    @JsonProperty(OCCURRENCE)
+    public OccurrenceConfig occurrence() {
+        return this._occurrence;
+    }
+
+    @JsonProperty(TITLE)
+    public TitleConfig title() {
+        return this._title;
+    }
+
+    @JsonProperty(ALLOWED_BLOCKS)
+    public List<Block> allowedBlocks() {
+        return this._allowedBlocks;
+    }
+
+    @JsonProperty(SUBSECTIONS)
+    public List<SectionConfig> subsections() {
+        return this._subsections;
+    }
 
     public static Builder builder() {
         return new Builder();
     }
 
-    @JsonPOJOBuilder(withPrefix = "")
+    @JsonPOJOBuilder(withPrefix = EMPTY)
     public static class Builder {
-        private String name;
-        private Integer order;
-        private int level;
-        private int min = 0;
-        private int max = Integer.MAX_VALUE;
-        private TitleConfig title;
-        private List<Block> allowedBlocks = new ArrayList<>();
-        private List<SectionConfig> subsections = new ArrayList<>();
+        private String _name;
+        private Integer _order;
+        private int _level;
+        private OccurrenceConfig _occurrence;
+        private TitleConfig _title;
+        private List<Block> _allowedBlocks = new ArrayList<>();
+        private List<SectionConfig> _subsections = new ArrayList<>();
 
-        @JsonProperty("name")
+        @JsonProperty(NAME)
         public Builder name(String name) {
-            this.name = name;
+            this._name = name;
             return this;
         }
 
-        @JsonProperty("order")
+        @JsonProperty(ORDER)
         public Builder order(Integer order) {
-            this.order = order;
+            this._order = order;
             return this;
         }
 
-        @JsonProperty("level")
+        @JsonProperty(LEVEL)
         public Builder level(int level) {
-            this.level = level;
+            this._level = level;
             return this;
         }
 
-        @JsonProperty("min")
-        public Builder min(int min) {
-            this.min = min;
+        @JsonProperty(OCCURRENCE)
+        public Builder occurrence(OccurrenceConfig occurrence) {
+            this._occurrence = occurrence;
             return this;
         }
 
-        @JsonProperty("max")
-        public Builder max(int max) {
-            this.max = max;
-            return this;
-        }
-
-        @JsonProperty("title")
+        @JsonProperty(TITLE)
         public Builder title(TitleConfig title) {
-            this.title = title;
+            this._title = title;
             return this;
         }
 
-        @JsonProperty("allowedBlocks")
+        @JsonProperty(ALLOWED_BLOCKS)
         @JsonDeserialize(using = BlockListDeserializer.class)
         public Builder allowedBlocks(List<Block> allowedBlocks) {
-            this.allowedBlocks = allowedBlocks != null ? new ArrayList<>(allowedBlocks) : new ArrayList<>();
+            this._allowedBlocks = allowedBlocks != null ? new ArrayList<>(allowedBlocks) : new ArrayList<>();
             return this;
         }
 
         public Builder addAllowedBlock(Block block) {
-            this.allowedBlocks.add(block);
+            this._allowedBlocks.add(block);
             return this;
         }
 
-        @JsonProperty("subsections")
+        @JsonProperty(SUBSECTIONS)
         public Builder subsections(List<SectionConfig> subsections) {
-            this.subsections = subsections != null ? new ArrayList<>(subsections) : new ArrayList<>();
+            this._subsections = subsections != null ? new ArrayList<>(subsections) : new ArrayList<>();
             return this;
         }
 
         public Builder addSubsection(SectionConfig subsection) {
-            this.subsections.add(subsection);
+            this._subsections.add(subsection);
             return this;
         }
 
@@ -138,21 +145,19 @@ public final class SectionConfig {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         SectionConfig that = (SectionConfig) o;
-        return level == that.level &&
-               min == that.min &&
-               max == that.max &&
-               Objects.equals(name, that.name) &&
-               Objects.equals(order, that.order) &&
-               Objects.equals(title, that.title) &&
-               Objects.equals(allowedBlocks, that.allowedBlocks) &&
-               Objects.equals(subsections, that.subsections);
+        return _level == that._level && Objects.equals(_occurrence, that._occurrence)
+                && Objects.equals(_name, that._name) && Objects.equals(_order, that._order)
+                && Objects.equals(_title, that._title) && Objects.equals(_allowedBlocks, that._allowedBlocks)
+                && Objects.equals(_subsections, that._subsections);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, order, level, min, max, title, allowedBlocks, subsections);
+        return Objects.hash(_name, _order, _level, _occurrence, _title, _allowedBlocks, _subsections);
     }
 }

@@ -2,79 +2,103 @@ package com.dataliquid.asciidoc.linter.config.blocks;
 
 import java.util.Objects;
 
-import com.dataliquid.asciidoc.linter.config.BlockType;
-import com.dataliquid.asciidoc.linter.config.Severity;
+import com.dataliquid.asciidoc.linter.config.blocks.BlockType;
+import com.dataliquid.asciidoc.linter.config.common.Severity;
 import com.dataliquid.asciidoc.linter.config.rule.OccurrenceConfig;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.NAME;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.OCCURRENCE;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.ORDER;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.SEVERITY;
 
 public abstract class AbstractBlock implements Block {
     private final String name;
     private final Severity severity;
     private final OccurrenceConfig occurrence;
     private final Integer order;
-    
+
     protected AbstractBlock(AbstractBuilder<?> builder) {
-        this.name = builder.name;
-        this.severity = builder.severity;
-        this.occurrence = builder.occurrence;
-        this.order = builder.order;
+        this.name = builder._name;
+        this.severity = builder._severity;
+        this.occurrence = builder._occurrence;
+        this.order = builder._order;
     }
-    
+
+    @Override
     public abstract BlockType getType();
-    
-    public String getName() { return name; }
-    public Severity getSeverity() { return severity; }
-    public OccurrenceConfig getOccurrence() { return occurrence; }
-    public Integer getOrder() { return order; }
-    
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public Severity getSeverity() {
+        return severity;
+    }
+
+    @Override
+    public OccurrenceConfig getOccurrence() {
+        return occurrence;
+    }
+
+    @Override
+    public Integer getOrder() {
+        return order;
+    }
+
     protected abstract static class AbstractBuilder<T extends AbstractBuilder<T>> {
-        protected String name;
-        protected Severity severity;
-        protected OccurrenceConfig occurrence;
-        protected Integer order;
-        
-        @JsonProperty("name")
-        @SuppressWarnings("unchecked")
+        // Constants
+        private static final String UNCHECKED_CAST_WARNING = "unchecked";
+
+        protected String _name;
+        protected Severity _severity;
+        protected OccurrenceConfig _occurrence;
+        protected Integer _order;
+
+        @JsonProperty(NAME)
+        @SuppressWarnings(UNCHECKED_CAST_WARNING)
         public T name(String name) {
-            this.name = name;
+            this._name = name;
             return (T) this;
         }
-        
-        @JsonProperty("severity")
-        @SuppressWarnings("unchecked")
+
+        @JsonProperty(SEVERITY)
+        @SuppressWarnings(UNCHECKED_CAST_WARNING)
         public T severity(Severity severity) {
-            this.severity = severity;
+            this._severity = severity;
             return (T) this;
         }
-        
-        @JsonProperty("occurrence")
-        @SuppressWarnings("unchecked")
+
+        @JsonProperty(OCCURRENCE)
+        @SuppressWarnings(UNCHECKED_CAST_WARNING)
         public T occurrence(OccurrenceConfig occurrence) {
-            this.occurrence = occurrence;
+            this._occurrence = occurrence;
             return (T) this;
         }
-        
-        @JsonProperty("order")
-        @SuppressWarnings("unchecked")
+
+        @JsonProperty(ORDER)
+        @SuppressWarnings(UNCHECKED_CAST_WARNING)
         public T order(Integer order) {
-            this.order = order;
+            this._order = order;
             return (T) this;
         }
-        
+
         public abstract AbstractBlock build();
     }
-    
+
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         AbstractBlock that = (AbstractBlock) o;
-        return Objects.equals(name, that.name) &&
-               severity == that.severity &&
-               Objects.equals(occurrence, that.occurrence) &&
-               Objects.equals(order, that.order);
+        return Objects.equals(name, that.name) && severity == that.severity
+                && Objects.equals(occurrence, that.occurrence) && Objects.equals(order, that.order);
     }
-    
+
     @Override
     public int hashCode() {
         return Objects.hash(name, severity, occurrence, order);

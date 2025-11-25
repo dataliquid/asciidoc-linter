@@ -1,0 +1,88 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: https://dataliquid.com/asciidoc/linter/schemas/rules/blocks/dlist-block.schema.yaml
+title: Dlist Block Configuration Schema
+description: Schema for validating definition list block configuration in AsciiDoc
+  linter
+type: object
+properties:
+  name:
+    $ref: https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/rule-name-type
+  severity:
+    $ref: https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/severity-type
+  order:
+    $ref: https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/order-type
+  occurrence:
+    $ref: https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/occurrence-type
+  terms:
+    type: object
+    description: Term validation rules
+    properties:
+      min:
+        type: integer
+        description: Minimum number of terms
+        minimum: 1
+      max:
+        type: integer
+        description: Maximum number of terms
+        minimum: 1
+      pattern:
+        $ref: https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/pattern-property-type
+      minLength:
+        $ref: https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/minLength-property-type
+      maxLength:
+        $ref: https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/maxLength-property-type
+      severity:
+        $ref: https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/severity-type
+    additionalProperties: false
+  descriptions:
+    type: object
+    description: Description validation rules
+    properties:
+      required:
+        $ref: https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/required-property-type
+      min:
+        type: integer
+        description: Minimum number of description items
+        minimum: 1
+      max:
+        type: integer
+        description: Maximum number of description items
+        minimum: 1
+      pattern:
+        $ref: https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/pattern-property-type
+      severity:
+        $ref: https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/severity-type
+    additionalProperties: false
+  nestingLevel:
+    type: object
+    description: Nesting level validation rules
+    properties:
+      max:
+        type: integer
+        description: Maximum nesting level allowed
+        minimum: 0
+      severity:
+        $ref: https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/severity-type
+    additionalProperties: false
+  delimiterStyle:
+    type: object
+    description: Delimiter style validation rules
+    properties:
+      allowedDelimiters:
+        type: array
+        description: List of allowed delimiters
+        items:
+          type: string
+          enum:
+          - '::'
+          - ':::'
+          - '::::'
+      consistent:
+        type: boolean
+        description: Whether delimiter style must be consistent throughout the list
+      severity:
+        $ref: https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/severity-type
+    additionalProperties: false
+required:
+- severity
+additionalProperties: false

@@ -4,6 +4,10 @@ import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.ENABLED;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.THRESHOLD;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.EMPTY;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
 /**
@@ -13,60 +17,63 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 public final class ErrorGroupingConfig {
     private static final boolean DEFAULT_ENABLED = true;
     private static final int DEFAULT_THRESHOLD = 3;
-    
+
     private final boolean enabled;
     private final int threshold;
-    
+
     private ErrorGroupingConfig(Builder builder) {
-        this.enabled = builder.enabled;
-        this.threshold = builder.threshold;
+        this.enabled = builder._enabled;
+        this.threshold = builder._threshold;
     }
-    
+
     public boolean isEnabled() {
-        return enabled;
+        return this.enabled;
     }
-    
+
     public int getThreshold() {
-        return threshold;
+        return this.threshold;
     }
-    
+
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         ErrorGroupingConfig that = (ErrorGroupingConfig) o;
         return enabled == that.enabled && threshold == that.threshold;
     }
-    
+
     @Override
     public int hashCode() {
         return Objects.hash(enabled, threshold);
     }
-    
+
     public static Builder builder() {
         return new Builder();
     }
-    
-    @JsonPOJOBuilder(withPrefix = "")
+
+    @JsonPOJOBuilder(withPrefix = EMPTY)
+    @SuppressWarnings("PMD.AvoidFieldNameMatchingMethodName")
     public static final class Builder {
-        private boolean enabled = DEFAULT_ENABLED;
-        private int threshold = DEFAULT_THRESHOLD;
-        
+        private boolean _enabled = DEFAULT_ENABLED;
+        private int _threshold = DEFAULT_THRESHOLD;
+
         private Builder() {
         }
-        
-        @JsonProperty("enabled")
+
+        @JsonProperty(ENABLED)
         public Builder enabled(boolean enabled) {
-            this.enabled = enabled;
+            this._enabled = enabled;
             return this;
         }
-        
-        @JsonProperty("threshold")
+
+        @JsonProperty(THRESHOLD)
         public Builder threshold(int threshold) {
-            this.threshold = threshold;
+            this._threshold = threshold;
             return this;
         }
-        
+
         public ErrorGroupingConfig build() {
             return new ErrorGroupingConfig(this);
         }

@@ -13,17 +13,16 @@ public final class MessageGroup {
     private final String ruleId;
     private final List<ValidationMessage> messages;
     private final String commonDescription;
-    
+
     public MessageGroup(String ruleId, List<ValidationMessage> messages) {
         this.ruleId = Objects.requireNonNull(ruleId, "[" + getClass().getName() + "] ruleId must not be null");
-        this.messages = new ArrayList<>(Objects.requireNonNull(messages, "[" + getClass().getName() + "] messages must not be null"));
-        
+        this.messages = new ArrayList<>(
+                Objects.requireNonNull(messages, "[" + getClass().getName() + "] messages must not be null"));
+
         // Extract common description from first message
-        this.commonDescription = messages.isEmpty() ? 
-            "Unknown error" : 
-            extractCommonDescription(messages.get(0));
+        this.commonDescription = messages.isEmpty() ? "Unknown error" : extractCommonDescription(messages.get(0));
     }
-    
+
     private String extractCommonDescription(ValidationMessage firstMessage) {
         String msg = firstMessage.getMessage();
         // Try to extract the generic part of the message
@@ -38,19 +37,19 @@ public final class MessageGroup {
         }
         return msg;
     }
-    
+
     public String getRuleId() {
         return ruleId;
     }
-    
+
     public List<ValidationMessage> getMessages() {
         return new ArrayList<>(messages);
     }
-    
+
     public String getCommonDescription() {
         return commonDescription;
     }
-    
+
     public int size() {
         return messages.size();
     }

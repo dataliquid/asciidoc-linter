@@ -9,33 +9,35 @@ import org.asciidoctor.ast.Section;
 import org.asciidoctor.ast.StructuralNode;
 
 /**
- * Wrapper for block containers (Document or Section) to provide unified access to blocks.
+ * Wrapper for block containers (Document or Section) to provide unified access
+ * to blocks.
  */
 public final class BlockContainer {
     private final StructuralNode node;
     private final String containerType;
-    
+
     private BlockContainer(StructuralNode node, String containerType) {
         this.node = Objects.requireNonNull(node, "Node must not be null");
         this.containerType = Objects.requireNonNull(containerType, "Container type must not be null");
     }
-    
+
     /**
      * Creates a BlockContainer from a Document.
      */
     public static BlockContainer fromDocument(Document document) {
         return new BlockContainer(document, "document");
     }
-    
+
     /**
      * Creates a BlockContainer from a Section.
      */
     public static BlockContainer fromSection(Section section) {
         return new BlockContainer(section, "section");
     }
-    
+
     /**
-     * Gets all blocks from the container, handling preamble expansion for documents.
+     * Gets all blocks from the container, handling preamble expansion for
+     * documents.
      */
     public List<StructuralNode> getBlocks() {
         if (node instanceof Document) {
@@ -57,22 +59,22 @@ public final class BlockContainer {
             return nodeBlocks != null ? nodeBlocks : new ArrayList<>();
         }
     }
-    
+
     /**
-     * Gets blocks from a document, expanding preamble if present.
-     * Only returns blocks at the document level, not blocks within sections.
+     * Gets blocks from a document, expanding preamble if present. Only returns
+     * blocks at the document level, not blocks within sections.
      */
     private List<StructuralNode> getDocumentBlocks(Document document) {
         List<StructuralNode> blocks = new ArrayList<>();
         List<StructuralNode> docBlocks = document.getBlocks();
-        
+
         if (docBlocks == null) {
             return blocks;
         }
-        
+
         // First, check if there's a preamble - it contains the document-level blocks
         for (StructuralNode child : docBlocks) {
-            if (child != null && child.getContext() != null && child.getContext().equals("preamble")) {
+            if (child != null && child.getContext() != null && "preamble".equals(child.getContext())) {
                 // The preamble contains all document-level blocks
                 List<StructuralNode> preambleBlocks = child.getBlocks();
                 if (preambleBlocks != null) {
@@ -82,7 +84,7 @@ public final class BlockContainer {
                 return blocks;
             }
         }
-        
+
         // If no preamble, look for blocks before the first section
         for (StructuralNode child : docBlocks) {
             if (child instanceof Section) {
@@ -93,31 +95,31 @@ public final class BlockContainer {
                 blocks.add(child);
             }
         }
-        
+
         return blocks;
     }
-    
+
     /**
      * Gets the wrapped node.
      */
     public StructuralNode getNode() {
         return node;
     }
-    
+
     /**
      * Gets the container type (document or section).
      */
     public String getContainerType() {
         return containerType;
     }
-    
+
     /**
      * Checks if this is a document container.
      */
     public boolean isDocument() {
         return node instanceof Document;
     }
-    
+
     /**
      * Checks if this is a section container.
      */

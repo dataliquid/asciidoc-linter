@@ -11,35 +11,21 @@ properties:
       type: object
       properties:
         name:
-          type: string
-          description: The name of the metadata attribute (e.g., title, author, revdate)
-          minLength: 1
-          maxLength: 50
+          $ref: 'https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/rule-name-type'
           pattern: "^[a-zA-Z][a-zA-Z0-9_-]*$"
         order:
-          type: integer
-          description: Optional order in which this attribute should appear in the document. Note that AsciidoctorJ may not preserve the original document order when parsing, so order validation is best used with direct file parsing rather than through the AsciidoctorJ API.
-          minimum: 1
+          $ref: 'https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/order-type'
         required:
-          type: boolean
-          description: Whether this attribute is required
+          $ref: 'https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/required-property-type'
           default: false
         minLength:
-          type: integer
-          description: Minimum length of the attribute value
-          minimum: 0
+          $ref: 'https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/minLength-property-type'
         maxLength:
-          type: integer
-          description: Maximum length of the attribute value
-          minimum: 1
+          $ref: 'https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/maxLength-property-type'
         pattern:
-          type: string
-          description: Regular expression pattern the value must match
-          minLength: 1
+          $ref: 'https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/pattern-property-type'
         severity:
-          type: string
-          description: Severity level for validation violations
-          enum: [error, warn, info]
+          $ref: 'https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/severity-type'
         allowedValues:
           type: array
           description: List of allowed values for this attribute

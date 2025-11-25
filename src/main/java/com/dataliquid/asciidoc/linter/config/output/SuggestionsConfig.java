@@ -4,6 +4,11 @@ import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.ENABLED;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Output.MAX_PER_ERROR;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Output.SHOW_EXAMPLES;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.EMPTY;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
 /**
@@ -14,90 +19,76 @@ public final class SuggestionsConfig {
     private static final boolean DEFAULT_ENABLED = true;
     private static final int DEFAULT_MAX_PER_ERROR = 3;
     private static final boolean DEFAULT_SHOW_EXAMPLES = true;
-    private static final boolean DEFAULT_SHOW_AUTO_FIX_HINT = true;
-    
+
     private final boolean enabled;
     private final int maxPerError;
     private final boolean showExamples;
-    private final boolean showAutoFixHint;
-    
+
     private SuggestionsConfig(Builder builder) {
-        this.enabled = builder.enabled;
-        this.maxPerError = builder.maxPerError;
-        this.showExamples = builder.showExamples;
-        this.showAutoFixHint = builder.showAutoFixHint;
+        this.enabled = builder._enabled;
+        this.maxPerError = builder._maxPerError;
+        this.showExamples = builder._showExamples;
     }
-    
+
     public boolean isEnabled() {
-        return enabled;
+        return this.enabled;
     }
-    
+
     public int getMaxPerError() {
-        return maxPerError;
+        return this.maxPerError;
     }
-    
+
     public boolean isShowExamples() {
-        return showExamples;
+        return this.showExamples;
     }
-    
-    public boolean isShowAutoFixHint() {
-        return showAutoFixHint;
-    }
-    
+
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         SuggestionsConfig that = (SuggestionsConfig) o;
-        return enabled == that.enabled &&
-                maxPerError == that.maxPerError &&
-                showExamples == that.showExamples &&
-                showAutoFixHint == that.showAutoFixHint;
+        return enabled == that.enabled && maxPerError == that.maxPerError && showExamples == that.showExamples;
     }
-    
+
     @Override
     public int hashCode() {
-        return Objects.hash(enabled, maxPerError, showExamples, showAutoFixHint);
+        return Objects.hash(enabled, maxPerError, showExamples);
     }
-    
+
     public static Builder builder() {
         return new Builder();
     }
-    
-    @JsonPOJOBuilder(withPrefix = "")
+
+    @JsonPOJOBuilder(withPrefix = EMPTY)
+    @SuppressWarnings("PMD.AvoidFieldNameMatchingMethodName")
     public static final class Builder {
-        private boolean enabled = DEFAULT_ENABLED;
-        private int maxPerError = DEFAULT_MAX_PER_ERROR;
-        private boolean showExamples = DEFAULT_SHOW_EXAMPLES;
-        private boolean showAutoFixHint = DEFAULT_SHOW_AUTO_FIX_HINT;
-        
+        private boolean _enabled = DEFAULT_ENABLED;
+        private int _maxPerError = DEFAULT_MAX_PER_ERROR;
+        private boolean _showExamples = DEFAULT_SHOW_EXAMPLES;
+
         private Builder() {
         }
-        
-        @JsonProperty("enabled")
+
+        @JsonProperty(ENABLED)
         public Builder enabled(boolean enabled) {
-            this.enabled = enabled;
+            this._enabled = enabled;
             return this;
         }
-        
-        @JsonProperty("maxPerError")
+
+        @JsonProperty(MAX_PER_ERROR)
         public Builder maxPerError(int maxPerError) {
-            this.maxPerError = maxPerError;
+            this._maxPerError = maxPerError;
             return this;
         }
-        
-        @JsonProperty("showExamples")
+
+        @JsonProperty(SHOW_EXAMPLES)
         public Builder showExamples(boolean showExamples) {
-            this.showExamples = showExamples;
+            this._showExamples = showExamples;
             return this;
         }
-        
-        @JsonProperty("showAutoFixHint")
-        public Builder showAutoFixHint(boolean showAutoFixHint) {
-            this.showAutoFixHint = showAutoFixHint;
-            return this;
-        }
-        
+
         public SuggestionsConfig build() {
             return new SuggestionsConfig(this);
         }

@@ -1,0 +1,55 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml
+title: Common Type Definitions
+description: Reusable type definitions for AsciiDoc linter schemas
+$defs:
+  severity-type:
+    type: string
+    enum: [error, warn, info]
+    description: Severity level for validation violations
+  
+  occurrence-type:
+    type: object
+    description: Occurrence rules for validation
+    properties:
+      min:
+        type: integer
+        description: Minimum number of occurrences
+        minimum: 0
+      max:
+        type: integer
+        description: Maximum number of occurrences
+        minimum: 1
+      severity:
+        $ref: '#/$defs/severity-type'
+    additionalProperties: false
+  
+  required-property-type:
+    type: boolean
+    description: Whether the field is required
+  
+  pattern-property-type:
+    type: string
+    description: Regular expression pattern for validation
+    format: regex
+  
+  minLength-property-type:
+    type: integer
+    description: Minimum length
+    minimum: 0
+  
+  maxLength-property-type:
+    type: integer
+    description: Maximum length
+    minimum: 1
+  
+  rule-name-type:
+    type: string
+    description: Name identifier for this configuration
+    minLength: 1
+    maxLength: 50
+  
+  order-type:
+    type: integer
+    description: Order in which this element should appear
+    minimum: 1

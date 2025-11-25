@@ -5,50 +5,27 @@ description: Schema for validating document section configuration in AsciiDoc li
 type: object
 properties:
   name:
-    type: string
-    description: Optional name identifier for this section
-    minLength: 1
-    maxLength: 100
+    $ref: 'https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/rule-name-type'
     pattern: "^[a-zA-Z][a-zA-Z0-9_-]*$"
   order:
-    type: integer
-    description: Optional order in which this section should appear relative to siblings
-    minimum: 1
+    $ref: 'https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/order-type'
   level:
     type: integer
     description: The heading level of this section (0 = document title, 1 = main section, 2 = subsection, etc.)
     minimum: 0
     maximum: 6
-  min:
-    type: integer
-    description: Minimum number of times this section type must appear
-    minimum: 0
-    default: 0
-  max:
-    type: integer
-    description: Maximum number of times this section type can appear
-    minimum: 1
-    default: 2147483647
+  occurrence:
+    $ref: 'https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/occurrence-type'
   title:
     type: object
     description: Title validation rules for this section
     properties:
       pattern:
-        type: string
-        description: Regular expression pattern the section title must match
-        minLength: 1
-      exactMatch:
-        type: string
-        description: Exact string the section title must match
-        minLength: 1
+        $ref: 'https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/pattern-property-type'
       severity:
-        type: string
-        description: Severity level for title validation violations
-        enum: [error, warn, info]
+        $ref: 'https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/severity-type'
         default: error
-    oneOf:
-      - required: [pattern, severity]
-      - required: [exactMatch, severity]
+    required: [pattern, severity]
     additionalProperties: false
   allowedBlocks:
     type: array
@@ -84,6 +61,8 @@ properties:
           $ref: "./blocks/video-block-schema.yaml"
         ulist:
           $ref: "./blocks/ulist-block-schema.yaml"
+        dlist:
+          $ref: "./blocks/dlist-block-schema.yaml"
       minProperties: 1
       maxProperties: 1
       additionalProperties: false
@@ -105,23 +84,27 @@ if:
       const: 0
 then:
   properties:
-    max:
-      const: 1
-    min:
-      maximum: 1
+    occurrence:
+      properties:
+        max:
+          const: 1
+        min:
+          maximum: 1
 examples:
   - name: documentTitle
     level: 0
-    min: 1
-    max: 1
+    occurrence:
+      min: 1
+      max: 1
     title:
       pattern: "^[A-Z].*"
       severity: error
   - name: introduction
     order: 1
     level: 1
-    min: 1
-    max: 1
+    occurrence:
+      min: 1
+      max: 1
     title:
       pattern: "^(Introduction|Einführung)$"
       severity: error
@@ -144,8 +127,9 @@ examples:
       - name: motivation
         order: 1
         level: 2
-        min: 0
-        max: 1
+        occurrence:
+          min: 0
+          max: 1
         title:
           pattern: "^Motivation$"
           severity: error
@@ -157,8 +141,9 @@ examples:
       - name: goals
         order: 2
         level: 2
-        min: 0
-        max: 1
+        occurrence:
+          min: 0
+          max: 1
         title:
           pattern: "^(Goals|Ziele)$"
           severity: error
@@ -170,8 +155,9 @@ examples:
   - name: mainContent
     order: 2
     level: 1
-    min: 1
-    max: 5
+    occurrence:
+      min: 1
+      max: 5
     title:
       pattern: "^Chapter.*"
       severity: error
@@ -197,16 +183,18 @@ examples:
       - name: details
         order: 1
         level: 2
-        min: 1
-        max: 3
+        occurrence:
+          min: 1
+          max: 3
         title:
           pattern: "^Details.*"
           severity: error
       - name: examples
         order: 2
         level: 2
-        min: 0
-        max: 10
+        occurrence:
+          min: 0
+          max: 10
         title:
           pattern: "^Example.*"
           severity: error

@@ -48,13 +48,13 @@ AsciiDoc Linter is a powerful and configurable validation tool for AsciiDoc docu
 [source,bash]
 ----
 # Install from Maven Central
-mvn dependency:get -Dartifact=com.dataliquid:asciidoc-linter:0.1.0
+mvn dependency:get -Dartifact=com.dataliquid:asciidoc-linter:0.5.0
 
 # Run with default configuration
-java -jar asciidoc-linter.jar -i "**/*.adoc"
+java -jar asciidoc-linter.jar lint -i "**/*.adoc"
 
 # Run with custom rules
-java -jar asciidoc-linter.jar -i "docs/**/*.adoc" -c my-rules.yaml
+java -jar asciidoc-linter.jar lint -i "docs/**/*.adoc" -r my-rules.yaml
 ----
 
 == Overview
@@ -81,16 +81,16 @@ The linter processes AsciiDoc files using AsciidoctorJ and applies configurable 
 [source,bash]
 ----
 # Basic usage
-java -jar asciidoc-linter.jar -i "**/*.adoc"
+java -jar asciidoc-linter.jar lint -i "**/*.adoc"
 
 # With custom configuration
-java -jar asciidoc-linter.jar -i "docs/**/*.adoc" -c .linter-config.yaml
+java -jar asciidoc-linter.jar lint -i "docs/**/*.adoc" -r .linter-rule-config.yaml
 
 # JSON output for CI/CD
-java -jar asciidoc-linter.jar -i "**/*.adoc" -f json -o report.json
+java -jar asciidoc-linter.jar lint -i "**/*.adoc" -f json -o report.json
 
-# Generate documentation for your configuration
-java -jar asciidoc-linter.jar -c my-rules.yaml --generate-docs
+# Generate author guidelines for your configuration
+java -jar asciidoc-linter.jar guidelines -r my-rules.yaml -o guidelines.adoc
 ----
 
 === Configuration Example

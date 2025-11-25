@@ -2,69 +2,83 @@ package com.dataliquid.asciidoc.linter.config.rule;
 
 import java.util.Objects;
 
-import com.dataliquid.asciidoc.linter.config.Severity;
+import com.dataliquid.asciidoc.linter.config.common.Severity;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.MAX;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.MIN;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.ORDER;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.SEVERITY;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.EMPTY;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
 @JsonDeserialize(builder = OccurrenceConfig.Builder.class)
 public final class OccurrenceConfig {
-    private final Integer order;
-    private final int min;
-    private final int max;
-    private final Severity severity;
+    private final Integer _order;
+    private final int _min;
+    private final int _max;
+    private final Severity _severity;
 
     private OccurrenceConfig(Builder builder) {
-        this.order = builder.order;
-        this.min = builder.min;
-        this.max = builder.max;
-        this.severity = builder.severity;
+        this._order = builder._order;
+        this._min = builder._min;
+        this._max = builder._max;
+        this._severity = builder._severity;
     }
 
-    @JsonProperty("order")
-    public Integer order() { return order; }
-    
-    @JsonProperty("min")
-    public int min() { return min; }
-    
-    @JsonProperty("max")
-    public int max() { return max; }
-    
-    @JsonProperty("severity")
-    public Severity severity() { return severity; }
+    @JsonProperty(ORDER)
+    public Integer order() {
+        return this._order;
+    }
+
+    @JsonProperty(MIN)
+    public int min() {
+        return this._min;
+    }
+
+    @JsonProperty(MAX)
+    public int max() {
+        return this._max;
+    }
+
+    @JsonProperty(SEVERITY)
+    public Severity severity() {
+        return this._severity;
+    }
 
     public static Builder builder() {
         return new Builder();
     }
 
-    @JsonPOJOBuilder(withPrefix = "")
+    @JsonPOJOBuilder(withPrefix = EMPTY)
     public static class Builder {
-        private Integer order;
-        private int min = 0;
-        private int max = Integer.MAX_VALUE;
-        private Severity severity;
+        private Integer _order;
+        private int _min; // Default value 0 will be set by constructor if needed
+        private int _max = Integer.MAX_VALUE;
+        private Severity _severity;
 
-        @JsonProperty("order")
+        @JsonProperty(ORDER)
         public Builder order(Integer order) {
-            this.order = order;
+            this._order = order;
             return this;
         }
 
-        @JsonProperty("min")
+        @JsonProperty(MIN)
         public Builder min(int min) {
-            this.min = min;
+            this._min = min;
             return this;
         }
 
-        @JsonProperty("max")
+        @JsonProperty(MAX)
         public Builder max(int max) {
-            this.max = max;
+            this._max = max;
             return this;
         }
 
-        @JsonProperty("severity")
+        @JsonProperty(SEVERITY)
         public Builder severity(Severity severity) {
-            this.severity = severity;
+            this._severity = severity;
             return this;
         }
 
@@ -75,17 +89,17 @@ public final class OccurrenceConfig {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         OccurrenceConfig that = (OccurrenceConfig) o;
-        return min == that.min &&
-               max == that.max &&
-               Objects.equals(order, that.order) &&
-               severity == that.severity;
+        return _min == that._min && _max == that._max && Objects.equals(_order, that._order)
+                && _severity == that._severity;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(order, min, max, severity);
+        return Objects.hash(_order, _min, _max, _severity);
     }
 }

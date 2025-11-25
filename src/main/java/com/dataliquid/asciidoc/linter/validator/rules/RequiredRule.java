@@ -3,44 +3,67 @@ package com.dataliquid.asciidoc.linter.validator.rules;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-import com.dataliquid.asciidoc.linter.config.Severity;
+import com.dataliquid.asciidoc.linter.config.common.Severity;
+import com.dataliquid.asciidoc.linter.validator.ErrorType;
 import com.dataliquid.asciidoc.linter.validator.SourceLocation;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
+import com.dataliquid.asciidoc.linter.validator.Suggestion;
+import com.dataliquid.asciidoc.linter.validator.PlaceholderContext;
+
+import static com.dataliquid.asciidoc.linter.validator.RuleIds.Metadata.REQUIRED;
 
 public final class RequiredRule implements AttributeRule {
     private final Map<String, RequiredAttribute> requiredAttributes;
 
     private RequiredRule(Builder builder) {
-        this.requiredAttributes = Collections.unmodifiableMap(new HashMap<>(builder.requiredAttributes));
+        this.requiredAttributes = Collections.unmodifiableMap(new LinkedHashMap<>(builder.requiredAttributes));
     }
 
     @Override
     public String getRuleId() {
-        return "metadata.required";
+        return REQUIRED;
     }
 
     @Override
     public List<ValidationMessage> validate(String attributeName, String value, SourceLocation location) {
         List<ValidationMessage> messages = new ArrayList<>();
-        
+
         RequiredAttribute config = requiredAttributes.get(attributeName);
         if (config != null && config.isRequired() && value == null) {
-            messages.add(ValidationMessage.builder()
-                .severity(config.getSeverity())
-                .ruleId(getRuleId())
-                .message("Missing required attribute '" + attributeName + "'")
-                .location(location)
-                .attributeName(attributeName)
-                .actualValue(null)
-                .expectedValue("Attribute must be present")
-                .build());
+            messages
+                    .add(ValidationMessage
+                            .builder()
+                            .severity(config.getSeverity())
+                            .ruleId(getRuleId())
+                            .message("Missing required attribute '" + attributeName + "'")
+                            .location(location)
+                            .attributeName(attributeName)
+                            .actualValue(null)
+                            .expectedValue("Attribute must be present")
+                            .errorType(ErrorType.MISSING_VALUE)
+                            .missingValueHint(getPlaceholderHint(attributeName))
+                            .placeholderContext(PlaceholderContext
+                                    .builder()
+                                    .type(PlaceholderContext.PlaceholderType.INSERT_BEFORE)
+                                    .build())
+                            .addSuggestion(Suggestion
+                                    .builder()
+                                    .description("Add required attribute")
+                                    .fixedValue(":" + attributeName + ": value")
+                                    .addExample(":" + attributeName + ": example-value")
+                                    .addExample(":" + attributeName + ": ${defaultValue}")
+                                    .explanation(
+                                            "This attribute is required and must be defined in the document header")
+                                    .build())
+                            .build());
         }
-        
+
         return messages;
     }
 
@@ -49,27 +72,48 @@ public final class RequiredRule implements AttributeRule {
         return requiredAttributes.containsKey(attributeName);
     }
 
-    public List<ValidationMessage> validateMissingAttributes(Set<String> presentAttributes, SourceLocation documentLocation) {
+    public List<ValidationMessage> validateMissingAttributes(Set<String> presentAttributes,
+            SourceLocation documentLocation) {
         List<ValidationMessage> messages = new ArrayList<>();
-        
+
         for (Map.Entry<String, RequiredAttribute> entry : requiredAttributes.entrySet()) {
             String attrName = entry.getKey();
             RequiredAttribute config = entry.getValue();
-            
+
             if (config.isRequired() && !presentAttributes.contains(attrName)) {
-                messages.add(ValidationMessage.builder()
-                    .severity(config.getSeverity())
-                    .ruleId(getRuleId())
-                    .message("Missing required attribute '" + attrName + "'")
-                    .location(documentLocation)
-                    .attributeName(attrName)
-                    .actualValue(null)
-                    .expectedValue("Attribute must be present")
-                    .build());
+                messages
+                        .add(ValidationMessage
+                                .builder()
+                                .severity(config.getSeverity())
+                                .ruleId(getRuleId())
+                                .message("Missing required attribute '" + attrName + "'")
+                                .location(documentLocation)
+                                .attributeName(attrName)
+                                .actualValue(null)
+                                .expectedValue("Attribute must be present")
+                                .errorType(ErrorType.MISSING_VALUE)
+                                .missingValueHint(getPlaceholderHint(attrName))
+                                .placeholderContext(PlaceholderContext
+                                        .builder()
+                                        .type(PlaceholderContext.PlaceholderType.INSERT_BEFORE)
+                                        .build())
+                                .addSuggestion(Suggestion
+                                        .builder()
+                                        .description("Add required attribute to document header")
+                                        .fixedValue(":" + attrName + ": value")
+                                        .addExample(":" + attrName + ": example-value")
+                                        .addExample(":" + attrName + ": ${defaultValue}")
+                                        .explanation("Required attributes must be defined in the document header")
+                                        .build())
+                                .build());
             }
         }
-        
+
         return messages;
+    }
+
+    private String getPlaceholderHint(String attributeName) {
+        return ":" + attributeName + ": value";
     }
 
     public static Builder builder() {
@@ -77,7 +121,8 @@ public final class RequiredRule implements AttributeRule {
     }
 
     public static final class Builder {
-        private final Map<String, RequiredAttribute> requiredAttributes = new HashMap<>();
+        private final Map<String, RequiredAttribute> requiredAttributes = Collections
+                .synchronizedMap(new LinkedHashMap<>());
 
         private Builder() {
         }

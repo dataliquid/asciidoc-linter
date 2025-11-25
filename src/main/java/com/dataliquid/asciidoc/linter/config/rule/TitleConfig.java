@@ -2,66 +2,60 @@ package com.dataliquid.asciidoc.linter.config.rule;
 
 import java.util.Objects;
 
-import com.dataliquid.asciidoc.linter.config.Severity;
+import com.dataliquid.asciidoc.linter.config.common.Severity;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.PATTERN;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.SEVERITY;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.EMPTY;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
 @JsonDeserialize(builder = TitleConfig.Builder.class)
 public final class TitleConfig {
-    private final String pattern;
-    private final String exactMatch;
-    private final Severity severity;
+    private final String _pattern;
+    private final Severity _severity;
 
     private TitleConfig(Builder builder) {
-        this.pattern = builder.pattern;
-        this.exactMatch = builder.exactMatch;
-        this.severity = builder.severity;
+        this._pattern = builder._pattern;
+        this._severity = builder._severity;
     }
 
-    @JsonProperty("pattern")
-    public String pattern() { return pattern; }
-    
-    @JsonProperty("exactMatch")
-    public String exactMatch() { return exactMatch; }
-    
-    @JsonProperty("severity")
-    public Severity severity() { return severity; }
+    @JsonProperty(PATTERN)
+    public String pattern() {
+        return this._pattern;
+    }
+
+    @JsonProperty(SEVERITY)
+    public Severity severity() {
+        return this._severity;
+    }
 
     public static Builder builder() {
         return new Builder();
     }
 
-    @JsonPOJOBuilder(withPrefix = "")
+    @JsonPOJOBuilder(withPrefix = EMPTY)
     public static class Builder {
-        private String pattern;
-        private String exactMatch;
-        private Severity severity = Severity.ERROR;
+        private String _pattern;
+        private Severity _severity = Severity.ERROR;
 
-        @JsonProperty("pattern")
+        @JsonProperty(PATTERN)
         public Builder pattern(String pattern) {
-            this.pattern = pattern;
+            this._pattern = pattern;
             return this;
         }
 
-        @JsonProperty("exactMatch")
-        public Builder exactMatch(String exactMatch) {
-            this.exactMatch = exactMatch;
-            return this;
-        }
-
-        @JsonProperty("severity")
+        @JsonProperty(SEVERITY)
         public Builder severity(Severity severity) {
-            this.severity = Objects.requireNonNull(severity, "[" + getClass().getName() + "] severity must not be null");
+            this._severity = Objects
+                    .requireNonNull(severity, "[" + getClass().getName() + "] severity must not be null");
             return this;
         }
 
         public TitleConfig build() {
-            if (pattern == null && exactMatch == null) {
-                throw new IllegalStateException("Either pattern or exactMatch must be specified");
-            }
-            if (pattern != null && exactMatch != null) {
-                throw new IllegalStateException("Cannot specify both pattern and exactMatch");
+            if (_pattern == null) {
+                throw new IllegalStateException("Pattern must be specified");
             }
             return new TitleConfig(this);
         }
@@ -69,16 +63,16 @@ public final class TitleConfig {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         TitleConfig that = (TitleConfig) o;
-        return Objects.equals(pattern, that.pattern) &&
-               Objects.equals(exactMatch, that.exactMatch) &&
-               severity == that.severity;
+        return Objects.equals(_pattern, that._pattern) && _severity == that._severity;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(pattern, exactMatch, severity);
+        return Objects.hash(_pattern, _severity);
     }
 }

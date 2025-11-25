@@ -2,131 +2,146 @@ package com.dataliquid.asciidoc.linter.config.rule;
 
 import java.util.Objects;
 
-import com.dataliquid.asciidoc.linter.config.Severity;
+import com.dataliquid.asciidoc.linter.config.common.Severity;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.*;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.EMPTY;
+
 @JsonDeserialize(builder = AttributeConfig.Builder.class)
 public final class AttributeConfig {
-    private final String name;
-    private final Integer order;
-    private final boolean required;
-    private final Integer minLength;
-    private final Integer maxLength;
-    private final String pattern;
-    private final Severity severity;
+    private final String _name;
+    private final Integer _order;
+    private final boolean _required;
+    private final Integer _minLength;
+    private final Integer _maxLength;
+    private final String _pattern;
+    private final Severity _severity;
 
     private AttributeConfig(Builder builder) {
-        this.name = builder.name;
-        this.order = builder.order;
-        this.required = builder.required;
-        this.minLength = builder.minLength;
-        this.maxLength = builder.maxLength;
-        this.pattern = builder.pattern;
-        this.severity = builder.severity;
+        this._name = builder._name;
+        this._order = builder._order;
+        this._required = builder._required;
+        this._minLength = builder._minLength;
+        this._maxLength = builder._maxLength;
+        this._pattern = builder._pattern;
+        this._severity = builder._severity;
     }
 
-    @JsonProperty("name")
-    public String name() { return name; }
-    
-    @JsonProperty("order")
-    public Integer order() { return order; }
-    
-    @JsonProperty("required")
-    public boolean required() { return required; }
-    
-    @JsonProperty("minLength")
-    public Integer minLength() { return minLength; }
-    
-    @JsonProperty("maxLength")
-    public Integer maxLength() { return maxLength; }
-    
-    @JsonProperty("pattern")
-    public String pattern() { return pattern; }
-    
-    @JsonProperty("severity")
-    public Severity severity() { return severity; }
+    @JsonProperty(NAME)
+    public String name() {
+        return this._name;
+    }
+
+    @JsonProperty(ORDER)
+    public Integer order() {
+        return this._order;
+    }
+
+    @JsonProperty(REQUIRED)
+    public boolean required() {
+        return this._required;
+    }
+
+    @JsonProperty(MIN_LENGTH)
+    public Integer minLength() {
+        return this._minLength;
+    }
+
+    @JsonProperty(MAX_LENGTH)
+    public Integer maxLength() {
+        return this._maxLength;
+    }
+
+    @JsonProperty(PATTERN)
+    public String pattern() {
+        return this._pattern;
+    }
+
+    @JsonProperty(SEVERITY)
+    public Severity severity() {
+        return this._severity;
+    }
 
     public static Builder builder() {
         return new Builder();
     }
 
-    @JsonPOJOBuilder(withPrefix = "")
+    @JsonPOJOBuilder(withPrefix = EMPTY)
     public static class Builder {
-        private String name;
-        private Integer order;
-        private boolean required;
-        private Integer minLength;
-        private Integer maxLength;
-        private String pattern;
-        private Severity severity;
+        private String _name;
+        private Integer _order;
+        private boolean _required;
+        private Integer _minLength;
+        private Integer _maxLength;
+        private String _pattern;
+        private Severity _severity;
 
-        @JsonProperty("name")
+        @JsonProperty(NAME)
         public Builder name(String name) {
-            this.name = name;
+            this._name = name;
             return this;
         }
 
-        @JsonProperty("order")
+        @JsonProperty(ORDER)
         public Builder order(Integer order) {
-            this.order = order;
+            this._order = order;
             return this;
         }
 
-        @JsonProperty("required")
+        @JsonProperty(REQUIRED)
         public Builder required(boolean required) {
-            this.required = required;
+            this._required = required;
             return this;
         }
 
-        @JsonProperty("minLength")
+        @JsonProperty(MIN_LENGTH)
         public Builder minLength(Integer minLength) {
-            this.minLength = minLength;
+            this._minLength = minLength;
             return this;
         }
 
-        @JsonProperty("maxLength")
+        @JsonProperty(MAX_LENGTH)
         public Builder maxLength(Integer maxLength) {
-            this.maxLength = maxLength;
+            this._maxLength = maxLength;
             return this;
         }
 
-        @JsonProperty("pattern")
+        @JsonProperty(PATTERN)
         public Builder pattern(String pattern) {
-            this.pattern = pattern;
+            this._pattern = pattern;
             return this;
         }
 
-        @JsonProperty("severity")
+        @JsonProperty(SEVERITY)
         public Builder severity(Severity severity) {
-            this.severity = severity;
+            this._severity = severity;
             return this;
         }
 
         public AttributeConfig build() {
-            Objects.requireNonNull(name, "[" + getClass().getName() + "] name is required");
-            Objects.requireNonNull(severity, "[" + getClass().getName() + "] severity is required");
+            Objects.requireNonNull(_name, "[" + getClass().getName() + "] name is required");
+            Objects.requireNonNull(_severity, "[" + getClass().getName() + "] severity is required");
             return new AttributeConfig(this);
         }
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         AttributeConfig that = (AttributeConfig) o;
-        return required == that.required &&
-               Objects.equals(name, that.name) &&
-               Objects.equals(order, that.order) &&
-               Objects.equals(minLength, that.minLength) &&
-               Objects.equals(maxLength, that.maxLength) &&
-               Objects.equals(pattern, that.pattern) &&
-               severity == that.severity;
+        return _required == that._required && Objects.equals(_name, that._name) && Objects.equals(_order, that._order)
+                && Objects.equals(_minLength, that._minLength) && Objects.equals(_maxLength, that._maxLength)
+                && Objects.equals(_pattern, that._pattern) && _severity == that._severity;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, order, required, minLength, maxLength, pattern, severity);
+        return Objects.hash(_name, _order, _required, _minLength, _maxLength, _pattern, _severity);
     }
 }

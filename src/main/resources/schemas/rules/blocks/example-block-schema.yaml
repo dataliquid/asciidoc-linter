@@ -5,68 +5,37 @@ description: Schema for configuring validation rules for AsciiDoc example blocks
 type: object
 properties:
   name:
-    type: string
-    description: Name identifier for this block configuration
-    minLength: 1
+    $ref: https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/rule-name-type
   severity:
-    type: string
-    description: Default severity level for all validations in this block
-    enum: [error, warn, info]
+    $ref: https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/severity-type
   order:
-    type: integer
-    description: Order in which this block should appear relative to other blocks
-    minimum: 1
+    $ref: https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/order-type
   occurrence:
-    type: object
-    description: Rules for how often this block type should appear
-    properties:
-      min:
-        type: integer
-        description: Minimum number of occurrences
-        minimum: 0
-        default: 0
-      max:
-        type: integer
-        description: Maximum number of occurrences
-        minimum: 1
-      severity:
-        type: string
-        enum: [error, warn, info]
-        description: Severity for occurrence violations
-    additionalProperties: false
+    $ref: https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/occurrence-type
   caption:
     type: object
     description: Configuration for the example caption
     properties:
       required:
-        type: boolean
-        description: Whether a caption is required
+        $ref: https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/required-property-type
         default: false
       pattern:
-        type: string
-        description: Regular expression pattern the caption must match
+        $ref: https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/pattern-property-type
         examples:
-          - "^(Example|Beispiel)\\s+\\d+\\.\\d*:.*"
+        - ^(Example|Beispiel)\s+\d+\.\d*:.*
       minLength:
-        type: integer
-        description: Minimum length for the caption
-        minimum: 0
+        $ref: https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/minLength-property-type
       maxLength:
-        type: integer
-        description: Maximum length for the caption
-        minimum: 0
+        $ref: https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/maxLength-property-type
       severity:
-        type: string
-        enum: [error, warn, info]
-        description: Severity level for caption validation errors (overrides block severity)
+        $ref: https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/severity-type
     additionalProperties: false
   collapsible:
     type: object
     description: Configuration for the collapsible attribute
     properties:
       required:
-        type: boolean
-        description: Whether the collapsible attribute is required
+        $ref: https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/required-property-type
         default: false
       allowed:
         type: array
@@ -75,12 +44,11 @@ properties:
           type: boolean
         uniqueItems: true
         examples:
-          - [true, false]
+          - true
+          - false
       severity:
-        type: string
-        enum: [error, warn, info]
-        description: Severity level for collapsible validation errors (overrides block severity)
+        $ref: https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/severity-type
     additionalProperties: false
 required:
-  - severity
+- severity
 additionalProperties: false

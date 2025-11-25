@@ -56,8 +56,17 @@ document:
             - ulist:
                 name: Unordered lists
                 severity: info
+            - dlist:
+                name: Definition lists
+                severity: info
+                terms:
+                  min: 1
+                  pattern: "^[A-Z].*"
+                descriptions:
+                  required: true
 
 # Note: 
 # 1. The refactored code now properly handles Level 0 subsections
 # 2. Block validation within sections is improved with the new implementation
 # 3. Unordered lists (ulist) are now implemented and supported
+# 4. Definition lists (dlist) are now implemented and supported

@@ -3,287 +3,302 @@ package com.dataliquid.asciidoc.linter.config.blocks;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
-import com.dataliquid.asciidoc.linter.config.BlockType;
-import com.dataliquid.asciidoc.linter.config.Severity;
+import com.dataliquid.asciidoc.linter.config.blocks.BlockType;
+import com.dataliquid.asciidoc.linter.config.common.Severity;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Quote.ATTRIBUTION;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Quote.CITATION;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.CONTENT;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.REQUIRED;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.MIN_LENGTH;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.MAX_LENGTH;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.PATTERN;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.SEVERITY;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.LINES;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.MIN;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.MAX;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.EMPTY;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
 /**
- * Configuration for quote blocks.
- * Based on the YAML schema structure for validating AsciiDoc quote blocks.
- * 
- * Syntax: [quote, Autor, Quelle]
- * ____
- * Quote content here
- * ____
+ * Configuration for quote blocks. Based on the YAML schema structure for
+ * validating AsciiDoc quote blocks. Syntax: [quote, Autor, Quelle] ____ Quote
+ * content here ____
  */
 @JsonDeserialize(builder = QuoteBlock.Builder.class)
 public class QuoteBlock extends AbstractBlock {
-    
-    private final AuthorConfig author;
-    private final SourceConfig source;
+
+    private final AttributionConfig attribution;
+    private final CitationConfig citation;
     private final ContentConfig content;
-    
+
     private QuoteBlock(Builder builder) {
         super(builder);
-        this.author = builder.author;
-        this.source = builder.source;
-        this.content = builder.content;
+        this.attribution = builder._attribution;
+        this.citation = builder._citation;
+        this.content = builder._content;
     }
-    
+
     @Override
     public BlockType getType() {
         return BlockType.QUOTE;
     }
-    
-    @JsonProperty("author")
-    public AuthorConfig getAuthor() {
-        return author;
+
+    @JsonProperty(ATTRIBUTION)
+    public AttributionConfig getAttribution() {
+        return attribution;
     }
-    
-    @JsonProperty("source")
-    public SourceConfig getSource() {
-        return source;
+
+    @JsonProperty(CITATION)
+    public CitationConfig getCitation() {
+        return citation;
     }
-    
-    @JsonProperty("content")
+
+    @JsonProperty(CONTENT)
     public ContentConfig getContent() {
         return content;
     }
-    
+
     /**
-     * Configuration for quote author validation.
+     * Configuration for quote attribution validation.
      */
-    @JsonDeserialize(builder = AuthorConfig.Builder.class)
-    public static class AuthorConfig {
+    @JsonDeserialize(builder = AttributionConfig.Builder.class)
+    public static class AttributionConfig {
         private final boolean required;
         private final Integer minLength;
         private final Integer maxLength;
         private final Pattern pattern;
         private final Severity severity;
-        
-        private AuthorConfig(Builder builder) {
-            this.required = builder.required;
-            this.minLength = builder.minLength;
-            this.maxLength = builder.maxLength;
-            this.pattern = builder.pattern;
-            this.severity = builder.severity;
+
+        private AttributionConfig(Builder builder) {
+            this.required = builder._required;
+            this.minLength = builder._minLength;
+            this.maxLength = builder._maxLength;
+            this.pattern = builder._pattern;
+            this.severity = builder._severity;
         }
-        
-        @JsonProperty("required")
+
+        @JsonProperty(REQUIRED)
         public boolean isRequired() {
             return required;
         }
-        
-        @JsonProperty("minLength")
+
+        @JsonProperty(MIN_LENGTH)
         public Integer getMinLength() {
             return minLength;
         }
-        
-        @JsonProperty("maxLength")
+
+        @JsonProperty(MAX_LENGTH)
         public Integer getMaxLength() {
             return maxLength;
         }
-        
-        @JsonProperty("pattern")
+
+        @JsonProperty(PATTERN)
         public Pattern getPattern() {
             return pattern;
         }
-        
-        @JsonProperty("severity")
+
+        @JsonProperty(SEVERITY)
         public Severity getSeverity() {
             return severity;
         }
-        
+
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            AuthorConfig that = (AuthorConfig) o;
-            return required == that.required &&
-                   Objects.equals(minLength, that.minLength) &&
-                   Objects.equals(maxLength, that.maxLength) &&
-                   patternEquals(pattern, that.pattern) &&
-                   severity == that.severity;
+            if (this == o)
+                return true;
+            if (o == null || getClass() != o.getClass())
+                return false;
+            AttributionConfig that = (AttributionConfig) o;
+            return required == that.required && Objects.equals(minLength, that.minLength)
+                    && Objects.equals(maxLength, that.maxLength) && patternEquals(pattern, that.pattern)
+                    && severity == that.severity;
         }
-        
+
         @Override
         public int hashCode() {
-            return Objects.hash(required, minLength, maxLength, 
-                               pattern != null ? pattern.pattern() : null, severity);
+            return Objects.hash(required, minLength, maxLength, pattern != null ? pattern.pattern() : null, severity);
         }
-        
+
+        @SuppressWarnings("PMD.CompareObjectsWithEquals") // Pattern comparison optimization
         private boolean patternEquals(Pattern p1, Pattern p2) {
-            if (p1 == p2) return true;
-            if (p1 == null || p2 == null) return false;
+            if (p1 == p2)
+                return true;
+            if (p1 == null || p2 == null)
+                return false;
             return p1.pattern().equals(p2.pattern());
         }
-        
+
         public static Builder builder() {
             return new Builder();
         }
-        
-        @JsonPOJOBuilder(withPrefix = "")
+
+        @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class Builder {
-            private boolean required = false;
-            private Integer minLength;
-            private Integer maxLength;
-            private Pattern pattern;
-            private Severity severity;
-            
-            @JsonProperty("required")
+            private boolean _required;
+            private Integer _minLength;
+            private Integer _maxLength;
+            private Pattern _pattern;
+            private Severity _severity;
+
+            @JsonProperty(REQUIRED)
             public Builder required(boolean required) {
-                this.required = required;
+                this._required = required;
                 return this;
             }
-            
-            @JsonProperty("minLength")
+
+            @JsonProperty(MIN_LENGTH)
             public Builder minLength(Integer minLength) {
-                this.minLength = minLength;
+                this._minLength = minLength;
                 return this;
             }
-            
-            @JsonProperty("maxLength")
+
+            @JsonProperty(MAX_LENGTH)
             public Builder maxLength(Integer maxLength) {
-                this.maxLength = maxLength;
+                this._maxLength = maxLength;
                 return this;
             }
-            
-            @JsonProperty("pattern")
+
+            @JsonProperty(PATTERN)
+            @SuppressWarnings("PMD.NullAssignment")
             public Builder pattern(String pattern) {
-                this.pattern = pattern != null ? Pattern.compile(pattern) : null;
+                this._pattern = pattern != null ? Pattern.compile(pattern) : null;
                 return this;
             }
-            
-            @JsonProperty("severity")
+
+            @JsonProperty(SEVERITY)
             public Builder severity(Severity severity) {
-                this.severity = severity;
+                this._severity = severity;
                 return this;
             }
-            
-            public AuthorConfig build() {
-                return new AuthorConfig(this);
+
+            public AttributionConfig build() {
+                return new AttributionConfig(this);
             }
         }
     }
-    
+
     /**
-     * Configuration for quote source validation.
+     * Configuration for quote citation validation.
      */
-    @JsonDeserialize(builder = SourceConfig.Builder.class)
-    public static class SourceConfig {
+    @JsonDeserialize(builder = CitationConfig.Builder.class)
+    public static class CitationConfig {
         private final boolean required;
         private final Integer minLength;
         private final Integer maxLength;
         private final Pattern pattern;
         private final Severity severity;
-        
-        private SourceConfig(Builder builder) {
-            this.required = builder.required;
-            this.minLength = builder.minLength;
-            this.maxLength = builder.maxLength;
-            this.pattern = builder.pattern;
-            this.severity = builder.severity;
+
+        private CitationConfig(Builder builder) {
+            this.required = builder._required;
+            this.minLength = builder._minLength;
+            this.maxLength = builder._maxLength;
+            this.pattern = builder._pattern;
+            this.severity = builder._severity;
         }
-        
-        @JsonProperty("required")
+
+        @JsonProperty(REQUIRED)
         public boolean isRequired() {
             return required;
         }
-        
-        @JsonProperty("minLength")
+
+        @JsonProperty(MIN_LENGTH)
         public Integer getMinLength() {
             return minLength;
         }
-        
-        @JsonProperty("maxLength")
+
+        @JsonProperty(MAX_LENGTH)
         public Integer getMaxLength() {
             return maxLength;
         }
-        
-        @JsonProperty("pattern")
+
+        @JsonProperty(PATTERN)
         public Pattern getPattern() {
             return pattern;
         }
-        
-        @JsonProperty("severity")
+
+        @JsonProperty(SEVERITY)
         public Severity getSeverity() {
             return severity;
         }
-        
+
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            SourceConfig that = (SourceConfig) o;
-            return required == that.required &&
-                   Objects.equals(minLength, that.minLength) &&
-                   Objects.equals(maxLength, that.maxLength) &&
-                   patternEquals(pattern, that.pattern) &&
-                   severity == that.severity;
+            if (this == o)
+                return true;
+            if (o == null || getClass() != o.getClass())
+                return false;
+            CitationConfig that = (CitationConfig) o;
+            return required == that.required && Objects.equals(minLength, that.minLength)
+                    && Objects.equals(maxLength, that.maxLength) && patternEquals(pattern, that.pattern)
+                    && severity == that.severity;
         }
-        
+
         @Override
         public int hashCode() {
-            return Objects.hash(required, minLength, maxLength, 
-                               pattern != null ? pattern.pattern() : null, severity);
+            return Objects.hash(required, minLength, maxLength, pattern != null ? pattern.pattern() : null, severity);
         }
-        
+
+        @SuppressWarnings("PMD.CompareObjectsWithEquals") // Pattern comparison optimization
         private boolean patternEquals(Pattern p1, Pattern p2) {
-            if (p1 == p2) return true;
-            if (p1 == null || p2 == null) return false;
+            if (p1 == p2)
+                return true;
+            if (p1 == null || p2 == null)
+                return false;
             return p1.pattern().equals(p2.pattern());
         }
-        
+
         public static Builder builder() {
             return new Builder();
         }
-        
-        @JsonPOJOBuilder(withPrefix = "")
+
+        @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class Builder {
-            private boolean required = false;
-            private Integer minLength;
-            private Integer maxLength;
-            private Pattern pattern;
-            private Severity severity;
-            
-            @JsonProperty("required")
+            private boolean _required;
+            private Integer _minLength;
+            private Integer _maxLength;
+            private Pattern _pattern;
+            private Severity _severity;
+
+            @JsonProperty(REQUIRED)
             public Builder required(boolean required) {
-                this.required = required;
+                this._required = required;
                 return this;
             }
-            
-            @JsonProperty("minLength")
+
+            @JsonProperty(MIN_LENGTH)
             public Builder minLength(Integer minLength) {
-                this.minLength = minLength;
+                this._minLength = minLength;
                 return this;
             }
-            
-            @JsonProperty("maxLength")
+
+            @JsonProperty(MAX_LENGTH)
             public Builder maxLength(Integer maxLength) {
-                this.maxLength = maxLength;
+                this._maxLength = maxLength;
                 return this;
             }
-            
-            @JsonProperty("pattern")
+
+            @JsonProperty(PATTERN)
+            @SuppressWarnings("PMD.NullAssignment")
             public Builder pattern(String pattern) {
-                this.pattern = pattern != null ? Pattern.compile(pattern) : null;
+                this._pattern = pattern != null ? Pattern.compile(pattern) : null;
                 return this;
             }
-            
-            @JsonProperty("severity")
+
+            @JsonProperty(SEVERITY)
             public Builder severity(Severity severity) {
-                this.severity = severity;
+                this._severity = severity;
                 return this;
             }
-            
-            public SourceConfig build() {
-                return new SourceConfig(this);
+
+            public CitationConfig build() {
+                return new CitationConfig(this);
             }
         }
     }
-    
+
     /**
      * Configuration for quote content validation.
      */
@@ -293,91 +308,91 @@ public class QuoteBlock extends AbstractBlock {
         private final Integer minLength;
         private final Integer maxLength;
         private final LinesConfig lines;
-        
+
         private ContentConfig(Builder builder) {
-            this.required = builder.required;
-            this.minLength = builder.minLength;
-            this.maxLength = builder.maxLength;
-            this.lines = builder.lines;
+            this.required = builder._required;
+            this.minLength = builder._minLength;
+            this.maxLength = builder._maxLength;
+            this.lines = builder._lines;
         }
-        
-        @JsonProperty("required")
+
+        @JsonProperty(REQUIRED)
         public boolean isRequired() {
             return required;
         }
-        
-        @JsonProperty("minLength")
+
+        @JsonProperty(MIN_LENGTH)
         public Integer getMinLength() {
             return minLength;
         }
-        
-        @JsonProperty("maxLength")
+
+        @JsonProperty(MAX_LENGTH)
         public Integer getMaxLength() {
             return maxLength;
         }
-        
-        @JsonProperty("lines")
+
+        @JsonProperty(LINES)
         public LinesConfig getLines() {
             return lines;
         }
-        
+
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+            if (this == o)
+                return true;
+            if (o == null || getClass() != o.getClass())
+                return false;
             ContentConfig that = (ContentConfig) o;
-            return required == that.required &&
-                   Objects.equals(minLength, that.minLength) &&
-                   Objects.equals(maxLength, that.maxLength) &&
-                   Objects.equals(lines, that.lines);
+            return required == that.required && Objects.equals(minLength, that.minLength)
+                    && Objects.equals(maxLength, that.maxLength) && Objects.equals(lines, that.lines);
         }
-        
+
         @Override
         public int hashCode() {
             return Objects.hash(required, minLength, maxLength, lines);
         }
-        
+
         public static Builder builder() {
             return new Builder();
         }
-        
-        @JsonPOJOBuilder(withPrefix = "")
+
+        @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class Builder {
-            private boolean required = false;
-            private Integer minLength;
-            private Integer maxLength;
-            private LinesConfig lines;
-            
-            @JsonProperty("required")
+            private boolean _required;
+            private Integer _minLength;
+            private Integer _maxLength;
+            private LinesConfig _lines;
+
+            @JsonProperty(REQUIRED)
             public Builder required(boolean required) {
-                this.required = required;
+                this._required = required;
                 return this;
             }
-            
-            @JsonProperty("minLength")
+
+            @JsonProperty(MIN_LENGTH)
             public Builder minLength(Integer minLength) {
-                this.minLength = minLength;
+                this._minLength = minLength;
                 return this;
             }
-            
-            @JsonProperty("maxLength")
+
+            @JsonProperty(MAX_LENGTH)
             public Builder maxLength(Integer maxLength) {
-                this.maxLength = maxLength;
+                this._maxLength = maxLength;
                 return this;
             }
-            
-            @JsonProperty("lines")
+
+            @JsonProperty(LINES)
             public Builder lines(LinesConfig lines) {
-                this.lines = lines;
+                this._lines = lines;
                 return this;
             }
-            
+
             public ContentConfig build() {
                 return new ContentConfig(this);
             }
         }
     }
-    
+
     /**
      * Configuration for content line count validation.
      */
@@ -386,123 +401,124 @@ public class QuoteBlock extends AbstractBlock {
         private final Integer min;
         private final Integer max;
         private final Severity severity;
-        
+
         private LinesConfig(Builder builder) {
-            this.min = builder.min;
-            this.max = builder.max;
-            this.severity = builder.severity;
+            this.min = builder._min;
+            this.max = builder._max;
+            this.severity = builder._severity;
         }
-        
-        @JsonProperty("min")
+
+        @JsonProperty(MIN)
         public Integer getMin() {
             return min;
         }
-        
-        @JsonProperty("max")
+
+        @JsonProperty(MAX)
         public Integer getMax() {
             return max;
         }
-        
-        @JsonProperty("severity")
+
+        @JsonProperty(SEVERITY)
         public Severity getSeverity() {
             return severity;
         }
-        
+
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+            if (this == o)
+                return true;
+            if (o == null || getClass() != o.getClass())
+                return false;
             LinesConfig that = (LinesConfig) o;
-            return Objects.equals(min, that.min) &&
-                   Objects.equals(max, that.max) &&
-                   severity == that.severity;
+            return Objects.equals(min, that.min) && Objects.equals(max, that.max) && severity == that.severity;
         }
-        
+
         @Override
         public int hashCode() {
             return Objects.hash(min, max, severity);
         }
-        
+
         public static Builder builder() {
             return new Builder();
         }
-        
-        @JsonPOJOBuilder(withPrefix = "")
+
+        @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class Builder {
-            private Integer min;
-            private Integer max;
-            private Severity severity;
-            
-            @JsonProperty("min")
+            private Integer _min;
+            private Integer _max;
+            private Severity _severity;
+
+            @JsonProperty(MIN)
             public Builder min(Integer min) {
-                this.min = min;
+                this._min = min;
                 return this;
             }
-            
-            @JsonProperty("max")
+
+            @JsonProperty(MAX)
             public Builder max(Integer max) {
-                this.max = max;
+                this._max = max;
                 return this;
             }
-            
-            @JsonProperty("severity")
+
+            @JsonProperty(SEVERITY)
             public Builder severity(Severity severity) {
-                this.severity = severity;
+                this._severity = severity;
                 return this;
             }
-            
+
             public LinesConfig build() {
                 return new LinesConfig(this);
             }
         }
     }
-    
+
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!super.equals(o)) return false;
+        if (this == o)
+            return true;
+        if (!super.equals(o))
+            return false;
         QuoteBlock that = (QuoteBlock) o;
-        return Objects.equals(author, that.author) &&
-               Objects.equals(source, that.source) &&
-               Objects.equals(content, that.content);
+        return Objects.equals(attribution, that.attribution) && Objects.equals(citation, that.citation)
+                && Objects.equals(content, that.content);
     }
-    
+
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), author, source, content);
+        return Objects.hash(super.hashCode(), attribution, citation, content);
     }
-    
+
     public static Builder builder() {
         return new Builder();
     }
-    
-    @JsonPOJOBuilder(withPrefix = "")
+
+    @JsonPOJOBuilder(withPrefix = EMPTY)
     public static class Builder extends AbstractBlock.AbstractBuilder<Builder> {
-        private AuthorConfig author;
-        private SourceConfig source;
-        private ContentConfig content;
-        
-        @JsonProperty("author")
-        public Builder author(AuthorConfig author) {
-            this.author = author;
+        private AttributionConfig _attribution;
+        private CitationConfig _citation;
+        private ContentConfig _content;
+
+        @JsonProperty(ATTRIBUTION)
+        public Builder attribution(AttributionConfig attribution) {
+            this._attribution = attribution;
             return this;
         }
-        
-        @JsonProperty("source")
-        public Builder source(SourceConfig source) {
-            this.source = source;
+
+        @JsonProperty(CITATION)
+        public Builder citation(CitationConfig citation) {
+            this._citation = citation;
             return this;
         }
-        
-        @JsonProperty("content")
+
+        @JsonProperty(CONTENT)
         public Builder content(ContentConfig content) {
-            this.content = content;
+            this._content = content;
             return this;
         }
-        
+
         @Override
         public QuoteBlock build() {
-            Objects.requireNonNull(severity, "[" + getClass().getName() + "] severity is required");
+            Objects.requireNonNull(_severity, "[" + getClass().getName() + "] severity is required");
             return new QuoteBlock(this);
         }
     }

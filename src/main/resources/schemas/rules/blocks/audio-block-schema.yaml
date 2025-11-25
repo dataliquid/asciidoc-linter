@@ -5,51 +5,25 @@ description: Schema for validating audio block configuration in AsciiDoc linter
 type: object
 properties:
   name:
-    type: string
-    description: Optional name for the audio block for better error messages
-    minLength: 1
-    maxLength: 50
+    $ref: https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/rule-name-type
   severity:
-    type: string
-    description: Default severity level for all rules in this block
-    enum: [error, warn, info]
+    $ref: https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/severity-type
   order:
-    type: integer
-    description: Order in which this block should appear relative to other blocks
-    minimum: 1
+    $ref: https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/order-type
   occurrence:
-    type: object
-    description: Occurrence rules for this block type
-    properties:
-      min:
-        type: integer
-        description: Minimum number of occurrences
-        minimum: 0
-      max:
-        type: integer
-        description: Maximum number of occurrences
-        minimum: 1
-      severity:
-        type: string
-        enum: [error, warn, info]
-        description: Severity for occurrence violations
-    additionalProperties: false
+    $ref: https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/occurrence-type
   url:
     type: object
     description: URL validation rules for audio files
     properties:
       required:
-        type: boolean
-        description: Whether the URL is required
+        $ref: https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/required-property-type
       pattern:
-        type: string
-        description: Regular expression pattern for URL validation (e.g., audio file extensions)
-        format: regex
+        $ref: https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/pattern-property-type
       severity:
-        type: string
-        enum: [error, warn, info]
-        description: Severity for URL validation violations
-    required: [required]
+        $ref: https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/severity-type
+    required:
+    - required
     additionalProperties: false
   options:
     type: object
@@ -63,23 +37,20 @@ properties:
             type: boolean
             description: Whether autoplay is allowed
           severity:
-            type: string
-            enum: [error, warn, info]
-            description: Severity for autoplay violations
-        required: [allowed]
+            $ref: https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/severity-type
+        required:
+        - allowed
         additionalProperties: false
       controls:
         type: object
         description: Controls display validation
         properties:
           required:
-            type: boolean
-            description: Whether controls must be displayed
+            $ref: https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/required-property-type
           severity:
-            type: string
-            enum: [error, warn, info]
-            description: Severity for controls violations
-        required: [required]
+            $ref: https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/severity-type
+        required:
+        - required
         additionalProperties: false
       loop:
         type: object
@@ -89,10 +60,9 @@ properties:
             type: boolean
             description: Whether loop is allowed
           severity:
-            type: string
-            enum: [error, warn, info]
-            description: Severity for loop violations
-        required: [allowed]
+            $ref: https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/severity-type
+        required:
+        - allowed
         additionalProperties: false
     additionalProperties: false
   title:
@@ -100,21 +70,16 @@ properties:
     description: Title/description validation rules
     properties:
       required:
-        type: boolean
-        description: Whether title is required
+        $ref: https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/required-property-type
       minLength:
-        type: integer
-        description: Minimum length for title
-        minimum: 1
+        $ref: https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/minLength-property-type
       maxLength:
-        type: integer
-        description: Maximum length for title
-        minimum: 1
+        $ref: https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/maxLength-property-type
       severity:
-        type: string
-        enum: [error, warn, info]
-        description: Severity for title violations
-    required: [required]
+        $ref: https://dataliquid.com/asciidoc/linter/schemas/rules/types/common-types.yaml#/$defs/severity-type
+    required:
+    - required
     additionalProperties: false
-required: [severity]
+required:
+- severity
 additionalProperties: false
