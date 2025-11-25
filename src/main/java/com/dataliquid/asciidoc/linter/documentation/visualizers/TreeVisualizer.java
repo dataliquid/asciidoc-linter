@@ -15,13 +15,14 @@ import com.dataliquid.asciidoc.linter.documentation.VisualizationStyle;
 /**
  * Visualizes rule hierarchy as an ASCII-art tree structure.
  */
+@SuppressWarnings("PMD.UseStringBufferForStringAppends") // Documentation generation, performance not critical
 public class TreeVisualizer implements HierarchyVisualizer {
-    
+
     private static final String VERTICAL = "│   ";
     private static final String BRANCH = "├── ";
     private static final String LAST_BRANCH = "└── ";
     private static final String EMPTY = "    ";
-    
+
     @Override
     public void visualize(LinterConfiguration config, PrintWriter writer) {
         writer.println("[literal]");
@@ -29,39 +30,39 @@ public class TreeVisualizer implements HierarchyVisualizer {
         visualizeDocument(config.document(), "", writer);
         writer.println("....");
     }
-    
+
     @Override
     public VisualizationStyle getStyle() {
         return VisualizationStyle.TREE;
     }
-    
+
     private void visualizeDocument(DocumentConfiguration doc, String prefix, PrintWriter writer) {
         writer.println(prefix + "document/");
-        
+
         boolean hasMetadata = doc.metadata() != null;
         boolean hasSections = doc.sections() != null && !doc.sections().isEmpty();
-        
+
         if (hasMetadata) {
             String childPrefix = prefix + (hasSections ? VERTICAL : EMPTY);
             visualizeMetadata(doc.metadata(), prefix + BRANCH, childPrefix, writer);
         }
-        
+
         if (hasSections) {
             visualizeSections(doc.sections(), prefix + LAST_BRANCH, prefix + EMPTY, writer);
         }
     }
-    
-    private void visualizeMetadata(MetadataConfiguration metadata, String nodePrefix, 
-                                  String childPrefix, PrintWriter writer) {
+
+    private void visualizeMetadata(MetadataConfiguration metadata, String nodePrefix, String childPrefix,
+            PrintWriter writer) {
         writer.println(nodePrefix + "metadata/");
-        
+
         if (metadata.attributes() != null && !metadata.attributes().isEmpty()) {
             List<AttributeConfig> attrs = metadata.attributes();
             for (int i = 0; i < attrs.size(); i++) {
                 AttributeConfig attr = attrs.get(i);
                 boolean isLast = i == attrs.size() - 1;
                 String branch = isLast ? LAST_BRANCH : BRANCH;
-                
+
                 String attrLine = childPrefix + branch + attr.name();
                 if (attr.required()) {
                     attrLine += " (required)";
@@ -69,28 +70,27 @@ public class TreeVisualizer implements HierarchyVisualizer {
                     attrLine += " (optional)";
                 }
                 attrLine += " [" + attr.severity() + "]";
-                
+
                 writer.println(attrLine);
             }
         }
     }
-    
-    private void visualizeSections(List<SectionConfig> sections, String nodePrefix, 
-                                  String childPrefix, PrintWriter writer) {
+
+    private void visualizeSections(List<SectionConfig> sections, String nodePrefix, String childPrefix,
+            PrintWriter writer) {
         writer.println(nodePrefix + "sections/");
-        
+
         for (int i = 0; i < sections.size(); i++) {
             SectionConfig section = sections.get(i);
             boolean isLast = i == sections.size() - 1;
             String branch = isLast ? LAST_BRANCH : BRANCH;
             String nextChildPrefix = childPrefix + (isLast ? EMPTY : VERTICAL);
-            
+
             visualizeSection(section, childPrefix + branch, nextChildPrefix, writer);
         }
     }
-    
-    private void visualizeSection(SectionConfig section, String nodePrefix, 
-                                 String childPrefix, PrintWriter writer) {
+
+    private void visualizeSection(SectionConfig section, String nodePrefix, String childPrefix, PrintWriter writer) {
         String sectionLine = nodePrefix + section.name() + "/";
         sectionLine += " [Level " + section.level();
         if (section.order() != null) {
@@ -98,50 +98,46 @@ public class TreeVisualizer implements HierarchyVisualizer {
         }
         sectionLine += "]";
         writer.println(sectionLine);
-        
+
         boolean hasBlocks = section.allowedBlocks() != null && !section.allowedBlocks().isEmpty();
         boolean hasSubsections = section.subsections() != null && !section.subsections().isEmpty();
-        
+
         if (hasBlocks) {
             String blocksPrefix = hasSubsections ? BRANCH : LAST_BRANCH;
             String nextChildPrefix = childPrefix + (hasSubsections ? VERTICAL : EMPTY);
-            visualizeBlocks(section.allowedBlocks(), childPrefix + blocksPrefix, 
-                          nextChildPrefix, writer);
+            visualizeBlocks(section.allowedBlocks(), childPrefix + blocksPrefix, nextChildPrefix, writer);
         }
-        
+
         if (hasSubsections) {
-            visualizeSections(section.subsections(), childPrefix + LAST_BRANCH, 
-                            childPrefix + EMPTY, writer);
+            visualizeSections(section.subsections(), childPrefix + LAST_BRANCH, childPrefix + EMPTY, writer);
         }
     }
-    
-    private void visualizeBlocks(List<Block> blocks, String nodePrefix, 
-                               String childPrefix, PrintWriter writer) {
+
+    private void visualizeBlocks(List<Block> blocks, String nodePrefix, String childPrefix, PrintWriter writer) {
         writer.println(nodePrefix + "allowedBlocks/");
-        
+
         for (int i = 0; i < blocks.size(); i++) {
             Block block = blocks.get(i);
             boolean isLast = i == blocks.size() - 1;
             String branch = isLast ? LAST_BRANCH : BRANCH;
             String nextChildPrefix = childPrefix + (isLast ? EMPTY : VERTICAL);
-            
+
             visualizeBlock(block, childPrefix + branch, nextChildPrefix, writer);
         }
     }
-    
-    private void visualizeBlock(Block block, String nodePrefix, String childPrefix, 
-                               PrintWriter writer) {
+
+    private void visualizeBlock(Block block, String nodePrefix, String childPrefix, PrintWriter writer) {
         String blockLine = nodePrefix + block.getType().toValue() + "/";
         if (block.getName() != null) {
             blockLine += " (" + block.getName() + ")";
         }
         blockLine += " [" + block.getSeverity() + "]";
         writer.println(blockLine);
-        
+
         // Add block-specific details
         visualizeBlockDetails(block, childPrefix, writer);
     }
-    
+
     private void visualizeBlockDetails(Block block, String prefix, PrintWriter writer) {
         // TODO: Add specific details based on block type
         // For example, for AudioBlock show url, options, title requirements

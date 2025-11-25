@@ -7,19 +7,21 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
 import com.dataliquid.asciidoc.linter.config.document.DocumentConfiguration;
-import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Document.DOCUMENT;
+import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Document.DOCUMENT_CONFIG;
 import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.EMPTY;
 
 @JsonDeserialize(builder = LinterConfiguration.Builder.class)
 public final class LinterConfiguration {
-    private final DocumentConfiguration document;
+    private final DocumentConfiguration _document;
 
     private LinterConfiguration(Builder builder) {
-        this.document = builder.document;
+        this._document = builder._document;
     }
 
-    @JsonProperty(DOCUMENT)
-    public DocumentConfiguration document() { return document; }
+    @JsonProperty(DOCUMENT_CONFIG)
+    public DocumentConfiguration document() {
+        return _document;
+    }
 
     public static Builder builder() {
         return new Builder();
@@ -27,11 +29,11 @@ public final class LinterConfiguration {
 
     @JsonPOJOBuilder(withPrefix = EMPTY)
     public static class Builder {
-        private DocumentConfiguration document;
+        private DocumentConfiguration _document;
 
-        @JsonProperty(DOCUMENT)
+        @JsonProperty(DOCUMENT_CONFIG)
         public Builder document(DocumentConfiguration document) {
-            this.document = document;
+            this._document = document;
             return this;
         }
 
@@ -43,14 +45,16 @@ public final class LinterConfiguration {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         LinterConfiguration that = (LinterConfiguration) o;
-        return Objects.equals(document, that.document);
+        return Objects.equals(document(), that.document());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(document);
+        return Objects.hash((Object) document());
     }
 }

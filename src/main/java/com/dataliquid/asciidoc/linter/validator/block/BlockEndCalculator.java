@@ -3,101 +3,110 @@ package com.dataliquid.asciidoc.linter.validator.block;
 import java.util.List;
 import org.asciidoctor.ast.StructuralNode;
 import com.dataliquid.asciidoc.linter.report.console.FileContentCache;
+import com.dataliquid.asciidoc.linter.util.StringUtils;
+
+import static com.dataliquid.asciidoc.linter.validator.block.AsciiDocConstants.*;
 
 /**
- * Utility class to calculate the actual end line of blocks by analyzing source files.
- * Provides generic support for all AsciiDoc block types.
+ * Utility class to calculate the actual end line of blocks by analyzing source
+ * files. Provides generic support for all AsciiDoc block types.
  */
 public class BlockEndCalculator {
+    // Constants for whitespace characters
+    private static final char SPACE_CHAR = ' ';
+    private static final char TAB_CHAR = '\t';
+    private static final int TAB_SIZE = 4;
+
     private final FileContentCache fileCache;
-    
+
     public BlockEndCalculator(FileContentCache fileCache) {
         this.fileCache = fileCache;
     }
-    
+
     /**
-     * Calculates the actual end line of a block by analyzing the source file.
-     * Works generically for ALL block types.
-     * 
-     * @param block the block to analyze
-     * @param filename the source file name
-     * @return the 1-based line number where the block ends
+     * Calculates the actual end line of a block by analyzing the source file. Works
+     * generically for ALL block types.
+     *
+     * @param  block    the block to analyze
+     * @param  filename the source file name
+     *
+     * @return          the 1-based line number where the block ends
      */
     public int calculateBlockEndLine(StructuralNode block, String filename) {
         if (block.getSourceLocation() == null) {
             return 1;
         }
-        
+
         int startLine = block.getSourceLocation().getLineNumber();
         List<String> fileLines = fileCache.getFileLines(filename);
-        
+
         if (fileLines.isEmpty() || startLine > fileLines.size()) {
             return startLine;
         }
-        
+
         // Generic detection based on block context
         String context = block.getContext();
-        
+
         switch (context) {
-            // List blocks
-            case "dlist":
-                return findDlistEnd(fileLines, startLine);
-            case "ulist":
-            case "olist":
-            case "colist":
-                return findListEnd(fileLines, startLine, context);
-                
-            // Delimited blocks
-            case "listing":
-            case "literal":
-            case "example":
-            case "sidebar":
-            case "quote":
-            case "verse":
-            case "pass":
-            case "open":
-            case "comment":
-            case "admonition":
-                return findDelimitedBlockEnd(fileLines, startLine, context);
-                
-            // Table blocks
-            case "table":
-                return findTableEnd(fileLines, startLine);
-                
-            // Content blocks
-            case "paragraph":
-                return findParagraphEnd(fileLines, startLine);
-                
-            // Media blocks (single line)
-            case "image":
-            case "video":
-            case "audio":
-                return startLine;
-                
-            // Other blocks
-            case "stem":
-            case "toc":
-            case "preamble":
-            case "abstract":
-                return findSpecialBlockEnd(fileLines, startLine, context);
-                
-            default:
-                // Generic fallback
-                return findGenericBlockEnd(fileLines, startLine);
+        // List blocks
+        case "dlist":
+            return findDlistEnd(fileLines, startLine);
+        case "ulist":
+        case "olist":
+        case "colist":
+            return findListEnd(fileLines, startLine, context);
+
+        // Delimited blocks
+        case "listing":
+        case "literal":
+        case "example":
+        case "sidebar":
+        case "quote":
+        case "verse":
+        case "pass":
+        case "open":
+        case "comment":
+        case "admonition":
+            return findDelimitedBlockEnd(fileLines, startLine, context);
+
+        // Table blocks
+        case "table":
+            return findTableEnd(fileLines, startLine);
+
+        // Content blocks
+        case "paragraph":
+            return findParagraphEnd(fileLines, startLine);
+
+        // Media blocks (single line)
+        case "image":
+        case "video":
+        case "audio":
+            return startLine;
+
+        // Other blocks
+        case "stem":
+        case "toc":
+        case "preamble":
+        case "abstract":
+            return findSpecialBlockEnd(fileLines, startLine, context);
+
+        default:
+            // Generic fallback
+            return findGenericBlockEnd(fileLines, startLine);
         }
     }
-    
+
     /**
-     * Finds the end of a description list (dlist).
-     * Continues while finding :: patterns, stops at empty line or section.
+     * Finds the end of a description list (dlist). Continues while finding ::
+     * patterns, stops at empty line or section.
      */
     private int findDlistEnd(List<String> lines, int startLine) {
         int line = startLine - 1; // Convert to 0-based index
         int lastDlistLine = line; // Track the last actual dlist content line
-        
+
         while (line < lines.size()) {
             String currentLine = lines.get(line).trim();
-            
+
             if (currentLine.contains("::")) {
                 // This is a dlist term
                 lastDlistLine = line; // Update last dlist line
@@ -115,9 +124,8 @@ public class BlockEndCalculator {
                             // This empty line ends the dlist
                             return lastDlistLine + 1; // Return 1-based line number
                         }
-                    } else if (descLine.contains("::") || 
-                               descLine.startsWith("=") ||
-                               isBlockStart(descLine)) {
+                    } else if (descLine.contains("::") || descLine.startsWith(SECTION_START)
+                            || isBlockStart(descLine)) {
                         break;
                     } else {
                         // This is part of the description
@@ -137,233 +145,248 @@ public class BlockEndCalculator {
                 line++;
             }
         }
-        
+
         // Return 1-based line number (the last line that was part of the dlist)
         return lastDlistLine + 1;
     }
-    
+
     /**
-     * Finds the end of delimited blocks (listing, literal, example, etc.).
-     * Searches for matching closing delimiter.
+     * Finds the end of delimited blocks (listing, literal, example, etc.). Searches
+     * for matching closing delimiter.
      */
     private int findDelimitedBlockEnd(List<String> lines, int startLine, String context) {
         String delimiter = getDelimiterForType(context);
         int line = startLine - 1; // Convert to 0-based
-        
+
         // Skip attributes and find opening delimiter
         while (line < lines.size() && !lines.get(line).trim().equals(delimiter)) {
             line++;
         }
-        
+
         if (line >= lines.size()) {
             return lines.size();
         }
-        
+
         // Skip opening delimiter
         line++;
-        
+
         // Find closing delimiter
         while (line < lines.size() && !lines.get(line).trim().equals(delimiter)) {
             line++;
         }
-        
+
         // Include the closing delimiter
         if (line < lines.size()) {
             line++;
         }
-        
+
         return line + 1; // Return 1-based
     }
-    
+
     /**
      * Returns the delimiter string for a block type.
      */
     private String getDelimiterForType(String type) {
         switch (type) {
-            case "listing": return "----";
-            case "literal": return "....";
-            case "example": return "====";
-            case "sidebar": return "****";
-            case "quote": 
-            case "verse": return "____";
-            case "pass": return "++++";
-            case "open": return "--";
-            case "comment": return "////";
-            case "admonition": return "====";
-            case "stem": return "++++";
-            default: return "----";
+        case "listing":
+            return DELIMITER_LISTING;
+        case "literal":
+            return DELIMITER_LITERAL;
+        case "example":
+            return DELIMITER_EXAMPLE;
+        case "sidebar":
+            return DELIMITER_SIDEBAR;
+        case "quote":
+        case "verse":
+            return DELIMITER_QUOTE;
+        case "pass":
+            return DELIMITER_PASS;
+        case "open":
+            return DELIMITER_OPEN;
+        case "comment":
+            return DELIMITER_COMMENT;
+        case "admonition":
+            return DELIMITER_EXAMPLE;
+        case "stem":
+            return DELIMITER_PASS;
+        default:
+            return DELIMITER_LISTING;
         }
     }
-    
+
     /**
-     * Finds the end of a table block.
-     * Searches for closing |===.
+     * Finds the end of a table block. Searches for closing |===.
      */
     private int findTableEnd(List<String> lines, int startLine) {
         int line = startLine - 1;
-        
+
         // Find opening |===
-        while (line < lines.size() && !lines.get(line).trim().equals("|===")) {
+        while (line < lines.size() && !DELIMITER_TABLE.equals(lines.get(line).trim())) {
             line++;
         }
-        
+
         // Skip to content
         line++;
-        
+
         // Find closing |===
-        while (line < lines.size() && !lines.get(line).trim().equals("|===")) {
+        while (line < lines.size() && !DELIMITER_TABLE.equals(lines.get(line).trim())) {
             line++;
         }
-        
+
         // Include closing delimiter
         if (line < lines.size()) {
             line++;
         }
-        
+
         return line + 1; // Return 1-based
     }
-    
+
     /**
-     * Finds the end of a paragraph.
-     * Stops at empty line or block start.
+     * Finds the end of a paragraph. Stops at empty line or block start.
      */
     private int findParagraphEnd(List<String> lines, int startLine) {
         int line = startLine - 1;
-        
+
         while (line < lines.size()) {
             String currentLine = lines.get(line).trim();
-            
+
             if (currentLine.isEmpty() || isBlockStart(currentLine)) {
                 break;
             }
             line++;
         }
-        
+
         return line > 0 ? line : 1; // Return 1-based
     }
-    
+
     /**
-     * Finds the end of lists (ulist, olist).
-     * Continues while list markers match pattern.
+     * Finds the end of lists (ulist, olist). Continues while list markers match
+     * pattern.
      */
     private int findListEnd(List<String> lines, int startLine, String listType) {
         int line = startLine - 1;
         String markerPattern = getListMarkerPattern(listType);
-        
+
         while (line < lines.size()) {
             String currentLine = lines.get(line).trim();
-            
+
             if (currentLine.isEmpty()) {
                 // Empty line ends list
                 break;
             }
-            
-            if (!matchesListMarker(currentLine, markerPattern) && 
-                !isContinuationLine(lines.get(line))) {
+
+            if (!matchesListMarker(currentLine, markerPattern) && !isContinuationLine(lines.get(line))) {
                 // Not a list item or continuation
                 break;
             }
-            
+
             line++;
         }
-        
+
         return line > 0 ? line : 1; // Return 1-based
     }
-    
+
     /**
      * Generic fallback for unknown block types.
      */
     private int findGenericBlockEnd(List<String> lines, int startLine) {
         int line = startLine - 1;
         int initialIndent = getIndentLevel(lines.get(line));
-        
+
         while (line < lines.size()) {
             String current = lines.get(line);
-            
-            if (current.trim().isEmpty()) {
+
+            if (StringUtils.isBlank(current)) {
                 // Empty line likely ends block
                 break;
             }
-            
+
             if (isBlockStart(current)) {
                 // New block starts
                 break;
             }
-            
+
             if (getIndentLevel(current) < initialIndent && initialIndent > 0) {
                 // Dedent indicates end
                 break;
             }
-            
+
             line++;
         }
-        
+
         return line > 0 ? line : 1; // Return 1-based
     }
-    
+
     /**
      * Checks if a line starts a new block.
      */
     private boolean isBlockStart(String line) {
         String trimmed = line.trim();
-        return trimmed.startsWith("=") ||     // Section
-               trimmed.startsWith("image::") || // Image
-               trimmed.startsWith("video::") || // Video
-               trimmed.startsWith("audio::") || // Audio
-               trimmed.startsWith("include::") || // Include
-               trimmed.startsWith("[") ||      // Block attribute
-               trimmed.startsWith("|===") ||   // Table
-               trimmed.equals("----") ||        // Listing
-               trimmed.equals("....") ||        // Literal
-               trimmed.equals("====") ||        // Example
-               trimmed.equals("****") ||        // Sidebar
-               trimmed.equals("____") ||        // Quote/Verse
-               trimmed.equals("++++") ||        // Pass
-               trimmed.equals("--") ||          // Open
-               trimmed.equals("////");          // Comment
+        return trimmed.startsWith(SECTION_START) || // Section
+                trimmed.startsWith(DIRECTIVE_IMAGE) || // Image
+                trimmed.startsWith(DIRECTIVE_VIDEO) || // Video
+                trimmed.startsWith(DIRECTIVE_AUDIO) || // Audio
+                trimmed.startsWith(DIRECTIVE_INCLUDE) || // Include
+                trimmed.startsWith(ATTRIBUTE_START) || // Block attribute
+                trimmed.startsWith(DELIMITER_TABLE) || // Table
+                DELIMITER_LISTING.equals(trimmed) || // Listing
+                DELIMITER_LITERAL.equals(trimmed) || // Literal
+                DELIMITER_EXAMPLE.equals(trimmed) || // Example
+                DELIMITER_SIDEBAR.equals(trimmed) || // Sidebar
+                DELIMITER_QUOTE.equals(trimmed) || // Quote/Verse
+                DELIMITER_PASS.equals(trimmed) || // Pass
+                DELIMITER_OPEN.equals(trimmed) || // Open
+                DELIMITER_COMMENT.equals(trimmed); // Comment
     }
-    
+
     private String getListMarkerPattern(String listType) {
         switch (listType) {
-            case "ulist": return "[*\\-•‣⁃]";
-            case "olist": return "[0-9]+\\.|\\.|[a-zA-Z]\\.|[ivxIVX]+\\.";
-            case "colist": return "<[0-9]+>";
-            default: return "";
+        case "ulist":
+            return "[*\\-•‣⁃]";
+        case "olist":
+            return "[0-9]+\\.|\\.|[a-zA-Z]\\.|[ivxIVX]+\\.";
+        case "colist":
+            return "<[0-9]+>";
+        default:
+            return "";
         }
     }
-    
+
     private boolean matchesListMarker(String line, String pattern) {
         if (pattern.isEmpty()) {
             return false;
         }
         return line.matches("^\\s*" + pattern + "\\s+.*");
     }
-    
+
     private boolean isContinuationLine(String line) {
         return line.startsWith(" ") || line.startsWith("\t") || line.startsWith("+");
     }
-    
+
     private int getIndentLevel(String line) {
         int indent = 0;
         for (char c : line.toCharArray()) {
-            if (c == ' ') indent++;
-            else if (c == '\t') indent += 4;
-            else break;
+            if (c == SPACE_CHAR)
+                indent++;
+            else if (c == TAB_CHAR)
+                indent += TAB_SIZE;
+            else
+                break;
         }
         return indent;
     }
-    
+
     private int findSpecialBlockEnd(List<String> lines, int startLine, String context) {
         // Handle special blocks like stem, toc, etc.
         switch (context) {
-            case "stem":
-                return findDelimitedBlockEnd(lines, startLine, context);
-            case "toc":
-            case "preamble":
-            case "abstract":
-                return findParagraphEnd(lines, startLine);
-            default:
-                return findGenericBlockEnd(lines, startLine);
+        case "stem":
+            return findDelimitedBlockEnd(lines, startLine, context);
+        case "toc":
+        case "preamble":
+        case "abstract":
+            return findParagraphEnd(lines, startLine);
+        default:
+            return findGenericBlockEnd(lines, startLine);
         }
     }
 }

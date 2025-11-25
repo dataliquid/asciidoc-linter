@@ -3,6 +3,7 @@ package com.dataliquid.asciidoc.linter.validator.rules;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -16,10 +17,10 @@ import static com.dataliquid.asciidoc.linter.validator.RuleIds.Metadata.ORDER;
 
 public final class OrderRule implements AttributeRule {
     private final Map<String, OrderConfig> orderConfigs;
-    private final Map<String, AttributePosition> actualPositions = new HashMap<>();
+    private final Map<String, AttributePosition> actualPositions = new ConcurrentHashMap<>();
 
     private OrderRule(Builder builder) {
-        this.orderConfigs = Collections.unmodifiableMap(new HashMap<>(builder.orderConfigs));
+        this.orderConfigs = Collections.unmodifiableMap(new ConcurrentHashMap<>(builder.orderConfigs));
     }
 
     @Override
@@ -40,41 +41,49 @@ public final class OrderRule implements AttributeRule {
 
     public List<ValidationMessage> validateOrder() {
         List<ValidationMessage> messages = new ArrayList<>();
-        
+
         for (Map.Entry<String, OrderConfig> entry : orderConfigs.entrySet()) {
             String attrName = entry.getKey();
             OrderConfig config = entry.getValue();
             AttributePosition actual = actualPositions.get(attrName);
-            
+
             if (actual != null && config.hasOrder()) {
                 for (Map.Entry<String, OrderConfig> otherEntry : orderConfigs.entrySet()) {
                     String otherAttrName = otherEntry.getKey();
                     OrderConfig otherConfig = otherEntry.getValue();
                     AttributePosition otherActual = actualPositions.get(otherAttrName);
-                    
+
                     if (!attrName.equals(otherAttrName) && otherActual != null && otherConfig.hasOrder()) {
                         if (config.getOrder() < otherConfig.getOrder() && actual.position > otherActual.position) {
-                            messages.add(ValidationMessage.builder()
-                                .severity(config.getSeverity())
-                                .ruleId(getRuleId())
-                                .message("Attribute '" + attrName + "' should appear before '" + otherAttrName + "': actual position line " + actual.location.getStartLine() + ", expected before line " + otherActual.location.getStartLine())
-                                .location(actual.location)
-                                .attributeName(attrName)
-                                .actualValue("Line " + actual.location.getStartLine())
-                                .expectedValue("Before line " + otherActual.location.getStartLine())
-                                .addSuggestion(Suggestion.builder()
-                                    .description("Reorder attributes according to configuration")
-                                    .addExample("Move ':" + attrName + ":' before ':" + otherAttrName + ":'")
-                                    .addExample("Rearrange document header attributes")
-                                    .explanation("Attributes should appear in the configured order for consistency")
-                                    .build())
-                                .build());
+                            messages
+                                    .add(ValidationMessage
+                                            .builder()
+                                            .severity(config.getSeverity())
+                                            .ruleId(getRuleId())
+                                            .message("Attribute '" + attrName + "' should appear before '"
+                                                    + otherAttrName + "': actual position line "
+                                                    + actual.location.getStartLine() + ", expected before line "
+                                                    + otherActual.location.getStartLine())
+                                            .location(actual.location)
+                                            .attributeName(attrName)
+                                            .actualValue("Line " + actual.location.getStartLine())
+                                            .expectedValue("Before line " + otherActual.location.getStartLine())
+                                            .addSuggestion(Suggestion
+                                                    .builder()
+                                                    .description("Reorder attributes according to configuration")
+                                                    .addExample("Move ':" + attrName + ":' before ':" + otherAttrName
+                                                            + ":'")
+                                                    .addExample("Rearrange document header attributes")
+                                                    .explanation(
+                                                            "Attributes should appear in the configured order for consistency")
+                                                    .build())
+                                            .build());
                         }
                     }
                 }
             }
         }
-        
+
         return messages;
     }
 
@@ -83,7 +92,7 @@ public final class OrderRule implements AttributeRule {
     }
 
     public static final class Builder {
-        private final Map<String, OrderConfig> orderConfigs = new HashMap<>();
+        private final Map<String, OrderConfig> orderConfigs = new ConcurrentHashMap<>();
 
         private Builder() {
         }
@@ -91,7 +100,7 @@ public final class OrderRule implements AttributeRule {
         public Builder addOrderConstraint(String attributeName, Integer order, Severity severity) {
             Objects.requireNonNull(attributeName, "[" + getClass().getName() + "] attributeName must not be null");
             Objects.requireNonNull(severity, "[" + getClass().getName() + "] severity must not be null");
-            
+
             orderConfigs.put(attributeName, new OrderConfig(order, severity));
             return this;
         }

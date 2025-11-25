@@ -5,11 +5,11 @@ package com.dataliquid.asciidoc.linter.config.output;
  */
 public class OutputConfigurationException extends RuntimeException {
     private static final long serialVersionUID = 1L;
-    
+
     public OutputConfigurationException(String message) {
         super(message);
     }
-    
+
     public OutputConfigurationException(String message, Throwable cause) {
         super(message, cause);
     }

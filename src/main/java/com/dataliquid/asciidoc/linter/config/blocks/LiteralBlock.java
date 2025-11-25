@@ -23,10 +23,11 @@ import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.EMP
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
 /**
- * Configuration for literal blocks in AsciiDoc.
- * Literal blocks are delimited by .... and display preformatted text without syntax highlighting.
- * 
- * <p>Example usage:
+ * Configuration for literal blocks in AsciiDoc. Literal blocks are delimited by
+ * .... and display preformatted text without syntax highlighting.
+ * <p>
+ * Example usage:
+ *
  * <pre>
  * ....
  * server:
@@ -35,8 +36,8 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
  *   timeout: 30s
  * ....
  * </pre>
- * 
- * <p>Validation is based on the YAML schema configuration for literal blocks.
+ * <p>
+ * Validation is based on the YAML schema configuration for literal blocks.
  */
 @JsonDeserialize(builder = LiteralBlock.Builder.class)
 public final class LiteralBlock extends AbstractBlock {
@@ -46,35 +47,35 @@ public final class LiteralBlock extends AbstractBlock {
     private final LinesConfig lines;
     @JsonProperty(INDENTATION)
     private final IndentationConfig indentation;
-    
+
     private LiteralBlock(Builder builder) {
         super(builder);
-        this.title = builder.title;
-        this.lines = builder.lines;
-        this.indentation = builder.indentation;
+        this.title = builder._title;
+        this.lines = builder._lines;
+        this.indentation = builder._indentation;
     }
-    
+
     @Override
     public BlockType getType() {
         return BlockType.LITERAL;
     }
-    
+
     public TitleConfig getTitle() {
         return title;
     }
-    
+
     public LinesConfig getLines() {
         return lines;
     }
-    
+
     public IndentationConfig getIndentation() {
         return indentation;
     }
-    
+
     public static Builder builder() {
         return new Builder();
     }
-    
+
     @JsonDeserialize(builder = TitleConfig.TitleConfigBuilder.class)
     public static class TitleConfig {
         @JsonProperty(REQUIRED)
@@ -85,82 +86,82 @@ public final class LiteralBlock extends AbstractBlock {
         private final Integer maxLength;
         @JsonProperty(SEVERITY)
         private final Severity severity;
-        
+
         private TitleConfig(TitleConfigBuilder builder) {
-            this.required = builder.required;
-            this.minLength = builder.minLength;
-            this.maxLength = builder.maxLength;
-            this.severity = builder.severity;
+            this.required = builder._required;
+            this.minLength = builder._minLength;
+            this.maxLength = builder._maxLength;
+            this.severity = builder._severity;
         }
-        
+
         public boolean isRequired() {
             return required;
         }
-        
+
         public Integer getMinLength() {
             return minLength;
         }
-        
+
         public Integer getMaxLength() {
             return maxLength;
         }
-        
+
         public Severity getSeverity() {
             return severity;
         }
-        
+
         public static TitleConfigBuilder builder() {
             return new TitleConfigBuilder();
         }
-        
+
         @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class TitleConfigBuilder {
-            private boolean required;
-            private Integer minLength;
-            private Integer maxLength;
-            private Severity severity;
-            
+            private boolean _required;
+            private Integer _minLength;
+            private Integer _maxLength;
+            private Severity _severity;
+
             public TitleConfigBuilder required(boolean required) {
-                this.required = required;
+                this._required = required;
                 return this;
             }
-            
+
             public TitleConfigBuilder minLength(Integer minLength) {
-                this.minLength = minLength;
+                this._minLength = minLength;
                 return this;
             }
-            
+
             public TitleConfigBuilder maxLength(Integer maxLength) {
-                this.maxLength = maxLength;
+                this._maxLength = maxLength;
                 return this;
             }
-            
+
             public TitleConfigBuilder severity(Severity severity) {
-                this.severity = severity;
+                this._severity = severity;
                 return this;
             }
-            
+
             public TitleConfig build() {
                 return new TitleConfig(this);
             }
         }
-        
+
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (!(o instanceof TitleConfig that)) return false;
-            return required == that.required &&
-                   Objects.equals(minLength, that.minLength) &&
-                   Objects.equals(maxLength, that.maxLength) &&
-                   severity == that.severity;
+            if (this == o)
+                return true;
+            if (!(o instanceof TitleConfig that))
+                return false;
+            return required == that.required && Objects.equals(minLength, that.minLength)
+                    && Objects.equals(maxLength, that.maxLength) && severity == that.severity;
         }
-        
+
         @Override
         public int hashCode() {
             return Objects.hash(required, minLength, maxLength, severity);
         }
     }
-    
+
     @JsonDeserialize(builder = LinesConfig.LinesConfigBuilder.class)
     public static class LinesConfig {
         @JsonProperty(MIN)
@@ -169,70 +170,70 @@ public final class LiteralBlock extends AbstractBlock {
         private final Integer max;
         @JsonProperty(SEVERITY)
         private final Severity severity;
-        
+
         private LinesConfig(LinesConfigBuilder builder) {
-            this.min = builder.min;
-            this.max = builder.max;
-            this.severity = builder.severity;
+            this.min = builder._min;
+            this.max = builder._max;
+            this.severity = builder._severity;
         }
-        
+
         public Integer getMin() {
             return min;
         }
-        
+
         public Integer getMax() {
             return max;
         }
-        
+
         public Severity getSeverity() {
             return severity;
         }
-        
+
         public static LinesConfigBuilder builder() {
             return new LinesConfigBuilder();
         }
-        
+
         @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class LinesConfigBuilder {
-            private Integer min;
-            private Integer max;
-            private Severity severity;
-            
+            private Integer _min;
+            private Integer _max;
+            private Severity _severity;
+
             public LinesConfigBuilder min(Integer min) {
-                this.min = min;
+                this._min = min;
                 return this;
             }
-            
+
             public LinesConfigBuilder max(Integer max) {
-                this.max = max;
+                this._max = max;
                 return this;
             }
-            
+
             public LinesConfigBuilder severity(Severity severity) {
-                this.severity = severity;
+                this._severity = severity;
                 return this;
             }
-            
+
             public LinesConfig build() {
                 return new LinesConfig(this);
             }
         }
-        
+
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (!(o instanceof LinesConfig that)) return false;
-            return Objects.equals(min, that.min) &&
-                   Objects.equals(max, that.max) &&
-                   severity == that.severity;
+            if (this == o)
+                return true;
+            if (!(o instanceof LinesConfig that))
+                return false;
+            return Objects.equals(min, that.min) && Objects.equals(max, that.max) && severity == that.severity;
         }
-        
+
         @Override
         public int hashCode() {
             return Objects.hash(min, max, severity);
         }
     }
-    
+
     @JsonDeserialize(builder = IndentationConfig.IndentationConfigBuilder.class)
     public static class IndentationConfig {
         @JsonProperty(REQUIRED)
@@ -245,132 +246,134 @@ public final class LiteralBlock extends AbstractBlock {
         private final Integer maxSpaces;
         @JsonProperty(SEVERITY)
         private final Severity severity;
-        
+
         private IndentationConfig(IndentationConfigBuilder builder) {
-            this.required = builder.required;
-            this.consistent = builder.consistent;
-            this.minSpaces = builder.minSpaces;
-            this.maxSpaces = builder.maxSpaces;
-            this.severity = builder.severity;
+            this.required = builder._required;
+            this.consistent = builder._consistent;
+            this.minSpaces = builder._minSpaces;
+            this.maxSpaces = builder._maxSpaces;
+            this.severity = builder._severity;
         }
-        
+
         public boolean isRequired() {
             return required;
         }
-        
+
         public boolean isConsistent() {
             return consistent;
         }
-        
+
         public Integer getMinSpaces() {
             return minSpaces;
         }
-        
+
         public Integer getMaxSpaces() {
             return maxSpaces;
         }
-        
+
         public Severity getSeverity() {
             return severity;
         }
-        
+
         public static IndentationConfigBuilder builder() {
             return new IndentationConfigBuilder();
         }
-        
+
         @JsonPOJOBuilder(withPrefix = EMPTY)
         public static class IndentationConfigBuilder {
-            private boolean required;
-            private boolean consistent;
-            private Integer minSpaces;
-            private Integer maxSpaces;
-            private Severity severity;
-            
+            private boolean _required;
+            private boolean _consistent;
+            private Integer _minSpaces;
+            private Integer _maxSpaces;
+            private Severity _severity;
+
             public IndentationConfigBuilder required(boolean required) {
-                this.required = required;
+                this._required = required;
                 return this;
             }
-            
+
             public IndentationConfigBuilder consistent(boolean consistent) {
-                this.consistent = consistent;
+                this._consistent = consistent;
                 return this;
             }
-            
+
             public IndentationConfigBuilder minSpaces(Integer minSpaces) {
-                this.minSpaces = minSpaces;
+                this._minSpaces = minSpaces;
                 return this;
             }
-            
+
             public IndentationConfigBuilder maxSpaces(Integer maxSpaces) {
-                this.maxSpaces = maxSpaces;
+                this._maxSpaces = maxSpaces;
                 return this;
             }
-            
+
             public IndentationConfigBuilder severity(Severity severity) {
-                this.severity = severity;
+                this._severity = severity;
                 return this;
             }
-            
+
             public IndentationConfig build() {
                 return new IndentationConfig(this);
             }
         }
-        
+
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (!(o instanceof IndentationConfig that)) return false;
-            return required == that.required &&
-                   consistent == that.consistent &&
-                   Objects.equals(minSpaces, that.minSpaces) &&
-                   Objects.equals(maxSpaces, that.maxSpaces) &&
-                   severity == that.severity;
+            if (this == o)
+                return true;
+            if (!(o instanceof IndentationConfig that))
+                return false;
+            return required == that.required && consistent == that.consistent
+                    && Objects.equals(minSpaces, that.minSpaces) && Objects.equals(maxSpaces, that.maxSpaces)
+                    && severity == that.severity;
         }
-        
+
         @Override
         public int hashCode() {
             return Objects.hash(required, consistent, minSpaces, maxSpaces, severity);
         }
     }
-    
+
     @JsonPOJOBuilder(withPrefix = EMPTY)
     public static class Builder extends AbstractBuilder<Builder> {
-        private TitleConfig title;
-        private LinesConfig lines;
-        private IndentationConfig indentation;
-        
+        private TitleConfig _title;
+        private LinesConfig _lines;
+        private IndentationConfig _indentation;
+
         public Builder title(TitleConfig title) {
-            this.title = title;
+            this._title = title;
             return this;
         }
-        
+
         public Builder lines(LinesConfig lines) {
-            this.lines = lines;
+            this._lines = lines;
             return this;
         }
-        
+
         public Builder indentation(IndentationConfig indentation) {
-            this.indentation = indentation;
+            this._indentation = indentation;
             return this;
         }
-        
+
         @Override
         public LiteralBlock build() {
-            Objects.requireNonNull(severity, "[" + getClass().getName() + "] severity is required");
+            Objects.requireNonNull(_severity, "[" + getClass().getName() + "] severity is required");
             return new LiteralBlock(this);
         }
     }
-    
+
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof LiteralBlock that)) return false;
-        if (!super.equals(o)) return false;
-        return Objects.equals(title, that.title) &&
-               Objects.equals(lines, that.lines) &&
-               Objects.equals(indentation, that.indentation);
+        if (this == o)
+            return true;
+        if (!(o instanceof LiteralBlock that))
+            return false;
+        if (!super.equals(o))
+            return false;
+        return Objects.equals(title, that.title) && Objects.equals(lines, that.lines)
+                && Objects.equals(indentation, that.indentation);
     }
-    
+
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), title, lines, indentation);

@@ -14,24 +14,30 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
 @JsonDeserialize(builder = LineConfig.Builder.class)
 public final class LineConfig {
-    private final Integer min;
-    private final Integer max;
-    private final Severity severity;
+    private final Integer _min;
+    private final Integer _max;
+    private final Severity _severity;
 
     private LineConfig(Builder builder) {
-        this.min = builder.min;
-        this.max = builder.max;
-        this.severity = builder.severity;
+        this._min = builder._min;
+        this._max = builder._max;
+        this._severity = builder._severity;
     }
 
     @JsonProperty(MIN)
-    public Integer min() { return min; }
-    
+    public Integer min() {
+        return this._min;
+    }
+
     @JsonProperty(MAX)
-    public Integer max() { return max; }
-    
+    public Integer max() {
+        return this._max;
+    }
+
     @JsonProperty(SEVERITY)
-    public Severity severity() { return severity; }
+    public Severity severity() {
+        return this._severity;
+    }
 
     public static Builder builder() {
         return new Builder();
@@ -39,25 +45,25 @@ public final class LineConfig {
 
     @JsonPOJOBuilder(withPrefix = EMPTY)
     public static class Builder {
-        private Integer min;
-        private Integer max;
-        private Severity severity;
+        private Integer _min;
+        private Integer _max;
+        private Severity _severity;
 
         @JsonProperty(MIN)
         public Builder min(Integer min) {
-            this.min = min;
+            this._min = min;
             return this;
         }
 
         @JsonProperty(MAX)
         public Builder max(Integer max) {
-            this.max = max;
+            this._max = max;
             return this;
         }
 
         @JsonProperty(SEVERITY)
         public Builder severity(Severity severity) {
-            this.severity = severity;
+            this._severity = severity;
             return this;
         }
 
@@ -68,16 +74,17 @@ public final class LineConfig {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         LineConfig lineRule = (LineConfig) o;
-        return Objects.equals(min, lineRule.min) &&
-               Objects.equals(max, lineRule.max) &&
-               severity == lineRule.severity;
+        return Objects.equals(min(), lineRule.min()) && Objects.equals(max(), lineRule.max())
+                && severity() == lineRule.severity();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(min, max, severity);
+        return Objects.hash(_min, _max, _severity);
     }
 }

@@ -21,22 +21,20 @@ import com.dataliquid.asciidoc.linter.config.common.Severity;
 
 @DisplayName("CLIConfig")
 class CLIConfigTest {
-    
+
     @Nested
     @DisplayName("Builder")
     class BuilderTest {
-        
+
         @Test
         @DisplayName("should create config with required fields")
         void shouldCreateConfigWithRequiredFields() {
             // Given
             List<String> patterns = Arrays.asList("**/*.adoc", "docs/**/*.asciidoc");
-            
+
             // When
-            CLIConfig config = CLIConfig.builder()
-                .inputPatterns(patterns)
-                .build();
-            
+            CLIConfig config = CLIConfig.builder().inputPatterns(patterns).build();
+
             // Then
             assertEquals(patterns, config.getInputPatterns());
             assertNotNull(config.getBaseDirectory());
@@ -47,7 +45,7 @@ class CLIConfigTest {
             assertNull(config.getReportOutput());
             assertFalse(config.isOutputToFile());
         }
-        
+
         @Test
         @DisplayName("should create config with all fields")
         void shouldCreateConfigWithAllFields() {
@@ -56,17 +54,18 @@ class CLIConfigTest {
             Path baseDir = Paths.get("/custom/base");
             Path configFile = Paths.get("config.yaml");
             Path reportOutput = Paths.get("report.json");
-            
+
             // When
-            CLIConfig config = CLIConfig.builder()
-                .inputPatterns(patterns)
-                .baseDirectory(baseDir)
-                .configFile(configFile)
-                .reportFormat("json")
-                .reportOutput(reportOutput)
-                .failLevel(Severity.WARN)
-                .build();
-            
+            CLIConfig config = CLIConfig
+                    .builder()
+                    .inputPatterns(patterns)
+                    .baseDirectory(baseDir)
+                    .configFile(configFile)
+                    .reportFormat("json")
+                    .reportOutput(reportOutput)
+                    .failLevel(Severity.WARN)
+                    .build();
+
             // Then
             assertEquals(patterns, config.getInputPatterns());
             assertEquals(baseDir, config.getBaseDirectory());
@@ -76,36 +75,29 @@ class CLIConfigTest {
             assertEquals(Severity.WARN, config.getFailLevel());
             assertTrue(config.isOutputToFile());
         }
-        
+
         @Test
         @DisplayName("should throw exception for null input patterns")
         void shouldThrowExceptionForNullInputPatterns() {
-            assertThrows(NullPointerException.class, () -> 
-                CLIConfig.builder().build()
-            );
+            assertThrows(NullPointerException.class, () -> CLIConfig.builder().build());
         }
-        
+
         @Test
         @DisplayName("should throw exception for empty input patterns")
         void shouldThrowExceptionForEmptyInputPatterns() {
-            assertThrows(IllegalArgumentException.class, () -> 
-                CLIConfig.builder()
-                    .inputPatterns(Arrays.asList())
-                    .build()
-            );
+            assertThrows(IllegalArgumentException.class,
+                    () -> CLIConfig.builder().inputPatterns(Arrays.asList()).build());
         }
-        
+
         @Test
         @DisplayName("should have sensible defaults")
         void shouldHaveSensibleDefaults() {
             // Given
             CLIConfig.Builder builder = CLIConfig.builder();
-            
+
             // When
-            CLIConfig config = builder
-                .inputPatterns(Arrays.asList("*.adoc"))
-                .build();
-            
+            CLIConfig config = builder.inputPatterns(Arrays.asList("*.adoc")).build();
+
             // Then
             assertEquals("console", config.getReportFormat());
             assertEquals(Severity.ERROR, config.getFailLevel());
@@ -114,11 +106,11 @@ class CLIConfigTest {
             assertNull(config.getReportOutput());
         }
     }
-    
+
     @Nested
     @DisplayName("Getters")
     class GettersTest {
-        
+
         @Test
         @DisplayName("should return correct values")
         void shouldReturnCorrectValues() {
@@ -126,15 +118,16 @@ class CLIConfigTest {
             List<String> patterns = Arrays.asList("**/*.adoc");
             Path configFile = Paths.get("config.yaml");
             Path reportOutput = Paths.get("output.json");
-            
-            CLIConfig config = CLIConfig.builder()
-                .inputPatterns(patterns)
-                .configFile(configFile)
-                .reportFormat("json-compact")
-                .reportOutput(reportOutput)
-                .failLevel(Severity.INFO)
-                .build();
-            
+
+            CLIConfig config = CLIConfig
+                    .builder()
+                    .inputPatterns(patterns)
+                    .configFile(configFile)
+                    .reportFormat("json-compact")
+                    .reportOutput(reportOutput)
+                    .failLevel(Severity.INFO)
+                    .build();
+
             // Then
             assertEquals(patterns, config.getInputPatterns());
             assertEquals(configFile, config.getConfigFile());
@@ -143,15 +136,13 @@ class CLIConfigTest {
             assertEquals(Severity.INFO, config.getFailLevel());
             assertTrue(config.isOutputToFile());
         }
-        
+
         @Test
         @DisplayName("should return false for isOutputToFile when reportOutput is null")
         void shouldReturnFalseForIsOutputToFileWhenReportOutputIsNull() {
             // Given
-            CLIConfig config = CLIConfig.builder()
-                .inputPatterns(Arrays.asList("*.adoc"))
-                .build();
-            
+            CLIConfig config = CLIConfig.builder().inputPatterns(Arrays.asList("*.adoc")).build();
+
             // Then
             assertFalse(config.isOutputToFile());
         }
