@@ -8,13 +8,10 @@ import java.util.regex.Pattern;
 
 import com.dataliquid.asciidoc.linter.config.blocks.BlockType;
 import com.dataliquid.asciidoc.linter.config.common.Severity;
+import com.dataliquid.asciidoc.linter.config.rule.OccurrenceConfig;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-
-import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.*;
-import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Pass.REASON;
-import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.EMPTY;
 
 /**
  * Configuration for pass blocks (passthrough content) in AsciiDoc. Pass blocks
@@ -39,20 +36,22 @@ import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.EMP
  * <p>
  * Validation is based on the YAML schema configuration for pass blocks.
  */
-@JsonDeserialize(builder = PassBlock.Builder.class)
+@JsonDeserialize
 public final class PassBlock extends AbstractBlock {
-    @JsonProperty(TYPE)
+    private static final String SEVERITY = "severity";
     private final TypeConfig type;
-    @JsonProperty(CONTENT)
     private final ContentConfig content;
-    @JsonProperty(REASON)
     private final ReasonConfig reason;
 
-    private PassBlock(Builder builder) {
-        super(builder);
-        this.type = builder._type;
-        this.content = builder._content;
-        this.reason = builder._reason;
+    @JsonCreator
+    public PassBlock(@JsonProperty("name") String name, @JsonProperty(SEVERITY) Severity severity,
+            @JsonProperty("occurrence") OccurrenceConfig occurrence, @JsonProperty("order") Integer order,
+            @JsonProperty("type") TypeConfig type, @JsonProperty("content") ContentConfig content,
+            @JsonProperty("reason") ReasonConfig reason) {
+        super(name, severity, occurrence, order);
+        this.type = type;
+        this.content = content;
+        this.reason = reason;
     }
 
     @Override
@@ -72,24 +71,19 @@ public final class PassBlock extends AbstractBlock {
         return reason;
     }
 
-    public static Builder builder() {
-        return new Builder();
-    }
-
-    @JsonDeserialize(builder = TypeConfig.TypeConfigBuilder.class)
+    @JsonDeserialize
     public static class TypeConfig {
-        @JsonProperty(REQUIRED)
         private final boolean required;
-        @JsonProperty(ALLOWED)
         private final List<String> allowed;
-        @JsonProperty(SEVERITY)
         private final Severity severity;
 
-        private TypeConfig(TypeConfigBuilder builder) {
-            this.required = builder._required;
-            this.allowed = builder._allowed != null ? Collections.unmodifiableList(new ArrayList<>(builder._allowed))
+        @JsonCreator
+        public TypeConfig(@JsonProperty("required") boolean required, @JsonProperty("allowed") List<String> allowed,
+                @JsonProperty(SEVERITY) Severity severity) {
+            this.required = required;
+            this.allowed = allowed != null ? Collections.unmodifiableList(new ArrayList<>(allowed))
                     : Collections.emptyList();
-            this.severity = builder._severity;
+            this.severity = severity;
         }
 
         public boolean isRequired() {
@@ -102,36 +96,6 @@ public final class PassBlock extends AbstractBlock {
 
         public Severity getSeverity() {
             return severity;
-        }
-
-        public static TypeConfigBuilder builder() {
-            return new TypeConfigBuilder();
-        }
-
-        @JsonPOJOBuilder(withPrefix = EMPTY)
-        public static class TypeConfigBuilder {
-            private boolean _required;
-            private List<String> _allowed;
-            private Severity _severity;
-
-            public TypeConfigBuilder required(boolean required) {
-                this._required = required;
-                return this;
-            }
-
-            public TypeConfigBuilder allowed(List<String> allowed) {
-                this._allowed = allowed;
-                return this;
-            }
-
-            public TypeConfigBuilder severity(Severity severity) {
-                this._severity = severity;
-                return this;
-            }
-
-            public TypeConfig build() {
-                return new TypeConfig(this);
-            }
         }
 
         @Override
@@ -149,22 +113,21 @@ public final class PassBlock extends AbstractBlock {
         }
     }
 
-    @JsonDeserialize(builder = ContentConfig.ContentConfigBuilder.class)
+    @JsonDeserialize
     public static class ContentConfig {
-        @JsonProperty(REQUIRED)
         private final boolean required;
-        @JsonProperty(MAX_LENGTH)
         private final Integer maxLength;
-        @JsonProperty(PATTERN)
         private final Pattern pattern;
-        @JsonProperty(SEVERITY)
         private final Severity severity;
 
-        private ContentConfig(ContentConfigBuilder builder) {
-            this.required = builder._required;
-            this.maxLength = builder._maxLength;
-            this.pattern = builder._pattern;
-            this.severity = builder._severity;
+        @JsonCreator
+        @SuppressWarnings("PMD.NullAssignment")
+        public ContentConfig(@JsonProperty("required") boolean required, @JsonProperty("maxLength") Integer maxLength,
+                @JsonProperty("pattern") String patternString, @JsonProperty(SEVERITY) Severity severity) {
+            this.required = required;
+            this.maxLength = maxLength;
+            this.pattern = patternString != null ? Pattern.compile(patternString) : null;
+            this.severity = severity;
         }
 
         public boolean isRequired() {
@@ -181,48 +144,6 @@ public final class PassBlock extends AbstractBlock {
 
         public Severity getSeverity() {
             return severity;
-        }
-
-        public static ContentConfigBuilder builder() {
-            return new ContentConfigBuilder();
-        }
-
-        @JsonPOJOBuilder(withPrefix = EMPTY)
-        public static class ContentConfigBuilder {
-            private boolean _required;
-            private Integer _maxLength;
-            private Pattern _pattern;
-            private Severity _severity;
-
-            public ContentConfigBuilder required(boolean required) {
-                this._required = required;
-                return this;
-            }
-
-            public ContentConfigBuilder maxLength(Integer maxLength) {
-                this._maxLength = maxLength;
-                return this;
-            }
-
-            public ContentConfigBuilder pattern(Pattern pattern) {
-                this._pattern = pattern;
-                return this;
-            }
-
-            @SuppressWarnings("PMD.NullAssignment")
-            public ContentConfigBuilder pattern(String pattern) {
-                this._pattern = pattern != null ? Pattern.compile(pattern) : null;
-                return this;
-            }
-
-            public ContentConfigBuilder severity(Severity severity) {
-                this._severity = severity;
-                return this;
-            }
-
-            public ContentConfig build() {
-                return new ContentConfig(this);
-            }
         }
 
         @Override
@@ -244,22 +165,20 @@ public final class PassBlock extends AbstractBlock {
         }
     }
 
-    @JsonDeserialize(builder = ReasonConfig.ReasonConfigBuilder.class)
+    @JsonDeserialize
     public static class ReasonConfig {
-        @JsonProperty(REQUIRED)
         private final boolean required;
-        @JsonProperty(MIN_LENGTH)
         private final Integer minLength;
-        @JsonProperty(MAX_LENGTH)
         private final Integer maxLength;
-        @JsonProperty(SEVERITY)
         private final Severity severity;
 
-        private ReasonConfig(ReasonConfigBuilder builder) {
-            this.required = builder._required;
-            this.minLength = builder._minLength;
-            this.maxLength = builder._maxLength;
-            this.severity = builder._severity;
+        @JsonCreator
+        public ReasonConfig(@JsonProperty("required") boolean required, @JsonProperty("minLength") Integer minLength,
+                @JsonProperty("maxLength") Integer maxLength, @JsonProperty(SEVERITY) Severity severity) {
+            this.required = required;
+            this.minLength = minLength;
+            this.maxLength = maxLength;
+            this.severity = severity;
         }
 
         public boolean isRequired() {
@@ -278,42 +197,6 @@ public final class PassBlock extends AbstractBlock {
             return severity;
         }
 
-        public static ReasonConfigBuilder builder() {
-            return new ReasonConfigBuilder();
-        }
-
-        @JsonPOJOBuilder(withPrefix = EMPTY)
-        public static class ReasonConfigBuilder {
-            private boolean _required;
-            private Integer _minLength;
-            private Integer _maxLength;
-            private Severity _severity;
-
-            public ReasonConfigBuilder required(boolean required) {
-                this._required = required;
-                return this;
-            }
-
-            public ReasonConfigBuilder minLength(Integer minLength) {
-                this._minLength = minLength;
-                return this;
-            }
-
-            public ReasonConfigBuilder maxLength(Integer maxLength) {
-                this._maxLength = maxLength;
-                return this;
-            }
-
-            public ReasonConfigBuilder severity(Severity severity) {
-                this._severity = severity;
-                return this;
-            }
-
-            public ReasonConfig build() {
-                return new ReasonConfig(this);
-            }
-        }
-
         @Override
         public boolean equals(Object o) {
             if (this == o)
@@ -327,34 +210,6 @@ public final class PassBlock extends AbstractBlock {
         @Override
         public int hashCode() {
             return Objects.hash(required, minLength, maxLength, severity);
-        }
-    }
-
-    @JsonPOJOBuilder(withPrefix = EMPTY)
-    public static class Builder extends AbstractBuilder<Builder> {
-        private TypeConfig _type;
-        private ContentConfig _content;
-        private ReasonConfig _reason;
-
-        public Builder type(TypeConfig type) {
-            this._type = type;
-            return this;
-        }
-
-        public Builder content(ContentConfig content) {
-            this._content = content;
-            return this;
-        }
-
-        public Builder reason(ReasonConfig reason) {
-            this._reason = reason;
-            return this;
-        }
-
-        @Override
-        public PassBlock build() {
-            Objects.requireNonNull(_severity, "[" + getClass().getName() + "] severity is required");
-            return new PassBlock(this);
         }
     }
 

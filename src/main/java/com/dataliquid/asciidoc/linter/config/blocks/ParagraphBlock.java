@@ -4,17 +4,16 @@ import java.util.Objects;
 
 import com.dataliquid.asciidoc.linter.config.blocks.BlockType;
 import com.dataliquid.asciidoc.linter.config.common.Severity;
-import com.dataliquid.asciidoc.linter.config.rule.LineConfig;
 import com.dataliquid.asciidoc.linter.config.rule.OccurrenceConfig;
+import com.dataliquid.asciidoc.linter.config.rule.LineConfig;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
 import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.*;
 import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Paragraph.*;
-import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.EMPTY;
 
-@JsonDeserialize(builder = ParagraphBlock.Builder.class)
+@JsonDeserialize
 public final class ParagraphBlock extends AbstractBlock {
     @JsonProperty(LINES)
     private final LineConfig lines;
@@ -22,10 +21,13 @@ public final class ParagraphBlock extends AbstractBlock {
     @JsonProperty(SENTENCE)
     private final SentenceConfig sentence;
 
-    private ParagraphBlock(Builder builder) {
-        super(builder);
-        this.lines = builder._lines;
-        this.sentence = builder._sentence;
+    @JsonCreator
+    public ParagraphBlock(@JsonProperty("name") String name, @JsonProperty("severity") Severity severity,
+            @JsonProperty("occurrence") OccurrenceConfig occurrence, @JsonProperty("order") Integer order,
+            @JsonProperty("lines") LineConfig lines, @JsonProperty("sentence") SentenceConfig sentence) {
+        super(name, severity, occurrence, order);
+        this.lines = lines;
+        this.sentence = sentence;
     }
 
     @Override
@@ -39,32 +41,6 @@ public final class ParagraphBlock extends AbstractBlock {
 
     public SentenceConfig getSentence() {
         return sentence;
-    }
-
-    public static Builder builder() {
-        return new Builder();
-    }
-
-    @JsonPOJOBuilder(withPrefix = EMPTY)
-    public static class Builder extends AbstractBuilder<Builder> {
-        private LineConfig _lines;
-        private SentenceConfig _sentence;
-
-        public Builder lines(LineConfig lines) {
-            this._lines = lines;
-            return this;
-        }
-
-        public Builder sentence(SentenceConfig sentence) {
-            this._sentence = sentence;
-            return this;
-        }
-
-        @Override
-        public ParagraphBlock build() {
-            Objects.requireNonNull(_severity, "[" + getClass().getName() + "] severity is required");
-            return new ParagraphBlock(this);
-        }
     }
 
     @Override
@@ -87,7 +63,7 @@ public final class ParagraphBlock extends AbstractBlock {
     /**
      * Configuration for sentence-level validation in paragraph blocks.
      */
-    @JsonDeserialize(builder = SentenceConfig.Builder.class)
+    @JsonDeserialize
     public static final class SentenceConfig {
         @JsonProperty(OCCURRENCE)
         private final OccurrenceConfig occurrence;
@@ -95,9 +71,11 @@ public final class ParagraphBlock extends AbstractBlock {
         @JsonProperty(WORDS)
         private final WordsConfig words;
 
-        private SentenceConfig(Builder builder) {
-            this.occurrence = builder._occurrence;
-            this.words = builder._words;
+        @JsonCreator
+        public SentenceConfig(@JsonProperty("occurrence") OccurrenceConfig occurrence,
+                @JsonProperty("words") WordsConfig words) {
+            this.occurrence = occurrence;
+            this.words = words;
         }
 
         public OccurrenceConfig getOccurrence() {
@@ -106,32 +84,6 @@ public final class ParagraphBlock extends AbstractBlock {
 
         public WordsConfig getWords() {
             return words;
-        }
-
-        public static Builder builder() {
-            return new Builder();
-        }
-
-        @JsonPOJOBuilder(withPrefix = EMPTY)
-        public static class Builder {
-            private OccurrenceConfig _occurrence;
-            private WordsConfig _words;
-
-            @JsonProperty(OCCURRENCE)
-            public Builder occurrence(OccurrenceConfig occurrence) {
-                this._occurrence = occurrence;
-                return this;
-            }
-
-            @JsonProperty(WORDS)
-            public Builder words(WordsConfig words) {
-                this._words = words;
-                return this;
-            }
-
-            public SentenceConfig build() {
-                return new SentenceConfig(this);
-            }
         }
 
         @Override
@@ -153,7 +105,7 @@ public final class ParagraphBlock extends AbstractBlock {
     /**
      * Configuration for word count validation in sentences.
      */
-    @JsonDeserialize(builder = WordsConfig.Builder.class)
+    @JsonDeserialize
     public static final class WordsConfig {
         @JsonProperty(MIN)
         private final Integer min;
@@ -164,10 +116,12 @@ public final class ParagraphBlock extends AbstractBlock {
         @JsonProperty(SEVERITY)
         private final Severity severity;
 
-        private WordsConfig(Builder builder) {
-            this.min = builder._min;
-            this.max = builder._max;
-            this.severity = builder._severity;
+        @JsonCreator
+        public WordsConfig(@JsonProperty("min") Integer min, @JsonProperty("max") Integer max,
+                @JsonProperty("severity") Severity severity) {
+            this.min = min;
+            this.max = max;
+            this.severity = severity;
         }
 
         public Integer getMin() {
@@ -180,39 +134,6 @@ public final class ParagraphBlock extends AbstractBlock {
 
         public Severity getSeverity() {
             return severity;
-        }
-
-        public static Builder builder() {
-            return new Builder();
-        }
-
-        @JsonPOJOBuilder(withPrefix = EMPTY)
-        public static class Builder {
-            private Integer _min;
-            private Integer _max;
-            private Severity _severity;
-
-            @JsonProperty(MIN)
-            public Builder min(Integer min) {
-                this._min = min;
-                return this;
-            }
-
-            @JsonProperty(MAX)
-            public Builder max(Integer max) {
-                this._max = max;
-                return this;
-            }
-
-            @JsonProperty(SEVERITY)
-            public Builder severity(Severity severity) {
-                this._severity = severity;
-                return this;
-            }
-
-            public WordsConfig build() {
-                return new WordsConfig(this);
-            }
         }
 
         @Override

@@ -93,7 +93,7 @@ class VerseBlockValidatorTest {
         void shouldReturnEmptyListWhenNotBlockInstance() {
             // Given
             StructuralNode notABlock = mock(StructuralNode.class);
-            VerseBlock config = VerseBlock.builder().severity(Severity.ERROR).build();
+            VerseBlock config = new VerseBlock(null, Severity.ERROR, null, null, null, null, null);
 
             // When
             List<ValidationMessage> messages = validator.validate(notABlock, config, context);
@@ -106,7 +106,7 @@ class VerseBlockValidatorTest {
         @DisplayName("should return empty list when no validations configured")
         void shouldReturnEmptyListWhenNoValidationsConfigured() {
             // Given
-            VerseBlock config = VerseBlock.builder().severity(Severity.ERROR).build();
+            VerseBlock config = new VerseBlock(null, Severity.ERROR, null, null, null, null, null);
 
             // When
             List<ValidationMessage> messages = validator.validate(mockBlock, config, context);
@@ -124,8 +124,8 @@ class VerseBlockValidatorTest {
         @DisplayName("should validate required author")
         void shouldValidateRequiredAuthor() {
             // Given
-            VerseBlock.AuthorConfig authorConfig = VerseBlock.AuthorConfig.builder().required(true).build();
-            VerseBlock config = VerseBlock.builder().author(authorConfig).severity(Severity.ERROR).build();
+            VerseBlock.AuthorConfig authorConfig = new VerseBlock.AuthorConfig(null, null, null, null, true);
+            VerseBlock config = new VerseBlock(null, Severity.ERROR, null, null, authorConfig, null, null);
 
             when(mockBlock.hasAttribute("attribution")).thenReturn(false);
 
@@ -146,11 +146,9 @@ class VerseBlockValidatorTest {
         @DisplayName("should validate author pattern")
         void shouldValidateAuthorPattern() {
             // Given
-            VerseBlock.AuthorConfig authorConfig = VerseBlock.AuthorConfig
-                    .builder()
-                    .pattern(Pattern.compile("^[A-Z][a-z]+ [A-Z][a-z]+$"))
-                    .build();
-            VerseBlock config = VerseBlock.builder().author(authorConfig).severity(Severity.ERROR).build();
+            VerseBlock.AuthorConfig authorConfig = new VerseBlock.AuthorConfig(null, null, null,
+                    "^[A-Z][a-z]+ [A-Z][a-z]+$", false);
+            VerseBlock config = new VerseBlock(null, Severity.ERROR, null, null, authorConfig, null, null);
 
             when(mockBlock.hasAttribute("author")).thenReturn(true);
             when(mockBlock.getAttribute("author")).thenReturn("john doe");
@@ -172,11 +170,9 @@ class VerseBlockValidatorTest {
         @DisplayName("should pass when author matches pattern")
         void shouldPassWhenAuthorMatchesPattern() {
             // Given
-            VerseBlock.AuthorConfig authorConfig = VerseBlock.AuthorConfig
-                    .builder()
-                    .pattern(Pattern.compile("^[A-Z][a-z]+ [A-Z][a-z]+$"))
-                    .build();
-            VerseBlock config = VerseBlock.builder().author(authorConfig).severity(Severity.ERROR).build();
+            VerseBlock.AuthorConfig authorConfig = new VerseBlock.AuthorConfig(null, null, null,
+                    "^[A-Z][a-z]+ [A-Z][a-z]+$", false);
+            VerseBlock config = new VerseBlock(null, Severity.ERROR, null, null, authorConfig, null, null);
 
             when(mockBlock.hasAttribute("attribution")).thenReturn(true);
             when(mockBlock.getAttribute("attribution")).thenReturn("John Doe");
@@ -197,11 +193,9 @@ class VerseBlockValidatorTest {
         @DisplayName("should validate required attribution")
         void shouldValidateRequiredAttribution() {
             // Given
-            VerseBlock.AttributionConfig attributionConfig = VerseBlock.AttributionConfig
-                    .builder()
-                    .required(true)
-                    .build();
-            VerseBlock config = VerseBlock.builder().attribution(attributionConfig).severity(Severity.ERROR).build();
+            VerseBlock.AttributionConfig attributionConfig = new VerseBlock.AttributionConfig(null, null, null, null,
+                    true);
+            VerseBlock config = new VerseBlock(null, Severity.ERROR, null, null, null, attributionConfig, null);
 
             when(mockBlock.hasAttribute("citetitle")).thenReturn(false);
 
@@ -221,11 +215,9 @@ class VerseBlockValidatorTest {
         @DisplayName("should validate attribution pattern")
         void shouldValidateAttributionPattern() {
             // Given
-            VerseBlock.AttributionConfig attributionConfig = VerseBlock.AttributionConfig
-                    .builder()
-                    .pattern(Pattern.compile(".*\\(\\d{4}\\)$"))
-                    .build();
-            VerseBlock config = VerseBlock.builder().attribution(attributionConfig).severity(Severity.ERROR).build();
+            VerseBlock.AttributionConfig attributionConfig = new VerseBlock.AttributionConfig(null, null, null,
+                    ".*\\(\\d{4}\\)$", false);
+            VerseBlock config = new VerseBlock(null, Severity.ERROR, null, null, null, attributionConfig, null);
 
             when(mockBlock.hasAttribute("citetitle")).thenReturn(true);
             when(mockBlock.getAttribute("citetitle")).thenReturn("Book Title");
@@ -252,8 +244,8 @@ class VerseBlockValidatorTest {
         @DisplayName("should validate minimum content length")
         void shouldValidateMinimumContentLength() {
             // Given
-            VerseBlock.ContentConfig contentConfig = VerseBlock.ContentConfig.builder().minLength(20).build();
-            VerseBlock config = VerseBlock.builder().content(contentConfig).severity(Severity.ERROR).build();
+            VerseBlock.ContentConfig contentConfig = new VerseBlock.ContentConfig(20, null, null, false);
+            VerseBlock config = new VerseBlock(null, Severity.ERROR, null, null, null, null, contentConfig);
 
             when(mockBlock.getContent()).thenReturn("Short verse");
 
@@ -274,8 +266,8 @@ class VerseBlockValidatorTest {
         @DisplayName("should validate maximum content length")
         void shouldValidateMaximumContentLength() {
             // Given
-            VerseBlock.ContentConfig contentConfig = VerseBlock.ContentConfig.builder().maxLength(50).build();
-            VerseBlock config = VerseBlock.builder().content(contentConfig).severity(Severity.ERROR).build();
+            VerseBlock.ContentConfig contentConfig = new VerseBlock.ContentConfig(null, 50, null, false);
+            VerseBlock config = new VerseBlock(null, Severity.ERROR, null, null, null, null, contentConfig);
 
             // Create long content
             String longContent = "This is a very long verse that exceeds the maximum length allowed";
@@ -297,12 +289,8 @@ class VerseBlockValidatorTest {
         @DisplayName("should pass when content length is within bounds")
         void shouldPassWhenContentLengthIsWithinBounds() {
             // Given
-            VerseBlock.ContentConfig contentConfig = VerseBlock.ContentConfig
-                    .builder()
-                    .minLength(10)
-                    .maxLength(100)
-                    .build();
-            VerseBlock config = VerseBlock.builder().content(contentConfig).severity(Severity.ERROR).build();
+            VerseBlock.ContentConfig contentConfig = new VerseBlock.ContentConfig(10, 100, null, false);
+            VerseBlock config = new VerseBlock(null, Severity.ERROR, null, null, null, null, contentConfig);
 
             when(mockBlock.getContent()).thenReturn("This is a perfect verse");
 
@@ -322,12 +310,8 @@ class VerseBlockValidatorTest {
         @DisplayName("should always use block severity for author validation")
         void shouldAlwaysUseBlockSeverityForAuthor() {
             // Given - VerseBlock.AuthorConfig has no severity field
-            VerseBlock.AuthorConfig authorConfig = VerseBlock.AuthorConfig.builder().required(true).build();
-            VerseBlock config = VerseBlock
-                    .builder()
-                    .author(authorConfig)
-                    .severity(Severity.WARN) // Block severity
-                    .build();
+            VerseBlock.AuthorConfig authorConfig = new VerseBlock.AuthorConfig(null, null, null, null, true);
+            VerseBlock config = new VerseBlock(null, Severity.WARN, null, null, authorConfig, null, null);
 
             when(mockBlock.hasAttribute("attribution")).thenReturn(false);
 
@@ -346,16 +330,9 @@ class VerseBlockValidatorTest {
         @DisplayName("should always use block severity for attribution validation")
         void shouldAlwaysUseBlockSeverityForAttribution() {
             // Given - VerseBlock.AttributionConfig has no severity field
-            VerseBlock.AttributionConfig attributionConfig = VerseBlock.AttributionConfig
-                    .builder()
-                    .required(true)
-                    .build();
-            VerseBlock config = VerseBlock
-                    .builder()
-                    .attribution(attributionConfig)
-                    .severity(Severity.INFO) // Block
-                                             // severity
-                    .build();
+            VerseBlock.AttributionConfig attributionConfig = new VerseBlock.AttributionConfig(null, null, null, null,
+                    true);
+            VerseBlock config = new VerseBlock(null, Severity.INFO, null, null, null, attributionConfig, null);
 
             when(mockBlock.hasAttribute("citetitle")).thenReturn(false);
 
@@ -374,12 +351,8 @@ class VerseBlockValidatorTest {
         @DisplayName("should always use block severity for content validation")
         void shouldAlwaysUseBlockSeverityForContent() {
             // Given - VerseBlock.ContentConfig has no severity field
-            VerseBlock.ContentConfig contentConfig = VerseBlock.ContentConfig.builder().minLength(10).build();
-            VerseBlock config = VerseBlock
-                    .builder()
-                    .content(contentConfig)
-                    .severity(Severity.ERROR) // Block severity
-                    .build();
+            VerseBlock.ContentConfig contentConfig = new VerseBlock.ContentConfig(10, null, null, false);
+            VerseBlock config = new VerseBlock(null, Severity.ERROR, null, null, null, null, contentConfig);
 
             when(mockBlock.getContent()).thenReturn("Short");
 
@@ -402,26 +375,19 @@ class VerseBlockValidatorTest {
         @Test
         @DisplayName("should validate multiple rules together")
         void shouldValidateMultipleRules() {
-            // Given
-            VerseBlock config = VerseBlock
-                    .builder()
-                    .author(VerseBlock.AuthorConfig
-                            .builder()
-                            .required(true)
-                            .pattern(Pattern.compile("^[A-Z].*"))
-                            .build())
-                    .severity(Severity.ERROR)
-                    .build();
+            // given
+            VerseBlock.AuthorConfig authorConfig = new VerseBlock.AuthorConfig(null, null, null, "^[A-Z].*", true);
+            VerseBlock config = new VerseBlock(null, Severity.ERROR, null, null, authorConfig, null, null);
 
             when(mockBlock.hasAttribute("author")).thenReturn(true);
             when(mockBlock.getAttribute("author")).thenReturn("anonymous"); // Invalid pattern
             when(mockBlock.hasAttribute("citetitle")).thenReturn(false); // Missing
             when(mockBlock.getContent()).thenReturn("Short verse");
 
-            // When
+            // when
             List<ValidationMessage> messages = validator.validate(mockBlock, config, context);
 
-            // Then
+            // then
             assertEquals(1, messages.size());
             assertTrue(messages.stream().anyMatch(m -> "verse.author.pattern".equals(m.getRuleId())));
         }
@@ -430,8 +396,8 @@ class VerseBlockValidatorTest {
         @DisplayName("should handle empty content")
         void shouldHandleEmptyContent() {
             // Given
-            VerseBlock.ContentConfig contentConfig = VerseBlock.ContentConfig.builder().minLength(1).build();
-            VerseBlock config = VerseBlock.builder().content(contentConfig).severity(Severity.ERROR).build();
+            VerseBlock.ContentConfig contentConfig = new VerseBlock.ContentConfig(1, null, null, false);
+            VerseBlock config = new VerseBlock(null, Severity.ERROR, null, null, null, null, contentConfig);
 
             when(mockBlock.getContent()).thenReturn("");
 
@@ -447,8 +413,8 @@ class VerseBlockValidatorTest {
         @DisplayName("should handle null content")
         void shouldHandleNullContent() {
             // Given
-            VerseBlock.ContentConfig contentConfig = VerseBlock.ContentConfig.builder().minLength(1).build();
-            VerseBlock config = VerseBlock.builder().content(contentConfig).severity(Severity.ERROR).build();
+            VerseBlock.ContentConfig contentConfig = new VerseBlock.ContentConfig(1, null, null, false);
+            VerseBlock config = new VerseBlock(null, Severity.ERROR, null, null, null, null, contentConfig);
 
             when(mockBlock.getContent()).thenReturn(null);
 
@@ -463,22 +429,14 @@ class VerseBlockValidatorTest {
         @Test
         @DisplayName("should validate all attributes when present")
         void shouldValidateAllAttributesWhenPresent() {
-            // Given
-            VerseBlock config = VerseBlock
-                    .builder()
-                    .author(VerseBlock.AuthorConfig
-                            .builder()
-                            .required(true)
-                            .pattern(Pattern.compile("^[A-Z][a-z]+ [A-Z][a-z]+$"))
-                            .build())
-                    .attribution(VerseBlock.AttributionConfig
-                            .builder()
-                            .required(true)
-                            .pattern(Pattern.compile(".*\\(\\d{4}\\)$"))
-                            .build())
-                    .content(VerseBlock.ContentConfig.builder().minLength(10).maxLength(200).build())
-                    .severity(Severity.ERROR)
-                    .build();
+            // given
+            VerseBlock.AuthorConfig authorConfig = new VerseBlock.AuthorConfig(null, null, null,
+                    "^[A-Z][a-z]+ [A-Z][a-z]+$", true);
+            VerseBlock.AttributionConfig attributionConfig = new VerseBlock.AttributionConfig(null, null, null,
+                    ".*\\(\\d{4}\\)$", true);
+            VerseBlock.ContentConfig contentConfig = new VerseBlock.ContentConfig(10, 200, null, false);
+            VerseBlock config = new VerseBlock(null, Severity.ERROR, null, null, authorConfig, attributionConfig,
+                    contentConfig);
 
             when(mockBlock.hasAttribute("author")).thenReturn(true);
             when(mockBlock.getAttribute("author")).thenReturn("William Shakespeare");
@@ -490,10 +448,10 @@ class VerseBlockValidatorTest {
             when(mockBlock.getAttribute("citetitle")).thenReturn("Hamlet (1603)");
             when(mockBlock.getContent()).thenReturn("To be, or not to be,\nthat is the question");
 
-            // When
+            // when
             List<ValidationMessage> messages = validator.validate(mockBlock, config, context);
 
-            // Then
+            // then
             assertTrue(messages.isEmpty()); // All validations pass
         }
     }

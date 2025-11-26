@@ -11,63 +11,62 @@ import com.dataliquid.asciidoc.linter.config.common.Severity;
  * Configuration for block ordering constraints.
  */
 public final class OrderConfig {
-    private final List<String> _fixedOrder;
-    private final List<OrderConstraint> _before;
-    private final List<OrderConstraint> _after;
-    private final Severity _severity;
+    private final List<String> fixedOrderValue;
+    private final List<OrderConstraint> beforeValue;
+    private final List<OrderConstraint> afterValue;
+    private final Severity severityValue;
 
-    private OrderConfig(Builder builder) {
-        this._fixedOrder = Collections.unmodifiableList(new ArrayList<>(builder._fixedOrder));
-        this._before = Collections.unmodifiableList(new ArrayList<>(builder._before));
-        this._after = Collections.unmodifiableList(new ArrayList<>(builder._after));
-        this._severity = builder._severity;
+    public OrderConfig(List<String> fixedOrder, List<OrderConstraint> before, List<OrderConstraint> after,
+            Severity severity) {
+        this.fixedOrderValue = fixedOrder != null ? Collections.unmodifiableList(new ArrayList<>(fixedOrder))
+                : Collections.emptyList();
+        this.beforeValue = before != null ? Collections.unmodifiableList(new ArrayList<>(before))
+                : Collections.emptyList();
+        this.afterValue = after != null ? Collections.unmodifiableList(new ArrayList<>(after))
+                : Collections.emptyList();
+        this.severityValue = severity != null ? severity : Severity.ERROR;
     }
 
     public List<String> fixedOrder() {
-        return this._fixedOrder;
+        return this.fixedOrderValue;
     }
 
     public List<OrderConstraint> before() {
-        return this._before;
+        return this.beforeValue;
     }
 
     public List<OrderConstraint> after() {
-        return this._after;
+        return this.afterValue;
     }
 
     public Severity severity() {
-        return this._severity;
-    }
-
-    public static Builder builder() {
-        return new Builder();
+        return this.severityValue;
     }
 
     /**
      * Represents an order constraint between two blocks.
      */
     public static final class OrderConstraint {
-        private final String _first;
-        private final String _second;
-        private final Severity _severity;
+        private final String firstValue;
+        private final String secondValue;
+        private final Severity severityValue;
 
         private OrderConstraint(String first, String second, Severity severity) {
-            this._first = Objects.requireNonNull(first, "[" + getClass().getName() + "] first must not be null");
-            this._second = Objects.requireNonNull(second, "[" + getClass().getName() + "] second must not be null");
-            this._severity = Objects
-                    .requireNonNull(severity, "[" + getClass().getName() + "] severity must not be null");
+            this.firstValue = Objects.requireNonNull(first, "first must not be null");
+            this.secondValue = Objects.requireNonNull(second, "second must not be null");
+            this.severityValue = Objects.requireNonNull(severity, "severity must not be null");
         }
 
         public String first() {
-            return this._first;
+            return this.firstValue;
         }
 
         public String second() {
-            return this._second;
+            return this.secondValue;
         }
 
         public Severity severity() {
-            return this._severity;
+            return this.severityValue;
         }
 
         public static OrderConstraint of(String first, String second, Severity severity) {
@@ -81,60 +80,13 @@ public final class OrderConfig {
             if (o == null || getClass() != o.getClass())
                 return false;
             OrderConstraint that = (OrderConstraint) o;
-            return Objects.equals(_first, that._first) && Objects.equals(_second, that._second)
-                    && _severity == that._severity;
+            return Objects.equals(firstValue, that.firstValue) && Objects.equals(secondValue, that.secondValue)
+                    && severityValue == that.severityValue;
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(_first, _second, _severity);
-        }
-    }
-
-    public static class Builder {
-        private List<String> _fixedOrder = new ArrayList<>();
-        private List<OrderConstraint> _before = new ArrayList<>();
-        private List<OrderConstraint> _after = new ArrayList<>();
-        private Severity _severity = Severity.ERROR;
-
-        public Builder fixedOrder(List<String> fixedOrder) {
-            this._fixedOrder = fixedOrder != null ? new ArrayList<>(fixedOrder) : new ArrayList<>();
-            return this;
-        }
-
-        public Builder addFixedOrder(String blockName) {
-            this._fixedOrder.add(blockName);
-            return this;
-        }
-
-        public Builder before(List<OrderConstraint> before) {
-            this._before = before != null ? new ArrayList<>(before) : new ArrayList<>();
-            return this;
-        }
-
-        public Builder addBefore(String first, String second, Severity severity) {
-            this._before.add(OrderConstraint.of(first, second, severity));
-            return this;
-        }
-
-        public Builder after(List<OrderConstraint> after) {
-            this._after = after != null ? new ArrayList<>(after) : new ArrayList<>();
-            return this;
-        }
-
-        public Builder addAfter(String first, String second, Severity severity) {
-            this._after.add(OrderConstraint.of(first, second, severity));
-            return this;
-        }
-
-        public Builder severity(Severity severity) {
-            this._severity = Objects
-                    .requireNonNull(severity, "[" + getClass().getName() + "] severity must not be null");
-            return this;
-        }
-
-        public OrderConfig build() {
-            return new OrderConfig(this);
+            return Objects.hash(firstValue, secondValue, severityValue);
         }
     }
 
@@ -145,12 +97,12 @@ public final class OrderConfig {
         if (o == null || getClass() != o.getClass())
             return false;
         OrderConfig that = (OrderConfig) o;
-        return Objects.equals(_fixedOrder, that._fixedOrder) && Objects.equals(_before, that._before)
-                && Objects.equals(_after, that._after) && _severity == that._severity;
+        return Objects.equals(fixedOrderValue, that.fixedOrderValue) && Objects.equals(beforeValue, that.beforeValue)
+                && Objects.equals(afterValue, that.afterValue) && severityValue == that.severityValue;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(_fixedOrder, _before, _after, _severity);
+        return Objects.hash(fixedOrderValue, beforeValue, afterValue, severityValue);
     }
 }

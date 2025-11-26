@@ -2,8 +2,8 @@ package com.dataliquid.asciidoc.linter.config.output;
 
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Output.CONTEXT_LINES;
 import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Output.HIGHLIGHT_STYLE;
@@ -11,13 +11,10 @@ import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Out
 import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Output.SHOW_HEADER;
 import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Output.SHOW_LINE_NUMBERS;
 import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Output.USE_COLORS;
-import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.EMPTY;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
 /**
  * Configuration for display settings in console output.
  */
-@JsonDeserialize(builder = DisplayConfig.Builder.class)
 public final class DisplayConfig {
     private static final int DEFAULT_CONTEXT_LINES = 2;
     private static final HighlightStyle DEFAULT_HIGHLIGHT_STYLE = HighlightStyle.UNDERLINE;
@@ -26,44 +23,48 @@ public final class DisplayConfig {
     private static final int DEFAULT_MAX_LINE_WIDTH = 120;
     private static final boolean DEFAULT_SHOW_HEADER = true;
 
-    private final int _contextLines;
-    private final HighlightStyle _highlightStyle;
-    private final boolean _useColors;
-    private final boolean _showLineNumbers;
-    private final int _maxLineWidth;
-    private final boolean _showHeader;
+    private final int contextLinesValue;
+    private final HighlightStyle highlightStyleValue;
+    private final boolean useColorsValue;
+    private final boolean showLineNumbersValue;
+    private final int maxLineWidthValue;
+    private final boolean showHeaderValue;
 
-    private DisplayConfig(Builder builder) {
-        this._contextLines = builder._contextLines;
-        this._highlightStyle = builder._highlightStyle;
-        this._useColors = builder._useColors;
-        this._showLineNumbers = builder._showLineNumbers;
-        this._maxLineWidth = builder._maxLineWidth;
-        this._showHeader = builder._showHeader;
+    @JsonCreator
+    public DisplayConfig(@JsonProperty(CONTEXT_LINES) Integer contextLines,
+            @JsonProperty(HIGHLIGHT_STYLE) HighlightStyle highlightStyle, @JsonProperty(USE_COLORS) Boolean useColors,
+            @JsonProperty(SHOW_LINE_NUMBERS) Boolean showLineNumbers,
+            @JsonProperty(MAX_LINE_WIDTH) Integer maxLineWidth, @JsonProperty(SHOW_HEADER) Boolean showHeader) {
+        this.contextLinesValue = contextLines != null ? contextLines : DEFAULT_CONTEXT_LINES;
+        this.highlightStyleValue = highlightStyle != null ? highlightStyle : DEFAULT_HIGHLIGHT_STYLE;
+        this.useColorsValue = useColors != null ? useColors : DEFAULT_USE_COLORS;
+        this.showLineNumbersValue = showLineNumbers != null ? showLineNumbers : DEFAULT_SHOW_LINE_NUMBERS;
+        this.maxLineWidthValue = maxLineWidth != null ? maxLineWidth : DEFAULT_MAX_LINE_WIDTH;
+        this.showHeaderValue = showHeader != null ? showHeader : DEFAULT_SHOW_HEADER;
     }
 
     public int getContextLines() {
-        return this._contextLines;
+        return this.contextLinesValue;
     }
 
     public HighlightStyle getHighlightStyle() {
-        return this._highlightStyle;
+        return this.highlightStyleValue;
     }
 
     public boolean isUseColors() {
-        return this._useColors;
+        return this.useColorsValue;
     }
 
     public boolean isShowLineNumbers() {
-        return this._showLineNumbers;
+        return this.showLineNumbersValue;
     }
 
     public int getMaxLineWidth() {
-        return this._maxLineWidth;
+        return this.maxLineWidthValue;
     }
 
     public boolean isShowHeader() {
-        return this._showHeader;
+        return this.showHeaderValue;
     }
 
     @Override
@@ -73,70 +74,15 @@ public final class DisplayConfig {
         if (o == null || getClass() != o.getClass())
             return false;
         DisplayConfig that = (DisplayConfig) o;
-        return _contextLines == that._contextLines && _useColors == that._useColors
-                && _showLineNumbers == that._showLineNumbers && _maxLineWidth == that._maxLineWidth
-                && _showHeader == that._showHeader && _highlightStyle == that._highlightStyle;
+        return contextLinesValue == that.contextLinesValue && useColorsValue == that.useColorsValue
+                && showLineNumbersValue == that.showLineNumbersValue && maxLineWidthValue == that.maxLineWidthValue
+                && showHeaderValue == that.showHeaderValue && highlightStyleValue == that.highlightStyleValue;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(_contextLines, _highlightStyle, _useColors, _showLineNumbers, _maxLineWidth, _showHeader);
-    }
-
-    public static Builder builder() {
-        return new Builder();
-    }
-
-    @JsonPOJOBuilder(withPrefix = EMPTY)
-    public static final class Builder {
-        private int _contextLines = DEFAULT_CONTEXT_LINES;
-        private HighlightStyle _highlightStyle = DEFAULT_HIGHLIGHT_STYLE;
-        private boolean _useColors = DEFAULT_USE_COLORS;
-        private boolean _showLineNumbers = DEFAULT_SHOW_LINE_NUMBERS;
-        private int _maxLineWidth = DEFAULT_MAX_LINE_WIDTH;
-        private boolean _showHeader = DEFAULT_SHOW_HEADER;
-
-        private Builder() {
-        }
-
-        @JsonProperty(CONTEXT_LINES)
-        public Builder contextLines(int contextLines) {
-            this._contextLines = contextLines;
-            return this;
-        }
-
-        @JsonProperty(HIGHLIGHT_STYLE)
-        public Builder highlightStyle(HighlightStyle highlightStyle) {
-            this._highlightStyle = highlightStyle != null ? highlightStyle : DEFAULT_HIGHLIGHT_STYLE;
-            return this;
-        }
-
-        @JsonProperty(USE_COLORS)
-        public Builder useColors(boolean useColors) {
-            this._useColors = useColors;
-            return this;
-        }
-
-        @JsonProperty(SHOW_LINE_NUMBERS)
-        public Builder showLineNumbers(boolean showLineNumbers) {
-            this._showLineNumbers = showLineNumbers;
-            return this;
-        }
-
-        @JsonProperty(MAX_LINE_WIDTH)
-        public Builder maxLineWidth(int maxLineWidth) {
-            this._maxLineWidth = maxLineWidth;
-            return this;
-        }
-
-        @JsonProperty(SHOW_HEADER)
-        public Builder showHeader(boolean showHeader) {
-            this._showHeader = showHeader;
-            return this;
-        }
-
-        public DisplayConfig build() {
-            return new DisplayConfig(this);
-        }
+        return Objects
+                .hash(contextLinesValue, highlightStyleValue, useColorsValue, showLineNumbersValue, maxLineWidthValue,
+                        showHeaderValue);
     }
 }
