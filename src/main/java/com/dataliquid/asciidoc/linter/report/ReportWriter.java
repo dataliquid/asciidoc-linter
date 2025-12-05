@@ -162,7 +162,7 @@ public class ReportWriter {
     }
 
     private void writeToConsole(ValidationResult result, ReportFormatter formatter) {
-        try (PrintWriter writer = new PrintWriter(System.out)) { // intentional console output for reports
+        try (PrintWriter writer = new PrintWriter(new OutputStreamWriter(System.out, StandardCharsets.UTF_8))) {
             formatter.format(result, writer);
             writer.flush();
         }

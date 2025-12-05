@@ -233,29 +233,24 @@ public final class UlistBlockValidator extends AbstractBlockValidator<UlistBlock
 
     private int calculateNestingLevel(StructuralNode block) {
         int level = 0;
-        StructuralNode parent = null;
+        StructuralNode current = block;
 
-        // Get parent safely
-        if (block.getParent() instanceof StructuralNode) {
-            parent = (StructuralNode) block.getParent();
-        }
-
-        // Count parent lists
-        while (parent != null) {
+        // Traverse parent chain using for-loop pattern
+        for (StructuralNode parent = getStructuralParent(current); parent != null; parent = getStructuralParent(
+                parent)) {
             if ("ulist".equals(parent.getContext()) || "olist".equals(parent.getContext())) {
                 level++;
-            }
-            // Get next parent safely
-            if (parent.getParent() instanceof StructuralNode) {
-                parent = (StructuralNode) parent.getParent();
-            } else {
-                @SuppressWarnings("PMD.NullAssignment")
-                StructuralNode temp = null; // Loop termination condition
-                parent = temp;
             }
         }
 
         return level;
+    }
+
+    private StructuralNode getStructuralParent(StructuralNode node) {
+        if (node.getParent() instanceof StructuralNode) {
+            return (StructuralNode) node.getParent();
+        }
+        return null;
     }
 
     private String getMarkerStyle(StructuralNode block) {

@@ -54,7 +54,6 @@ public final class ErrorGroupingConfig {
     }
 
     @JsonPOJOBuilder(withPrefix = EMPTY)
-    @SuppressWarnings("PMD.AvoidFieldNameMatchingMethodName")
     public static final class Builder {
         private boolean _enabled = DEFAULT_ENABLED;
         private int _threshold = DEFAULT_THRESHOLD;

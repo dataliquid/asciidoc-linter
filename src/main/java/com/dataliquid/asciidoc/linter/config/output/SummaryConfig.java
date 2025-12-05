@@ -71,7 +71,6 @@ public final class SummaryConfig {
     }
 
     @JsonPOJOBuilder(withPrefix = EMPTY)
-    @SuppressWarnings("PMD.AvoidFieldNameMatchingMethodName")
     public static final class Builder {
         private boolean _enabled = DEFAULT_ENABLED;
         private boolean _showStatistics = DEFAULT_SHOW_STATISTICS;

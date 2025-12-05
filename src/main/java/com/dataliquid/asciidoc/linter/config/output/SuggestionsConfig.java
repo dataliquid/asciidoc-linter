@@ -62,7 +62,6 @@ public final class SuggestionsConfig {
     }
 
     @JsonPOJOBuilder(withPrefix = EMPTY)
-    @SuppressWarnings("PMD.AvoidFieldNameMatchingMethodName")
     public static final class Builder {
         private boolean _enabled = DEFAULT_ENABLED;
         private int _maxPerError = DEFAULT_MAX_PER_ERROR;
