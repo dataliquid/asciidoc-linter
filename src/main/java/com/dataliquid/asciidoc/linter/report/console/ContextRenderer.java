@@ -1,5 +1,9 @@
 package com.dataliquid.asciidoc.linter.report.console;
 
+import static com.dataliquid.asciidoc.linter.validator.RuleIds.Metadata.REQUIRED;
+import static com.dataliquid.asciidoc.linter.validator.RuleIds.Verse.AUTHOR_REQUIRED;
+import static com.dataliquid.asciidoc.linter.validator.RuleIds.Verse.ATTRIBUTION_REQUIRED;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -89,7 +93,7 @@ public class ContextRenderer {
     }
 
     private SourceContext handleEmptyFile(ValidationMessage message, SourceLocation loc) {
-        if ("metadata.required".equals(message.getRuleId()) && message.getErrorType() == ErrorType.MISSING_VALUE) {
+        if (REQUIRED.equals(message.getRuleId()) && message.getErrorType() == ErrorType.MISSING_VALUE) {
             List<SourceContext.ContextLine> lines = new ArrayList<>();
             lines.add(new SourceContext.ContextLine(1, "", true));
             return new SourceContext(lines, loc);
@@ -101,8 +105,8 @@ public class ContextRenderer {
         int endLine = Math.min(fileLines.size(), loc.getEndLine() + config.getContextLines());
 
         // For verse blocks, ensure we include the closing delimiter
-        if (("verse.author.required".equals(message.getRuleId())
-                || "verse.attribution.required".equals(message.getRuleId())) && endLine < fileLines.size()) {
+        if ((AUTHOR_REQUIRED.equals(message.getRuleId()) || ATTRIBUTION_REQUIRED.equals(message.getRuleId()))
+                && endLine < fileLines.size()) {
             endLine = Math.min(fileLines.size(), endLine + 1);
         }
 

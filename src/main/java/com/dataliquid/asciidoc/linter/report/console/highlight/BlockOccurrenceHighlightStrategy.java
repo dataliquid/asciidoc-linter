@@ -1,5 +1,7 @@
 package com.dataliquid.asciidoc.linter.report.console.highlight;
 
+import static com.dataliquid.asciidoc.linter.validator.RuleIds.Block.OCCURRENCE_MIN;
+
 import com.dataliquid.asciidoc.linter.report.console.ColorScheme;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
 
@@ -9,7 +11,7 @@ import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
  */
 public class BlockOccurrenceHighlightStrategy implements HighlightStrategy {
 
-    private static final String RULE_ID = "block.occurrence.min";
+    private static final String RULE_ID = OCCURRENCE_MIN;
 
     @Override
     public boolean supports(String ruleId) {

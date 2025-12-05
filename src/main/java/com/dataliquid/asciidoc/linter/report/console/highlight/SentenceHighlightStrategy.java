@@ -1,5 +1,8 @@
 package com.dataliquid.asciidoc.linter.report.console.highlight;
 
+import static com.dataliquid.asciidoc.linter.validator.RuleIds.Paragraph.SENTENCE_OCCURRENCE_MIN;
+import static com.dataliquid.asciidoc.linter.validator.RuleIds.Paragraph.SENTENCE_WORDS_MIN;
+
 import com.dataliquid.asciidoc.linter.report.console.ColorScheme;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
 
@@ -10,8 +13,8 @@ import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
  */
 public class SentenceHighlightStrategy implements HighlightStrategy {
 
-    private static final String OCCURRENCE_RULE = "paragraph.sentence.occurrence.min";
-    private static final String WORDS_RULE = "paragraph.sentence.words.min";
+    private static final String OCCURRENCE_RULE = SENTENCE_OCCURRENCE_MIN;
+    private static final String WORDS_RULE = SENTENCE_WORDS_MIN;
 
     @Override
     public boolean supports(String ruleId) {

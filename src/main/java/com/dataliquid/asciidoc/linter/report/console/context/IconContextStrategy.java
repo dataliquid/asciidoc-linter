@@ -1,5 +1,7 @@
 package com.dataliquid.asciidoc.linter.report.console.context;
 
+import static com.dataliquid.asciidoc.linter.validator.RuleIds.Admonition.ICON_REQUIRED;
+
 import java.util.List;
 
 import com.dataliquid.asciidoc.linter.report.console.SourceContext;
@@ -13,7 +15,7 @@ import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
  */
 public class IconContextStrategy implements ContextStrategy {
 
-    private static final String RULE_ID = "admonition.icon.required";
+    private static final String RULE_ID = ICON_REQUIRED;
 
     @Override
     public boolean supports(String ruleId, ErrorType errorType) {

@@ -1,5 +1,7 @@
 package com.dataliquid.asciidoc.linter.report.console.context;
 
+import static com.dataliquid.asciidoc.linter.validator.RuleIds.Paragraph.LINES_MIN;
+
 import java.util.List;
 
 import com.dataliquid.asciidoc.linter.report.console.SourceContext;
@@ -13,7 +15,7 @@ import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
  */
 public class ParagraphLinesContextStrategy implements ContextStrategy {
 
-    private static final String RULE_ID = "paragraph.lines.min";
+    private static final String RULE_ID = LINES_MIN;
 
     @Override
     public boolean supports(String ruleId, ErrorType errorType) {

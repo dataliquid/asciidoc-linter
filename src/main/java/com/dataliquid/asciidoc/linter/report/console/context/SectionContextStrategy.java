@@ -1,5 +1,7 @@
 package com.dataliquid.asciidoc.linter.report.console.context;
 
+import static com.dataliquid.asciidoc.linter.validator.RuleIds.Section.MIN_OCCURRENCES;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +16,7 @@ import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
  */
 public class SectionContextStrategy implements ContextStrategy {
 
-    private static final String RULE_ID = "section.min-occurrences";
+    private static final String RULE_ID = MIN_OCCURRENCES;
     private static final int DOCUMENT_TITLE_LEVEL = 0;
     private static final int FIRST_SECTION_LEVEL = 1;
 

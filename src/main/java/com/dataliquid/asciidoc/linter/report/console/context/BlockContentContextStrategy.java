@@ -1,5 +1,7 @@
 package com.dataliquid.asciidoc.linter.report.console.context;
 
+import static com.dataliquid.asciidoc.linter.validator.RuleIds.*;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -22,10 +24,10 @@ public class BlockContentContextStrategy implements ContextStrategy {
     @SuppressWarnings("PMD.UseConcurrentHashMap") // Immutable after creation, no concurrency needed
     private static Map<String, String> createRuleDelimiters() {
         Map<String, String> delimiters = new HashMap<>();
-        delimiters.put("admonition.content.required", "====");
-        delimiters.put("sidebar.content.required", "****");
-        delimiters.put("verse.content.required", "____");
-        delimiters.put("pass.content.required", "++++");
+        delimiters.put(Admonition.CONTENT_REQUIRED, "====");
+        delimiters.put(Sidebar.CONTENT_REQUIRED, "****");
+        delimiters.put(Verse.CONTENT_REQUIRED, "____");
+        delimiters.put(Pass.CONTENT_REQUIRED, "++++");
         return Collections.unmodifiableMap(delimiters);
     }
 

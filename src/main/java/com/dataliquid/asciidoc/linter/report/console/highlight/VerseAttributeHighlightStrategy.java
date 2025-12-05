@@ -1,5 +1,8 @@
 package com.dataliquid.asciidoc.linter.report.console.highlight;
 
+import static com.dataliquid.asciidoc.linter.validator.RuleIds.Verse.AUTHOR_REQUIRED;
+import static com.dataliquid.asciidoc.linter.validator.RuleIds.Verse.ATTRIBUTION_REQUIRED;
+
 import com.dataliquid.asciidoc.linter.report.console.ColorScheme;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
 
@@ -9,8 +12,8 @@ import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
  */
 public class VerseAttributeHighlightStrategy implements HighlightStrategy {
 
-    private static final String AUTHOR_RULE = "verse.author.required";
-    private static final String ATTRIBUTION_RULE = "verse.attribution.required";
+    private static final String AUTHOR_RULE = AUTHOR_REQUIRED;
+    private static final String ATTRIBUTION_RULE = ATTRIBUTION_REQUIRED;
 
     @Override
     public boolean supports(String ruleId) {

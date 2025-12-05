@@ -1,5 +1,7 @@
 package com.dataliquid.asciidoc.linter.report.console;
 
+import static com.dataliquid.asciidoc.linter.validator.RuleIds.Block.OCCURRENCE_MIN;
+
 import java.io.PrintWriter;
 import java.util.List;
 import java.util.Objects;
@@ -62,7 +64,7 @@ public class HighlightRenderer {
     }
 
     private boolean shouldRenderMultiLinePlaceholder(SourceContext.ContextLine line, ValidationMessage message) {
-        return line.isErrorLine() && line.getContent().isEmpty() && "block.occurrence.min".equals(message.getRuleId())
+        return line.isErrorLine() && line.getContent().isEmpty() && OCCURRENCE_MIN.equals(message.getRuleId())
                 && message.getMissingValueHint() != null && message.getMissingValueHint().contains("\n");
     }
 

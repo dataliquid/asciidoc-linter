@@ -1,5 +1,9 @@
 package com.dataliquid.asciidoc.linter.report.console.context;
 
+import static com.dataliquid.asciidoc.linter.validator.RuleIds.Admonition.TITLE_REQUIRED;
+import static com.dataliquid.asciidoc.linter.validator.RuleIds.Sidebar.TITLE_REQUIRED;
+import static com.dataliquid.asciidoc.linter.validator.RuleIds.Literal.TITLE_REQUIRED;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -9,6 +13,7 @@ import com.dataliquid.asciidoc.linter.report.console.SourceContext;
 import com.dataliquid.asciidoc.linter.validator.ErrorType;
 import com.dataliquid.asciidoc.linter.validator.SourceLocation;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
+import com.dataliquid.asciidoc.linter.validator.RuleIds;
 
 /**
  * Strategy for handling title required errors. Inserts an empty line before the
@@ -16,9 +21,9 @@ import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
  */
 public class TitleContextStrategy implements ContextStrategy {
 
-    private static final String ADMONITION_TITLE_RULE = "admonition.title.required";
-    private static final String SIDEBAR_TITLE_RULE = "sidebar.title.required";
-    private static final String LITERAL_TITLE_RULE = "literal.title.required";
+    private static final String ADMONITION_TITLE_RULE = RuleIds.Admonition.TITLE_REQUIRED;
+    private static final String SIDEBAR_TITLE_RULE = RuleIds.Sidebar.TITLE_REQUIRED;
+    private static final String LITERAL_TITLE_RULE = RuleIds.Literal.TITLE_REQUIRED;
 
     private static final Set<String> SUPPORTED_RULES = new HashSet<>(
             Arrays.asList(ADMONITION_TITLE_RULE, SIDEBAR_TITLE_RULE, LITERAL_TITLE_RULE));

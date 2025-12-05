@@ -1,5 +1,7 @@
 package com.dataliquid.asciidoc.linter.report.console.context;
 
+import static com.dataliquid.asciidoc.linter.validator.RuleIds.Metadata.REQUIRED;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +16,7 @@ import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
  */
 public class MetadataContextStrategy implements ContextStrategy {
 
-    private static final String RULE_ID = "metadata.required";
+    private static final String RULE_ID = REQUIRED;
 
     @Override
     public boolean supports(String ruleId, ErrorType errorType) {
