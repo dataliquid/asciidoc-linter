@@ -54,7 +54,6 @@ import com.dataliquid.asciidoc.linter.util.StringUtils;
 public final class AudioBlockValidator extends AbstractBlockValidator<AudioBlock> {
 
     // Constants for duplicate literals
-    private static final String CHARACTERS_SUFFIX = " characters";
 
     @Override
     public BlockType getSupportedType() {
@@ -347,8 +346,8 @@ public final class AudioBlockValidator extends AbstractBlockValidator<AudioBlock
                                 .ruleId(TITLE_MIN_LENGTH)
                                 .location(context.createLocation(block))
                                 .message("Audio title is too short")
-                                .actualValue(title.length() + CHARACTERS_SUFFIX)
-                                .expectedValue("At least " + titleConfig.getMinLength() + CHARACTERS_SUFFIX)
+                                .actualValue(title.length() + CHARACTERS_UNIT)
+                                .expectedValue("At least " + titleConfig.getMinLength() + CHARACTERS_UNIT)
                                 .addSuggestion(Suggestion
                                         .builder()
                                         .description("Provide a more descriptive title")
@@ -367,8 +366,8 @@ public final class AudioBlockValidator extends AbstractBlockValidator<AudioBlock
                                 .ruleId(TITLE_MAX_LENGTH)
                                 .location(context.createLocation(block))
                                 .message("Audio title is too long")
-                                .actualValue(title.length() + CHARACTERS_SUFFIX)
-                                .expectedValue("At most " + titleConfig.getMaxLength() + CHARACTERS_SUFFIX)
+                                .actualValue(title.length() + CHARACTERS_UNIT)
+                                .expectedValue("At most " + titleConfig.getMaxLength() + CHARACTERS_UNIT)
                                 .addSuggestion(Suggestion
                                         .builder()
                                         .description("Shorten the title while keeping it descriptive")

@@ -38,8 +38,6 @@ import com.dataliquid.asciidoc.linter.util.StringUtils;
  * @see BlockTypeValidator
  */
 public final class SidebarBlockValidator extends AbstractBlockValidator<SidebarBlock> {
-    private static final String CHARACTERS_UNIT = " characters";
-    private static final String LINES_UNIT = " lines";
 
     @Override
     public BlockType getSupportedType() {
