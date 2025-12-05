@@ -153,16 +153,11 @@ public class CLIRunner {
     }
 
     private int determineExitCode(ValidationResult result, Severity failLevel) {
-        switch (failLevel) {
-        case ERROR:
-            return result.hasErrors() ? 1 : 0;
-        case WARN:
-            return (result.hasErrors() || result.hasWarnings()) ? 1 : 0;
-        case INFO:
-            return result.hasMessages() ? 1 : 0;
-        default:
-            return 0;
-        }
+        return switch (failLevel) {
+        case ERROR -> result.hasErrors() ? 1 : 0;
+        case WARN -> (result.hasErrors() || result.hasWarnings()) ? 1 : 0;
+        case INFO -> result.hasMessages() ? 1 : 0;
+        };
     }
 
     private ValidationResult aggregateResults(Map<Path, ValidationResult> results) {

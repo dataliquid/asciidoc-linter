@@ -100,7 +100,6 @@ public class JsonFormatter implements ReportFormatter {
         }
     }
 
-    @SuppressWarnings("PMD.UnusedPrivateMethod")
     private Map<String, Object> formatMessage(ValidationMessage message) {
         Map<String, Object> messageMap = Collections.synchronizedMap(new LinkedHashMap<>());
 

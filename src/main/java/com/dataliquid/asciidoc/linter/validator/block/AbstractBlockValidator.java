@@ -23,6 +23,14 @@ import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
  */
 public abstract class AbstractBlockValidator<T extends Block> implements BlockTypeValidator {
 
+    // Common unit suffixes for validation messages
+    protected static final String CHARACTERS_UNIT = " characters";
+    protected static final String LINES_UNIT = " lines";
+    protected static final String WORDS_UNIT = " words";
+    protected static final String SENTENCES_UNIT = " sentences";
+    protected static final String ITEMS_UNIT = " items";
+    protected static final String SPACES_UNIT = " spaces";
+
     /**
      * Shared file content cache for accessing source file content. Used by
      * subclasses to find exact positions in source files for error reporting.
@@ -192,16 +200,16 @@ public abstract class AbstractBlockValidator<T extends Block> implements BlockTy
         StringBuilder message = new StringBuilder(fieldName);
         String ruleIdSuffix;
         String expectedValue;
-        String actualValue = actualLength + " characters";
+        String actualValue = actualLength + CHARACTERS_UNIT;
 
         if (minLength != null && actualLength < minLength) {
             message.append(" is too short");
             ruleIdSuffix = "minLength";
-            expectedValue = "At least " + minLength + " characters";
+            expectedValue = "At least " + minLength + CHARACTERS_UNIT;
         } else if (maxLength != null && actualLength > maxLength) {
             message.append(" is too long");
             ruleIdSuffix = "maxLength";
-            expectedValue = "At most " + maxLength + " characters";
+            expectedValue = "At most " + maxLength + CHARACTERS_UNIT;
         } else {
             // Should not happen, but handle gracefully
             return null;

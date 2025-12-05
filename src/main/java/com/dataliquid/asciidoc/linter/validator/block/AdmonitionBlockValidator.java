@@ -51,9 +51,6 @@ public final class AdmonitionBlockValidator extends AbstractBlockValidator<Admon
     // Constants for quote parsing
     private static final char QUOTE_CHAR = '"';
 
-    // Constants for duplicate literals
-    private static final String CHARACTERS_SUFFIX = " characters";
-
     @Override
     public BlockType getSupportedType() {
         return BlockType.ADMONITION;
@@ -258,8 +255,8 @@ public final class AdmonitionBlockValidator extends AbstractBlockValidator<Admon
                                         .fromPosition(pos)
                                         .build())
                                 .message("Admonition title is too short")
-                                .actualValue(title.length() + CHARACTERS_SUFFIX)
-                                .expectedValue("At least " + config.getMinLength() + CHARACTERS_SUFFIX)
+                                .actualValue(title.length() + CHARACTERS_UNIT)
+                                .expectedValue("At least " + config.getMinLength() + CHARACTERS_UNIT)
                                 .addSuggestion(Suggestion
                                         .builder()
                                         .description("Provide a more descriptive title")
@@ -283,8 +280,8 @@ public final class AdmonitionBlockValidator extends AbstractBlockValidator<Admon
                                         .fromPosition(pos)
                                         .build())
                                 .message("Admonition title is too long")
-                                .actualValue(title.length() + CHARACTERS_SUFFIX)
-                                .expectedValue("At most " + config.getMaxLength() + CHARACTERS_SUFFIX)
+                                .actualValue(title.length() + CHARACTERS_UNIT)
+                                .expectedValue("At most " + config.getMaxLength() + CHARACTERS_UNIT)
                                 .addSuggestion(Suggestion
                                         .builder()
                                         .description("Shorten the title while keeping it descriptive")
@@ -342,8 +339,8 @@ public final class AdmonitionBlockValidator extends AbstractBlockValidator<Admon
                             .location(
                                     SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
                             .message("Admonition content is too short")
-                            .actualValue(contentLength + CHARACTERS_SUFFIX)
-                            .expectedValue("At least " + config.getMinLength() + CHARACTERS_SUFFIX)
+                            .actualValue(contentLength + CHARACTERS_UNIT)
+                            .expectedValue("At least " + config.getMinLength() + CHARACTERS_UNIT)
                             .addSuggestion(Suggestion
                                     .builder()
                                     .description("Provide more detailed information")
@@ -364,8 +361,8 @@ public final class AdmonitionBlockValidator extends AbstractBlockValidator<Admon
                             .location(
                                     SourceLocation.builder().filename(context.getFilename()).fromPosition(pos).build())
                             .message("Admonition content is too long")
-                            .actualValue(contentLength + CHARACTERS_SUFFIX)
-                            .expectedValue("At most " + config.getMaxLength() + CHARACTERS_SUFFIX)
+                            .actualValue(contentLength + CHARACTERS_UNIT)
+                            .expectedValue("At most " + config.getMaxLength() + CHARACTERS_UNIT)
                             .addSuggestion(Suggestion
                                     .builder()
                                     .description("Condense the content or split into multiple admonitions")

@@ -130,7 +130,6 @@ public class ConsoleFormatter implements ReportFormatter {
                 .collect(Collectors.groupingBy(msg -> msg.getLocation().getFilename(), Collectors.toList()));
     }
 
-    @SuppressWarnings("PMD.UnusedPrivateMethod") // Used as method reference on line 127
     private int getMetadataAttributeOrder(ValidationMessage msg) {
         if (msg.getAttributeName().isPresent()) {
             String attr = msg.getAttributeName().get();
@@ -150,7 +149,6 @@ public class ConsoleFormatter implements ReportFormatter {
         return 0;
     }
 
-    @SuppressWarnings("PMD.UnusedPrivateMethod") // Used as method reference on line 128
     private int getBlockTypeOrder(ValidationMessage msg) {
         // Define block type priority for occurrence messages to match expected test
         // output

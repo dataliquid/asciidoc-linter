@@ -9,12 +9,12 @@
     <parent>
         <groupId>com.dataliquid</groupId>
         <artifactId>parent-oss</artifactId>
-        <version>2.3.1</version>
+        <version>2.4.0</version>
     </parent>
     
     <groupId>com.dataliquid</groupId>
     <artifactId>asciidoc-linter</artifactId>
-    <version>0.6.0-SNAPSHOT</version>
+    <version>0.7.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     
     <name>AsciiDoc Linter</name>
@@ -31,10 +31,10 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
-        <asciidoctorj.version>2.5.13</asciidoctorj.version>
-        <jackson.version>2.20.0</jackson.version>
-        <junit.version>5.13.4</junit.version>
-        <jacoco.version>0.8.13</jacoco.version>
+        <asciidoctorj.version>3.0.1</asciidoctorj.version>
+        <jackson.version>2.20.1</jackson.version>
+        <junit.version>6.0.1</junit.version>
+        <jacoco.version>0.8.14</jacoco.version>
     </properties>
     
     <dependencies>
@@ -75,26 +75,26 @@
         <dependency>
             <groupId>com.jayway.jsonpath</groupId>
             <artifactId>json-path</artifactId>
-            <version>2.9.0</version>
+            <version>2.10.0</version>
             <scope>test</scope>
         </dependency>
         
         <dependency>
             <groupId>commons-cli</groupId>
             <artifactId>commons-cli</artifactId>
-            <version>1.10.0</version>
+            <version>1.11.0</version>
         </dependency>
         
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-            <version>2.20.0</version>
+            <version>2.21.0</version>
         </dependency>
         
         <dependency>
             <groupId>com.networknt</groupId>
             <artifactId>json-schema-validator</artifactId>
-            <version>1.5.9</version>
+            <version>2.0.0</version>
         </dependency>
         
         <!-- Log4j2 dependencies -->

@@ -2,10 +2,9 @@ package com.dataliquid.asciidoc.linter.config.validation;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.networknt.schema.ValidationMessage;
+import com.networknt.schema.Error;
 
 /**
  * Result of schema validation containing validation errors.
@@ -26,19 +25,19 @@ public class RuleValidationResult {
     }
 
     /**
-     * Creates a result from networknt validation messages.
+     * Creates a result from networknt validation errors.
      */
-    public static RuleValidationResult from(Set<ValidationMessage> messages) {
-        List<ValidationError> errors = messages
+    public static RuleValidationResult from(List<Error> schemaErrors) {
+        List<ValidationError> errors = schemaErrors
                 .stream()
-                .map(RuleValidationResult::convertMessage)
+                .map(RuleValidationResult::convertError)
                 .collect(Collectors.toList());
 
         return new RuleValidationResult(errors);
     }
 
-    private static ValidationError convertMessage(ValidationMessage msg) {
-        return new ValidationError(msg.getInstanceLocation().toString(), msg.getMessage(), msg.getType());
+    private static ValidationError convertError(Error error) {
+        return new ValidationError(error.getInstanceLocation().toString(), error.getMessage(), error.getKeyword());
     }
 
     /**
