@@ -262,7 +262,7 @@ public final class DlistBlock extends AbstractBlock {
         private final Severity severity;
 
         @JsonCreator
-        @SuppressWarnings({ "PMD.ArrayIsStoredDirectly", "PMD.NullAssignment" })
+        @SuppressWarnings("PMD.NullAssignment")
         public DelimiterStyleConfig(@JsonProperty(ALLOWED_DELIMITERS) String[] allowedDelimiters,
                 @JsonProperty(CONSISTENT) Boolean consistent, @JsonProperty(SEVERITY) Severity severity) {
             this.allowedDelimiters = allowedDelimiters != null ? allowedDelimiters.clone() : null;
