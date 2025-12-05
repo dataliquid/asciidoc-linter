@@ -18,11 +18,11 @@ public abstract class AbstractBlock implements Block {
     private final OccurrenceConfig occurrence;
     private final Integer order;
 
-    protected AbstractBlock(AbstractBuilder<?> builder) {
-        this.name = builder._name;
-        this.severity = builder._severity;
-        this.occurrence = builder._occurrence;
-        this.order = builder._order;
+    protected AbstractBlock(String name, Severity severity, OccurrenceConfig occurrence, Integer order) {
+        this.name = name;
+        this.severity = Objects.requireNonNull(severity, "severity is required");
+        this.occurrence = occurrence;
+        this.order = order;
     }
 
     @Override
@@ -46,46 +46,6 @@ public abstract class AbstractBlock implements Block {
     @Override
     public Integer getOrder() {
         return order;
-    }
-
-    protected abstract static class AbstractBuilder<T extends AbstractBuilder<T>> {
-        // Constants
-        private static final String UNCHECKED_CAST_WARNING = "unchecked";
-
-        protected String _name;
-        protected Severity _severity;
-        protected OccurrenceConfig _occurrence;
-        protected Integer _order;
-
-        @JsonProperty(NAME)
-        @SuppressWarnings(UNCHECKED_CAST_WARNING)
-        public T name(String name) {
-            this._name = name;
-            return (T) this;
-        }
-
-        @JsonProperty(SEVERITY)
-        @SuppressWarnings(UNCHECKED_CAST_WARNING)
-        public T severity(Severity severity) {
-            this._severity = severity;
-            return (T) this;
-        }
-
-        @JsonProperty(OCCURRENCE)
-        @SuppressWarnings(UNCHECKED_CAST_WARNING)
-        public T occurrence(OccurrenceConfig occurrence) {
-            this._occurrence = occurrence;
-            return (T) this;
-        }
-
-        @JsonProperty(ORDER)
-        @SuppressWarnings(UNCHECKED_CAST_WARNING)
-        public T order(Integer order) {
-            this._order = order;
-            return (T) this;
-        }
-
-        public abstract AbstractBlock build();
     }
 
     @Override

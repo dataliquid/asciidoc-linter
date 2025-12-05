@@ -66,7 +66,7 @@ class ExampleBlockValidatorTest {
         @DisplayName("should pass when caption is not configured")
         void shouldPassWhenCaptionIsNotConfigured() {
             // Given
-            ExampleBlock block = ExampleBlock.builder().name("test").severity(Severity.WARN).build();
+            ExampleBlock block = new ExampleBlock("test", Severity.WARN, null, null, null, null);
 
             // When
             List<ValidationMessage> messages = validator.validate(mockNode, block, mockContext);
@@ -81,18 +81,10 @@ class ExampleBlockValidatorTest {
             // Given
             when(mockNode.getTitle()).thenReturn(null);
 
-            ExampleBlock.CaptionConfig captionConfig = ExampleBlock.CaptionConfig
-                    .builder()
-                    .required(true)
-                    .severity(Severity.ERROR)
-                    .build();
+            ExampleBlock.CaptionConfig captionConfig = new ExampleBlock.CaptionConfig(true, null, null, null,
+                    Severity.ERROR);
 
-            ExampleBlock block = ExampleBlock
-                    .builder()
-                    .name("test")
-                    .severity(Severity.WARN)
-                    .caption(captionConfig)
-                    .build();
+            ExampleBlock block = new ExampleBlock("test", Severity.WARN, null, null, captionConfig, null);
 
             // When
             List<ValidationMessage> messages = validator.validate(mockNode, block, mockContext);
@@ -109,21 +101,10 @@ class ExampleBlockValidatorTest {
             // Given
             when(mockNode.getTitle()).thenReturn("Example 1.2: Basic usage");
 
-            ExampleBlock.CaptionConfig captionConfig = ExampleBlock.CaptionConfig
-                    .builder()
-                    .required(true)
-                    .pattern("^(Example|Beispiel)\\s+\\d+\\.\\d*:.*")
-                    .minLength(15)
-                    .maxLength(100)
-                    .severity(Severity.ERROR)
-                    .build();
+            ExampleBlock.CaptionConfig captionConfig = new ExampleBlock.CaptionConfig(true,
+                    "^(Example|Beispiel)\\s+\\d+\\.\\d*:.*", 15, 100, Severity.ERROR);
 
-            ExampleBlock block = ExampleBlock
-                    .builder()
-                    .name("test")
-                    .severity(Severity.WARN)
-                    .caption(captionConfig)
-                    .build();
+            ExampleBlock block = new ExampleBlock("test", Severity.WARN, null, null, captionConfig, null);
 
             // When
             List<ValidationMessage> messages = validator.validate(mockNode, block, mockContext);
@@ -138,18 +119,10 @@ class ExampleBlockValidatorTest {
             // Given
             when(mockNode.getTitle()).thenReturn("Invalid caption format");
 
-            ExampleBlock.CaptionConfig captionConfig = ExampleBlock.CaptionConfig
-                    .builder()
-                    .pattern("^(Example|Beispiel)\\s+\\d+\\.\\d*:.*")
-                    .severity(Severity.ERROR)
-                    .build();
+            ExampleBlock.CaptionConfig captionConfig = new ExampleBlock.CaptionConfig(false,
+                    "^(Example|Beispiel)\\s+\\d+\\.\\d*:.*", null, null, Severity.ERROR);
 
-            ExampleBlock block = ExampleBlock
-                    .builder()
-                    .name("test")
-                    .severity(Severity.WARN)
-                    .caption(captionConfig)
-                    .build();
+            ExampleBlock block = new ExampleBlock("test", Severity.WARN, null, null, captionConfig, null);
 
             // When
             List<ValidationMessage> messages = validator.validate(mockNode, block, mockContext);
@@ -166,18 +139,10 @@ class ExampleBlockValidatorTest {
             // Given
             when(mockNode.getTitle()).thenReturn("Short");
 
-            ExampleBlock.CaptionConfig captionConfig = ExampleBlock.CaptionConfig
-                    .builder()
-                    .minLength(15)
-                    .severity(Severity.WARN)
-                    .build();
+            ExampleBlock.CaptionConfig captionConfig = new ExampleBlock.CaptionConfig(false, null, 15, null,
+                    Severity.WARN);
 
-            ExampleBlock block = ExampleBlock
-                    .builder()
-                    .name("test")
-                    .severity(Severity.ERROR)
-                    .caption(captionConfig)
-                    .build();
+            ExampleBlock block = new ExampleBlock("test", Severity.ERROR, null, null, captionConfig, null);
 
             // When
             List<ValidationMessage> messages = validator.validate(mockNode, block, mockContext);
@@ -195,14 +160,9 @@ class ExampleBlockValidatorTest {
             String longCaption = "A".repeat(101);
             when(mockNode.getTitle()).thenReturn(longCaption);
 
-            ExampleBlock.CaptionConfig captionConfig = ExampleBlock.CaptionConfig.builder().maxLength(100).build();
+            ExampleBlock.CaptionConfig captionConfig = new ExampleBlock.CaptionConfig(false, null, null, 100, null);
 
-            ExampleBlock block = ExampleBlock
-                    .builder()
-                    .name("test")
-                    .severity(Severity.WARN)
-                    .caption(captionConfig)
-                    .build();
+            ExampleBlock block = new ExampleBlock("test", Severity.WARN, null, null, captionConfig, null);
 
             // When
             List<ValidationMessage> messages = validator.validate(mockNode, block, mockContext);
@@ -219,14 +179,9 @@ class ExampleBlockValidatorTest {
             // Given
             when(mockNode.getTitle()).thenReturn(null);
 
-            ExampleBlock.CaptionConfig captionConfig = ExampleBlock.CaptionConfig.builder().required(true).build();
+            ExampleBlock.CaptionConfig captionConfig = new ExampleBlock.CaptionConfig(true, null, null, null, null);
 
-            ExampleBlock block = ExampleBlock
-                    .builder()
-                    .name("test")
-                    .severity(Severity.INFO)
-                    .caption(captionConfig)
-                    .build();
+            ExampleBlock block = new ExampleBlock("test", Severity.INFO, null, null, captionConfig, null);
 
             // When
             List<ValidationMessage> messages = validator.validate(mockNode, block, mockContext);
@@ -245,7 +200,7 @@ class ExampleBlockValidatorTest {
         @DisplayName("should pass when collapsible is not configured")
         void shouldPassWhenCollapsibleIsNotConfigured() {
             // Given
-            ExampleBlock block = ExampleBlock.builder().name("test").severity(Severity.WARN).build();
+            ExampleBlock block = new ExampleBlock("test", Severity.WARN, null, null, null, null);
 
             // When
             List<ValidationMessage> messages = validator.validate(mockNode, block, mockContext);
@@ -261,18 +216,10 @@ class ExampleBlockValidatorTest {
             when(mockNode.getAttribute("collapsible-option")).thenReturn(null);
             when(mockNode.getAttribute("collapsible")).thenReturn(null);
 
-            ExampleBlock.CollapsibleConfig collapsibleConfig = ExampleBlock.CollapsibleConfig
-                    .builder()
-                    .required(true)
-                    .severity(Severity.ERROR)
-                    .build();
+            ExampleBlock.CollapsibleConfig collapsibleConfig = new ExampleBlock.CollapsibleConfig(true, null,
+                    Severity.ERROR);
 
-            ExampleBlock block = ExampleBlock
-                    .builder()
-                    .name("test")
-                    .severity(Severity.WARN)
-                    .collapsible(collapsibleConfig)
-                    .build();
+            ExampleBlock block = new ExampleBlock("test", Severity.WARN, null, null, null, collapsibleConfig);
 
             // When
             List<ValidationMessage> messages = validator.validate(mockNode, block, mockContext);
@@ -289,17 +236,10 @@ class ExampleBlockValidatorTest {
             // Given
             when(mockNode.getAttribute("collapsible-option")).thenReturn(true);
 
-            ExampleBlock.CollapsibleConfig collapsibleConfig = ExampleBlock.CollapsibleConfig
-                    .builder()
-                    .allowed(Arrays.asList(true, false))
-                    .build();
+            ExampleBlock.CollapsibleConfig collapsibleConfig = new ExampleBlock.CollapsibleConfig(false,
+                    Arrays.asList(true, false), null);
 
-            ExampleBlock block = ExampleBlock
-                    .builder()
-                    .name("test")
-                    .severity(Severity.WARN)
-                    .collapsible(collapsibleConfig)
-                    .build();
+            ExampleBlock block = new ExampleBlock("test", Severity.WARN, null, null, null, collapsibleConfig);
 
             // When
             List<ValidationMessage> messages = validator.validate(mockNode, block, mockContext);
@@ -314,17 +254,10 @@ class ExampleBlockValidatorTest {
             // Given
             when(mockNode.getAttribute("collapsible-option")).thenReturn("true");
 
-            ExampleBlock.CollapsibleConfig collapsibleConfig = ExampleBlock.CollapsibleConfig
-                    .builder()
-                    .allowed(Arrays.asList(true, false))
-                    .build();
+            ExampleBlock.CollapsibleConfig collapsibleConfig = new ExampleBlock.CollapsibleConfig(false,
+                    Arrays.asList(true, false), null);
 
-            ExampleBlock block = ExampleBlock
-                    .builder()
-                    .name("test")
-                    .severity(Severity.WARN)
-                    .collapsible(collapsibleConfig)
-                    .build();
+            ExampleBlock block = new ExampleBlock("test", Severity.WARN, null, null, null, collapsibleConfig);
 
             // When
             List<ValidationMessage> messages = validator.validate(mockNode, block, mockContext);
@@ -339,17 +272,10 @@ class ExampleBlockValidatorTest {
             // Given
             when(mockNode.getAttribute("collapsible")).thenReturn("yes");
 
-            ExampleBlock.CollapsibleConfig collapsibleConfig = ExampleBlock.CollapsibleConfig
-                    .builder()
-                    .allowed(Arrays.asList(true, false))
-                    .build();
+            ExampleBlock.CollapsibleConfig collapsibleConfig = new ExampleBlock.CollapsibleConfig(false,
+                    Arrays.asList(true, false), null);
 
-            ExampleBlock block = ExampleBlock
-                    .builder()
-                    .name("test")
-                    .severity(Severity.WARN)
-                    .collapsible(collapsibleConfig)
-                    .build();
+            ExampleBlock block = new ExampleBlock("test", Severity.WARN, null, null, null, collapsibleConfig);
 
             // When
             List<ValidationMessage> messages = validator.validate(mockNode, block, mockContext);
@@ -364,18 +290,10 @@ class ExampleBlockValidatorTest {
             // Given
             when(mockNode.getAttribute("collapsible-option")).thenReturn("invalid");
 
-            ExampleBlock.CollapsibleConfig collapsibleConfig = ExampleBlock.CollapsibleConfig
-                    .builder()
-                    .allowed(Arrays.asList(true, false))
-                    .severity(Severity.INFO)
-                    .build();
+            ExampleBlock.CollapsibleConfig collapsibleConfig = new ExampleBlock.CollapsibleConfig(false,
+                    Arrays.asList(true, false), Severity.INFO);
 
-            ExampleBlock block = ExampleBlock
-                    .builder()
-                    .name("test")
-                    .severity(Severity.WARN)
-                    .collapsible(collapsibleConfig)
-                    .build();
+            ExampleBlock block = new ExampleBlock("test", Severity.WARN, null, null, null, collapsibleConfig);
 
             // When
             List<ValidationMessage> messages = validator.validate(mockNode, block, mockContext);
@@ -392,17 +310,9 @@ class ExampleBlockValidatorTest {
             // Given
             when(mockNode.getAttribute("collapsible-option")).thenReturn(null);
 
-            ExampleBlock.CollapsibleConfig collapsibleConfig = ExampleBlock.CollapsibleConfig
-                    .builder()
-                    .required(true)
-                    .build();
+            ExampleBlock.CollapsibleConfig collapsibleConfig = new ExampleBlock.CollapsibleConfig(true, null, null);
 
-            ExampleBlock block = ExampleBlock
-                    .builder()
-                    .name("test")
-                    .severity(Severity.ERROR)
-                    .collapsible(collapsibleConfig)
-                    .build();
+            ExampleBlock block = new ExampleBlock("test", Severity.ERROR, null, null, null, collapsibleConfig);
 
             // When
             List<ValidationMessage> messages = validator.validate(mockNode, block, mockContext);
@@ -420,20 +330,11 @@ class ExampleBlockValidatorTest {
         when(mockNode.getTitle()).thenReturn(null);
         when(mockNode.getAttribute("collapsible-option")).thenReturn(null);
 
-        ExampleBlock.CaptionConfig captionConfig = ExampleBlock.CaptionConfig.builder().required(true).build();
+        ExampleBlock.CaptionConfig captionConfig = new ExampleBlock.CaptionConfig(true, null, null, null, null);
 
-        ExampleBlock.CollapsibleConfig collapsibleConfig = ExampleBlock.CollapsibleConfig
-                .builder()
-                .required(true)
-                .build();
+        ExampleBlock.CollapsibleConfig collapsibleConfig = new ExampleBlock.CollapsibleConfig(true, null, null);
 
-        ExampleBlock block = ExampleBlock
-                .builder()
-                .name("test")
-                .severity(Severity.WARN)
-                .caption(captionConfig)
-                .collapsible(collapsibleConfig)
-                .build();
+        ExampleBlock block = new ExampleBlock("test", Severity.WARN, null, null, captionConfig, collapsibleConfig);
 
         // When
         List<ValidationMessage> messages = validator.validate(mockNode, block, mockContext);

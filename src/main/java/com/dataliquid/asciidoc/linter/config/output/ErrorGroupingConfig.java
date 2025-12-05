@@ -2,36 +2,34 @@ package com.dataliquid.asciidoc.linter.config.output;
 
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.ENABLED;
 import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.THRESHOLD;
-import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.EMPTY;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
 /**
  * Configuration for grouping similar errors in console output.
  */
-@JsonDeserialize(builder = ErrorGroupingConfig.Builder.class)
 public final class ErrorGroupingConfig {
     private static final boolean DEFAULT_ENABLED = true;
     private static final int DEFAULT_THRESHOLD = 3;
 
-    private final boolean enabled;
-    private final int threshold;
+    private final boolean enabledValue;
+    private final int thresholdValue;
 
-    private ErrorGroupingConfig(Builder builder) {
-        this.enabled = builder._enabled;
-        this.threshold = builder._threshold;
+    @JsonCreator
+    public ErrorGroupingConfig(@JsonProperty(ENABLED) Boolean enabled, @JsonProperty(THRESHOLD) Integer threshold) {
+        this.enabledValue = enabled != null ? enabled : DEFAULT_ENABLED;
+        this.thresholdValue = threshold != null ? threshold : DEFAULT_THRESHOLD;
     }
 
     public boolean isEnabled() {
-        return this.enabled;
+        return this.enabledValue;
     }
 
     public int getThreshold() {
-        return this.threshold;
+        return this.thresholdValue;
     }
 
     @Override
@@ -41,40 +39,11 @@ public final class ErrorGroupingConfig {
         if (o == null || getClass() != o.getClass())
             return false;
         ErrorGroupingConfig that = (ErrorGroupingConfig) o;
-        return enabled == that.enabled && threshold == that.threshold;
+        return enabledValue == that.enabledValue && thresholdValue == that.thresholdValue;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(enabled, threshold);
-    }
-
-    public static Builder builder() {
-        return new Builder();
-    }
-
-    @JsonPOJOBuilder(withPrefix = EMPTY)
-    public static final class Builder {
-        private boolean _enabled = DEFAULT_ENABLED;
-        private int _threshold = DEFAULT_THRESHOLD;
-
-        private Builder() {
-        }
-
-        @JsonProperty(ENABLED)
-        public Builder enabled(boolean enabled) {
-            this._enabled = enabled;
-            return this;
-        }
-
-        @JsonProperty(THRESHOLD)
-        public Builder threshold(int threshold) {
-            this._threshold = threshold;
-            return this;
-        }
-
-        public ErrorGroupingConfig build() {
-            return new ErrorGroupingConfig(this);
-        }
+        return Objects.hash(enabledValue, thresholdValue);
     }
 }

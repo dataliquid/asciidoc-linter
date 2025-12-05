@@ -29,34 +29,15 @@ class LiteralBlockTest {
         @DisplayName("should create LiteralBlock with builder")
         void shouldCreateLiteralBlockWithBuilder() {
             // Given
-            TitleConfig titleConfig = TitleConfig
-                    .builder()
-                    .required(false)
-                    .minLength(5)
-                    .maxLength(50)
-                    .severity(Severity.INFO)
-                    .build();
+            TitleConfig titleConfig = new TitleConfig(false, 5, 50, Severity.INFO);
 
-            LinesConfig linesConfig = LinesConfig.builder().min(1).max(50).severity(Severity.WARN).build();
+            LinesConfig linesConfig = new LinesConfig(1, 50, Severity.WARN);
 
-            IndentationConfig indentationConfig = IndentationConfig
-                    .builder()
-                    .required(false)
-                    .consistent(true)
-                    .minSpaces(0)
-                    .maxSpaces(8)
-                    .severity(Severity.INFO)
-                    .build();
+            IndentationConfig indentationConfig = new IndentationConfig(false, true, 0, 8, Severity.INFO);
 
             // When
-            LiteralBlock block = LiteralBlock
-                    .builder()
-                    .name("Config Example")
-                    .severity(Severity.INFO)
-                    .title(titleConfig)
-                    .lines(linesConfig)
-                    .indentation(indentationConfig)
-                    .build();
+            LiteralBlock block = new LiteralBlock("Config Example", Severity.INFO, null, null, titleConfig, linesConfig,
+                    indentationConfig);
 
             // Then
             assertNotNull(block);
@@ -71,20 +52,21 @@ class LiteralBlockTest {
         @Test
         @DisplayName("should require severity")
         void shouldRequireSeverity() {
-            assertThrows(NullPointerException.class, () -> LiteralBlock.builder().name("Invalid Block").build());
+            assertThrows(NullPointerException.class,
+                    () -> new LiteralBlock("Invalid Block", null, null, null, null, null, null));
         }
 
         @Test
         @DisplayName("should support equals and hashCode")
         void shouldSupportEqualsAndHashCode() {
             // Given
-            TitleConfig titleConfig = TitleConfig.builder().required(true).severity(Severity.INFO).build();
+            TitleConfig titleConfig = new TitleConfig(true, null, null, Severity.INFO);
 
-            LiteralBlock block1 = LiteralBlock.builder().severity(Severity.WARN).title(titleConfig).build();
+            LiteralBlock block1 = new LiteralBlock(null, Severity.WARN, null, null, titleConfig, null, null);
 
-            LiteralBlock block2 = LiteralBlock.builder().severity(Severity.WARN).title(titleConfig).build();
+            LiteralBlock block2 = new LiteralBlock(null, Severity.WARN, null, null, titleConfig, null, null);
 
-            LiteralBlock block3 = LiteralBlock.builder().severity(Severity.ERROR).title(titleConfig).build();
+            LiteralBlock block3 = new LiteralBlock(null, Severity.ERROR, null, null, titleConfig, null, null);
 
             // Then
             assertEquals(block1, block2);
@@ -101,13 +83,7 @@ class LiteralBlockTest {
         @DisplayName("should create TitleConfig with builder")
         void shouldCreateTitleConfigWithBuilder() {
             // When
-            TitleConfig config = TitleConfig
-                    .builder()
-                    .required(false)
-                    .minLength(5)
-                    .maxLength(50)
-                    .severity(Severity.INFO)
-                    .build();
+            TitleConfig config = new TitleConfig(false, 5, 50, Severity.INFO);
 
             // Then
             assertFalse(config.isRequired());
@@ -120,7 +96,7 @@ class LiteralBlockTest {
         @DisplayName("should handle optional fields")
         void shouldHandleOptionalFields() {
             // When
-            TitleConfig config = TitleConfig.builder().required(true).severity(Severity.ERROR).build();
+            TitleConfig config = new TitleConfig(true, null, null, Severity.ERROR);
 
             // Then
             assertTrue(config.isRequired());
@@ -133,29 +109,11 @@ class LiteralBlockTest {
         @DisplayName("should support equals and hashCode")
         void shouldSupportEqualsAndHashCode() {
             // Given
-            TitleConfig config1 = TitleConfig
-                    .builder()
-                    .required(false)
-                    .minLength(10)
-                    .maxLength(100)
-                    .severity(Severity.WARN)
-                    .build();
+            TitleConfig config1 = new TitleConfig(false, 10, 100, Severity.WARN);
 
-            TitleConfig config2 = TitleConfig
-                    .builder()
-                    .required(false)
-                    .minLength(10)
-                    .maxLength(100)
-                    .severity(Severity.WARN)
-                    .build();
+            TitleConfig config2 = new TitleConfig(false, 10, 100, Severity.WARN);
 
-            TitleConfig config3 = TitleConfig
-                    .builder()
-                    .required(true)
-                    .minLength(10)
-                    .maxLength(100)
-                    .severity(Severity.WARN)
-                    .build();
+            TitleConfig config3 = new TitleConfig(true, 10, 100, Severity.WARN);
 
             // Then
             assertEquals(config1, config2);
@@ -172,7 +130,7 @@ class LiteralBlockTest {
         @DisplayName("should create LinesConfig with builder")
         void shouldCreateLinesConfigWithBuilder() {
             // When
-            LinesConfig config = LinesConfig.builder().min(1).max(50).severity(Severity.WARN).build();
+            LinesConfig config = new LinesConfig(1, 50, Severity.WARN);
 
             // Then
             assertEquals(1, config.getMin());
@@ -184,7 +142,7 @@ class LiteralBlockTest {
         @DisplayName("should handle optional fields")
         void shouldHandleOptionalFields() {
             // When
-            LinesConfig config = LinesConfig.builder().severity(Severity.INFO).build();
+            LinesConfig config = new LinesConfig(null, null, Severity.INFO);
 
             // Then
             assertNull(config.getMin());
@@ -196,11 +154,11 @@ class LiteralBlockTest {
         @DisplayName("should support equals and hashCode")
         void shouldSupportEqualsAndHashCode() {
             // Given
-            LinesConfig config1 = LinesConfig.builder().min(5).max(100).severity(Severity.ERROR).build();
+            LinesConfig config1 = new LinesConfig(5, 100, Severity.ERROR);
 
-            LinesConfig config2 = LinesConfig.builder().min(5).max(100).severity(Severity.ERROR).build();
+            LinesConfig config2 = new LinesConfig(5, 100, Severity.ERROR);
 
-            LinesConfig config3 = LinesConfig.builder().min(10).max(100).severity(Severity.ERROR).build();
+            LinesConfig config3 = new LinesConfig(10, 100, Severity.ERROR);
 
             // Then
             assertEquals(config1, config2);
@@ -217,14 +175,7 @@ class LiteralBlockTest {
         @DisplayName("should create IndentationConfig with builder")
         void shouldCreateIndentationConfigWithBuilder() {
             // When
-            IndentationConfig config = IndentationConfig
-                    .builder()
-                    .required(false)
-                    .consistent(true)
-                    .minSpaces(0)
-                    .maxSpaces(8)
-                    .severity(Severity.INFO)
-                    .build();
+            IndentationConfig config = new IndentationConfig(false, true, 0, 8, Severity.INFO);
 
             // Then
             assertFalse(config.isRequired());
@@ -238,7 +189,7 @@ class LiteralBlockTest {
         @DisplayName("should handle default boolean values")
         void shouldHandleDefaultBooleanValues() {
             // When
-            IndentationConfig config = IndentationConfig.builder().severity(Severity.WARN).build();
+            IndentationConfig config = new IndentationConfig(false, false, null, null, Severity.WARN);
 
             // Then
             assertFalse(config.isRequired());
@@ -252,32 +203,11 @@ class LiteralBlockTest {
         @DisplayName("should support equals and hashCode")
         void shouldSupportEqualsAndHashCode() {
             // Given
-            IndentationConfig config1 = IndentationConfig
-                    .builder()
-                    .required(true)
-                    .consistent(true)
-                    .minSpaces(2)
-                    .maxSpaces(4)
-                    .severity(Severity.ERROR)
-                    .build();
+            IndentationConfig config1 = new IndentationConfig(true, true, 2, 4, Severity.ERROR);
 
-            IndentationConfig config2 = IndentationConfig
-                    .builder()
-                    .required(true)
-                    .consistent(true)
-                    .minSpaces(2)
-                    .maxSpaces(4)
-                    .severity(Severity.ERROR)
-                    .build();
+            IndentationConfig config2 = new IndentationConfig(true, true, 2, 4, Severity.ERROR);
 
-            IndentationConfig config3 = IndentationConfig
-                    .builder()
-                    .required(true)
-                    .consistent(false)
-                    .minSpaces(2)
-                    .maxSpaces(4)
-                    .severity(Severity.ERROR)
-                    .build();
+            IndentationConfig config3 = new IndentationConfig(true, false, 2, 4, Severity.ERROR);
 
             // Then
             assertEquals(config1, config2);
@@ -294,10 +224,10 @@ class LiteralBlockTest {
         @DisplayName("should inherit occurrence from AbstractBlock")
         void shouldInheritOccurrenceFromAbstractBlock() {
             // Given
-            OccurrenceConfig occurrence = OccurrenceConfig.builder().min(0).max(3).severity(Severity.INFO).build();
+            OccurrenceConfig occurrence = new OccurrenceConfig(null, 0, 3, Severity.INFO);
 
             // When
-            LiteralBlock block = LiteralBlock.builder().severity(Severity.INFO).occurrence(occurrence).build();
+            LiteralBlock block = new LiteralBlock(null, Severity.INFO, occurrence, null, null, null, null);
 
             // Then
             assertEquals(occurrence, block.getOccurrence());
@@ -307,37 +237,17 @@ class LiteralBlockTest {
         @DisplayName("should support full configuration")
         void shouldSupportFullConfiguration() {
             // Given
-            TitleConfig titleConfig = TitleConfig
-                    .builder()
-                    .required(false)
-                    .minLength(5)
-                    .maxLength(50)
-                    .severity(Severity.INFO)
-                    .build();
+            TitleConfig titleConfig = new TitleConfig(false, 5, 50, Severity.INFO);
 
-            LinesConfig linesConfig = LinesConfig.builder().min(1).max(50).severity(Severity.WARN).build();
+            LinesConfig linesConfig = new LinesConfig(1, 50, Severity.WARN);
 
-            IndentationConfig indentationConfig = IndentationConfig
-                    .builder()
-                    .required(false)
-                    .consistent(true)
-                    .minSpaces(0)
-                    .maxSpaces(8)
-                    .severity(Severity.INFO)
-                    .build();
+            IndentationConfig indentationConfig = new IndentationConfig(false, true, 0, 8, Severity.INFO);
 
-            OccurrenceConfig occurrence = OccurrenceConfig.builder().min(0).max(3).severity(Severity.INFO).build();
+            OccurrenceConfig occurrence = new OccurrenceConfig(null, 0, 3, Severity.INFO);
 
             // When
-            LiteralBlock block = LiteralBlock
-                    .builder()
-                    .name("Literal Block")
-                    .severity(Severity.INFO)
-                    .occurrence(occurrence)
-                    .title(titleConfig)
-                    .lines(linesConfig)
-                    .indentation(indentationConfig)
-                    .build();
+            LiteralBlock block = new LiteralBlock("Literal Block", Severity.INFO, occurrence, null, titleConfig,
+                    linesConfig, indentationConfig);
 
             // Then
             assertEquals("Literal Block", block.getName());

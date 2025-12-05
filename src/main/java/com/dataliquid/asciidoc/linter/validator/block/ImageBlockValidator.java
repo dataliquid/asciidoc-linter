@@ -16,6 +16,8 @@ import com.dataliquid.asciidoc.linter.validator.PlaceholderContext;
 import static com.dataliquid.asciidoc.linter.validator.RuleIds.Image.*;
 import com.dataliquid.asciidoc.linter.validator.SourceLocation;
 import com.dataliquid.asciidoc.linter.validator.Suggestion;
+import com.dataliquid.asciidoc.linter.util.MediaMacroPositionFinder;
+import com.dataliquid.asciidoc.linter.util.StringConstants;
 import com.dataliquid.asciidoc.linter.util.StringUtils;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
 import org.apache.logging.log4j.LogManager;
@@ -51,7 +53,6 @@ import org.apache.logging.log4j.Logger;
  */
 public final class ImageBlockValidator extends AbstractBlockValidator<ImageBlock> {
 
-    // Constants for duplicate literals
     private static final Logger logger = LogManager.getLogger(ImageBlockValidator.class);
 
     @Override
@@ -354,8 +355,9 @@ public final class ImageBlockValidator extends AbstractBlockValidator<ImageBlock
                                         .fromPosition(pos)
                                         .build())
                                 .message("Image alt text is too short")
-                                .actualValue(altText.length() + CHARACTERS_UNIT)
-                                .expectedValue("At least " + altConfig.getMinLength() + CHARACTERS_UNIT)
+                                .actualValue(altText.length() + StringConstants.CHARACTERS_SUFFIX)
+                                .expectedValue(
+                                        "At least " + altConfig.getMinLength() + StringConstants.CHARACTERS_SUFFIX)
                                 .addSuggestion(Suggestion
                                         .builder()
                                         .description("Provide more descriptive alt text")
@@ -380,8 +382,9 @@ public final class ImageBlockValidator extends AbstractBlockValidator<ImageBlock
                                         .fromPosition(pos)
                                         .build())
                                 .message("Image alt text is too long")
-                                .actualValue(altText.length() + CHARACTERS_UNIT)
-                                .expectedValue("At most " + altConfig.getMaxLength() + CHARACTERS_UNIT)
+                                .actualValue(altText.length() + StringConstants.CHARACTERS_SUFFIX)
+                                .expectedValue(
+                                        "At most " + altConfig.getMaxLength() + StringConstants.CHARACTERS_SUFFIX)
                                 .addSuggestion(Suggestion
                                         .builder()
                                         .description("Shorten the alt text while keeping it descriptive")
@@ -447,40 +450,7 @@ public final class ImageBlockValidator extends AbstractBlockValidator<ImageBlock
      * Finds the column position of URL in image macro.
      */
     private SourcePosition findSourcePosition(StructuralNode block, BlockValidationContext context, String url) {
-        List<String> fileLines = fileCache.getFileLines(context.getFilename());
-        if (fileLines.isEmpty() || block.getSourceLocation() == null) {
-            return new SourcePosition(1, 1,
-                    block.getSourceLocation() != null ? block.getSourceLocation().getLineNumber() : 1);
-        }
-
-        int lineNum = block.getSourceLocation().getLineNumber();
-        if (lineNum <= 0 || lineNum > fileLines.size()) {
-            return new SourcePosition(1, 1, lineNum);
-        }
-
-        String sourceLine = fileLines.get(lineNum - 1);
-
-        // Look for image:: macro pattern
-        int imageStart = sourceLine.indexOf("image::");
-        if (imageStart >= 0) {
-            int urlEnd = sourceLine.indexOf('[', imageStart);
-            if (urlEnd == -1) {
-                urlEnd = sourceLine.length();
-            }
-
-            if (url != null && !url.isEmpty()) {
-                // Find the specific URL position
-                int urlStart = sourceLine.indexOf(url, imageStart + 7);
-                if (urlStart > imageStart && urlStart < urlEnd) {
-                    return new SourcePosition(urlStart + 1, urlStart + url.length(), lineNum);
-                }
-            } else {
-                // No URL - position after "image::"
-                return new SourcePosition(imageStart + 8, imageStart + 8, lineNum);
-            }
-        }
-
-        return new SourcePosition(1, 1, lineNum);
+        return MediaMacroPositionFinder.findMacroUrlPosition(block, context, "image", url, fileCache);
     }
 
     /**

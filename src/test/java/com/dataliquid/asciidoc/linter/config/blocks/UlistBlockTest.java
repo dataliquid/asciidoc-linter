@@ -23,28 +23,13 @@ class UlistBlockTest {
         @DisplayName("should build UlistBlock with all attributes")
         void shouldBuildUlistBlockWithAllAttributes() {
             // Given
-            UlistBlock.ItemsConfig itemsConfig = UlistBlock.ItemsConfig
-                    .builder()
-                    .min(2)
-                    .max(10)
-                    .severity(Severity.ERROR)
-                    .build();
+            UlistBlock.ItemsConfig itemsConfig = new UlistBlock.ItemsConfig(2, 10, Severity.ERROR);
 
-            UlistBlock.NestingLevelConfig nestingConfig = UlistBlock.NestingLevelConfig
-                    .builder()
-                    .max(3)
-                    .severity(Severity.WARN)
-                    .build();
+            UlistBlock.NestingLevelConfig nestingConfig = new UlistBlock.NestingLevelConfig(3, Severity.WARN);
 
             // When
-            UlistBlock ulist = UlistBlock
-                    .builder()
-                    .name("requirements-list")
-                    .severity(Severity.ERROR)
-                    .items(itemsConfig)
-                    .nestingLevel(nestingConfig)
-                    .markerStyle("*")
-                    .build();
+            UlistBlock ulist = new UlistBlock("requirements-list", Severity.ERROR, null, null, itemsConfig,
+                    nestingConfig, "*");
 
             // Then
             assertEquals("requirements-list", ulist.getName());
@@ -66,7 +51,7 @@ class UlistBlockTest {
         @DisplayName("should build UlistBlock with minimal attributes")
         void shouldBuildUlistBlockWithMinimalAttributes() {
             // When
-            UlistBlock ulist = UlistBlock.builder().severity(Severity.WARN).build();
+            UlistBlock ulist = new UlistBlock(null, Severity.WARN, null, null, null, null, null);
 
             // Then
             assertNull(ulist.getName());
@@ -81,7 +66,7 @@ class UlistBlockTest {
         void shouldRequireSeverity() {
             // When & Then
             assertThrows(NullPointerException.class, () -> {
-                UlistBlock.builder().build();
+                new UlistBlock(null, null, null, null, null, null, null);
             });
         }
     }
@@ -94,12 +79,7 @@ class UlistBlockTest {
         @DisplayName("should create ItemsConfig with min and max")
         void shouldCreateItemsConfigWithMinAndMax() {
             // When
-            UlistBlock.ItemsConfig itemsConfig = UlistBlock.ItemsConfig
-                    .builder()
-                    .min(1)
-                    .max(5)
-                    .severity(Severity.ERROR)
-                    .build();
+            UlistBlock.ItemsConfig itemsConfig = new UlistBlock.ItemsConfig(1, 5, Severity.ERROR);
 
             // Then
             assertEquals(1, itemsConfig.getMin());
@@ -111,7 +91,7 @@ class UlistBlockTest {
         @DisplayName("should create ItemsConfig with only min")
         void shouldCreateItemsConfigWithOnlyMin() {
             // When
-            UlistBlock.ItemsConfig itemsConfig = UlistBlock.ItemsConfig.builder().min(3).build();
+            UlistBlock.ItemsConfig itemsConfig = new UlistBlock.ItemsConfig(3, null, null);
 
             // Then
             assertEquals(3, itemsConfig.getMin());
@@ -123,7 +103,7 @@ class UlistBlockTest {
         @DisplayName("should create ItemsConfig with only max")
         void shouldCreateItemsConfigWithOnlyMax() {
             // When
-            UlistBlock.ItemsConfig itemsConfig = UlistBlock.ItemsConfig.builder().max(10).build();
+            UlistBlock.ItemsConfig itemsConfig = new UlistBlock.ItemsConfig(null, 10, null);
 
             // Then
             assertNull(itemsConfig.getMin());
@@ -140,11 +120,7 @@ class UlistBlockTest {
         @DisplayName("should create NestingLevelConfig with max")
         void shouldCreateNestingLevelConfigWithMax() {
             // When
-            UlistBlock.NestingLevelConfig nestingConfig = UlistBlock.NestingLevelConfig
-                    .builder()
-                    .max(2)
-                    .severity(Severity.WARN)
-                    .build();
+            UlistBlock.NestingLevelConfig nestingConfig = new UlistBlock.NestingLevelConfig(2, Severity.WARN);
 
             // Then
             assertEquals(2, nestingConfig.getMax());
@@ -155,7 +131,7 @@ class UlistBlockTest {
         @DisplayName("should create NestingLevelConfig without severity")
         void shouldCreateNestingLevelConfigWithoutSeverity() {
             // When
-            UlistBlock.NestingLevelConfig nestingConfig = UlistBlock.NestingLevelConfig.builder().max(4).build();
+            UlistBlock.NestingLevelConfig nestingConfig = new UlistBlock.NestingLevelConfig(4, null);
 
             // Then
             assertEquals(4, nestingConfig.getMax());
@@ -171,56 +147,20 @@ class UlistBlockTest {
         @DisplayName("should correctly implement equals and hashCode")
         void shouldCorrectlyImplementEqualsAndHashCode() {
             // Given
-            UlistBlock.ItemsConfig items1 = UlistBlock.ItemsConfig
-                    .builder()
-                    .min(1)
-                    .max(5)
-                    .severity(Severity.ERROR)
-                    .build();
+            UlistBlock.ItemsConfig items1 = new UlistBlock.ItemsConfig(1, 5, Severity.ERROR);
 
-            UlistBlock.ItemsConfig items2 = UlistBlock.ItemsConfig
-                    .builder()
-                    .min(1)
-                    .max(5)
-                    .severity(Severity.ERROR)
-                    .build();
+            UlistBlock.ItemsConfig items2 = new UlistBlock.ItemsConfig(1, 5, Severity.ERROR);
 
-            UlistBlock.NestingLevelConfig nesting1 = UlistBlock.NestingLevelConfig
-                    .builder()
-                    .max(2)
-                    .severity(Severity.WARN)
-                    .build();
+            UlistBlock.NestingLevelConfig nesting1 = new UlistBlock.NestingLevelConfig(2, Severity.WARN);
 
-            UlistBlock.NestingLevelConfig nesting2 = UlistBlock.NestingLevelConfig
-                    .builder()
-                    .max(2)
-                    .severity(Severity.WARN)
-                    .build();
+            UlistBlock.NestingLevelConfig nesting2 = new UlistBlock.NestingLevelConfig(2, Severity.WARN);
 
             // When
-            UlistBlock ulist1 = UlistBlock
-                    .builder()
-                    .severity(Severity.ERROR)
-                    .items(items1)
-                    .nestingLevel(nesting1)
-                    .markerStyle("*")
-                    .build();
+            UlistBlock ulist1 = new UlistBlock(null, Severity.ERROR, null, null, items1, nesting1, "*");
 
-            UlistBlock ulist2 = UlistBlock
-                    .builder()
-                    .severity(Severity.ERROR)
-                    .items(items2)
-                    .nestingLevel(nesting2)
-                    .markerStyle("*")
-                    .build();
+            UlistBlock ulist2 = new UlistBlock(null, Severity.ERROR, null, null, items2, nesting2, "*");
 
-            UlistBlock ulist3 = UlistBlock
-                    .builder()
-                    .severity(Severity.WARN)
-                    .items(items1)
-                    .nestingLevel(nesting1)
-                    .markerStyle("*")
-                    .build();
+            UlistBlock ulist3 = new UlistBlock(null, Severity.WARN, null, null, items1, nesting1, "*");
 
             // Then
             assertEquals(ulist1, ulist2);
@@ -233,31 +173,13 @@ class UlistBlockTest {
         @DisplayName("should test inner class equals and hashCode")
         void shouldTestInnerClassEqualsAndHashCode() {
             // Given
-            UlistBlock.ItemsConfig items1 = UlistBlock.ItemsConfig
-                    .builder()
-                    .min(2)
-                    .max(8)
-                    .severity(Severity.ERROR)
-                    .build();
+            UlistBlock.ItemsConfig items1 = new UlistBlock.ItemsConfig(2, 8, Severity.ERROR);
 
-            UlistBlock.ItemsConfig items2 = UlistBlock.ItemsConfig
-                    .builder()
-                    .min(2)
-                    .max(8)
-                    .severity(Severity.ERROR)
-                    .build();
+            UlistBlock.ItemsConfig items2 = new UlistBlock.ItemsConfig(2, 8, Severity.ERROR);
 
-            UlistBlock.NestingLevelConfig nesting1 = UlistBlock.NestingLevelConfig
-                    .builder()
-                    .max(3)
-                    .severity(Severity.INFO)
-                    .build();
+            UlistBlock.NestingLevelConfig nesting1 = new UlistBlock.NestingLevelConfig(3, Severity.INFO);
 
-            UlistBlock.NestingLevelConfig nesting2 = UlistBlock.NestingLevelConfig
-                    .builder()
-                    .max(3)
-                    .severity(Severity.INFO)
-                    .build();
+            UlistBlock.NestingLevelConfig nesting2 = new UlistBlock.NestingLevelConfig(3, Severity.INFO);
 
             // Then
             assertEquals(items1, items2);
@@ -271,9 +193,9 @@ class UlistBlockTest {
         @DisplayName("should handle different marker styles")
         void shouldHandleDifferentMarkerStyles() {
             // Given
-            UlistBlock ulist1 = UlistBlock.builder().severity(Severity.ERROR).markerStyle("*").build();
+            UlistBlock ulist1 = new UlistBlock(null, Severity.ERROR, null, null, null, null, "*");
 
-            UlistBlock ulist2 = UlistBlock.builder().severity(Severity.ERROR).markerStyle("-").build();
+            UlistBlock ulist2 = new UlistBlock(null, Severity.ERROR, null, null, null, null, "-");
 
             // Then
             assertNotEquals(ulist1, ulist2);

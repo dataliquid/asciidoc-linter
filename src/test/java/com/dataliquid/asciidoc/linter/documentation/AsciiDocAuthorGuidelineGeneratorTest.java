@@ -63,10 +63,7 @@ class AsciiDocAuthorGuidelineGeneratorTest {
         @Test
         @DisplayName("should require non-null writer")
         void shouldRequireNonNullWriter() {
-            LinterConfiguration config = LinterConfiguration
-                    .builder()
-                    .document(DocumentConfiguration.builder().build())
-                    .build();
+            LinterConfiguration config = new LinterConfiguration(new DocumentConfiguration(null, null));
 
             assertThrows(NullPointerException.class, () -> generator.generate(config, null));
         }
@@ -75,10 +72,7 @@ class AsciiDocAuthorGuidelineGeneratorTest {
         @DisplayName("should generate basic documentation structure")
         void shouldGenerateBasicDocumentationStructure() {
             // Given
-            LinterConfiguration config = LinterConfiguration
-                    .builder()
-                    .document(DocumentConfiguration.builder().build())
-                    .build();
+            LinterConfiguration config = new LinterConfiguration(new DocumentConfiguration(null, null));
 
             // When
             generator.generate(config, printWriter);
@@ -96,31 +90,16 @@ class AsciiDocAuthorGuidelineGeneratorTest {
         @DisplayName("should generate metadata documentation")
         void shouldGenerateMetadataDocumentation() {
             // Given
-            AttributeConfig titleAttr = AttributeConfig
-                    .builder()
-                    .name("title")
-                    .required(true)
-                    .minLength(10)
-                    .maxLength(100)
-                    .severity(Severity.ERROR)
-                    .build();
+            AttributeConfig titleAttr = new AttributeConfig("title", null, true, 10, 100, null, Severity.ERROR);
 
-            AttributeConfig authorAttr = AttributeConfig
-                    .builder()
-                    .name("author")
-                    .required(false)
-                    .pattern("^[A-Z].*")
-                    .severity(Severity.WARN)
-                    .build();
+            AttributeConfig authorAttr = new AttributeConfig("author", null, false, null, null, "^[A-Z].*",
+                    Severity.WARN);
 
-            MetadataConfiguration metadata = MetadataConfiguration
-                    .builder()
-                    .attributes(List.of(titleAttr, authorAttr))
-                    .build();
+            MetadataConfiguration metadata = new MetadataConfiguration(List.of(titleAttr, authorAttr));
 
-            DocumentConfiguration document = DocumentConfiguration.builder().metadata(metadata).build();
+            DocumentConfiguration document = new DocumentConfiguration(metadata, null);
 
-            LinterConfiguration config = LinterConfiguration.builder().document(document).build();
+            LinterConfiguration config = new LinterConfiguration(document);
 
             // When
             generator.generate(config, printWriter);
@@ -141,24 +120,15 @@ class AsciiDocAuthorGuidelineGeneratorTest {
         @DisplayName("should generate section documentation")
         void shouldGenerateSectionDocumentation() {
             // Given
-            ParagraphBlock paragraph = ParagraphBlock
-                    .builder()
-                    .severity(Severity.WARN)
-                    .occurrence(OccurrenceConfig.builder().min(1).max(3).build())
-                    .build();
+            ParagraphBlock paragraph = new ParagraphBlock(null, Severity.WARN, new OccurrenceConfig(null, 1, 3, null),
+                    null, null, null);
 
-            SectionConfig section = SectionConfig
-                    .builder()
-                    .name("introduction")
-                    .level(1)
-                    .order(1)
-                    .occurrence(OccurrenceConfig.builder().min(1).max(1).build())
-                    .allowedBlocks(List.of(paragraph))
-                    .build();
+            SectionConfig section = new SectionConfig("introduction", 1, 1, new OccurrenceConfig(null, 1, 1, null),
+                    null, List.of(paragraph), null);
 
-            DocumentConfiguration document = DocumentConfiguration.builder().sections(List.of(section)).build();
+            DocumentConfiguration document = new DocumentConfiguration(null, List.of(section));
 
-            LinterConfiguration config = LinterConfiguration.builder().document(document).build();
+            LinterConfiguration config = new LinterConfiguration(document);
 
             // When
             generator.generate(config, printWriter);
@@ -181,11 +151,11 @@ class AsciiDocAuthorGuidelineGeneratorTest {
         @DisplayName("should use default tree visualization")
         void shouldUseDefaultTreeVisualization() {
             // Given
-            SectionConfig section = SectionConfig.builder().name("test").level(1).build();
+            SectionConfig section = new SectionConfig("test", null, 1, null, null, null, null);
 
-            DocumentConfiguration document = DocumentConfiguration.builder().sections(List.of(section)).build();
+            DocumentConfiguration document = new DocumentConfiguration(null, List.of(section));
 
-            LinterConfiguration config = LinterConfiguration.builder().document(document).build();
+            LinterConfiguration config = new LinterConfiguration(document);
 
             // When
             generator.generate(config, printWriter);
@@ -204,11 +174,11 @@ class AsciiDocAuthorGuidelineGeneratorTest {
             AsciiDocAuthorGuidelineGenerator multiStyleGenerator = new AsciiDocAuthorGuidelineGenerator(
                     Set.of(VisualizationStyle.TREE, VisualizationStyle.TABLE));
 
-            SectionConfig section = SectionConfig.builder().name("test").level(1).build();
+            SectionConfig section = new SectionConfig("test", null, 1, null, null, null, null);
 
-            DocumentConfiguration document = DocumentConfiguration.builder().sections(List.of(section)).build();
+            DocumentConfiguration document = new DocumentConfiguration(null, List.of(section));
 
-            LinterConfiguration config = LinterConfiguration.builder().document(document).build();
+            LinterConfiguration config = new LinterConfiguration(document);
 
             // When
             assertDoesNotThrow(() -> {

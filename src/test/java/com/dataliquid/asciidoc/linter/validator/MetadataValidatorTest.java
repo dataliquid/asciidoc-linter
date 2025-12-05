@@ -27,16 +27,8 @@ class MetadataValidatorTest {
 
     @BeforeEach
     void setUp() {
-        testConfig = MetadataConfiguration
-                .builder()
-                .attributes(Arrays
-                        .asList(AttributeConfig
-                                .builder()
-                                .name("author")
-                                .required(true)
-                                .severity(Severity.ERROR)
-                                .build()))
-                .build();
+        testConfig = new MetadataConfiguration(
+                Arrays.asList(new AttributeConfig("author", null, true, null, null, null, Severity.ERROR)));
     }
 
     @Test
@@ -117,12 +109,9 @@ class MetadataValidatorTest {
                 Content.
                 """;
         Document document = asciidoctor.load(content, Options.builder().sourcemap(true).toFile(false).build());
-        MetadataConfiguration config = MetadataConfiguration
-                .builder()
-                .attributes(Arrays
-                        .asList(AttributeConfig.builder().name("author").order(1).severity(Severity.ERROR).build(),
-                                AttributeConfig.builder().name("version").order(2).severity(Severity.ERROR).build()))
-                .build();
+        MetadataConfiguration config = new MetadataConfiguration(Arrays
+                .asList(new AttributeConfig("author", 1, null, null, null, null, Severity.ERROR),
+                        new AttributeConfig("version", 2, null, null, null, null, Severity.ERROR)));
         MetadataValidator validator = MetadataValidator.fromConfiguration(config).build();
 
         // When

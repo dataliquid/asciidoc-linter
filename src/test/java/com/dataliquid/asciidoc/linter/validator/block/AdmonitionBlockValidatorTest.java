@@ -60,11 +60,8 @@ class AdmonitionBlockValidatorTest {
             when(mockBlock.getTitle()).thenReturn(null);
             when(mockBlock.getStyle()).thenReturn("NOTE");
 
-            AdmonitionBlock config = AdmonitionBlock
-                    .builder()
-                    .severity(Severity.ERROR)
-                    .title(AdmonitionBlock.TitleConfig.builder().required(true).severity(Severity.ERROR).build())
-                    .build();
+            AdmonitionBlock config = new AdmonitionBlock(null, Severity.ERROR, null, null, null,
+                    new AdmonitionBlock.TitleConfig(true, null, null, null, Severity.ERROR), null, null);
 
             // When
             List<ValidationMessage> messages = validator.validate(mockBlock, config, context);
@@ -81,11 +78,8 @@ class AdmonitionBlockValidatorTest {
             when(mockBlock.getTitle()).thenReturn("invalid title");
             when(mockBlock.getStyle()).thenReturn("WARNING");
 
-            AdmonitionBlock config = AdmonitionBlock
-                    .builder()
-                    .severity(Severity.ERROR)
-                    .title(AdmonitionBlock.TitleConfig.builder().pattern("^[A-Z].*").severity(Severity.WARN).build())
-                    .build();
+            AdmonitionBlock config = new AdmonitionBlock(null, Severity.ERROR, null, null, null,
+                    new AdmonitionBlock.TitleConfig(false, "^[A-Z].*", null, null, Severity.WARN), null, null);
 
             // When
             List<ValidationMessage> messages = validator.validate(mockBlock, config, context);
@@ -103,11 +97,8 @@ class AdmonitionBlockValidatorTest {
             when(mockBlock.getTitle()).thenReturn("Hi");
             when(mockBlock.getStyle()).thenReturn("TIP");
 
-            AdmonitionBlock config = AdmonitionBlock
-                    .builder()
-                    .severity(Severity.ERROR)
-                    .title(AdmonitionBlock.TitleConfig.builder().minLength(3).maxLength(50).build())
-                    .build();
+            AdmonitionBlock config = new AdmonitionBlock(null, Severity.ERROR, null, null, null,
+                    new AdmonitionBlock.TitleConfig(false, null, 3, 50, null), null, null);
 
             // When
             List<ValidationMessage> messages = validator.validate(mockBlock, config, context);
@@ -129,11 +120,8 @@ class AdmonitionBlockValidatorTest {
             when(mockBlock.getContent()).thenReturn("Short");
             when(mockBlock.getStyle()).thenReturn("IMPORTANT");
 
-            AdmonitionBlock config = AdmonitionBlock
-                    .builder()
-                    .severity(Severity.ERROR)
-                    .content(AdmonitionBlock.ContentConfig.builder().minLength(10).severity(Severity.WARN).build())
-                    .build();
+            AdmonitionBlock config = new AdmonitionBlock(null, Severity.ERROR, null, null, null, null,
+                    new AdmonitionBlock.ContentConfig(false, 10, null, null, Severity.WARN), null);
 
             // When
             List<ValidationMessage> messages = validator.validate(mockBlock, config, context);
@@ -152,11 +140,8 @@ class AdmonitionBlockValidatorTest {
             when(mockBlock.getContent()).thenReturn(longContent);
             when(mockBlock.getStyle()).thenReturn("CAUTION");
 
-            AdmonitionBlock config = AdmonitionBlock
-                    .builder()
-                    .severity(Severity.ERROR)
-                    .content(AdmonitionBlock.ContentConfig.builder().maxLength(50).build())
-                    .build();
+            AdmonitionBlock config = new AdmonitionBlock(null, Severity.ERROR, null, null, null, null,
+                    new AdmonitionBlock.ContentConfig(false, null, 50, null, null), null);
 
             // When
             List<ValidationMessage> messages = validator.validate(mockBlock, config, context);
@@ -178,14 +163,9 @@ class AdmonitionBlockValidatorTest {
             when(mockBlock.getContent()).thenReturn("Single line");
             when(mockBlock.getStyle()).thenReturn("NOTE");
 
-            AdmonitionBlock config = AdmonitionBlock
-                    .builder()
-                    .severity(Severity.ERROR)
-                    .content(AdmonitionBlock.ContentConfig
-                            .builder()
-                            .lines(LineConfig.builder().min(2).severity(Severity.INFO).build())
-                            .build())
-                    .build();
+            AdmonitionBlock config = new AdmonitionBlock(null, Severity.ERROR, null, null, null, null,
+                    new AdmonitionBlock.ContentConfig(false, null, null, new LineConfig(2, null, Severity.INFO), null),
+                    null);
 
             // When
             List<ValidationMessage> messages = validator.validate(mockBlock, config, context);
@@ -203,11 +183,8 @@ class AdmonitionBlockValidatorTest {
             when(mockBlock.getContent()).thenReturn("Line 1\nLine 2\nLine 3\nLine 4");
             when(mockBlock.getStyle()).thenReturn("TIP");
 
-            AdmonitionBlock config = AdmonitionBlock
-                    .builder()
-                    .severity(Severity.ERROR)
-                    .content(AdmonitionBlock.ContentConfig.builder().lines(LineConfig.builder().max(3).build()).build())
-                    .build();
+            AdmonitionBlock config = new AdmonitionBlock(null, Severity.ERROR, null, null, null, null,
+                    new AdmonitionBlock.ContentConfig(false, null, null, new LineConfig(null, 3, null), null), null);
 
             // When
             List<ValidationMessage> messages = validator.validate(mockBlock, config, context);
@@ -230,11 +207,8 @@ class AdmonitionBlockValidatorTest {
             when(mockBlock.getAttribute("icon")).thenReturn(null);
             when(mockBlock.getStyle()).thenReturn("WARNING");
 
-            AdmonitionBlock config = AdmonitionBlock
-                    .builder()
-                    .severity(Severity.ERROR)
-                    .icon(AdmonitionBlock.IconConfig.builder().required(true).severity(Severity.ERROR).build())
-                    .build();
+            AdmonitionBlock config = new AdmonitionBlock(null, Severity.ERROR, null, null, null, null, null,
+                    new AdmonitionBlock.IconConfig(true, null, Severity.ERROR));
 
             // When
             List<ValidationMessage> messages = validator.validate(mockBlock, config, context);
@@ -252,11 +226,8 @@ class AdmonitionBlockValidatorTest {
             when(mockBlock.getAttribute("icon")).thenReturn("invalid-icon");
             when(mockBlock.getStyle()).thenReturn("NOTE");
 
-            AdmonitionBlock config = AdmonitionBlock
-                    .builder()
-                    .severity(Severity.ERROR)
-                    .icon(AdmonitionBlock.IconConfig.builder().pattern("^(info|warning|caution|tip|note)$").build())
-                    .build();
+            AdmonitionBlock config = new AdmonitionBlock(null, Severity.ERROR, null, null, null, null, null,
+                    new AdmonitionBlock.IconConfig(false, "^(info|warning|caution|tip|note)$", null));
 
             // When
             List<ValidationMessage> messages = validator.validate(mockBlock, config, context);
@@ -273,11 +244,8 @@ class AdmonitionBlockValidatorTest {
             when(mockDocument.getAttribute("icons")).thenReturn("font");
             when(mockBlock.getStyle()).thenReturn("TIP");
 
-            AdmonitionBlock config = AdmonitionBlock
-                    .builder()
-                    .severity(Severity.ERROR)
-                    .icon(AdmonitionBlock.IconConfig.builder().required(true).build())
-                    .build();
+            AdmonitionBlock config = new AdmonitionBlock(null, Severity.ERROR, null, null, null, null, null,
+                    new AdmonitionBlock.IconConfig(true, null, null));
 
             // When
             List<ValidationMessage> messages = validator.validate(mockBlock, config, context);
@@ -297,11 +265,8 @@ class AdmonitionBlockValidatorTest {
             // Given
             when(mockBlock.getStyle()).thenReturn(null);
 
-            AdmonitionBlock config = AdmonitionBlock
-                    .builder()
-                    .severity(Severity.ERROR)
-                    .type(AdmonitionBlock.TypeConfig.builder().required(true).severity(Severity.WARN).build())
-                    .build();
+            AdmonitionBlock config = new AdmonitionBlock(null, Severity.ERROR, null, null,
+                    new AdmonitionBlock.TypeConfig(true, null, Severity.WARN), null, null, null);
 
             // When
             List<ValidationMessage> messages = validator.validate(mockBlock, config, context);
@@ -320,15 +285,10 @@ class AdmonitionBlockValidatorTest {
             // Given
             when(mockBlock.getStyle()).thenReturn("CUSTOM");
 
-            AdmonitionBlock config = AdmonitionBlock
-                    .builder()
-                    .severity(Severity.ERROR)
-                    .type(AdmonitionBlock.TypeConfig
-                            .builder()
-                            .allowed(List.of("NOTE", "TIP", "IMPORTANT", "WARNING", "CAUTION"))
-                            .severity(Severity.ERROR)
-                            .build())
-                    .build();
+            AdmonitionBlock config = new AdmonitionBlock(
+                    null, Severity.ERROR, null, null, new AdmonitionBlock.TypeConfig(false,
+                            List.of("NOTE", "TIP", "IMPORTANT", "WARNING", "CAUTION"), Severity.ERROR),
+                    null, null, null);
 
             // When
             List<ValidationMessage> messages = validator.validate(mockBlock, config, context);
@@ -349,15 +309,10 @@ class AdmonitionBlockValidatorTest {
             // Given
             when(mockBlock.getStyle()).thenReturn("NOTE");
 
-            AdmonitionBlock config = AdmonitionBlock
-                    .builder()
-                    .severity(Severity.ERROR)
-                    .type(AdmonitionBlock.TypeConfig
-                            .builder()
-                            .required(true)
-                            .allowed(List.of("NOTE", "TIP", "IMPORTANT", "WARNING", "CAUTION"))
-                            .build())
-                    .build();
+            AdmonitionBlock config = new AdmonitionBlock(null, Severity.ERROR, null, null,
+                    new AdmonitionBlock.TypeConfig(true, List.of("NOTE", "TIP", "IMPORTANT", "WARNING", "CAUTION"),
+                            null),
+                    null, null, null);
 
             // When
             List<ValidationMessage> messages = validator.validate(mockBlock, config, context);
@@ -377,7 +332,7 @@ class AdmonitionBlockValidatorTest {
             // Given
             when(mockBlock.getStyle()).thenReturn("warning");
 
-            AdmonitionBlock config = AdmonitionBlock.builder().severity(Severity.ERROR).build();
+            AdmonitionBlock config = new AdmonitionBlock(null, Severity.ERROR, null, null, null, null, null, null);
 
             // When
             validator.validate(mockBlock, config, context);
@@ -393,7 +348,7 @@ class AdmonitionBlockValidatorTest {
             when(mockBlock.getStyle()).thenReturn(null);
             when(mockBlock.getAttribute("role")).thenReturn("caution");
 
-            AdmonitionBlock config = AdmonitionBlock.builder().severity(Severity.ERROR).build();
+            AdmonitionBlock config = new AdmonitionBlock(null, Severity.ERROR, null, null, null, null, null, null);
 
             // When
             validator.validate(mockBlock, config, context);
@@ -408,11 +363,8 @@ class AdmonitionBlockValidatorTest {
             // Given
             when(mockBlock.getStyle()).thenReturn("note");
 
-            AdmonitionBlock config = AdmonitionBlock
-                    .builder()
-                    .severity(Severity.ERROR)
-                    .type(AdmonitionBlock.TypeConfig.builder().required(true).allowed(List.of("NOTE")).build())
-                    .build();
+            AdmonitionBlock config = new AdmonitionBlock(null, Severity.ERROR, null, null,
+                    new AdmonitionBlock.TypeConfig(true, List.of("NOTE"), null), null, null, null);
 
             // When
             List<ValidationMessage> messages = validator.validate(mockBlock, config, context);
@@ -432,16 +384,8 @@ class AdmonitionBlockValidatorTest {
             // Given
             when(mockBlock.getStyle()).thenReturn("INVALID");
 
-            AdmonitionBlock config = AdmonitionBlock
-                    .builder()
-                    .severity(Severity.ERROR) // Block-level severity
-                    .type(AdmonitionBlock.TypeConfig
-                            .builder()
-                            .required(true)
-                            .allowed(List.of("NOTE", "TIP"))
-                            .severity(Severity.WARN) // Nested severity overrides
-                            .build())
-                    .build();
+            AdmonitionBlock config = new AdmonitionBlock(null, Severity.ERROR, null, null,
+                    new AdmonitionBlock.TypeConfig(true, List.of("NOTE", "TIP"), Severity.WARN), null, null, null);
 
             // When
             List<ValidationMessage> messages = validator.validate(mockBlock, config, context);
@@ -457,15 +401,8 @@ class AdmonitionBlockValidatorTest {
             // Given
             when(mockBlock.getTitle()).thenReturn(null);
 
-            AdmonitionBlock config = AdmonitionBlock
-                    .builder()
-                    .severity(Severity.INFO) // Block-level severity
-                    .title(AdmonitionBlock.TitleConfig
-                            .builder()
-                            .required(true)
-                            // No severity specified, should fallback
-                            .build())
-                    .build();
+            AdmonitionBlock config = new AdmonitionBlock(null, Severity.INFO, null, null, null,
+                    new AdmonitionBlock.TitleConfig(true, null, null, null, null), null, null);
 
             // When
             List<ValidationMessage> messages = validator.validate(mockBlock, config, context);
@@ -481,20 +418,10 @@ class AdmonitionBlockValidatorTest {
             // Given
             when(mockBlock.getContent()).thenReturn("Line 1\nLine 2\nLine 3\nLine 4");
 
-            AdmonitionBlock config = AdmonitionBlock
-                    .builder()
-                    .severity(Severity.ERROR) // Block-level severity
-                    .content(AdmonitionBlock.ContentConfig
-                            .builder()
-                            .severity(Severity.WARN) // Content-level severity
-                            .lines(LineConfig
-                                    .builder()
-                                    .max(3)
-                                    .severity(Severity.INFO) // Line-level severity overrides
-                                                             // all
-                                    .build())
-                            .build())
-                    .build();
+            AdmonitionBlock config = new AdmonitionBlock(null, Severity.ERROR, null, null, null, null,
+                    new AdmonitionBlock.ContentConfig(false, null, null, new LineConfig(null, 3, Severity.INFO),
+                            Severity.WARN),
+                    null);
 
             // When
             List<ValidationMessage> messages = validator.validate(mockBlock, config, context);
@@ -511,20 +438,8 @@ class AdmonitionBlockValidatorTest {
             // Given
             when(mockBlock.getContent()).thenReturn("Short");
 
-            AdmonitionBlock config = AdmonitionBlock
-                    .builder()
-                    .severity(Severity.ERROR) // Block-level severity
-                    .content(AdmonitionBlock.ContentConfig
-                            .builder()
-                            .minLength(10)
-                            // No content severity, should fallback to block
-                            .lines(LineConfig
-                                    .builder()
-                                    .min(2)
-                                    // No line severity, should fallback to content, then block
-                                    .build())
-                            .build())
-                    .build();
+            AdmonitionBlock config = new AdmonitionBlock(null, Severity.ERROR, null, null, null, null,
+                    new AdmonitionBlock.ContentConfig(false, 10, null, new LineConfig(2, null, null), null), null);
 
             // When
             List<ValidationMessage> messages = validator.validate(mockBlock, config, context);
@@ -561,11 +476,8 @@ class AdmonitionBlockValidatorTest {
             when(mockBlock.getBlocks()).thenReturn(null);
             when(mockBlock.getStyle()).thenReturn("IMPORTANT");
 
-            AdmonitionBlock config = AdmonitionBlock
-                    .builder()
-                    .severity(Severity.ERROR)
-                    .content(AdmonitionBlock.ContentConfig.builder().minLength(10).build())
-                    .build();
+            AdmonitionBlock config = new AdmonitionBlock(null, Severity.ERROR, null, null, null, null,
+                    new AdmonitionBlock.ContentConfig(false, 10, null, null, null), null);
 
             // When
             List<ValidationMessage> messages = validator.validate(mockBlock, config, context);
@@ -581,7 +493,7 @@ class AdmonitionBlockValidatorTest {
             // Given
             when(mockBlock.getStyle()).thenReturn("NOTE");
 
-            AdmonitionBlock config = AdmonitionBlock.builder().severity(Severity.ERROR).build();
+            AdmonitionBlock config = new AdmonitionBlock(null, Severity.ERROR, null, null, null, null, null, null);
 
             // When
             List<ValidationMessage> messages = validator.validate(mockBlock, config, context);

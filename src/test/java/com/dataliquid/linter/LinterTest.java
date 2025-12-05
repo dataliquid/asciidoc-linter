@@ -48,7 +48,7 @@ class LinterTest {
         @Test
         @DisplayName("should throw NullPointerException when file is null")
         void shouldThrowNullPointerExceptionWhenFileIsNull() {
-            LinterConfiguration config = LinterConfiguration.builder().build();
+            LinterConfiguration config = new LinterConfiguration(null);
 
             assertThrows(NullPointerException.class, () -> linter.validateFile(null, config), "file must not be null");
         }
@@ -66,7 +66,7 @@ class LinterTest {
         @DisplayName("should throw IOException when file does not exist")
         void shouldThrowIOExceptionWhenFileDoesNotExist(@TempDir Path tempDir) {
             Path nonExistentFile = tempDir.resolve("non-existent.adoc");
-            LinterConfiguration config = LinterConfiguration.builder().build();
+            LinterConfiguration config = new LinterConfiguration(null);
 
             IOException exception = assertThrows(IOException.class, () -> linter.validateFile(nonExistentFile, config));
 
@@ -76,7 +76,7 @@ class LinterTest {
         @Test
         @DisplayName("should throw IOException when path is directory")
         void shouldThrowIOExceptionWhenPathIsDirectory(@TempDir Path tempDir) {
-            LinterConfiguration config = LinterConfiguration.builder().build();
+            LinterConfiguration config = new LinterConfiguration(null);
 
             IOException exception = assertThrows(IOException.class, () -> linter.validateFile(tempDir, config));
 
@@ -97,7 +97,7 @@ class LinterTest {
                     This is a valid document.
                     """);
 
-            LinterConfiguration config = LinterConfiguration.builder().build();
+            LinterConfiguration config = new LinterConfiguration(null);
 
             ValidationResult result = linter.validateFile(file, config);
 
@@ -119,7 +119,7 @@ class LinterTest {
                     Content here.
                     """);
 
-            LinterConfiguration config = LinterConfiguration.builder().build();
+            LinterConfiguration config = new LinterConfiguration(null);
 
             ValidationResult result = linter.validateFile(file, config);
 
@@ -136,7 +136,7 @@ class LinterTest {
         @Test
         @DisplayName("should throw NullPointerException when files is null")
         void shouldThrowNullPointerExceptionWhenFilesIsNull() {
-            LinterConfiguration config = LinterConfiguration.builder().build();
+            LinterConfiguration config = new LinterConfiguration(null);
 
             assertThrows(NullPointerException.class, () -> linter.validateFiles(null, config),
                     "files must not be null");
@@ -155,7 +155,7 @@ class LinterTest {
         @DisplayName("should return empty map for empty file list")
         void shouldReturnEmptyMapForEmptyFileList() {
             List<Path> files = List.of();
-            LinterConfiguration config = LinterConfiguration.builder().build();
+            LinterConfiguration config = new LinterConfiguration(null);
 
             Map<Path, ValidationResult> results = linter.validateFiles(files, config);
 
@@ -173,7 +173,7 @@ class LinterTest {
             Files.writeString(file2, "= Document 2\n\nContent 2");
 
             List<Path> files = List.of(file1, file2);
-            LinterConfiguration config = LinterConfiguration.builder().build();
+            LinterConfiguration config = new LinterConfiguration(null);
 
             Map<Path, ValidationResult> results = linter.validateFiles(files, config);
 
@@ -192,7 +192,7 @@ class LinterTest {
             Path nonExistentFile = tempDir.resolve("non-existent.adoc");
 
             List<Path> files = List.of(existingFile, nonExistentFile);
-            LinterConfiguration config = LinterConfiguration.builder().build();
+            LinterConfiguration config = new LinterConfiguration(null);
 
             Map<Path, ValidationResult> results = linter.validateFiles(files, config);
 
@@ -217,7 +217,7 @@ class LinterTest {
         @Test
         @DisplayName("should throw NullPointerException when directory is null")
         void shouldThrowNullPointerExceptionWhenDirectoryIsNull() {
-            LinterConfiguration config = LinterConfiguration.builder().build();
+            LinterConfiguration config = new LinterConfiguration(null);
 
             assertThrows(NullPointerException.class, () -> linter.validateDirectory(null, "*.adoc", false, config),
                     "directory must not be null");
@@ -226,7 +226,7 @@ class LinterTest {
         @Test
         @DisplayName("should throw NullPointerException when pattern is null")
         void shouldThrowNullPointerExceptionWhenPatternIsNull(@TempDir Path tempDir) {
-            LinterConfiguration config = LinterConfiguration.builder().build();
+            LinterConfiguration config = new LinterConfiguration(null);
 
             assertThrows(NullPointerException.class, () -> linter.validateDirectory(tempDir, null, false, config),
                     "pattern must not be null");
@@ -244,7 +244,7 @@ class LinterTest {
         void shouldThrowIOExceptionWhenPathIsNotDirectory(@TempDir Path tempDir) throws IOException {
             Path file = tempDir.resolve("file.txt");
             Files.writeString(file, "content");
-            LinterConfiguration config = LinterConfiguration.builder().build();
+            LinterConfiguration config = new LinterConfiguration(null);
 
             IOException exception = assertThrows(IOException.class,
                     () -> linter.validateDirectory(file, "*.adoc", false, config));
@@ -269,7 +269,7 @@ class LinterTest {
             Path file4 = subDir.resolve("test3.adoc");
             Files.writeString(file4, "= Test 3");
 
-            LinterConfiguration config = LinterConfiguration.builder().build();
+            LinterConfiguration config = new LinterConfiguration(null);
 
             Map<Path, ValidationResult> results = linter.validateDirectory(tempDir, "*.adoc", false, config);
 
@@ -297,7 +297,7 @@ class LinterTest {
             Path file3 = deepDir.resolve("test3.adoc");
             Files.writeString(file3, "= Test 3");
 
-            LinterConfiguration config = LinterConfiguration.builder().build();
+            LinterConfiguration config = new LinterConfiguration(null);
 
             Map<Path, ValidationResult> results = linter.validateDirectory(tempDir, "*.adoc", true, config);
 
@@ -317,7 +317,7 @@ class LinterTest {
             Path file2 = tempDir.resolve("other.md");
             Files.writeString(file2, "Markdown file");
 
-            LinterConfiguration config = LinterConfiguration.builder().build();
+            LinterConfiguration config = new LinterConfiguration(null);
 
             Map<Path, ValidationResult> results = linter.validateDirectory(tempDir, "*.adoc", false, config);
 

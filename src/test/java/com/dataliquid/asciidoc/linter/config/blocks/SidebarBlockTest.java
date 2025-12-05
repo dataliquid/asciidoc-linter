@@ -7,33 +7,34 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.List;
-import java.util.regex.Pattern;
 
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import com.dataliquid.asciidoc.linter.config.blocks.BlockType;
 import com.dataliquid.asciidoc.linter.config.common.Severity;
 
-@DisplayName("SidebarBlock")
 class SidebarBlockTest {
 
     @Nested
-    @DisplayName("Builder")
     class BuilderTest {
 
         @Test
-        @DisplayName("should build with required fields")
         void shouldBuildWithRequiredFields() {
-            // Given
+            // given
             String name = "sidebar-test";
             Severity severity = Severity.WARN;
 
-            // When
-            SidebarBlock block = SidebarBlock.builder().name(name).severity(severity).build();
+            // when
+            SidebarBlock block = new SidebarBlock(name, // name
+                    severity, // severity
+                    null, // occurrence
+                    null, // order
+                    null, // title
+                    null, // content
+                    null); // position
 
-            // Then
+            // then
             assertEquals(name, block.getName());
             assertEquals(severity, block.getSeverity());
             assertEquals(BlockType.SIDEBAR, block.getType());
@@ -43,44 +44,39 @@ class SidebarBlockTest {
         }
 
         @Test
-        @DisplayName("should build with all fields")
         void shouldBuildWithAllFields() {
-            // Given
+            // given
             String name = "sidebar-full";
             Severity severity = Severity.ERROR;
-            SidebarBlock.TitleConfig title = SidebarBlock.TitleConfig
-                    .builder()
-                    .required(true)
-                    .minLength(5)
-                    .maxLength(50)
-                    .pattern("^[A-Z].*$")
-                    .severity(Severity.INFO)
-                    .build();
-            SidebarBlock.ContentConfig content = SidebarBlock.ContentConfig
-                    .builder()
-                    .required(true)
-                    .minLength(50)
-                    .maxLength(800)
-                    .lines(SidebarBlock.LinesConfig.builder().min(3).max(30).severity(Severity.INFO).build())
-                    .build();
-            SidebarBlock.PositionConfig position = SidebarBlock.PositionConfig
-                    .builder()
-                    .required(false)
-                    .allowed(List.of("left", "right", "float"))
-                    .severity(Severity.INFO)
-                    .build();
+            SidebarBlock.TitleConfig title = new SidebarBlock.TitleConfig(true, // required
+                    5, // minLength
+                    50, // maxLength
+                    "^[A-Z].*$", // pattern
+                    Severity.INFO); // severity
 
-            // When
-            SidebarBlock block = SidebarBlock
-                    .builder()
-                    .name(name)
-                    .severity(severity)
-                    .title(title)
-                    .content(content)
-                    .position(position)
-                    .build();
+            SidebarBlock.LinesConfig lines = new SidebarBlock.LinesConfig(3, // min
+                    30, // max
+                    Severity.INFO); // severity
 
-            // Then
+            SidebarBlock.ContentConfig content = new SidebarBlock.ContentConfig(true, // required
+                    50, // minLength
+                    800, // maxLength
+                    lines); // lines
+
+            SidebarBlock.PositionConfig position = new SidebarBlock.PositionConfig(false, // required
+                    List.of("left", "right", "float"), // allowed
+                    Severity.INFO); // severity
+
+            // when
+            SidebarBlock block = new SidebarBlock(name, // name
+                    severity, // severity
+                    null, // occurrence
+                    null, // order
+                    title, // title
+                    content, // content
+                    position); // position
+
+            // then
             assertEquals(name, block.getName());
             assertEquals(severity, block.getSeverity());
             assertEquals(title, block.getTitle());
@@ -89,103 +85,92 @@ class SidebarBlockTest {
         }
 
         @Test
-        @DisplayName("should require severity")
         void shouldRequireSeverity() {
-            // When/Then
-            assertThrows(NullPointerException.class, () -> SidebarBlock.builder().name("test").build(),
+            // when & then
+            assertThrows(NullPointerException.class, () -> new SidebarBlock("test", null, null, null, null, null, null),
                     "severity is required");
         }
     }
 
     @Nested
-    @DisplayName("TitleConfig")
     class TitleConfigTest {
 
         @Test
-        @DisplayName("should build with all fields")
         void shouldBuildWithAllFields() {
-            // Given
+            // given
             boolean required = true;
             Integer minLength = 10;
             Integer maxLength = 100;
             String patternStr = "^[A-Z].*$";
-            Pattern pattern = Pattern.compile(patternStr);
             Severity severity = Severity.WARN;
 
-            // When
-            SidebarBlock.TitleConfig config = SidebarBlock.TitleConfig
-                    .builder()
-                    .required(required)
-                    .minLength(minLength)
-                    .maxLength(maxLength)
-                    .pattern(pattern)
-                    .severity(severity)
-                    .build();
+            // when
+            SidebarBlock.TitleConfig config = new SidebarBlock.TitleConfig(required, // required
+                    minLength, // minLength
+                    maxLength, // maxLength
+                    patternStr, // pattern
+                    severity); // severity
 
-            // Then
+            // then
             assertEquals(required, config.isRequired());
             assertEquals(minLength, config.getMinLength());
             assertEquals(maxLength, config.getMaxLength());
-            assertEquals(pattern.pattern(), config.getPattern().pattern());
+            assertEquals(patternStr, config.getPattern().pattern());
             assertEquals(severity, config.getSeverity());
         }
 
         @Test
-        @DisplayName("should build with pattern string")
         void shouldBuildWithPatternString() {
-            // Given
+            // given
             String patternStr = "^[A-Z].*$";
 
-            // When
-            SidebarBlock.TitleConfig config = SidebarBlock.TitleConfig.builder().pattern(patternStr).build();
+            // when
+            SidebarBlock.TitleConfig config = new SidebarBlock.TitleConfig(false, // required
+                    null, // minLength
+                    null, // maxLength
+                    patternStr, // pattern
+                    null); // severity
 
-            // Then
+            // then
             assertNotNull(config.getPattern());
             assertEquals(patternStr, config.getPattern().pattern());
         }
 
         @Test
-        @DisplayName("should handle null pattern string")
         void shouldHandleNullPatternString() {
-            // When
-            SidebarBlock.TitleConfig config = SidebarBlock.TitleConfig.builder().pattern((String) null).build();
+            // when
+            SidebarBlock.TitleConfig config = new SidebarBlock.TitleConfig(false, // required
+                    null, // minLength
+                    null, // maxLength
+                    null, // pattern
+                    null); // severity
 
-            // Then
+            // then
             assertNull(config.getPattern());
         }
 
         @Test
-        @DisplayName("should implement equals and hashCode")
         void shouldImplementEqualsAndHashCode() {
-            // Given
-            SidebarBlock.TitleConfig config1 = SidebarBlock.TitleConfig
-                    .builder()
-                    .required(true)
-                    .minLength(5)
-                    .maxLength(50)
-                    .pattern("^[A-Z].*$")
-                    .severity(Severity.INFO)
-                    .build();
+            // given
+            SidebarBlock.TitleConfig config1 = new SidebarBlock.TitleConfig(true, // required
+                    5, // minLength
+                    50, // maxLength
+                    "^[A-Z].*$", // pattern
+                    Severity.INFO); // severity
 
-            SidebarBlock.TitleConfig config2 = SidebarBlock.TitleConfig
-                    .builder()
-                    .required(true)
-                    .minLength(5)
-                    .maxLength(50)
-                    .pattern("^[A-Z].*$")
-                    .severity(Severity.INFO)
-                    .build();
+            SidebarBlock.TitleConfig config2 = new SidebarBlock.TitleConfig(true, // required
+                    5, // minLength
+                    50, // maxLength
+                    "^[A-Z].*$", // pattern
+                    Severity.INFO); // severity
 
-            SidebarBlock.TitleConfig config3 = SidebarBlock.TitleConfig
-                    .builder()
-                    .required(false)
-                    .minLength(5)
-                    .maxLength(50)
-                    .pattern("^[A-Z].*$")
-                    .severity(Severity.INFO)
-                    .build();
+            SidebarBlock.TitleConfig config3 = new SidebarBlock.TitleConfig(false, // required
+                    5, // minLength
+                    50, // maxLength
+                    "^[A-Z].*$", // pattern
+                    Severity.INFO); // severity
 
-            // Then
+            // then
             assertEquals(config1, config2);
             assertEquals(config1.hashCode(), config2.hashCode());
             assertNotEquals(config1, config3);
@@ -193,33 +178,25 @@ class SidebarBlockTest {
     }
 
     @Nested
-    @DisplayName("ContentConfig")
     class ContentConfigTest {
 
         @Test
-        @DisplayName("should build with all fields")
         void shouldBuildWithAllFields() {
-            // Given
+            // given
             boolean required = true;
             Integer minLength = 50;
             Integer maxLength = 800;
-            SidebarBlock.LinesConfig lines = SidebarBlock.LinesConfig
-                    .builder()
-                    .min(3)
-                    .max(30)
-                    .severity(Severity.INFO)
-                    .build();
+            SidebarBlock.LinesConfig lines = new SidebarBlock.LinesConfig(3, // min
+                    30, // max
+                    Severity.INFO); // severity
 
-            // When
-            SidebarBlock.ContentConfig config = SidebarBlock.ContentConfig
-                    .builder()
-                    .required(required)
-                    .minLength(minLength)
-                    .maxLength(maxLength)
-                    .lines(lines)
-                    .build();
+            // when
+            SidebarBlock.ContentConfig config = new SidebarBlock.ContentConfig(required, // required
+                    minLength, // minLength
+                    maxLength, // maxLength
+                    lines); // lines
 
-            // Then
+            // then
             assertEquals(required, config.isRequired());
             assertEquals(minLength, config.getMinLength());
             assertEquals(maxLength, config.getMaxLength());
@@ -227,36 +204,26 @@ class SidebarBlockTest {
         }
 
         @Test
-        @DisplayName("should implement equals and hashCode")
         void shouldImplementEqualsAndHashCode() {
-            // Given
-            SidebarBlock.LinesConfig lines = SidebarBlock.LinesConfig.builder().min(3).max(30).build();
+            // given
+            SidebarBlock.LinesConfig lines = new SidebarBlock.LinesConfig(3, 30, null);
 
-            SidebarBlock.ContentConfig config1 = SidebarBlock.ContentConfig
-                    .builder()
-                    .required(true)
-                    .minLength(50)
-                    .maxLength(800)
-                    .lines(lines)
-                    .build();
+            SidebarBlock.ContentConfig config1 = new SidebarBlock.ContentConfig(true, // required
+                    50, // minLength
+                    800, // maxLength
+                    lines); // lines
 
-            SidebarBlock.ContentConfig config2 = SidebarBlock.ContentConfig
-                    .builder()
-                    .required(true)
-                    .minLength(50)
-                    .maxLength(800)
-                    .lines(lines)
-                    .build();
+            SidebarBlock.ContentConfig config2 = new SidebarBlock.ContentConfig(true, // required
+                    50, // minLength
+                    800, // maxLength
+                    lines); // lines
 
-            SidebarBlock.ContentConfig config3 = SidebarBlock.ContentConfig
-                    .builder()
-                    .required(false)
-                    .minLength(50)
-                    .maxLength(800)
-                    .lines(lines)
-                    .build();
+            SidebarBlock.ContentConfig config3 = new SidebarBlock.ContentConfig(false, // required
+                    50, // minLength
+                    800, // maxLength
+                    lines); // lines
 
-            // Then
+            // then
             assertEquals(config1, config2);
             assertEquals(config1.hashCode(), config2.hashCode());
             assertNotEquals(config1, config3);
@@ -264,57 +231,42 @@ class SidebarBlockTest {
     }
 
     @Nested
-    @DisplayName("LinesConfig")
     class LinesConfigTest {
 
         @Test
-        @DisplayName("should build with all fields")
         void shouldBuildWithAllFields() {
-            // Given
+            // given
             Integer min = 3;
             Integer max = 30;
             Severity severity = Severity.INFO;
 
-            // When
-            SidebarBlock.LinesConfig config = SidebarBlock.LinesConfig
-                    .builder()
-                    .min(min)
-                    .max(max)
-                    .severity(severity)
-                    .build();
+            // when
+            SidebarBlock.LinesConfig config = new SidebarBlock.LinesConfig(min, // min
+                    max, // max
+                    severity); // severity
 
-            // Then
+            // then
             assertEquals(min, config.getMin());
             assertEquals(max, config.getMax());
             assertEquals(severity, config.getSeverity());
         }
 
         @Test
-        @DisplayName("should implement equals and hashCode")
         void shouldImplementEqualsAndHashCode() {
-            // Given
-            SidebarBlock.LinesConfig config1 = SidebarBlock.LinesConfig
-                    .builder()
-                    .min(3)
-                    .max(30)
-                    .severity(Severity.INFO)
-                    .build();
+            // given
+            SidebarBlock.LinesConfig config1 = new SidebarBlock.LinesConfig(3, // min
+                    30, // max
+                    Severity.INFO); // severity
 
-            SidebarBlock.LinesConfig config2 = SidebarBlock.LinesConfig
-                    .builder()
-                    .min(3)
-                    .max(30)
-                    .severity(Severity.INFO)
-                    .build();
+            SidebarBlock.LinesConfig config2 = new SidebarBlock.LinesConfig(3, // min
+                    30, // max
+                    Severity.INFO); // severity
 
-            SidebarBlock.LinesConfig config3 = SidebarBlock.LinesConfig
-                    .builder()
-                    .min(5)
-                    .max(30)
-                    .severity(Severity.INFO)
-                    .build();
+            SidebarBlock.LinesConfig config3 = new SidebarBlock.LinesConfig(5, // min
+                    30, // max
+                    Severity.INFO); // severity
 
-            // Then
+            // then
             assertEquals(config1, config2);
             assertEquals(config1.hashCode(), config2.hashCode());
             assertNotEquals(config1, config3);
@@ -322,59 +274,44 @@ class SidebarBlockTest {
     }
 
     @Nested
-    @DisplayName("PositionConfig")
     class PositionConfigTest {
 
         @Test
-        @DisplayName("should build with all fields")
         void shouldBuildWithAllFields() {
-            // Given
+            // given
             boolean required = false;
             List<String> allowed = List.of("left", "right", "float");
             Severity severity = Severity.INFO;
 
-            // When
-            SidebarBlock.PositionConfig config = SidebarBlock.PositionConfig
-                    .builder()
-                    .required(required)
-                    .allowed(allowed)
-                    .severity(severity)
-                    .build();
+            // when
+            SidebarBlock.PositionConfig config = new SidebarBlock.PositionConfig(required, // required
+                    allowed, // allowed
+                    severity); // severity
 
-            // Then
+            // then
             assertEquals(required, config.isRequired());
             assertEquals(allowed, config.getAllowed());
             assertEquals(severity, config.getSeverity());
         }
 
         @Test
-        @DisplayName("should implement equals and hashCode")
         void shouldImplementEqualsAndHashCode() {
-            // Given
+            // given
             List<String> allowed = List.of("left", "right");
 
-            SidebarBlock.PositionConfig config1 = SidebarBlock.PositionConfig
-                    .builder()
-                    .required(false)
-                    .allowed(allowed)
-                    .severity(Severity.INFO)
-                    .build();
+            SidebarBlock.PositionConfig config1 = new SidebarBlock.PositionConfig(false, // required
+                    allowed, // allowed
+                    Severity.INFO); // severity
 
-            SidebarBlock.PositionConfig config2 = SidebarBlock.PositionConfig
-                    .builder()
-                    .required(false)
-                    .allowed(allowed)
-                    .severity(Severity.INFO)
-                    .build();
+            SidebarBlock.PositionConfig config2 = new SidebarBlock.PositionConfig(false, // required
+                    allowed, // allowed
+                    Severity.INFO); // severity
 
-            SidebarBlock.PositionConfig config3 = SidebarBlock.PositionConfig
-                    .builder()
-                    .required(true)
-                    .allowed(allowed)
-                    .severity(Severity.INFO)
-                    .build();
+            SidebarBlock.PositionConfig config3 = new SidebarBlock.PositionConfig(true, // required
+                    allowed, // allowed
+                    Severity.INFO); // severity
 
-            // Then
+            // then
             assertEquals(config1, config2);
             assertEquals(config1.hashCode(), config2.hashCode());
             assertNotEquals(config1, config3);
@@ -382,22 +319,21 @@ class SidebarBlockTest {
     }
 
     @Nested
-    @DisplayName("equals and hashCode")
     class EqualsAndHashCodeTest {
 
         @Test
-        @DisplayName("should implement equals and hashCode")
         void shouldImplementEqualsAndHashCode() {
-            // Given
-            SidebarBlock.TitleConfig title = SidebarBlock.TitleConfig.builder().required(true).build();
+            // given
+            SidebarBlock.TitleConfig title = new SidebarBlock.TitleConfig(true, null, null, null, null);
 
-            SidebarBlock block1 = SidebarBlock.builder().name("sidebar1").severity(Severity.ERROR).title(title).build();
+            // when
+            SidebarBlock block1 = new SidebarBlock("sidebar1", Severity.ERROR, null, null, title, null, null);
 
-            SidebarBlock block2 = SidebarBlock.builder().name("sidebar1").severity(Severity.ERROR).title(title).build();
+            SidebarBlock block2 = new SidebarBlock("sidebar1", Severity.ERROR, null, null, title, null, null);
 
-            SidebarBlock block3 = SidebarBlock.builder().name("sidebar2").severity(Severity.ERROR).title(title).build();
+            SidebarBlock block3 = new SidebarBlock("sidebar2", Severity.ERROR, null, null, title, null, null);
 
-            // Then
+            // then
             assertEquals(block1, block2);
             assertEquals(block1.hashCode(), block2.hashCode());
             assertNotEquals(block1, block3);

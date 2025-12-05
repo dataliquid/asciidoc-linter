@@ -19,6 +19,7 @@ import org.junit.jupiter.api.Test;
 
 import com.dataliquid.asciidoc.linter.config.blocks.BlockType;
 import com.dataliquid.asciidoc.linter.config.common.Severity;
+import com.dataliquid.asciidoc.linter.config.rule.OccurrenceConfig;
 import com.dataliquid.asciidoc.linter.config.blocks.UlistBlock;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
 
@@ -80,7 +81,7 @@ class UlistBlockValidatorTest {
         void shouldReturnEmptyListWhenNotBlockInstance() {
             // Given
             StructuralNode notABlock = mock(StructuralNode.class);
-            UlistBlock config = UlistBlock.builder().severity(Severity.ERROR).build();
+            UlistBlock config = new UlistBlock(null, Severity.ERROR, null, null, null, null, null);
 
             // When
             List<ValidationMessage> messages = validator.validate(notABlock, config, context);
@@ -93,7 +94,7 @@ class UlistBlockValidatorTest {
         @DisplayName("should return empty list when no validations configured")
         void shouldReturnEmptyListWhenNoValidationsConfigured() {
             // Given
-            UlistBlock config = UlistBlock.builder().severity(Severity.ERROR).build();
+            UlistBlock config = new UlistBlock(null, Severity.ERROR, null, null, null, null, null);
 
             // When
             List<ValidationMessage> messages = validator.validate(mockBlock, config, context);
@@ -114,11 +115,8 @@ class UlistBlockValidatorTest {
             List<StructuralNode> items = Arrays.asList(mock(ListItem.class));
             when(mockBlock.getBlocks()).thenReturn(items);
 
-            UlistBlock config = UlistBlock
-                    .builder()
-                    .severity(Severity.ERROR)
-                    .items(UlistBlock.ItemsConfig.builder().min(2).severity(Severity.WARN).build())
-                    .build();
+            UlistBlock config = new UlistBlock(null, Severity.ERROR, null, null,
+                    new UlistBlock.ItemsConfig(2, null, Severity.WARN), null, null);
 
             // When
             List<ValidationMessage> messages = validator.validate(mockBlock, config, context);
@@ -141,11 +139,8 @@ class UlistBlockValidatorTest {
                     .asList(mock(ListItem.class), mock(ListItem.class), mock(ListItem.class), mock(ListItem.class));
             when(mockBlock.getBlocks()).thenReturn(items);
 
-            UlistBlock config = UlistBlock
-                    .builder()
-                    .severity(Severity.ERROR)
-                    .items(UlistBlock.ItemsConfig.builder().max(3).build())
-                    .build();
+            UlistBlock config = new UlistBlock(null, Severity.ERROR, null, null,
+                    new UlistBlock.ItemsConfig(null, 3, null), null, null);
 
             // When
             List<ValidationMessage> messages = validator.validate(mockBlock, config, context);
@@ -168,11 +163,8 @@ class UlistBlockValidatorTest {
                     .asList(mock(ListItem.class), mock(ListItem.class), mock(ListItem.class));
             when(mockBlock.getBlocks()).thenReturn(items);
 
-            UlistBlock config = UlistBlock
-                    .builder()
-                    .severity(Severity.ERROR)
-                    .items(UlistBlock.ItemsConfig.builder().min(2).max(5).build())
-                    .build();
+            UlistBlock config = new UlistBlock(null, Severity.ERROR, null, null, new UlistBlock.ItemsConfig(2, 5, null),
+                    null, null);
 
             // When
             List<ValidationMessage> messages = validator.validate(mockBlock, config, context);
@@ -201,11 +193,8 @@ class UlistBlockValidatorTest {
 
             when(mockBlock.getParent()).thenReturn(parent);
 
-            UlistBlock config = UlistBlock
-                    .builder()
-                    .severity(Severity.ERROR)
-                    .nestingLevel(UlistBlock.NestingLevelConfig.builder().max(1).severity(Severity.WARN).build())
-                    .build();
+            UlistBlock config = new UlistBlock(null, Severity.ERROR, null, null, null,
+                    new UlistBlock.NestingLevelConfig(1, Severity.WARN), null);
 
             // When
             List<ValidationMessage> messages = validator.validate(mockBlock, config, context);
@@ -230,11 +219,8 @@ class UlistBlockValidatorTest {
 
             when(mockBlock.getParent()).thenReturn(parent);
 
-            UlistBlock config = UlistBlock
-                    .builder()
-                    .severity(Severity.ERROR)
-                    .nestingLevel(UlistBlock.NestingLevelConfig.builder().max(2).build())
-                    .build();
+            UlistBlock config = new UlistBlock(null, Severity.ERROR, null, null, null,
+                    new UlistBlock.NestingLevelConfig(2, null), null);
 
             // When
             List<ValidationMessage> messages = validator.validate(mockBlock, config, context);
@@ -254,7 +240,7 @@ class UlistBlockValidatorTest {
             // Given
             when(mockBlock.getAttribute("marker")).thenReturn("-");
 
-            UlistBlock config = UlistBlock.builder().severity(Severity.ERROR).markerStyle("*").build();
+            UlistBlock config = new UlistBlock(null, Severity.ERROR, null, null, null, null, "*");
 
             // When
             List<ValidationMessage> messages = validator.validate(mockBlock, config, context);
@@ -270,7 +256,7 @@ class UlistBlockValidatorTest {
             // Given
             when(mockBlock.getAttribute("marker")).thenReturn("*");
 
-            UlistBlock config = UlistBlock.builder().severity(Severity.ERROR).markerStyle("*").build();
+            UlistBlock config = new UlistBlock(null, Severity.ERROR, null, null, null, null, "*");
 
             // When
             List<ValidationMessage> messages = validator.validate(mockBlock, config, context);
@@ -286,7 +272,7 @@ class UlistBlockValidatorTest {
             when(mockBlock.getAttribute("marker")).thenReturn(null);
             when(mockBlock.getStyle()).thenReturn("-");
 
-            UlistBlock config = UlistBlock.builder().severity(Severity.INFO).markerStyle("*").build();
+            UlistBlock config = new UlistBlock(null, Severity.INFO, null, null, null, null, "*");
 
             // When
             List<ValidationMessage> messages = validator.validate(mockBlock, config, context);
@@ -303,7 +289,7 @@ class UlistBlockValidatorTest {
             when(mockBlock.getAttribute("marker")).thenReturn(null);
             when(mockBlock.getStyle()).thenReturn(null);
 
-            UlistBlock config = UlistBlock.builder().severity(Severity.WARN).markerStyle("-").build();
+            UlistBlock config = new UlistBlock(null, Severity.WARN, null, null, null, null, "-");
 
             // When
             List<ValidationMessage> messages = validator.validate(mockBlock, config, context);
@@ -332,13 +318,9 @@ class UlistBlockValidatorTest {
             when(parent.getParent()).thenReturn(null);
             when(mockBlock.getParent()).thenReturn(parent);
 
-            UlistBlock config = UlistBlock
-                    .builder()
-                    .severity(Severity.ERROR)
-                    .items(UlistBlock.ItemsConfig.builder().min(2).severity(Severity.WARN).build())
-                    .nestingLevel(UlistBlock.NestingLevelConfig.builder().max(0).severity(Severity.INFO).build())
-                    .markerStyle("*")
-                    .build();
+            UlistBlock config = new UlistBlock(null, Severity.ERROR, null, null,
+                    new UlistBlock.ItemsConfig(2, null, Severity.WARN),
+                    new UlistBlock.NestingLevelConfig(0, Severity.INFO), "*");
 
             // When
             List<ValidationMessage> messages = validator.validate(mockBlock, config, context);
@@ -371,11 +353,8 @@ class UlistBlockValidatorTest {
             // Given
             when(mockBlock.getBlocks()).thenReturn(null);
 
-            UlistBlock config = UlistBlock
-                    .builder()
-                    .severity(Severity.ERROR)
-                    .items(UlistBlock.ItemsConfig.builder().min(1).build())
-                    .build();
+            UlistBlock config = new UlistBlock(null, Severity.ERROR, null, null,
+                    new UlistBlock.ItemsConfig(1, null, null), null, null);
 
             // When
             List<ValidationMessage> messages = validator.validate(mockBlock, config, context);

@@ -6,35 +6,30 @@ import java.util.regex.Pattern;
 
 import com.dataliquid.asciidoc.linter.config.blocks.BlockType;
 import com.dataliquid.asciidoc.linter.config.common.Severity;
+import com.dataliquid.asciidoc.linter.config.rule.OccurrenceConfig;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-
-import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.ALLOWED;
-import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.CAPTION;
-import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.MAX_LENGTH;
-import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.MIN_LENGTH;
-import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.PATTERN;
-import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.REQUIRED;
-import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.SEVERITY;
-import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Example.COLLAPSIBLE;
-import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.EMPTY;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
 /**
  * Configuration for EXAMPLE blocks. Validates example blocks with optional
  * numbering and caption format. Based on the YAML schema definition for the
  * linter.
  */
-@JsonDeserialize(builder = ExampleBlock.Builder.class)
+@JsonDeserialize
 public class ExampleBlock extends AbstractBlock {
 
     private final CaptionConfig caption;
     private final CollapsibleConfig collapsible;
 
-    private ExampleBlock(Builder builder) {
-        super(builder);
-        this.caption = builder._caption;
-        this.collapsible = builder._collapsible;
+    @JsonCreator
+    public ExampleBlock(@JsonProperty("name") String name, @JsonProperty("severity") Severity severity,
+            @JsonProperty("occurrence") OccurrenceConfig occurrence, @JsonProperty("order") Integer order,
+            @JsonProperty("caption") CaptionConfig caption,
+            @JsonProperty("collapsible") CollapsibleConfig collapsible) {
+        super(name, severity, occurrence, order);
+        this.caption = caption;
+        this.collapsible = collapsible;
     }
 
     @Override
@@ -73,38 +68,11 @@ public class ExampleBlock extends AbstractBlock {
                 + getOccurrence() + ", caption=" + caption + ", collapsible=" + collapsible + '}';
     }
 
-    public static Builder builder() {
-        return new Builder();
-    }
-
-    @JsonPOJOBuilder(withPrefix = EMPTY)
-    public static class Builder extends AbstractBlock.AbstractBuilder<Builder> {
-        private CaptionConfig _caption;
-        private CollapsibleConfig _collapsible;
-
-        @JsonProperty(CAPTION)
-        public Builder caption(CaptionConfig caption) {
-            this._caption = caption;
-            return this;
-        }
-
-        @JsonProperty(COLLAPSIBLE)
-        public Builder collapsible(CollapsibleConfig collapsible) {
-            this._collapsible = collapsible;
-            return this;
-        }
-
-        @Override
-        public ExampleBlock build() {
-            return new ExampleBlock(this);
-        }
-    }
-
     /**
      * Configuration for the caption of an example block. Based on the YAML schema
      * requiring specific format.
      */
-    @JsonDeserialize(builder = CaptionConfig.Builder.class)
+    @JsonDeserialize
     public static class CaptionConfig {
         private final boolean required;
         private final Pattern pattern;
@@ -112,12 +80,16 @@ public class ExampleBlock extends AbstractBlock {
         private final Integer maxLength;
         private final Severity severity;
 
-        private CaptionConfig(Builder builder) {
-            this.required = builder._required;
-            this.pattern = builder._pattern;
-            this.minLength = builder._minLength;
-            this.maxLength = builder._maxLength;
-            this.severity = builder._severity;
+        @JsonCreator
+        @SuppressWarnings("PMD.NullAssignment")
+        public CaptionConfig(@JsonProperty("required") boolean required, @JsonProperty("pattern") String patternString,
+                @JsonProperty("minLength") Integer minLength, @JsonProperty("maxLength") Integer maxLength,
+                @JsonProperty("severity") Severity severity) {
+            this.required = required;
+            this.pattern = patternString != null ? Pattern.compile(patternString) : null;
+            this.minLength = minLength;
+            this.maxLength = maxLength;
+            this.severity = severity;
         }
 
         public boolean isRequired() {
@@ -166,70 +138,24 @@ public class ExampleBlock extends AbstractBlock {
                     + (pattern == null ? null : pattern.pattern()) + ", minLength=" + minLength + ", maxLength="
                     + maxLength + ", severity=" + severity + '}';
         }
-
-        public static Builder builder() {
-            return new Builder();
-        }
-
-        @JsonPOJOBuilder(withPrefix = EMPTY)
-        public static class Builder {
-            private boolean _required;
-            private Pattern _pattern;
-            private Integer _minLength;
-            private Integer _maxLength;
-            private Severity _severity;
-
-            @JsonProperty(REQUIRED)
-            public Builder required(boolean required) {
-                this._required = required;
-                return this;
-            }
-
-            @JsonProperty(PATTERN)
-            @SuppressWarnings("PMD.NullAssignment")
-            public Builder pattern(String pattern) {
-                this._pattern = pattern != null ? Pattern.compile(pattern) : null;
-                return this;
-            }
-
-            @JsonProperty(MIN_LENGTH)
-            public Builder minLength(Integer minLength) {
-                this._minLength = minLength;
-                return this;
-            }
-
-            @JsonProperty(MAX_LENGTH)
-            public Builder maxLength(Integer maxLength) {
-                this._maxLength = maxLength;
-                return this;
-            }
-
-            @JsonProperty(SEVERITY)
-            public Builder severity(Severity severity) {
-                this._severity = severity;
-                return this;
-            }
-
-            public CaptionConfig build() {
-                return new CaptionConfig(this);
-            }
-        }
     }
 
     /**
      * Configuration for the collapsible attribute of an example block. Based on the
      * YAML schema allowing true/false values.
      */
-    @JsonDeserialize(builder = CollapsibleConfig.Builder.class)
+    @JsonDeserialize
     public static class CollapsibleConfig {
         private final boolean required;
         private final List<Boolean> allowed;
         private final Severity severity;
 
-        private CollapsibleConfig(Builder builder) {
-            this.required = builder._required;
-            this.allowed = builder._allowed;
-            this.severity = builder._severity;
+        @JsonCreator
+        public CollapsibleConfig(@JsonProperty("required") boolean required,
+                @JsonProperty("allowed") List<Boolean> allowed, @JsonProperty("severity") Severity severity) {
+            this.required = required;
+            this.allowed = allowed;
+            this.severity = severity;
         }
 
         public boolean isRequired() {
@@ -263,39 +189,6 @@ public class ExampleBlock extends AbstractBlock {
         public String toString() {
             return "CollapsibleConfig{" + "required=" + required + ", allowed=" + allowed + ", severity=" + severity
                     + '}';
-        }
-
-        public static Builder builder() {
-            return new Builder();
-        }
-
-        @JsonPOJOBuilder(withPrefix = EMPTY)
-        public static class Builder {
-            private boolean _required;
-            private List<Boolean> _allowed;
-            private Severity _severity;
-
-            @JsonProperty(REQUIRED)
-            public Builder required(boolean required) {
-                this._required = required;
-                return this;
-            }
-
-            @JsonProperty(ALLOWED)
-            public Builder allowed(List<Boolean> allowed) {
-                this._allowed = allowed;
-                return this;
-            }
-
-            @JsonProperty(SEVERITY)
-            public Builder severity(Severity severity) {
-                this._severity = severity;
-                return this;
-            }
-
-            public CollapsibleConfig build() {
-                return new CollapsibleConfig(this);
-            }
         }
     }
 }
