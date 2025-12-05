@@ -54,7 +54,6 @@ import com.dataliquid.asciidoc.linter.util.StringUtils;
 public final class TableBlockValidator extends AbstractBlockValidator<TableBlock> {
 
     private static final String TABLE_DELIMITER = "|===";
-    private static final String CHARACTERS_UNIT = " characters";
 
     @Override
     public BlockType getSupportedType() {

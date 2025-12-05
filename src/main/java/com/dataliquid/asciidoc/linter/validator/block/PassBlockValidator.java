@@ -68,7 +68,6 @@ import com.dataliquid.asciidoc.linter.util.StringUtils;
  * @see BlockTypeValidator
  */
 public final class PassBlockValidator extends AbstractBlockValidator<PassBlock> {
-    private static final String CHARACTERS_UNIT = " characters";
 
     @Override
     public BlockType getSupportedType() {
