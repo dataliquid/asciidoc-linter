@@ -12,7 +12,6 @@ public class VersionInfo {
     private static final String POM_PROPERTIES_PATH = "/META-INF/maven/com.dataliquid/asciidoc-linter/pom.properties";
     private static final String UNKNOWN = "<unknown>";
 
-    private static VersionInfo instance;
     private final String version;
     private final String artifactId;
     private final String groupId;
@@ -35,17 +34,19 @@ public class VersionInfo {
     }
 
     /**
+     * Initialization-on-demand holder idiom for thread-safe lazy initialization.
+     */
+    private static final class InstanceHolder {
+        private static final VersionInfo INSTANCE = new VersionInfo();
+    }
+
+    /**
      * Gets the singleton instance of VersionInfo.
      *
      * @return the VersionInfo instance
      */
     public static VersionInfo getInstance() {
-        synchronized (VersionInfo.class) {
-            if (instance == null) {
-                instance = new VersionInfo();
-            }
-            return instance;
-        }
+        return InstanceHolder.INSTANCE;
     }
 
     /**
