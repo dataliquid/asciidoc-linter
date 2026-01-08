@@ -12,7 +12,7 @@ import com.dataliquid.asciidoc.linter.config.rule.OccurrenceConfig;
 import com.dataliquid.asciidoc.linter.config.rule.LineConfig;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import tools.jackson.databind.annotation.JsonDeserialize;
 
 import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Admonition.ICON;
 import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Admonition.TYPE;

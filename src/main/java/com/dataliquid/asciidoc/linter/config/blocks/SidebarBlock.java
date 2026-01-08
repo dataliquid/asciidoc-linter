@@ -27,7 +27,7 @@ import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Com
 import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.MIN;
 import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.MAX;
 import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.ALLOWED;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import tools.jackson.databind.annotation.JsonDeserialize;
 
 /**
  * Configuration for sidebar blocks in AsciiDoc. Sidebar blocks are used for

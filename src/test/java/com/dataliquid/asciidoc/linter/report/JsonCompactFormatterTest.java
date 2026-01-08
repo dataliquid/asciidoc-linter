@@ -18,8 +18,9 @@ import com.dataliquid.asciidoc.linter.config.common.Severity;
 import com.dataliquid.asciidoc.linter.validator.SourceLocation;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
 import com.dataliquid.asciidoc.linter.validator.ValidationResult;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.json.JsonMapper;
 
 /**
  * Unit tests for JSON compact formatting.
@@ -35,14 +36,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 class JsonCompactFormatterTest {
 
     private JsonFormatter formatter;
-    private ObjectMapper objectMapper;
+    private JsonMapper jsonMapper;
     private StringWriter stringWriter;
     private PrintWriter printWriter;
 
     @BeforeEach
     void setUp() {
         formatter = JsonFormatter.compact();
-        objectMapper = new ObjectMapper();
+        jsonMapper = new JsonMapper();
         stringWriter = new StringWriter();
         printWriter = new PrintWriter(stringWriter);
     }
@@ -77,7 +78,7 @@ class JsonCompactFormatterTest {
         assertFalse(output.contains("  "), "Output should not contain indentation");
 
         // Parse and verify structure
-        JsonNode json = objectMapper.readTree(output);
+        JsonNode json = jsonMapper.readTree(output);
         assertTrue(json.has("timestamp"));
         assertTrue(json.has("duration"));
         assertTrue(json.has("summary"));
@@ -143,7 +144,7 @@ class JsonCompactFormatterTest {
         assertFalse(output.contains("  "), "Output should not contain indentation");
 
         // Parse and verify structure
-        JsonNode json = objectMapper.readTree(output);
+        JsonNode json = jsonMapper.readTree(output);
 
         // Verify summary
         JsonNode summary = json.get("summary");
@@ -197,7 +198,7 @@ class JsonCompactFormatterTest {
         String output1 = stringWriter.toString();
 
         // Then
-        JsonNode json1 = objectMapper.readTree(output1);
+        JsonNode json1 = jsonMapper.readTree(output1);
         assertEquals("999ms", json1.get("duration").asText());
 
         // Given - test with seconds
@@ -214,7 +215,7 @@ class JsonCompactFormatterTest {
         String output2 = stringWriter.toString();
 
         // Then
-        JsonNode json2 = objectMapper.readTree(output2);
+        JsonNode json2 = jsonMapper.readTree(output2);
         assertEquals("1.500s", json2.get("duration").asText());
     }
 
@@ -241,7 +242,7 @@ class JsonCompactFormatterTest {
         String output = stringWriter.toString();
 
         // Then
-        JsonNode json = objectMapper.readTree(output);
+        JsonNode json = jsonMapper.readTree(output);
         JsonNode messages = json.get("messages");
         JsonNode message = messages.get(0);
 
@@ -286,7 +287,7 @@ class JsonCompactFormatterTest {
 
         // Then
         // Verify it's valid JSON
-        JsonNode json = objectMapper.readTree(output);
+        JsonNode json = jsonMapper.readTree(output);
         JsonNode messages = json.get("messages");
         JsonNode message = messages.get(0);
 

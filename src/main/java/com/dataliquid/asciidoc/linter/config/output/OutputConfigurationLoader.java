@@ -6,8 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import tools.jackson.dataformat.yaml.YAMLMapper;
 
 /**
  * Loads output configuration from YAML files.
@@ -15,7 +14,7 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 public class OutputConfigurationLoader {
     private static final String SCHEMA_PATH = "/schemas/output/output-config-schema.yaml";
 
-    private final ObjectMapper mapper;
+    private final YAMLMapper mapper;
     private final OutputSchemaValidator validator;
 
     /**
@@ -30,7 +29,7 @@ public class OutputConfigurationLoader {
      */
     @SuppressWarnings("PMD.NullAssignment")
     public OutputConfigurationLoader(boolean skipValidation) {
-        this.mapper = new ObjectMapper(new YAMLFactory());
+        this.mapper = new YAMLMapper();
         this.validator = skipValidation ? null : new OutputSchemaValidator(SCHEMA_PATH);
     }
 

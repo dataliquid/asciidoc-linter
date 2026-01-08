@@ -1,6 +1,5 @@
 package com.dataliquid.asciidoc.linter.config.loader;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,11 +20,11 @@ import com.dataliquid.asciidoc.linter.config.blocks.TableBlock;
 import com.dataliquid.asciidoc.linter.config.blocks.UlistBlock;
 import com.dataliquid.asciidoc.linter.config.blocks.VerseBlock;
 import com.dataliquid.asciidoc.linter.config.blocks.VideoBlock;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonDeserializer;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.DeserializationContext;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.deser.std.StdDeserializer;
 
 /**
  * Custom deserializer for Block lists in YAML. Handles the special YAML
@@ -47,18 +46,21 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * This deserializer expects valid YAML that conforms to the schema. No
  * transformations or default values are applied.
  */
-public class BlockListDeserializer extends JsonDeserializer<List<Block>> {
+@SuppressWarnings("rawtypes")
+public class BlockListDeserializer extends StdDeserializer<List> {
+
+    public BlockListDeserializer() {
+        super(List.class);
+    }
 
     @Override
-    public List<Block> deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
+    public List<Block> deserialize(JsonParser p, DeserializationContext ctxt) {
         List<Block> blocks = new ArrayList<>();
-        JsonNode node = p.getCodec().readTree(p);
+        JsonNode node = p.readValueAsTree();
 
         if (!node.isArray()) {
-            throw new IOException("Expected array for block list");
+            throw new IllegalArgumentException("Expected array for block list");
         }
-
-        ObjectMapper mapper = (ObjectMapper) p.getCodec();
 
         for (JsonNode blockNode : node) {
             if (!blockNode.isObject()) {
@@ -66,7 +68,7 @@ public class BlockListDeserializer extends JsonDeserializer<List<Block>> {
             }
 
             // Each block is an object with a single key (the block type)
-            String blockType = blockNode.fieldNames().next();
+            String blockType = blockNode.propertyNames().iterator().next();
             JsonNode blockData = blockNode.get(blockType);
 
             // Convert blockType string to BlockType enum
@@ -74,21 +76,21 @@ public class BlockListDeserializer extends JsonDeserializer<List<Block>> {
 
             // Deserialize based on block type - Jackson will handle all validation
             Block block = switch (type) {
-            case PARAGRAPH -> mapper.treeToValue(blockData, ParagraphBlock.class);
-            case LISTING -> mapper.treeToValue(blockData, ListingBlock.class);
-            case TABLE -> mapper.treeToValue(blockData, TableBlock.class);
-            case IMAGE -> mapper.treeToValue(blockData, ImageBlock.class);
-            case VERSE -> mapper.treeToValue(blockData, VerseBlock.class);
-            case ADMONITION -> mapper.treeToValue(blockData, AdmonitionBlock.class);
-            case PASS -> mapper.treeToValue(blockData, PassBlock.class);
-            case LITERAL -> mapper.treeToValue(blockData, LiteralBlock.class);
-            case AUDIO -> mapper.treeToValue(blockData, AudioBlock.class);
-            case QUOTE -> mapper.treeToValue(blockData, QuoteBlock.class);
-            case SIDEBAR -> mapper.treeToValue(blockData, SidebarBlock.class);
-            case EXAMPLE -> mapper.treeToValue(blockData, ExampleBlock.class);
-            case VIDEO -> mapper.treeToValue(blockData, VideoBlock.class);
-            case ULIST -> mapper.treeToValue(blockData, UlistBlock.class);
-            case DLIST -> mapper.treeToValue(blockData, DlistBlock.class);
+            case PARAGRAPH -> ctxt.readTreeAsValue(blockData, ParagraphBlock.class);
+            case LISTING -> ctxt.readTreeAsValue(blockData, ListingBlock.class);
+            case TABLE -> ctxt.readTreeAsValue(blockData, TableBlock.class);
+            case IMAGE -> ctxt.readTreeAsValue(blockData, ImageBlock.class);
+            case VERSE -> ctxt.readTreeAsValue(blockData, VerseBlock.class);
+            case ADMONITION -> ctxt.readTreeAsValue(blockData, AdmonitionBlock.class);
+            case PASS -> ctxt.readTreeAsValue(blockData, PassBlock.class);
+            case LITERAL -> ctxt.readTreeAsValue(blockData, LiteralBlock.class);
+            case AUDIO -> ctxt.readTreeAsValue(blockData, AudioBlock.class);
+            case QUOTE -> ctxt.readTreeAsValue(blockData, QuoteBlock.class);
+            case SIDEBAR -> ctxt.readTreeAsValue(blockData, SidebarBlock.class);
+            case EXAMPLE -> ctxt.readTreeAsValue(blockData, ExampleBlock.class);
+            case VIDEO -> ctxt.readTreeAsValue(blockData, VideoBlock.class);
+            case ULIST -> ctxt.readTreeAsValue(blockData, UlistBlock.class);
+            case DLIST -> ctxt.readTreeAsValue(blockData, DlistBlock.class);
             };
 
             blocks.add(block);
