@@ -26,7 +26,7 @@ import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Com
 import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.MAX_LENGTH;
 import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Table.STYLE;
 import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Table.BORDERS;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import tools.jackson.databind.annotation.JsonDeserialize;
 
 @JsonDeserialize
 public final class TableBlock extends AbstractBlock {

@@ -21,7 +21,7 @@ import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Com
 import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.LINES;
 import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.MIN;
 import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.MAX;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import tools.jackson.databind.annotation.JsonDeserialize;
 
 /**
  * Configuration for quote blocks. Based on the YAML schema structure for

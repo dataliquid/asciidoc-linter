@@ -32,7 +32,7 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <asciidoctorj.version>3.0.1</asciidoctorj.version>
-        <jackson.version>2.20.1</jackson.version>
+        <jackson.version>3.0.3</jackson.version>
         <junit.version>6.0.1</junit.version>
         <jacoco.version>0.8.14</jacoco.version>
     </properties>
@@ -46,13 +46,13 @@
         
         <!-- Jackson dependencies for YAML parsing -->
         <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
+            <groupId>tools.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>${jackson.version}</version>
         </dependency>
-        
+
         <dependency>
-            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <groupId>tools.jackson.dataformat</groupId>
             <artifactId>jackson-dataformat-yaml</artifactId>
             <version>${jackson.version}</version>
         </dependency>

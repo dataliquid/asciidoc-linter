@@ -193,8 +193,10 @@ class ConfigurationLoaderTest {
                     () -> loader.loadConfiguration(yaml));
 
             // Then
-            // Jackson throws UnrecognizedPropertyException when encountering unknown fields
-            assertTrue(exception.getMessage().contains("Unrecognized field"));
+            // Jackson throws UnrecognizedPropertyException when encountering unknown
+            // properties
+            assertTrue(exception.getMessage().contains("Unrecognized property"),
+                    "Expected 'Unrecognized property' in: " + exception.getMessage());
             assertTrue(exception.getMessage().contains("someOtherKey"));
             assertTrue(exception.getMessage().contains("one known property: \"document\""));
         }
