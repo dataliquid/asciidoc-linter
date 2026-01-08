@@ -59,7 +59,7 @@ class BlockOccurrenceValidatorTest {
         @DisplayName("should return empty list when no occurrence rules configured")
         void shouldReturnEmptyListWhenNoOccurrenceRulesConfigured() {
             // Given
-            ParagraphBlock block = ParagraphBlock.builder().severity(Severity.ERROR).build();
+            ParagraphBlock block = new ParagraphBlock(null, Severity.ERROR, null, null, null, null);
             List<Block> blocks = Arrays.asList(block);
 
             // When
@@ -95,18 +95,9 @@ class BlockOccurrenceValidatorTest {
         @DisplayName("should validate minimum occurrences not met")
         void shouldValidateMinimumOccurrencesNotMet() {
             // Given
-            OccurrenceConfig occurrenceConfig = OccurrenceConfig
-                    .builder()
-                    .min(2)
-                    .max(5)
-                    .severity(Severity.ERROR)
-                    .build();
-            ParagraphBlock block = ParagraphBlock
-                    .builder()
-                    .name("introduction")
-                    .occurrence(occurrenceConfig)
-                    .severity(Severity.ERROR)
-                    .build();
+            OccurrenceConfig occurrenceConfig = new OccurrenceConfig(null, 2, 5, Severity.ERROR);
+            ParagraphBlock block = new ParagraphBlock("introduction", Severity.ERROR, occurrenceConfig, null, null,
+                    null);
             List<Block> blocks = Arrays.asList(block);
 
             // Add only one occurrence to context
@@ -130,18 +121,9 @@ class BlockOccurrenceValidatorTest {
         @DisplayName("should validate minimum occurrences met")
         void shouldValidateMinimumOccurrencesMet() {
             // Given
-            OccurrenceConfig occurrenceConfig = OccurrenceConfig
-                    .builder()
-                    .min(2)
-                    .max(5)
-                    .severity(Severity.ERROR)
-                    .build();
-            ParagraphBlock block = ParagraphBlock
-                    .builder()
-                    .name("introduction")
-                    .occurrence(occurrenceConfig)
-                    .severity(Severity.ERROR)
-                    .build();
+            OccurrenceConfig occurrenceConfig = new OccurrenceConfig(null, 2, 5, Severity.ERROR);
+            ParagraphBlock block = new ParagraphBlock("introduction", Severity.ERROR, occurrenceConfig, null, null,
+                    null);
             List<Block> blocks = Arrays.asList(block);
 
             // Add two occurrences to context
@@ -161,18 +143,9 @@ class BlockOccurrenceValidatorTest {
         @DisplayName("should validate zero occurrences when minimum required")
         void shouldValidateZeroOccurrencesWhenMinimumRequired() {
             // Given
-            OccurrenceConfig occurrenceConfig = OccurrenceConfig
-                    .builder()
-                    .min(1)
-                    .max(3)
-                    .severity(Severity.WARN)
-                    .build();
-            TableBlock block = TableBlock
-                    .builder()
-                    .name("summary")
-                    .occurrence(occurrenceConfig)
-                    .severity(Severity.ERROR)
-                    .build();
+            OccurrenceConfig occurrenceConfig = new OccurrenceConfig(null, 1, 3, Severity.WARN);
+            TableBlock block = new TableBlock("summary", Severity.ERROR, occurrenceConfig, null, null, null, null, null,
+                    null);
             List<Block> blocks = Arrays.asList(block);
 
             // No blocks tracked in context
@@ -197,18 +170,8 @@ class BlockOccurrenceValidatorTest {
         @DisplayName("should validate maximum occurrences exceeded")
         void shouldValidateMaximumOccurrencesExceeded() {
             // Given
-            OccurrenceConfig occurrenceConfig = OccurrenceConfig
-                    .builder()
-                    .min(1)
-                    .max(2)
-                    .severity(Severity.ERROR)
-                    .build();
-            ParagraphBlock block = ParagraphBlock
-                    .builder()
-                    .name("note")
-                    .occurrence(occurrenceConfig)
-                    .severity(Severity.ERROR)
-                    .build();
+            OccurrenceConfig occurrenceConfig = new OccurrenceConfig(null, 1, 2, Severity.ERROR);
+            ParagraphBlock block = new ParagraphBlock("note", Severity.ERROR, occurrenceConfig, null, null, null);
             List<Block> blocks = Arrays.asList(block);
 
             // Add three occurrences to context
@@ -236,17 +199,8 @@ class BlockOccurrenceValidatorTest {
         @DisplayName("should validate maximum occurrences not exceeded")
         void shouldValidateMaximumOccurrencesNotExceeded() {
             // Given
-            OccurrenceConfig occurrenceConfig = OccurrenceConfig
-                    .builder()
-                    .min(0)
-                    .max(3)
-                    .severity(Severity.ERROR)
-                    .build();
-            ParagraphBlock block = ParagraphBlock
-                    .builder()
-                    .occurrence(occurrenceConfig)
-                    .severity(Severity.ERROR)
-                    .build();
+            OccurrenceConfig occurrenceConfig = new OccurrenceConfig(null, 0, 3, Severity.ERROR);
+            ParagraphBlock block = new ParagraphBlock(null, Severity.ERROR, occurrenceConfig, null, null, null);
             List<Block> blocks = Arrays.asList(block);
 
             // Add three occurrences to context (exactly at max)
@@ -273,26 +227,13 @@ class BlockOccurrenceValidatorTest {
         @DisplayName("should validate multiple blocks with different occurrence rules")
         void shouldValidateMultipleBlocksWithDifferentOccurrenceRules() {
             // Given
-            OccurrenceConfig paragraphOccurrence = OccurrenceConfig
-                    .builder()
-                    .min(1)
-                    .max(3)
-                    .severity(Severity.ERROR)
-                    .build();
-            ParagraphBlock paragraphBlock = ParagraphBlock
-                    .builder()
-                    .name("intro")
-                    .occurrence(paragraphOccurrence)
-                    .severity(Severity.ERROR)
-                    .build();
+            OccurrenceConfig paragraphOccurrence = new OccurrenceConfig(null, 1, 3, Severity.ERROR);
+            ParagraphBlock paragraphBlock = new ParagraphBlock("intro", Severity.ERROR, paragraphOccurrence, null, null,
+                    null);
 
-            OccurrenceConfig tableOccurrence = OccurrenceConfig.builder().min(2).max(2).severity(Severity.WARN).build();
-            TableBlock tableBlock = TableBlock
-                    .builder()
-                    .name("data")
-                    .occurrence(tableOccurrence)
-                    .severity(Severity.ERROR)
-                    .build();
+            OccurrenceConfig tableOccurrence = new OccurrenceConfig(null, 2, 2, Severity.WARN);
+            TableBlock tableBlock = new TableBlock("data", Severity.ERROR, tableOccurrence, null, null, null, null,
+                    null, null);
 
             List<Block> blocks = Arrays.asList(paragraphBlock, tableBlock);
 
@@ -332,17 +273,8 @@ class BlockOccurrenceValidatorTest {
         @DisplayName("should handle blocks without names using type")
         void shouldHandleBlocksWithoutNamesUsingType() {
             // Given
-            OccurrenceConfig occurrenceConfig = OccurrenceConfig
-                    .builder()
-                    .min(1)
-                    .max(1)
-                    .severity(Severity.INFO)
-                    .build();
-            ParagraphBlock block = ParagraphBlock
-                    .builder()
-                    .occurrence(occurrenceConfig)
-                    .severity(Severity.ERROR)
-                    .build();
+            OccurrenceConfig occurrenceConfig = new OccurrenceConfig(null, 1, 1, Severity.INFO);
+            ParagraphBlock block = new ParagraphBlock(null, Severity.ERROR, occurrenceConfig, null, null, null);
             List<Block> blocks = Arrays.asList(block);
 
             // Add two occurrences (violates max)
@@ -370,18 +302,8 @@ class BlockOccurrenceValidatorTest {
         @DisplayName("should handle exact occurrence count")
         void shouldHandleExactOccurrenceCount() {
             // Given - exactly 3 occurrences required
-            OccurrenceConfig occurrenceConfig = OccurrenceConfig
-                    .builder()
-                    .min(3)
-                    .max(3)
-                    .severity(Severity.ERROR)
-                    .build();
-            ParagraphBlock block = ParagraphBlock
-                    .builder()
-                    .name("section")
-                    .occurrence(occurrenceConfig)
-                    .severity(Severity.ERROR)
-                    .build();
+            OccurrenceConfig occurrenceConfig = new OccurrenceConfig(null, 3, 3, Severity.ERROR);
+            ParagraphBlock block = new ParagraphBlock("section", Severity.ERROR, occurrenceConfig, null, null, null);
             List<Block> blocks = Arrays.asList(block);
 
             // Test with exactly 3 occurrences
@@ -403,17 +325,8 @@ class BlockOccurrenceValidatorTest {
         @DisplayName("should validate when both min and max violations occur")
         void shouldValidateWhenBothMinAndMaxViolationsOccur() {
             // Given - impossible constraint (min > max)
-            OccurrenceConfig occurrenceConfig = OccurrenceConfig
-                    .builder()
-                    .min(5)
-                    .max(3)
-                    .severity(Severity.ERROR)
-                    .build();
-            ParagraphBlock block = ParagraphBlock
-                    .builder()
-                    .occurrence(occurrenceConfig)
-                    .severity(Severity.ERROR)
-                    .build();
+            OccurrenceConfig occurrenceConfig = new OccurrenceConfig(null, 5, 3, Severity.ERROR);
+            ParagraphBlock block = new ParagraphBlock(null, Severity.ERROR, occurrenceConfig, null, null, null);
             List<Block> blocks = Arrays.asList(block);
 
             // Add 4 occurrences

@@ -90,7 +90,7 @@ class TableBlockValidatorTest {
         void shouldReturnEmptyListWhenNotTableInstance() {
             // Given
             StructuralNode notATable = mock(StructuralNode.class);
-            TableBlock config = TableBlock.builder().severity(Severity.ERROR).build();
+            TableBlock config = new TableBlock(null, Severity.ERROR, null, null, null, null, null, null, null);
 
             // When
             List<ValidationMessage> messages = validator.validate(notATable, config, context);
@@ -103,7 +103,7 @@ class TableBlockValidatorTest {
         @DisplayName("should return empty list when no validations configured")
         void shouldReturnEmptyListWhenNoValidationsConfigured() {
             // Given
-            TableBlock config = TableBlock.builder().severity(Severity.ERROR).build();
+            TableBlock config = new TableBlock(null, Severity.ERROR, null, null, null, null, null, null, null);
 
             // When
             List<ValidationMessage> messages = validator.validate(mockTable, config, context);
@@ -121,12 +121,8 @@ class TableBlockValidatorTest {
         @DisplayName("should validate minimum columns")
         void shouldValidateMinimumColumns() {
             // Given
-            TableBlock.DimensionConfig columnsConfig = TableBlock.DimensionConfig
-                    .builder()
-                    .min(3)
-                    .severity(Severity.ERROR)
-                    .build();
-            TableBlock config = TableBlock.builder().columns(columnsConfig).severity(Severity.ERROR).build();
+            TableBlock.DimensionConfig columnsConfig = new TableBlock.DimensionConfig(3, null, Severity.ERROR);
+            TableBlock config = new TableBlock(null, Severity.ERROR, null, null, columnsConfig, null, null, null, null);
 
             Column col1 = mock(Column.class);
             Column col2 = mock(Column.class);
@@ -149,12 +145,8 @@ class TableBlockValidatorTest {
         @DisplayName("should validate maximum columns")
         void shouldValidateMaximumColumns() {
             // Given
-            TableBlock.DimensionConfig columnsConfig = TableBlock.DimensionConfig
-                    .builder()
-                    .max(2)
-                    .severity(Severity.WARN)
-                    .build();
-            TableBlock config = TableBlock.builder().columns(columnsConfig).severity(Severity.ERROR).build();
+            TableBlock.DimensionConfig columnsConfig = new TableBlock.DimensionConfig(null, 2, Severity.WARN);
+            TableBlock config = new TableBlock(null, Severity.ERROR, null, null, columnsConfig, null, null, null, null);
 
             Column col1 = mock(Column.class);
             Column col2 = mock(Column.class);
@@ -175,12 +167,8 @@ class TableBlockValidatorTest {
         @DisplayName("should use columns severity over block severity")
         void shouldUseColumnsSeverityOverBlockSeverity() {
             // Given - columns has WARN, block has ERROR
-            TableBlock.DimensionConfig columnsConfig = TableBlock.DimensionConfig
-                    .builder()
-                    .min(3)
-                    .severity(Severity.WARN)
-                    .build();
-            TableBlock config = TableBlock.builder().columns(columnsConfig).severity(Severity.ERROR).build();
+            TableBlock.DimensionConfig columnsConfig = new TableBlock.DimensionConfig(3, null, Severity.WARN);
+            TableBlock config = new TableBlock(null, Severity.ERROR, null, null, columnsConfig, null, null, null, null);
 
             Column col1 = mock(Column.class);
             when(mockTable.getColumns()).thenReturn(Collections.singletonList(col1));
@@ -200,12 +188,8 @@ class TableBlockValidatorTest {
         @DisplayName("should use block severity when columns severity is not defined")
         void shouldUseBlockSeverityWhenColumnsSeverityNotDefined() {
             // Given - columns has no severity, block has INFO
-            TableBlock.DimensionConfig columnsConfig = TableBlock.DimensionConfig
-                    .builder()
-                    .min(3)
-                    // No severity set
-                    .build();
-            TableBlock config = TableBlock.builder().columns(columnsConfig).severity(Severity.INFO).build();
+            TableBlock.DimensionConfig columnsConfig = new TableBlock.DimensionConfig(3, null, null);
+            TableBlock config = new TableBlock(null, Severity.INFO, null, null, columnsConfig, null, null, null, null);
 
             Column col1 = mock(Column.class);
             when(mockTable.getColumns()).thenReturn(Collections.singletonList(col1));
@@ -230,12 +214,8 @@ class TableBlockValidatorTest {
         @DisplayName("should validate minimum rows")
         void shouldValidateMinimumRows() {
             // Given
-            TableBlock.DimensionConfig rowsConfig = TableBlock.DimensionConfig
-                    .builder()
-                    .min(5)
-                    .severity(Severity.ERROR)
-                    .build();
-            TableBlock config = TableBlock.builder().rows(rowsConfig).severity(Severity.ERROR).build();
+            TableBlock.DimensionConfig rowsConfig = new TableBlock.DimensionConfig(5, null, Severity.ERROR);
+            TableBlock config = new TableBlock(null, Severity.ERROR, null, null, null, rowsConfig, null, null, null);
 
             Row row1 = mock(Row.class);
             Row row2 = mock(Row.class);
@@ -258,12 +238,8 @@ class TableBlockValidatorTest {
         @DisplayName("should use rows severity over block severity")
         void shouldUseRowsSeverityOverBlockSeverity() {
             // Given - rows has INFO, block has ERROR
-            TableBlock.DimensionConfig rowsConfig = TableBlock.DimensionConfig
-                    .builder()
-                    .min(5)
-                    .severity(Severity.INFO)
-                    .build();
-            TableBlock config = TableBlock.builder().rows(rowsConfig).severity(Severity.ERROR).build();
+            TableBlock.DimensionConfig rowsConfig = new TableBlock.DimensionConfig(5, null, Severity.INFO);
+            TableBlock config = new TableBlock(null, Severity.ERROR, null, null, null, rowsConfig, null, null, null);
 
             when(mockTable.getBody()).thenReturn(Collections.emptyList());
 
@@ -282,12 +258,8 @@ class TableBlockValidatorTest {
         @DisplayName("should use block severity when rows severity is not defined")
         void shouldUseBlockSeverityWhenRowsSeverityNotDefined() {
             // Given - rows has no severity, block has WARN
-            TableBlock.DimensionConfig rowsConfig = TableBlock.DimensionConfig
-                    .builder()
-                    .min(5)
-                    // No severity set
-                    .build();
-            TableBlock config = TableBlock.builder().rows(rowsConfig).severity(Severity.WARN).build();
+            TableBlock.DimensionConfig rowsConfig = new TableBlock.DimensionConfig(5, null, null);
+            TableBlock config = new TableBlock(null, Severity.WARN, null, null, null, rowsConfig, null, null, null);
 
             when(mockTable.getBody()).thenReturn(Collections.emptyList());
 
@@ -311,12 +283,8 @@ class TableBlockValidatorTest {
         @DisplayName("should validate required header")
         void shouldValidateRequiredHeader() {
             // Given
-            TableBlock.HeaderConfig headerConfig = TableBlock.HeaderConfig
-                    .builder()
-                    .required(true)
-                    .severity(Severity.ERROR)
-                    .build();
-            TableBlock config = TableBlock.builder().header(headerConfig).severity(Severity.ERROR).build();
+            TableBlock.HeaderConfig headerConfig = new TableBlock.HeaderConfig(true, null, Severity.ERROR);
+            TableBlock config = new TableBlock(null, Severity.ERROR, null, null, null, null, headerConfig, null, null);
 
             when(mockTable.getHeader()).thenReturn(Collections.emptyList());
 
@@ -336,13 +304,8 @@ class TableBlockValidatorTest {
         @DisplayName("should validate header pattern")
         void shouldValidateHeaderPattern() {
             // Given
-            TableBlock.HeaderConfig headerConfig = TableBlock.HeaderConfig
-                    .builder()
-                    .required(true)
-                    .pattern(Pattern.compile("^[A-Z].*"))
-                    .severity(Severity.ERROR)
-                    .build();
-            TableBlock config = TableBlock.builder().header(headerConfig).severity(Severity.ERROR).build();
+            TableBlock.HeaderConfig headerConfig = new TableBlock.HeaderConfig(true, "^[A-Z].*", Severity.ERROR);
+            TableBlock config = new TableBlock(null, Severity.ERROR, null, null, null, null, headerConfig, null, null);
 
             Row headerRow = mock(Row.class);
             Cell cell1 = mock(Cell.class);
@@ -368,12 +331,8 @@ class TableBlockValidatorTest {
         @DisplayName("should use header severity over block severity")
         void shouldUseHeaderSeverityOverBlockSeverity() {
             // Given - header has WARN, block has ERROR
-            TableBlock.HeaderConfig headerConfig = TableBlock.HeaderConfig
-                    .builder()
-                    .required(true)
-                    .severity(Severity.WARN)
-                    .build();
-            TableBlock config = TableBlock.builder().header(headerConfig).severity(Severity.ERROR).build();
+            TableBlock.HeaderConfig headerConfig = new TableBlock.HeaderConfig(true, null, Severity.WARN);
+            TableBlock config = new TableBlock(null, Severity.ERROR, null, null, null, null, headerConfig, null, null);
 
             when(mockTable.getHeader()).thenReturn(Collections.emptyList());
 
@@ -392,12 +351,8 @@ class TableBlockValidatorTest {
         @DisplayName("should use block severity when header severity is not defined")
         void shouldUseBlockSeverityWhenHeaderSeverityNotDefined() {
             // Given - header has no severity, block has ERROR
-            TableBlock.HeaderConfig headerConfig = TableBlock.HeaderConfig
-                    .builder()
-                    .required(true)
-                    // No severity set
-                    .build();
-            TableBlock config = TableBlock.builder().header(headerConfig).severity(Severity.ERROR).build();
+            TableBlock.HeaderConfig headerConfig = new TableBlock.HeaderConfig(true, null, null);
+            TableBlock config = new TableBlock(null, Severity.ERROR, null, null, null, null, headerConfig, null, null);
 
             when(mockTable.getHeader()).thenReturn(Collections.emptyList());
 
@@ -421,12 +376,9 @@ class TableBlockValidatorTest {
         @DisplayName("should validate required caption")
         void shouldValidateRequiredCaption() {
             // Given
-            TableBlock.CaptionConfig captionConfig = TableBlock.CaptionConfig
-                    .builder()
-                    .required(true)
-                    .severity(Severity.ERROR)
-                    .build();
-            TableBlock config = TableBlock.builder().caption(captionConfig).severity(Severity.ERROR).build();
+            TableBlock.CaptionConfig captionConfig = new TableBlock.CaptionConfig(true, null, null, null,
+                    Severity.ERROR);
+            TableBlock config = new TableBlock(null, Severity.ERROR, null, null, null, null, null, captionConfig, null);
 
             when(mockTable.getTitle()).thenReturn(null);
 
@@ -444,12 +396,8 @@ class TableBlockValidatorTest {
         @DisplayName("should validate caption min length")
         void shouldValidateCaptionMinLength() {
             // Given
-            TableBlock.CaptionConfig captionConfig = TableBlock.CaptionConfig
-                    .builder()
-                    .minLength(10)
-                    .severity(Severity.WARN)
-                    .build();
-            TableBlock config = TableBlock.builder().caption(captionConfig).severity(Severity.ERROR).build();
+            TableBlock.CaptionConfig captionConfig = new TableBlock.CaptionConfig(false, null, 10, null, Severity.WARN);
+            TableBlock config = new TableBlock(null, Severity.ERROR, null, null, null, null, null, captionConfig, null);
 
             when(mockTable.getTitle()).thenReturn("Short");
 
@@ -469,12 +417,9 @@ class TableBlockValidatorTest {
         @DisplayName("should validate caption pattern")
         void shouldValidateCaptionPattern() {
             // Given
-            TableBlock.CaptionConfig captionConfig = TableBlock.CaptionConfig
-                    .builder()
-                    .pattern(Pattern.compile("^Table \\d+:.*"))
-                    .severity(Severity.ERROR)
-                    .build();
-            TableBlock config = TableBlock.builder().caption(captionConfig).severity(Severity.ERROR).build();
+            TableBlock.CaptionConfig captionConfig = new TableBlock.CaptionConfig(false, "^Table \\d+:.*", null, null,
+                    Severity.ERROR);
+            TableBlock config = new TableBlock(null, Severity.ERROR, null, null, null, null, null, captionConfig, null);
 
             when(mockTable.getTitle()).thenReturn("Invalid caption");
 
@@ -493,12 +438,9 @@ class TableBlockValidatorTest {
         @DisplayName("should use caption severity over block severity")
         void shouldUseCaptionSeverityOverBlockSeverity() {
             // Given - caption has INFO, block has ERROR
-            TableBlock.CaptionConfig captionConfig = TableBlock.CaptionConfig
-                    .builder()
-                    .required(true)
-                    .severity(Severity.INFO)
-                    .build();
-            TableBlock config = TableBlock.builder().caption(captionConfig).severity(Severity.ERROR).build();
+            TableBlock.CaptionConfig captionConfig = new TableBlock.CaptionConfig(true, null, null, null,
+                    Severity.INFO);
+            TableBlock config = new TableBlock(null, Severity.ERROR, null, null, null, null, null, captionConfig, null);
 
             when(mockTable.getTitle()).thenReturn(null);
 
@@ -517,12 +459,8 @@ class TableBlockValidatorTest {
         @DisplayName("should use block severity when caption severity is not defined")
         void shouldUseBlockSeverityWhenCaptionSeverityNotDefined() {
             // Given - caption has no severity, block has WARN
-            TableBlock.CaptionConfig captionConfig = TableBlock.CaptionConfig
-                    .builder()
-                    .required(true)
-                    // No severity set
-                    .build();
-            TableBlock config = TableBlock.builder().caption(captionConfig).severity(Severity.WARN).build();
+            TableBlock.CaptionConfig captionConfig = new TableBlock.CaptionConfig(true, null, null, null, null);
+            TableBlock config = new TableBlock(null, Severity.WARN, null, null, null, null, null, captionConfig, null);
 
             when(mockTable.getTitle()).thenReturn(null);
 
@@ -546,12 +484,8 @@ class TableBlockValidatorTest {
         @DisplayName("should validate table style")
         void shouldValidateTableStyle() {
             // Given
-            TableBlock.FormatConfig formatConfig = TableBlock.FormatConfig
-                    .builder()
-                    .style("grid")
-                    .severity(Severity.INFO)
-                    .build();
-            TableBlock config = TableBlock.builder().format(formatConfig).severity(Severity.ERROR).build();
+            TableBlock.FormatConfig formatConfig = new TableBlock.FormatConfig("grid", null, Severity.INFO);
+            TableBlock config = new TableBlock(null, Severity.ERROR, null, null, null, null, null, null, formatConfig);
 
             when(mockTable.getAttribute("options")).thenReturn("header,footer");
 
@@ -571,12 +505,8 @@ class TableBlockValidatorTest {
         @DisplayName("should validate table borders")
         void shouldValidateTableBorders() {
             // Given
-            TableBlock.FormatConfig formatConfig = TableBlock.FormatConfig
-                    .builder()
-                    .borders(true)
-                    .severity(Severity.ERROR)
-                    .build();
-            TableBlock config = TableBlock.builder().format(formatConfig).severity(Severity.ERROR).build();
+            TableBlock.FormatConfig formatConfig = new TableBlock.FormatConfig(null, true, Severity.ERROR);
+            TableBlock config = new TableBlock(null, Severity.ERROR, null, null, null, null, null, null, formatConfig);
 
             when(mockTable.getAttribute("frame")).thenReturn("none");
 

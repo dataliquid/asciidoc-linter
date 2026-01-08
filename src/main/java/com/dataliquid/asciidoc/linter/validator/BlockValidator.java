@@ -1,8 +1,10 @@
 package com.dataliquid.asciidoc.linter.validator;
 
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -22,7 +24,21 @@ import com.dataliquid.asciidoc.linter.validator.block.BlockOccurrenceValidator;
 import com.dataliquid.asciidoc.linter.validator.block.BlockTypeDetector;
 import com.dataliquid.asciidoc.linter.validator.block.BlockTypeValidator;
 import com.dataliquid.asciidoc.linter.validator.block.BlockValidationContext;
-import com.dataliquid.asciidoc.linter.validator.block.BlockValidatorFactory;
+import com.dataliquid.asciidoc.linter.validator.block.AdmonitionBlockValidator;
+import com.dataliquid.asciidoc.linter.validator.block.AudioBlockValidator;
+import com.dataliquid.asciidoc.linter.validator.block.DlistBlockValidator;
+import com.dataliquid.asciidoc.linter.validator.block.ExampleBlockValidator;
+import com.dataliquid.asciidoc.linter.validator.block.ImageBlockValidator;
+import com.dataliquid.asciidoc.linter.validator.block.ListingBlockValidator;
+import com.dataliquid.asciidoc.linter.validator.block.LiteralBlockValidator;
+import com.dataliquid.asciidoc.linter.validator.block.ParagraphBlockValidator;
+import com.dataliquid.asciidoc.linter.validator.block.PassBlockValidator;
+import com.dataliquid.asciidoc.linter.validator.block.QuoteBlockValidator;
+import com.dataliquid.asciidoc.linter.validator.block.SidebarBlockValidator;
+import com.dataliquid.asciidoc.linter.validator.block.TableBlockValidator;
+import com.dataliquid.asciidoc.linter.validator.block.UlistBlockValidator;
+import com.dataliquid.asciidoc.linter.validator.block.VerseBlockValidator;
+import com.dataliquid.asciidoc.linter.validator.block.VideoBlockValidator;
 
 /**
  * Main validator for blocks within sections. Orchestrates block type validation
@@ -30,14 +46,40 @@ import com.dataliquid.asciidoc.linter.validator.block.BlockValidatorFactory;
  */
 public final class BlockValidator {
 
-    private final BlockValidatorFactory validatorFactory;
+    private final Map<BlockType, BlockTypeValidator> validators;
     private final BlockTypeDetector typeDetector;
     private final BlockOccurrenceValidator occurrenceValidator;
 
     public BlockValidator() {
-        this.validatorFactory = new BlockValidatorFactory();
+        this.validators = createValidators();
         this.typeDetector = new BlockTypeDetector();
         this.occurrenceValidator = new BlockOccurrenceValidator();
+    }
+
+    /**
+     * Creates and registers all available validators.
+     */
+    private Map<BlockType, BlockTypeValidator> createValidators() {
+        @SuppressWarnings("PMD.UseConcurrentHashMap") // EnumMap is appropriate for enum keys, no concurrency needed
+        Map<BlockType, BlockTypeValidator> map = new EnumMap<>(BlockType.class);
+
+        map.put(BlockType.PARAGRAPH, new ParagraphBlockValidator());
+        map.put(BlockType.TABLE, new TableBlockValidator());
+        map.put(BlockType.IMAGE, new ImageBlockValidator());
+        map.put(BlockType.LISTING, new ListingBlockValidator());
+        map.put(BlockType.VERSE, new VerseBlockValidator());
+        map.put(BlockType.ADMONITION, new AdmonitionBlockValidator());
+        map.put(BlockType.PASS, new PassBlockValidator());
+        map.put(BlockType.LITERAL, new LiteralBlockValidator());
+        map.put(BlockType.AUDIO, new AudioBlockValidator());
+        map.put(BlockType.QUOTE, new QuoteBlockValidator());
+        map.put(BlockType.SIDEBAR, new SidebarBlockValidator());
+        map.put(BlockType.EXAMPLE, new ExampleBlockValidator());
+        map.put(BlockType.VIDEO, new VideoBlockValidator());
+        map.put(BlockType.ULIST, new UlistBlockValidator());
+        map.put(BlockType.DLIST, new DlistBlockValidator());
+
+        return map;
     }
 
     /**
@@ -169,7 +211,7 @@ public final class BlockValidator {
                 // Track the block
 
                 // Validate if we have a validator for this type
-                BlockTypeValidator validator = validatorFactory.getValidator(actualType);
+                BlockTypeValidator validator = validators.get(actualType);
                 if (validator != null) {
                     messages.addAll(validator.validate(block, blockConfig, context));
                 }

@@ -204,8 +204,7 @@ public class GuidelinesCommand implements Command {
     }
 
     private void generateToStdout(RuleDocumentationGenerator generator, LinterConfiguration config) {
-        try (PrintWriter writer = new PrintWriter(System.out, true)) { // intentional console output for guidelines,
-                                                                       // auto-flush enabled
+        try (PrintWriter writer = new PrintWriter(new OutputStreamWriter(System.out, StandardCharsets.UTF_8), true)) {
             generator.generate(config, writer);
         }
     }

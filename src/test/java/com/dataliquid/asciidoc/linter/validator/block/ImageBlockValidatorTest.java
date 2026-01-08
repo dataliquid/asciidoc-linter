@@ -18,6 +18,7 @@ import org.junit.jupiter.api.Test;
 
 import com.dataliquid.asciidoc.linter.config.blocks.BlockType;
 import com.dataliquid.asciidoc.linter.config.common.Severity;
+import com.dataliquid.asciidoc.linter.config.rule.OccurrenceConfig;
 import com.dataliquid.asciidoc.linter.config.blocks.ImageBlock;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
 import com.dataliquid.asciidoc.linter.validator.ErrorType;
@@ -87,7 +88,7 @@ class ImageBlockValidatorTest {
         void shouldReturnEmptyListWhenNotImageInstance() {
             // Given
             StructuralNode notAnImage = mock(StructuralNode.class);
-            ImageBlock config = ImageBlock.builder().severity(Severity.ERROR).build();
+            ImageBlock config = new ImageBlock(null, Severity.ERROR, null, null, null, null, null, null);
 
             // When
             List<ValidationMessage> messages = validator.validate(notAnImage, config, context);
@@ -100,7 +101,7 @@ class ImageBlockValidatorTest {
         @DisplayName("should return empty list when no validations configured")
         void shouldReturnEmptyListWhenNoValidationsConfigured() {
             // Given
-            ImageBlock config = ImageBlock.builder().severity(Severity.ERROR).build();
+            ImageBlock config = new ImageBlock(null, Severity.ERROR, null, null, null, null, null, null);
             when(mockBlock.hasAttribute("target")).thenReturn(false);
 
             // When
@@ -119,8 +120,8 @@ class ImageBlockValidatorTest {
         @DisplayName("should validate required URL")
         void shouldValidateRequiredUrl() {
             // Given
-            ImageBlock.UrlConfig urlConfig = ImageBlock.UrlConfig.builder().required(true).build();
-            ImageBlock config = ImageBlock.builder().url(urlConfig).severity(Severity.ERROR).build();
+            ImageBlock.UrlConfig urlConfig = new ImageBlock.UrlConfig(null, true);
+            ImageBlock config = new ImageBlock(null, Severity.ERROR, null, null, urlConfig, null, null, null);
 
             when(mockBlock.hasAttribute("target")).thenReturn(false);
 
@@ -141,11 +142,8 @@ class ImageBlockValidatorTest {
         @DisplayName("should validate URL pattern")
         void shouldValidateUrlPattern() {
             // Given
-            ImageBlock.UrlConfig urlConfig = ImageBlock.UrlConfig
-                    .builder()
-                    .pattern(Pattern.compile("^images/.*\\.png$"))
-                    .build();
-            ImageBlock config = ImageBlock.builder().url(urlConfig).severity(Severity.ERROR).build();
+            ImageBlock.UrlConfig urlConfig = new ImageBlock.UrlConfig("^images/.*\\.png$", false);
+            ImageBlock config = new ImageBlock(null, Severity.ERROR, null, null, urlConfig, null, null, null);
 
             when(mockBlock.hasAttribute("target")).thenReturn(true);
             when(mockBlock.getAttribute("target")).thenReturn("assets/logo.jpg");
@@ -169,8 +167,8 @@ class ImageBlockValidatorTest {
             // Given
             BlockValidationContext testContext = new BlockValidationContext(mockSection, "test.adoc");
 
-            ImageBlock.UrlConfig urlConfig = ImageBlock.UrlConfig.builder().required(true).build();
-            ImageBlock config = ImageBlock.builder().url(urlConfig).severity(Severity.ERROR).build();
+            ImageBlock.UrlConfig urlConfig = new ImageBlock.UrlConfig(null, true);
+            ImageBlock config = new ImageBlock(null, Severity.ERROR, null, null, urlConfig, null, null, null);
 
             // Mock source location
             Cursor mockCursor = mock(Cursor.class);
@@ -200,11 +198,9 @@ class ImageBlockValidatorTest {
             // Given
             BlockValidationContext testContext = new BlockValidationContext(mockSection, "test.adoc");
 
-            ImageBlock.UrlConfig urlConfig = ImageBlock.UrlConfig
-                    .builder()
-                    .pattern(Pattern.compile("^[a-zA-Z0-9/_-]+\\.(png|jpg|jpeg|gif|svg)$"))
-                    .build();
-            ImageBlock config = ImageBlock.builder().url(urlConfig).severity(Severity.ERROR).build();
+            ImageBlock.UrlConfig urlConfig = new ImageBlock.UrlConfig("^[a-zA-Z0-9/_-]+\\.(png|jpg|jpeg|gif|svg)$",
+                    false);
+            ImageBlock config = new ImageBlock(null, Severity.ERROR, null, null, urlConfig, null, null, null);
 
             // Mock source location
             Cursor mockCursor = mock(Cursor.class);
@@ -239,8 +235,8 @@ class ImageBlockValidatorTest {
             // Given
             BlockValidationContext testContext = new BlockValidationContext(mockSection, "test.adoc");
 
-            ImageBlock.DimensionConfig widthConfig = ImageBlock.DimensionConfig.builder().minValue(100).build();
-            ImageBlock config = ImageBlock.builder().width(widthConfig).severity(Severity.ERROR).build();
+            ImageBlock.DimensionConfig widthConfig = new ImageBlock.DimensionConfig(100, null, false);
+            ImageBlock config = new ImageBlock(null, Severity.ERROR, null, null, null, null, widthConfig, null);
 
             // Mock source location
             Cursor mockCursor = mock(Cursor.class);
@@ -272,8 +268,8 @@ class ImageBlockValidatorTest {
             // Given
             BlockValidationContext testContext = new BlockValidationContext(mockSection, "test.adoc");
 
-            ImageBlock.DimensionConfig widthConfig = ImageBlock.DimensionConfig.builder().required(true).build();
-            ImageBlock config = ImageBlock.builder().width(widthConfig).severity(Severity.ERROR).build();
+            ImageBlock.DimensionConfig widthConfig = new ImageBlock.DimensionConfig(null, null, true);
+            ImageBlock config = new ImageBlock(null, Severity.ERROR, null, null, null, null, widthConfig, null);
 
             // Mock source location
             Cursor mockCursor = mock(Cursor.class);
@@ -304,8 +300,8 @@ class ImageBlockValidatorTest {
             // Given
             BlockValidationContext testContext = new BlockValidationContext(mockSection, "test.adoc");
 
-            ImageBlock.DimensionConfig widthConfig = ImageBlock.DimensionConfig.builder().maxValue(1200).build();
-            ImageBlock config = ImageBlock.builder().width(widthConfig).severity(Severity.ERROR).build();
+            ImageBlock.DimensionConfig widthConfig = new ImageBlock.DimensionConfig(null, 1200, false);
+            ImageBlock config = new ImageBlock(null, Severity.ERROR, null, null, null, null, widthConfig, null);
 
             // Mock source location
             Cursor mockCursor = mock(Cursor.class);
@@ -332,8 +328,8 @@ class ImageBlockValidatorTest {
         @DisplayName("should validate maximum width")
         void shouldValidateMaximumWidth() {
             // Given
-            ImageBlock.DimensionConfig widthConfig = ImageBlock.DimensionConfig.builder().maxValue(800).build();
-            ImageBlock config = ImageBlock.builder().width(widthConfig).severity(Severity.ERROR).build();
+            ImageBlock.DimensionConfig widthConfig = new ImageBlock.DimensionConfig(null, 800, false);
+            ImageBlock config = new ImageBlock(null, Severity.ERROR, null, null, null, null, widthConfig, null);
 
             when(mockBlock.hasAttribute("width")).thenReturn(true);
             when(mockBlock.getAttribute("width")).thenReturn("1000");
@@ -353,8 +349,8 @@ class ImageBlockValidatorTest {
         @DisplayName("should validate required width")
         void shouldValidateRequiredWidth() {
             // Given
-            ImageBlock.DimensionConfig widthConfig = ImageBlock.DimensionConfig.builder().required(true).build();
-            ImageBlock config = ImageBlock.builder().width(widthConfig).severity(Severity.ERROR).build();
+            ImageBlock.DimensionConfig widthConfig = new ImageBlock.DimensionConfig(null, null, true);
+            ImageBlock config = new ImageBlock(null, Severity.ERROR, null, null, null, null, widthConfig, null);
 
             when(mockBlock.hasAttribute("width")).thenReturn(false);
 
@@ -372,12 +368,8 @@ class ImageBlockValidatorTest {
         @DisplayName("should validate height")
         void shouldValidateHeight() {
             // Given
-            ImageBlock.DimensionConfig heightConfig = ImageBlock.DimensionConfig
-                    .builder()
-                    .minValue(50)
-                    .maxValue(600)
-                    .build();
-            ImageBlock config = ImageBlock.builder().height(heightConfig).severity(Severity.ERROR).build();
+            ImageBlock.DimensionConfig heightConfig = new ImageBlock.DimensionConfig(50, 600, false);
+            ImageBlock config = new ImageBlock(null, Severity.ERROR, null, null, null, heightConfig, null, null);
 
             when(mockBlock.hasAttribute("height")).thenReturn(true);
             when(mockBlock.getAttribute("height")).thenReturn("700");
@@ -401,8 +393,8 @@ class ImageBlockValidatorTest {
         @DisplayName("should validate required alt text")
         void shouldValidateRequiredAltText() {
             // Given
-            ImageBlock.AltTextConfig altConfig = ImageBlock.AltTextConfig.builder().required(true).build();
-            ImageBlock config = ImageBlock.builder().alt(altConfig).severity(Severity.ERROR).build();
+            ImageBlock.AltTextConfig altConfig = new ImageBlock.AltTextConfig(true, null, null);
+            ImageBlock config = new ImageBlock(null, Severity.ERROR, null, null, null, null, null, altConfig);
 
             when(mockBlock.hasAttribute("alt")).thenReturn(false);
 
@@ -424,8 +416,8 @@ class ImageBlockValidatorTest {
             // Given
             BlockValidationContext testContext = new BlockValidationContext(mockSection, "test.adoc");
 
-            ImageBlock.AltTextConfig altConfig = ImageBlock.AltTextConfig.builder().required(true).build();
-            ImageBlock config = ImageBlock.builder().alt(altConfig).severity(Severity.ERROR).build();
+            ImageBlock.AltTextConfig altConfig = new ImageBlock.AltTextConfig(true, null, null);
+            ImageBlock config = new ImageBlock(null, Severity.ERROR, null, null, null, null, null, altConfig);
 
             // Mock source location for line 32
             Cursor mockCursor = mock(Cursor.class);
@@ -455,8 +447,8 @@ class ImageBlockValidatorTest {
         @DisplayName("should validate alt text minimum length")
         void shouldValidateAltTextMinLength() {
             // Given
-            ImageBlock.AltTextConfig altConfig = ImageBlock.AltTextConfig.builder().minLength(10).build();
-            ImageBlock config = ImageBlock.builder().alt(altConfig).severity(Severity.ERROR).build();
+            ImageBlock.AltTextConfig altConfig = new ImageBlock.AltTextConfig(false, 10, null);
+            ImageBlock config = new ImageBlock(null, Severity.ERROR, null, null, null, null, null, altConfig);
 
             when(mockBlock.hasAttribute("alt")).thenReturn(true);
             when(mockBlock.getAttribute("alt")).thenReturn("Logo");
@@ -478,8 +470,8 @@ class ImageBlockValidatorTest {
         @DisplayName("should validate alt text maximum length")
         void shouldValidateAltTextMaxLength() {
             // Given
-            ImageBlock.AltTextConfig altConfig = ImageBlock.AltTextConfig.builder().maxLength(20).build();
-            ImageBlock config = ImageBlock.builder().alt(altConfig).severity(Severity.ERROR).build();
+            ImageBlock.AltTextConfig altConfig = new ImageBlock.AltTextConfig(false, null, 20);
+            ImageBlock config = new ImageBlock(null, Severity.ERROR, null, null, null, null, null, altConfig);
 
             when(mockBlock.hasAttribute("alt")).thenReturn(true);
             when(mockBlock.getAttribute("alt")).thenReturn("This is a very long alt text description");
@@ -504,12 +496,9 @@ class ImageBlockValidatorTest {
         @DisplayName("should always use block severity for URL validation")
         void shouldAlwaysUseBlockSeverityForUrl() {
             // Given - ImageBlock.UrlConfig has no severity field
-            ImageBlock.UrlConfig urlConfig = ImageBlock.UrlConfig.builder().required(true).build();
-            ImageBlock config = ImageBlock
-                    .builder()
-                    .url(urlConfig)
-                    .severity(Severity.INFO) // Block severity
-                    .build();
+            ImageBlock.UrlConfig urlConfig = new ImageBlock.UrlConfig(null, true);
+            ImageBlock config = new ImageBlock(null, Severity.INFO, // Block severity
+                    null, null, urlConfig, null, null, null);
 
             when(mockBlock.hasAttribute("target")).thenReturn(false);
 
@@ -528,12 +517,9 @@ class ImageBlockValidatorTest {
         @DisplayName("should always use block severity for dimension validation")
         void shouldAlwaysUseBlockSeverityForDimension() {
             // Given - ImageBlock.DimensionConfig has no severity field
-            ImageBlock.DimensionConfig widthConfig = ImageBlock.DimensionConfig.builder().required(true).build();
-            ImageBlock config = ImageBlock
-                    .builder()
-                    .width(widthConfig)
-                    .severity(Severity.WARN) // Block severity
-                    .build();
+            ImageBlock.DimensionConfig widthConfig = new ImageBlock.DimensionConfig(null, null, true);
+            ImageBlock config = new ImageBlock(null, Severity.WARN, // Block severity
+                    null, null, null, null, widthConfig, null);
 
             when(mockBlock.hasAttribute("width")).thenReturn(false);
 
@@ -552,12 +538,9 @@ class ImageBlockValidatorTest {
         @DisplayName("should always use block severity for alt text validation")
         void shouldAlwaysUseBlockSeverityForAltText() {
             // Given - ImageBlock.AltTextConfig has no severity field
-            ImageBlock.AltTextConfig altConfig = ImageBlock.AltTextConfig.builder().required(true).build();
-            ImageBlock config = ImageBlock
-                    .builder()
-                    .alt(altConfig)
-                    .severity(Severity.ERROR) // Block severity
-                    .build();
+            ImageBlock.AltTextConfig altConfig = new ImageBlock.AltTextConfig(true, null, null);
+            ImageBlock config = new ImageBlock(null, Severity.ERROR, // Block severity
+                    null, null, null, null, null, altConfig);
 
             when(mockBlock.hasAttribute("alt")).thenReturn(false);
 
@@ -581,12 +564,9 @@ class ImageBlockValidatorTest {
         @DisplayName("should validate multiple rules together")
         void shouldValidateMultipleRules() {
             // Given
-            ImageBlock config = ImageBlock
-                    .builder()
-                    .url(ImageBlock.UrlConfig.builder().required(true).pattern(Pattern.compile("^images/.*")).build())
-                    .alt(ImageBlock.AltTextConfig.builder().required(true).minLength(5).build())
-                    .severity(Severity.ERROR)
-                    .build();
+            ImageBlock config = new ImageBlock(null, Severity.ERROR, null, null,
+                    new ImageBlock.UrlConfig("^images/.*", true), null, null,
+                    new ImageBlock.AltTextConfig(true, 5, null));
 
             when(mockBlock.hasAttribute("target")).thenReturn(true);
             when(mockBlock.getAttribute("target")).thenReturn("assets/logo.png");

@@ -47,7 +47,6 @@ import com.dataliquid.asciidoc.linter.util.StringUtils;
  * @see BlockTypeValidator
  */
 public final class VerseBlockValidator extends AbstractBlockValidator<VerseBlock> {
-    private static final String CHARACTERS_UNIT = " characters";
     // Constants for attribution parsing
     private static final int ATTRIBUTION_QUOTE_COUNT = 2;
 

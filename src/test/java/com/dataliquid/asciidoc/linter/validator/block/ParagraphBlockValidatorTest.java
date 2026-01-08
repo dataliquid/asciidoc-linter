@@ -85,7 +85,7 @@ class ParagraphBlockValidatorTest {
         @DisplayName("should return empty list when no line config")
         void shouldReturnEmptyListWhenNoLineConfig() {
             // Given
-            ParagraphBlock config = ParagraphBlock.builder().severity(Severity.ERROR).build();
+            ParagraphBlock config = new ParagraphBlock(null, Severity.ERROR, null, null, null, null);
             when(mockBlock.getContent()).thenReturn("Some content");
 
             // When
@@ -99,8 +99,8 @@ class ParagraphBlockValidatorTest {
         @DisplayName("should validate minimum lines")
         void shouldValidateMinimumLines() {
             // Given
-            LineConfig lineConfig = LineConfig.builder().min(3).severity(Severity.ERROR).build();
-            ParagraphBlock config = ParagraphBlock.builder().lines(lineConfig).severity(Severity.ERROR).build();
+            LineConfig lineConfig = new LineConfig(3, null, Severity.ERROR);
+            ParagraphBlock config = new ParagraphBlock(null, Severity.ERROR, null, null, lineConfig, null);
             when(mockBlock.getContent()).thenReturn("Line 1\nLine 2");
 
             // When
@@ -123,8 +123,8 @@ class ParagraphBlockValidatorTest {
             // without any errors."
             BlockValidationContext testContext = new BlockValidationContext(mockSection, "test-errors.adoc");
 
-            LineConfig lineConfig = LineConfig.builder().min(2).severity(Severity.INFO).build();
-            ParagraphBlock config = ParagraphBlock.builder().lines(lineConfig).severity(Severity.ERROR).build();
+            LineConfig lineConfig = new LineConfig(2, null, Severity.INFO);
+            ParagraphBlock config = new ParagraphBlock(null, Severity.ERROR, null, null, lineConfig, null);
 
             // Mock source location
             Cursor mockCursor = mock(Cursor.class);
@@ -153,8 +153,8 @@ class ParagraphBlockValidatorTest {
         @DisplayName("should validate maximum lines")
         void shouldValidateMaximumLines() {
             // Given
-            LineConfig lineConfig = LineConfig.builder().max(2).severity(Severity.WARN).build();
-            ParagraphBlock config = ParagraphBlock.builder().lines(lineConfig).severity(Severity.ERROR).build();
+            LineConfig lineConfig = new LineConfig(null, 2, Severity.WARN);
+            ParagraphBlock config = new ParagraphBlock(null, Severity.ERROR, null, null, lineConfig, null);
             when(mockBlock.getContent()).thenReturn("Line 1\nLine 2\nLine 3");
 
             // When
@@ -174,12 +174,8 @@ class ParagraphBlockValidatorTest {
         @DisplayName("should use block severity when lines severity is not defined")
         void shouldUseBlockSeverityWhenLinesSeverityNotDefined() {
             // Given - lines has no severity, block has INFO
-            LineConfig lineConfig = LineConfig
-                    .builder()
-                    .max(2)
-                    // No severity set
-                    .build();
-            ParagraphBlock config = ParagraphBlock.builder().lines(lineConfig).severity(Severity.INFO).build();
+            LineConfig lineConfig = new LineConfig(null, 2, null); // No severity set
+            ParagraphBlock config = new ParagraphBlock(null, Severity.INFO, null, null, lineConfig, null);
 
             when(mockBlock.getContent()).thenReturn("Line 1\nLine 2\nLine 3");
 
@@ -198,8 +194,8 @@ class ParagraphBlockValidatorTest {
         @DisplayName("should pass when lines within range")
         void shouldPassWhenLinesWithinRange() {
             // Given
-            LineConfig lineConfig = LineConfig.builder().min(2).max(5).severity(Severity.ERROR).build();
-            ParagraphBlock config = ParagraphBlock.builder().lines(lineConfig).severity(Severity.ERROR).build();
+            LineConfig lineConfig = new LineConfig(2, 5, Severity.ERROR);
+            ParagraphBlock config = new ParagraphBlock(null, Severity.ERROR, null, null, lineConfig, null);
             when(mockBlock.getContent()).thenReturn("Line 1\nLine 2\nLine 3");
 
             // When
@@ -213,8 +209,8 @@ class ParagraphBlockValidatorTest {
         @DisplayName("should count only non-empty lines")
         void shouldCountOnlyNonEmptyLines() {
             // Given
-            LineConfig lineConfig = LineConfig.builder().min(2).severity(Severity.ERROR).build();
-            ParagraphBlock config = ParagraphBlock.builder().lines(lineConfig).severity(Severity.ERROR).build();
+            LineConfig lineConfig = new LineConfig(2, null, Severity.ERROR);
+            ParagraphBlock config = new ParagraphBlock(null, Severity.ERROR, null, null, lineConfig, null);
             when(mockBlock.getContent()).thenReturn("Line 1\n\n  \nLine 2");
 
             // When
@@ -228,8 +224,8 @@ class ParagraphBlockValidatorTest {
         @DisplayName("should handle empty content")
         void shouldHandleEmptyContent() {
             // Given
-            LineConfig lineConfig = LineConfig.builder().min(1).severity(Severity.ERROR).build();
-            ParagraphBlock config = ParagraphBlock.builder().lines(lineConfig).severity(Severity.ERROR).build();
+            LineConfig lineConfig = new LineConfig(1, null, Severity.ERROR);
+            ParagraphBlock config = new ParagraphBlock(null, Severity.ERROR, null, null, lineConfig, null);
             when(mockBlock.getContent()).thenReturn("");
 
             // When
@@ -244,8 +240,8 @@ class ParagraphBlockValidatorTest {
         @DisplayName("should handle null content")
         void shouldHandleNullContent() {
             // Given
-            LineConfig lineConfig = LineConfig.builder().min(1).severity(Severity.ERROR).build();
-            ParagraphBlock config = ParagraphBlock.builder().lines(lineConfig).severity(Severity.ERROR).build();
+            LineConfig lineConfig = new LineConfig(1, null, Severity.ERROR);
+            ParagraphBlock config = new ParagraphBlock(null, Severity.ERROR, null, null, lineConfig, null);
             when(mockBlock.getContent()).thenReturn(null);
             when(mockBlock.getBlocks()).thenReturn(null);
 
@@ -261,8 +257,8 @@ class ParagraphBlockValidatorTest {
         @DisplayName("should get content from blocks when direct content is null")
         void shouldGetContentFromBlocksWhenDirectContentIsNull() {
             // Given
-            LineConfig lineConfig = LineConfig.builder().min(1).severity(Severity.ERROR).build();
-            ParagraphBlock config = ParagraphBlock.builder().lines(lineConfig).severity(Severity.ERROR).build();
+            LineConfig lineConfig = new LineConfig(1, null, Severity.ERROR);
+            ParagraphBlock config = new ParagraphBlock(null, Severity.ERROR, null, null, lineConfig, null);
 
             StructuralNode childBlock = mock(StructuralNode.class);
             when(childBlock.getContent()).thenReturn("Child content");
@@ -289,15 +285,9 @@ class ParagraphBlockValidatorTest {
             @DisplayName("should validate minimum sentence count")
             void shouldValidateMinimumSentenceCount() {
                 // Given
-                ParagraphBlock.SentenceConfig sentenceConfig = ParagraphBlock.SentenceConfig
-                        .builder()
-                        .occurrence(OccurrenceConfig.builder().min(3).severity(Severity.ERROR).build())
-                        .build();
-                ParagraphBlock config = ParagraphBlock
-                        .builder()
-                        .sentence(sentenceConfig)
-                        .severity(Severity.WARN)
-                        .build();
+                ParagraphBlock.SentenceConfig sentenceConfig = new ParagraphBlock.SentenceConfig(
+                        new OccurrenceConfig(null, 3, null, Severity.ERROR), null);
+                ParagraphBlock config = new ParagraphBlock(null, Severity.WARN, null, null, null, sentenceConfig);
 
                 // Content with only 2 sentences
                 when(mockBlock.getContent()).thenReturn("This is the first sentence. This is the second sentence.");
@@ -319,15 +309,9 @@ class ParagraphBlockValidatorTest {
             @DisplayName("should validate maximum sentence count")
             void shouldValidateMaximumSentenceCount() {
                 // Given
-                ParagraphBlock.SentenceConfig sentenceConfig = ParagraphBlock.SentenceConfig
-                        .builder()
-                        .occurrence(OccurrenceConfig.builder().max(2).severity(Severity.WARN).build())
-                        .build();
-                ParagraphBlock config = ParagraphBlock
-                        .builder()
-                        .sentence(sentenceConfig)
-                        .severity(Severity.ERROR)
-                        .build();
+                ParagraphBlock.SentenceConfig sentenceConfig = new ParagraphBlock.SentenceConfig(
+                        new OccurrenceConfig(null, null, 2, Severity.WARN), null);
+                ParagraphBlock config = new ParagraphBlock(null, Severity.ERROR, null, null, null, sentenceConfig);
 
                 // Content with 3 sentences
                 when(mockBlock.getContent()).thenReturn("First sentence. Second sentence. Third sentence.");
@@ -349,19 +333,9 @@ class ParagraphBlockValidatorTest {
             @DisplayName("should use block severity when occurrence severity is not defined")
             void shouldUseBlockSeverityWhenOccurrenceSeverityNotDefined() {
                 // Given
-                ParagraphBlock.SentenceConfig sentenceConfig = ParagraphBlock.SentenceConfig
-                        .builder()
-                        .occurrence(OccurrenceConfig
-                                .builder()
-                                .min(2)
-                                // No severity set
-                                .build())
-                        .build();
-                ParagraphBlock config = ParagraphBlock
-                        .builder()
-                        .sentence(sentenceConfig)
-                        .severity(Severity.INFO)
-                        .build();
+                ParagraphBlock.SentenceConfig sentenceConfig = new ParagraphBlock.SentenceConfig(
+                        new OccurrenceConfig(null, 2, null, null), null);
+                ParagraphBlock config = new ParagraphBlock(null, Severity.INFO, null, null, null, sentenceConfig);
 
                 when(mockBlock.getContent()).thenReturn("Only one sentence here.");
 
@@ -379,15 +353,9 @@ class ParagraphBlockValidatorTest {
             @DisplayName("should handle empty content with minimum sentences required")
             void shouldHandleEmptyContentWithMinimumSentencesRequired() {
                 // Given
-                ParagraphBlock.SentenceConfig sentenceConfig = ParagraphBlock.SentenceConfig
-                        .builder()
-                        .occurrence(OccurrenceConfig.builder().min(1).severity(Severity.ERROR).build())
-                        .build();
-                ParagraphBlock config = ParagraphBlock
-                        .builder()
-                        .sentence(sentenceConfig)
-                        .severity(Severity.ERROR)
-                        .build();
+                ParagraphBlock.SentenceConfig sentenceConfig = new ParagraphBlock.SentenceConfig(
+                        new OccurrenceConfig(null, 1, null, Severity.ERROR), null);
+                ParagraphBlock config = new ParagraphBlock(null, Severity.ERROR, null, null, null, sentenceConfig);
 
                 when(mockBlock.getContent()).thenReturn("");
 
@@ -408,15 +376,9 @@ class ParagraphBlockValidatorTest {
             @DisplayName("should validate minimum words per sentence")
             void shouldValidateMinimumWordsPerSentence() {
                 // Given
-                ParagraphBlock.SentenceConfig sentenceConfig = ParagraphBlock.SentenceConfig
-                        .builder()
-                        .words(ParagraphBlock.WordsConfig.builder().min(5).severity(Severity.ERROR).build())
-                        .build();
-                ParagraphBlock config = ParagraphBlock
-                        .builder()
-                        .sentence(sentenceConfig)
-                        .severity(Severity.WARN)
-                        .build();
+                ParagraphBlock.SentenceConfig sentenceConfig = new ParagraphBlock.SentenceConfig(null,
+                        new ParagraphBlock.WordsConfig(5, null, Severity.ERROR));
+                ParagraphBlock config = new ParagraphBlock(null, Severity.WARN, null, null, null, sentenceConfig);
 
                 // First sentence has only 3 words, second has 5
                 when(mockBlock.getContent()).thenReturn("Too short sentence. This sentence has five words.");
@@ -438,15 +400,9 @@ class ParagraphBlockValidatorTest {
             @DisplayName("should validate maximum words per sentence")
             void shouldValidateMaximumWordsPerSentence() {
                 // Given
-                ParagraphBlock.SentenceConfig sentenceConfig = ParagraphBlock.SentenceConfig
-                        .builder()
-                        .words(ParagraphBlock.WordsConfig.builder().max(8).severity(Severity.WARN).build())
-                        .build();
-                ParagraphBlock config = ParagraphBlock
-                        .builder()
-                        .sentence(sentenceConfig)
-                        .severity(Severity.ERROR)
-                        .build();
+                ParagraphBlock.SentenceConfig sentenceConfig = new ParagraphBlock.SentenceConfig(null,
+                        new ParagraphBlock.WordsConfig(null, 8, Severity.WARN));
+                ParagraphBlock config = new ParagraphBlock(null, Severity.ERROR, null, null, null, sentenceConfig);
 
                 // Sentence with 10 words
                 when(mockBlock.getContent())
@@ -469,19 +425,9 @@ class ParagraphBlockValidatorTest {
             @DisplayName("should use block severity when words severity is not defined")
             void shouldUseBlockSeverityWhenWordsSeverityNotDefined() {
                 // Given
-                ParagraphBlock.SentenceConfig sentenceConfig = ParagraphBlock.SentenceConfig
-                        .builder()
-                        .words(ParagraphBlock.WordsConfig
-                                .builder()
-                                .min(5)
-                                // No severity set
-                                .build())
-                        .build();
-                ParagraphBlock config = ParagraphBlock
-                        .builder()
-                        .sentence(sentenceConfig)
-                        .severity(Severity.INFO)
-                        .build();
+                ParagraphBlock.SentenceConfig sentenceConfig = new ParagraphBlock.SentenceConfig(null,
+                        new ParagraphBlock.WordsConfig(5, null, null));
+                ParagraphBlock config = new ParagraphBlock(null, Severity.INFO, null, null, null, sentenceConfig);
 
                 when(mockBlock.getContent()).thenReturn("Short.");
 
@@ -499,15 +445,9 @@ class ParagraphBlockValidatorTest {
             @DisplayName("should validate multiple sentences for word count")
             void shouldValidateMultipleSentencesForWordCount() {
                 // Given
-                ParagraphBlock.SentenceConfig sentenceConfig = ParagraphBlock.SentenceConfig
-                        .builder()
-                        .words(ParagraphBlock.WordsConfig.builder().min(4).max(8).severity(Severity.ERROR).build())
-                        .build();
-                ParagraphBlock config = ParagraphBlock
-                        .builder()
-                        .sentence(sentenceConfig)
-                        .severity(Severity.ERROR)
-                        .build();
+                ParagraphBlock.SentenceConfig sentenceConfig = new ParagraphBlock.SentenceConfig(null,
+                        new ParagraphBlock.WordsConfig(4, 8, Severity.ERROR));
+                ParagraphBlock config = new ParagraphBlock(null, Severity.ERROR, null, null, null, sentenceConfig);
 
                 // Mix of valid and invalid sentences
                 when(mockBlock.getContent()).thenReturn("Too short. " + // 2 words - too few
@@ -533,15 +473,9 @@ class ParagraphBlockValidatorTest {
             @DisplayName("should detect sentences with different punctuation")
             void shouldDetectSentencesWithDifferentPunctuation() {
                 // Given
-                ParagraphBlock.SentenceConfig sentenceConfig = ParagraphBlock.SentenceConfig
-                        .builder()
-                        .occurrence(OccurrenceConfig.builder().min(3).max(3).severity(Severity.ERROR).build())
-                        .build();
-                ParagraphBlock config = ParagraphBlock
-                        .builder()
-                        .sentence(sentenceConfig)
-                        .severity(Severity.ERROR)
-                        .build();
+                ParagraphBlock.SentenceConfig sentenceConfig = new ParagraphBlock.SentenceConfig(
+                        new OccurrenceConfig(null, 3, 3, Severity.ERROR), null);
+                ParagraphBlock config = new ParagraphBlock(null, Severity.ERROR, null, null, null, sentenceConfig);
 
                 // Content with period, question mark, and exclamation mark
                 when(mockBlock.getContent()).thenReturn("This is a statement. Is this a question? This is exciting!");
@@ -557,15 +491,9 @@ class ParagraphBlockValidatorTest {
             @DisplayName("should handle multi-line sentences")
             void shouldHandleMultiLineSentences() {
                 // Given
-                ParagraphBlock.SentenceConfig sentenceConfig = ParagraphBlock.SentenceConfig
-                        .builder()
-                        .occurrence(OccurrenceConfig.builder().min(2).max(2).severity(Severity.ERROR).build())
-                        .build();
-                ParagraphBlock config = ParagraphBlock
-                        .builder()
-                        .sentence(sentenceConfig)
-                        .severity(Severity.ERROR)
-                        .build();
+                ParagraphBlock.SentenceConfig sentenceConfig = new ParagraphBlock.SentenceConfig(
+                        new OccurrenceConfig(null, 2, 2, Severity.ERROR), null);
+                ParagraphBlock config = new ParagraphBlock(null, Severity.ERROR, null, null, null, sentenceConfig);
 
                 // Content with sentences spanning multiple lines
                 when(mockBlock.getContent())
@@ -583,15 +511,9 @@ class ParagraphBlockValidatorTest {
             @DisplayName("should treat content without sentence ending as one sentence")
             void shouldTreatContentWithoutSentenceEndingAsOneSentence() {
                 // Given
-                ParagraphBlock.SentenceConfig sentenceConfig = ParagraphBlock.SentenceConfig
-                        .builder()
-                        .occurrence(OccurrenceConfig.builder().min(1).max(1).severity(Severity.ERROR).build())
-                        .build();
-                ParagraphBlock config = ParagraphBlock
-                        .builder()
-                        .sentence(sentenceConfig)
-                        .severity(Severity.ERROR)
-                        .build();
+                ParagraphBlock.SentenceConfig sentenceConfig = new ParagraphBlock.SentenceConfig(
+                        new OccurrenceConfig(null, 1, 1, Severity.ERROR), null);
+                ParagraphBlock config = new ParagraphBlock(null, Severity.ERROR, null, null, null, sentenceConfig);
 
                 // Content without sentence-ending punctuation
                 when(mockBlock.getContent()).thenReturn("This is content without proper punctuation");
@@ -612,16 +534,10 @@ class ParagraphBlockValidatorTest {
             @DisplayName("should validate both occurrence and words constraints")
             void shouldValidateBothOccurrenceAndWordsConstraints() {
                 // Given
-                ParagraphBlock.SentenceConfig sentenceConfig = ParagraphBlock.SentenceConfig
-                        .builder()
-                        .occurrence(OccurrenceConfig.builder().min(2).max(4).severity(Severity.WARN).build())
-                        .words(ParagraphBlock.WordsConfig.builder().min(5).max(10).severity(Severity.ERROR).build())
-                        .build();
-                ParagraphBlock config = ParagraphBlock
-                        .builder()
-                        .sentence(sentenceConfig)
-                        .severity(Severity.INFO)
-                        .build();
+                ParagraphBlock.SentenceConfig sentenceConfig = new ParagraphBlock.SentenceConfig(
+                        new OccurrenceConfig(null, 2, 4, Severity.WARN),
+                        new ParagraphBlock.WordsConfig(5, 10, Severity.ERROR));
+                ParagraphBlock config = new ParagraphBlock(null, Severity.INFO, null, null, null, sentenceConfig);
 
                 // One sentence with too few words, one with too many
                 when(mockBlock.getContent()).thenReturn("Short. " + // 1 word - too few
@@ -652,7 +568,7 @@ class ParagraphBlockValidatorTest {
             @DisplayName("should handle no sentence config gracefully")
             void shouldHandleNoSentenceConfigGracefully() {
                 // Given
-                ParagraphBlock config = ParagraphBlock.builder().severity(Severity.ERROR).build();
+                ParagraphBlock config = new ParagraphBlock(null, Severity.ERROR, null, null, null, null);
 
                 when(mockBlock.getContent()).thenReturn("Some content with sentences. Another sentence here.");
 

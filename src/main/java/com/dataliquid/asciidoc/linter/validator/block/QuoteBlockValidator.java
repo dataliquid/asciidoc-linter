@@ -25,7 +25,6 @@ import com.dataliquid.asciidoc.linter.util.StringUtils;
  * AsciiDoc quote blocks.
  */
 public final class QuoteBlockValidator extends AbstractBlockValidator<QuoteBlock> {
-    private static final String CHARACTERS_UNIT = " characters";
 
     @Override
     public BlockType getSupportedType() {

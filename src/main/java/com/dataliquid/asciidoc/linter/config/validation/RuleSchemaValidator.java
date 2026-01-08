@@ -7,10 +7,11 @@ import java.nio.file.Path;
 import java.util.List;
 
 import com.dataliquid.asciidoc.linter.config.SchemaConstants;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.networknt.schema.Error;
+
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.dataformat.yaml.YAMLMapper;
 import com.networknt.schema.Schema;
 import com.networknt.schema.SchemaLocation;
 import com.networknt.schema.SchemaRegistry;
@@ -29,10 +30,10 @@ public class RuleSchemaValidator {
     private static final String MSG_KEY_REQUIRED = "required";
 
     private final Schema schema;
-    private final ObjectMapper yamlMapper;
+    private final YAMLMapper yamlMapper;
 
     public RuleSchemaValidator() {
-        this.yamlMapper = new ObjectMapper(new YAMLFactory());
+        this.yamlMapper = new YAMLMapper();
         this.schema = loadSchema();
     }
 
@@ -66,7 +67,7 @@ public class RuleSchemaValidator {
                 return registry.getSchema(SchemaLocation.of(schemaUri), schemaNode);
             }
 
-        } catch (IOException e) {
+        } catch (JacksonException | IOException e) {
             throw new RuleValidationException("Failed to load schema", e);
         }
     }
@@ -86,7 +87,7 @@ public class RuleSchemaValidator {
         try {
             JsonNode configNode = yamlMapper.readTree(userConfigFile.toFile());
             validateUserConfig(configNode);
-        } catch (IOException e) {
+        } catch (JacksonException e) {
             throw new RuleValidationException("Failed to read configuration file: " + userConfigFile, e);
         }
     }
@@ -117,7 +118,7 @@ public class RuleSchemaValidator {
         try {
             JsonNode configNode = yamlMapper.readTree(yamlStream);
             validateUserConfig(configNode);
-        } catch (IOException e) {
+        } catch (JacksonException e) {
             throw new RuleValidationException("Failed to parse YAML configuration", e);
         }
     }
@@ -133,7 +134,7 @@ public class RuleSchemaValidator {
         try {
             JsonNode configNode = yamlMapper.readTree(yamlContent);
             validateUserConfig(configNode);
-        } catch (IOException e) {
+        } catch (JacksonException e) {
             throw new RuleValidationException("Failed to parse YAML configuration string", e);
         }
     }

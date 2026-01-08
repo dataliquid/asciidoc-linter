@@ -3,62 +3,30 @@ package com.dataliquid.asciidoc.linter.config.rule;
 import java.util.Objects;
 
 import com.dataliquid.asciidoc.linter.config.common.Severity;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.PATTERN;
 import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.Common.SEVERITY;
-import static com.dataliquid.asciidoc.linter.config.common.JsonPropertyNames.EMPTY;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
-@JsonDeserialize(builder = TitleConfig.Builder.class)
 public final class TitleConfig {
-    private final String _pattern;
-    private final Severity _severity;
+    private final String patternValue;
+    private final Severity severityValue;
 
-    private TitleConfig(Builder builder) {
-        this._pattern = builder._pattern;
-        this._severity = builder._severity;
+    @JsonCreator
+    public TitleConfig(@JsonProperty(PATTERN) String pattern, @JsonProperty(SEVERITY) Severity severity) {
+        this.patternValue = Objects.requireNonNull(pattern, "Pattern must be specified");
+        this.severityValue = severity != null ? severity : Severity.ERROR;
     }
 
     @JsonProperty(PATTERN)
     public String pattern() {
-        return this._pattern;
+        return this.patternValue;
     }
 
     @JsonProperty(SEVERITY)
     public Severity severity() {
-        return this._severity;
-    }
-
-    public static Builder builder() {
-        return new Builder();
-    }
-
-    @JsonPOJOBuilder(withPrefix = EMPTY)
-    public static class Builder {
-        private String _pattern;
-        private Severity _severity = Severity.ERROR;
-
-        @JsonProperty(PATTERN)
-        public Builder pattern(String pattern) {
-            this._pattern = pattern;
-            return this;
-        }
-
-        @JsonProperty(SEVERITY)
-        public Builder severity(Severity severity) {
-            this._severity = Objects
-                    .requireNonNull(severity, "[" + getClass().getName() + "] severity must not be null");
-            return this;
-        }
-
-        public TitleConfig build() {
-            if (_pattern == null) {
-                throw new IllegalStateException("Pattern must be specified");
-            }
-            return new TitleConfig(this);
-        }
+        return this.severityValue;
     }
 
     @Override
@@ -68,11 +36,11 @@ public final class TitleConfig {
         if (o == null || getClass() != o.getClass())
             return false;
         TitleConfig that = (TitleConfig) o;
-        return Objects.equals(_pattern, that._pattern) && _severity == that._severity;
+        return Objects.equals(patternValue, that.patternValue) && severityValue == that.severityValue;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(_pattern, _severity);
+        return Objects.hash(patternValue, severityValue);
     }
 }

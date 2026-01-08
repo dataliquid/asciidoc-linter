@@ -28,7 +28,7 @@ class OrderConfigTest {
             List<String> fixedOrder = Arrays.asList("intro", "body", "conclusion");
 
             // When
-            OrderConfig config = OrderConfig.builder().fixedOrder(fixedOrder).severity(Severity.ERROR).build();
+            OrderConfig config = new OrderConfig(fixedOrder, null, null, Severity.ERROR);
 
             // Then
             assertEquals(fixedOrder, config.fixedOrder());
@@ -39,7 +39,7 @@ class OrderConfigTest {
         @DisplayName("should build with empty lists by default")
         void shouldBuildWithEmptyListsByDefault() {
             // Given/When
-            OrderConfig config = OrderConfig.builder().severity(Severity.WARN).build();
+            OrderConfig config = new OrderConfig(null, null, null, Severity.WARN);
 
             // Then
             assertTrue(config.fixedOrder().isEmpty());
@@ -52,13 +52,7 @@ class OrderConfigTest {
         @DisplayName("should add individual fixed order items")
         void shouldAddIndividualFixedOrderItems() {
             // Given/When
-            OrderConfig config = OrderConfig
-                    .builder()
-                    .addFixedOrder("first")
-                    .addFixedOrder("second")
-                    .addFixedOrder("third")
-                    .severity(Severity.INFO)
-                    .build();
+            OrderConfig config = new OrderConfig(Arrays.asList("first", "second", "third"), null, null, Severity.INFO);
 
             // Then
             assertEquals(Arrays.asList("first", "second", "third"), config.fixedOrder());
@@ -68,12 +62,11 @@ class OrderConfigTest {
         @DisplayName("should add before constraints")
         void shouldAddBeforeConstraints() {
             // Given/When
-            OrderConfig config = OrderConfig
-                    .builder()
-                    .addBefore("intro", "body", Severity.ERROR)
-                    .addBefore("body", "conclusion", Severity.WARN)
-                    .severity(Severity.INFO)
-                    .build();
+            OrderConfig config = new OrderConfig(null,
+                    Arrays
+                            .asList(OrderConfig.OrderConstraint.of("intro", "body", Severity.ERROR),
+                                    OrderConfig.OrderConstraint.of("body", "conclusion", Severity.WARN)),
+                    null, Severity.INFO);
 
             // Then
             assertEquals(2, config.before().size());
@@ -86,11 +79,8 @@ class OrderConfigTest {
         @DisplayName("should add after constraints")
         void shouldAddAfterConstraints() {
             // Given/When
-            OrderConfig config = OrderConfig
-                    .builder()
-                    .addAfter("conclusion", "body", Severity.ERROR)
-                    .severity(Severity.INFO)
-                    .build();
+            OrderConfig config = new OrderConfig(null, null,
+                    Arrays.asList(OrderConfig.OrderConstraint.of("conclusion", "body", Severity.ERROR)), Severity.INFO);
 
             // Then
             assertEquals(1, config.after().size());
@@ -103,7 +93,7 @@ class OrderConfigTest {
         @DisplayName("should default to ERROR severity")
         void shouldDefaultToErrorSeverity() {
             // Given/When
-            OrderConfig config = OrderConfig.builder().build();
+            OrderConfig config = new OrderConfig(null, null, null, null);
 
             // Then
             assertEquals(Severity.ERROR, config.severity());
@@ -176,19 +166,13 @@ class OrderConfigTest {
         @DisplayName("should be equal for same values")
         void shouldBeEqualForSameValues() {
             // Given
-            OrderConfig config1 = OrderConfig
-                    .builder()
-                    .addFixedOrder("intro")
-                    .addBefore("intro", "body", Severity.ERROR)
-                    .severity(Severity.WARN)
-                    .build();
+            OrderConfig config1 = new OrderConfig(Arrays.asList("intro"),
+                    Arrays.asList(OrderConfig.OrderConstraint.of("intro", "body", Severity.ERROR)), null,
+                    Severity.WARN);
 
-            OrderConfig config2 = OrderConfig
-                    .builder()
-                    .addFixedOrder("intro")
-                    .addBefore("intro", "body", Severity.ERROR)
-                    .severity(Severity.WARN)
-                    .build();
+            OrderConfig config2 = new OrderConfig(Arrays.asList("intro"),
+                    Arrays.asList(OrderConfig.OrderConstraint.of("intro", "body", Severity.ERROR)), null,
+                    Severity.WARN);
 
             // When/Then
             assertEquals(config1, config2);
@@ -199,9 +183,9 @@ class OrderConfigTest {
         @DisplayName("should not be equal for different fixed order")
         void shouldNotBeEqualForDifferentFixedOrder() {
             // Given
-            OrderConfig config1 = OrderConfig.builder().addFixedOrder("intro").severity(Severity.ERROR).build();
+            OrderConfig config1 = new OrderConfig(Arrays.asList("intro"), null, null, Severity.ERROR);
 
-            OrderConfig config2 = OrderConfig.builder().addFixedOrder("body").severity(Severity.ERROR).build();
+            OrderConfig config2 = new OrderConfig(Arrays.asList("body"), null, null, Severity.ERROR);
 
             // When/Then
             assertNotEquals(config1, config2);

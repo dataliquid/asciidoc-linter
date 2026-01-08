@@ -84,7 +84,7 @@ class DlistBlockValidatorTest {
         void shouldReturnEmptyListWhenNotDescriptionListInstance() {
             // Given
             Block notADlist = mock(Block.class);
-            DlistBlock config = DlistBlock.builder().severity(Severity.ERROR).build();
+            DlistBlock config = new DlistBlock(null, Severity.ERROR, null, null, null, null, null, null);
 
             // When
             List<ValidationMessage> messages = validator.validate(notADlist, config, context);
@@ -97,7 +97,7 @@ class DlistBlockValidatorTest {
         @DisplayName("should return empty list when no validations configured")
         void shouldReturnEmptyListWhenNoValidationsConfigured() {
             // Given
-            DlistBlock config = DlistBlock.builder().severity(Severity.ERROR).build();
+            DlistBlock config = new DlistBlock(null, Severity.ERROR, null, null, null, null, null, null);
 
             when(mockDlist.getItems()).thenReturn(Arrays.asList());
 
@@ -120,11 +120,8 @@ class DlistBlockValidatorTest {
             List<DescriptionListEntry> entries = Arrays.asList(createMockEntry("Term1", "Description1"));
             when(mockDlist.getItems()).thenReturn(entries);
 
-            DlistBlock config = DlistBlock
-                    .builder()
-                    .severity(Severity.ERROR)
-                    .terms(DlistBlock.TermsConfig.builder().min(2).severity(Severity.WARN).build())
-                    .build();
+            DlistBlock config = new DlistBlock(null, Severity.ERROR, null, null,
+                    new DlistBlock.TermsConfig(2, null, null, null, null, Severity.WARN), null, null, null);
 
             // When
             List<ValidationMessage> messages = validator.validate(mockDlist, config, context);
@@ -148,11 +145,8 @@ class DlistBlockValidatorTest {
                             createMockEntry("Term3", "Desc3"), createMockEntry("Term4", "Desc4"));
             when(mockDlist.getItems()).thenReturn(entries);
 
-            DlistBlock config = DlistBlock
-                    .builder()
-                    .severity(Severity.ERROR)
-                    .terms(DlistBlock.TermsConfig.builder().max(3).build())
-                    .build();
+            DlistBlock config = new DlistBlock(null, Severity.ERROR, null, null,
+                    new DlistBlock.TermsConfig(null, 3, null, null, null, null), null, null, null);
 
             // When
             List<ValidationMessage> messages = validator.validate(mockDlist, config, context);
@@ -178,11 +172,8 @@ class DlistBlockValidatorTest {
                     );
             when(mockDlist.getItems()).thenReturn(entries);
 
-            DlistBlock config = DlistBlock
-                    .builder()
-                    .severity(Severity.ERROR)
-                    .terms(DlistBlock.TermsConfig.builder().pattern("^[A-Z].*").severity(Severity.WARN).build())
-                    .build();
+            DlistBlock config = new DlistBlock(null, Severity.ERROR, null, null,
+                    new DlistBlock.TermsConfig(null, null, "^[A-Z].*", null, null, Severity.WARN), null, null, null);
 
             // When
             List<ValidationMessage> messages = validator.validate(mockDlist, config, context);
@@ -212,11 +203,8 @@ class DlistBlockValidatorTest {
             when(mockCursor.getLineNumber()).thenReturn(53);
             when(mockDlist.getSourceLocation()).thenReturn(mockCursor);
 
-            DlistBlock config = DlistBlock
-                    .builder()
-                    .severity(Severity.ERROR)
-                    .terms(DlistBlock.TermsConfig.builder().pattern("^[A-Z].*").severity(Severity.WARN).build())
-                    .build();
+            DlistBlock config = new DlistBlock(null, Severity.ERROR, null, null,
+                    new DlistBlock.TermsConfig(null, null, "^[A-Z].*", null, null, Severity.WARN), null, null, null);
 
             // When
             List<ValidationMessage> messages = validator.validate(mockDlist, config, testContext);
@@ -246,11 +234,8 @@ class DlistBlockValidatorTest {
                     );
             when(mockDlist.getItems()).thenReturn(entries);
 
-            DlistBlock config = DlistBlock
-                    .builder()
-                    .severity(Severity.ERROR)
-                    .terms(DlistBlock.TermsConfig.builder().minLength(3).maxLength(10).build())
-                    .build();
+            DlistBlock config = new DlistBlock(null, Severity.ERROR, null, null,
+                    new DlistBlock.TermsConfig(null, null, null, 3, 10, null), null, null, null);
 
             // When
             List<ValidationMessage> messages = validator.validate(mockDlist, config, context);
@@ -290,12 +275,8 @@ class DlistBlockValidatorTest {
             List<DescriptionListEntry> entries = Arrays.asList(entryWithoutDesc);
             when(mockDlist.getItems()).thenReturn(entries);
 
-            DlistBlock config = DlistBlock
-                    .builder()
-                    .severity(Severity.ERROR)
-                    .descriptions(
-                            DlistBlock.DescriptionsConfig.builder().required(true).severity(Severity.ERROR).build())
-                    .build();
+            DlistBlock config = new DlistBlock(null, Severity.ERROR, null, null, null,
+                    new DlistBlock.DescriptionsConfig(true, null, null, null, Severity.ERROR), null, null);
 
             // When
             List<ValidationMessage> messages = validator.validate(mockDlist, config, context);
@@ -319,15 +300,8 @@ class DlistBlockValidatorTest {
                             createMockEntry("Term2", "Description with period."));
             when(mockDlist.getItems()).thenReturn(entries);
 
-            DlistBlock config = DlistBlock
-                    .builder()
-                    .severity(Severity.ERROR)
-                    .descriptions(DlistBlock.DescriptionsConfig
-                            .builder()
-                            .pattern(".*\\.$") // Must end with period
-                            .severity(Severity.WARN)
-                            .build())
-                    .build();
+            DlistBlock config = new DlistBlock(null, Severity.ERROR, null, null, null,
+                    new DlistBlock.DescriptionsConfig(null, null, null, ".*\\.$", Severity.WARN), null, null);
 
             // When
             List<ValidationMessage> messages = validator.validate(mockDlist, config, context);
@@ -363,11 +337,8 @@ class DlistBlockValidatorTest {
             when(mockDlist.getParent()).thenReturn(parent);
             when(mockDlist.getItems()).thenReturn(Arrays.asList());
 
-            DlistBlock config = DlistBlock
-                    .builder()
-                    .severity(Severity.ERROR)
-                    .nestingLevel(DlistBlock.NestingLevelConfig.builder().max(1).severity(Severity.WARN).build())
-                    .build();
+            DlistBlock config = new DlistBlock(null, Severity.ERROR, null, null, null, null,
+                    new DlistBlock.NestingLevelConfig(1, Severity.WARN), null);
 
             // When
             List<ValidationMessage> messages = validator.validate(mockDlist, config, context);
@@ -388,15 +359,8 @@ class DlistBlockValidatorTest {
             when(mockDlist.getAttribute("delimiter")).thenReturn("::::");
             when(mockDlist.getItems()).thenReturn(Arrays.asList());
 
-            DlistBlock config = DlistBlock
-                    .builder()
-                    .severity(Severity.ERROR)
-                    .delimiterStyle(DlistBlock.DelimiterStyleConfig
-                            .builder()
-                            .allowedDelimiters(new String[] { "::", ":::" })
-                            .severity(Severity.ERROR)
-                            .build())
-                    .build();
+            DlistBlock config = new DlistBlock(null, Severity.ERROR, null, null, null, null, null,
+                    new DlistBlock.DelimiterStyleConfig(new String[] { "::", ":::" }, null, Severity.ERROR));
 
             // When
             List<ValidationMessage> messages = validator.validate(mockDlist, config, context);
@@ -412,14 +376,8 @@ class DlistBlockValidatorTest {
             when(mockDlist.getAttribute("delimiter")).thenReturn("::");
             when(mockDlist.getItems()).thenReturn(Arrays.asList());
 
-            DlistBlock config = DlistBlock
-                    .builder()
-                    .severity(Severity.ERROR)
-                    .delimiterStyle(DlistBlock.DelimiterStyleConfig
-                            .builder()
-                            .allowedDelimiters(new String[] { "::", ":::" })
-                            .build())
-                    .build();
+            DlistBlock config = new DlistBlock(null, Severity.ERROR, null, null, null, null, null,
+                    new DlistBlock.DelimiterStyleConfig(new String[] { "::", ":::" }, null, null));
 
             // When
             List<ValidationMessage> messages = validator.validate(mockDlist, config, context);
@@ -443,13 +401,9 @@ class DlistBlockValidatorTest {
                     );
             when(mockDlist.getItems()).thenReturn(entries);
 
-            DlistBlock config = DlistBlock
-                    .builder()
-                    .severity(Severity.ERROR)
-                    .terms(DlistBlock.TermsConfig.builder().pattern("^[A-Z].*").severity(Severity.WARN).build())
-                    .descriptions(
-                            DlistBlock.DescriptionsConfig.builder().required(true).severity(Severity.ERROR).build())
-                    .build();
+            DlistBlock config = new DlistBlock(null, Severity.ERROR, null, null,
+                    new DlistBlock.TermsConfig(null, null, "^[A-Z].*", null, null, Severity.WARN),
+                    new DlistBlock.DescriptionsConfig(true, null, null, null, Severity.ERROR), null, null);
 
             // When
             List<ValidationMessage> messages = validator.validate(mockDlist, config, context);
@@ -473,11 +427,8 @@ class DlistBlockValidatorTest {
             // Given
             when(mockDlist.getItems()).thenReturn(Arrays.asList());
 
-            DlistBlock config = DlistBlock
-                    .builder()
-                    .severity(Severity.ERROR)
-                    .terms(DlistBlock.TermsConfig.builder().min(1).build())
-                    .build();
+            DlistBlock config = new DlistBlock(null, Severity.ERROR, null, null,
+                    new DlistBlock.TermsConfig(1, null, null, null, null, null), null, null, null);
 
             // When
             List<ValidationMessage> messages = validator.validate(mockDlist, config, context);

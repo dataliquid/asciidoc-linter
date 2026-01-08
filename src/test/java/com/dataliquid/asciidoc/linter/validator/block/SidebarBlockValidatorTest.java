@@ -10,7 +10,6 @@ import org.asciidoctor.ast.Cursor;
 import org.asciidoctor.ast.Section;
 import org.asciidoctor.ast.StructuralNode;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -21,7 +20,6 @@ import com.dataliquid.asciidoc.linter.config.common.Severity;
 import com.dataliquid.asciidoc.linter.config.blocks.SidebarBlock;
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
 
-@DisplayName("SidebarBlockValidator")
 class SidebarBlockValidatorTest {
 
     private SidebarBlockValidator validator;
@@ -44,47 +42,40 @@ class SidebarBlockValidatorTest {
     }
 
     @Test
-    @DisplayName("should support SIDEBAR block type")
     void shouldSupportSidebarBlockType() {
+        // given, when, then
         assertEquals(BlockType.SIDEBAR, validator.getSupportedType());
     }
 
     @Nested
-    @DisplayName("Title validation")
     class TitleValidation {
 
         @Test
-        @DisplayName("should pass when title is not configured")
         void shouldPassWhenTitleNotConfigured() {
-            // Given
-            SidebarBlock config = SidebarBlock.builder().name("test").severity(Severity.ERROR).build();
+            // given
+            SidebarBlock config = new SidebarBlock("test", Severity.ERROR, null, null, null, null, null);
 
-            // When
+            // when
             List<ValidationMessage> results = validator.validate(node, config, context);
 
-            // Then
+            // then
             assertTrue(results.isEmpty());
         }
 
         @Test
-        @DisplayName("should fail when required title is missing")
         void shouldFailWhenRequiredTitleMissing() {
-            // Given
-            SidebarBlock config = SidebarBlock
-                    .builder()
-                    .name("test")
-                    .severity(Severity.ERROR)
-                    .title(SidebarBlock.TitleConfig.builder().required(true).build())
-                    .build();
+            // given
+            SidebarBlock.TitleConfig titleConfig = new SidebarBlock.TitleConfig(true, null, null, null, null);
+            SidebarBlock config = new SidebarBlock("test", Severity.ERROR, null, null, titleConfig, null, null);
 
             when(node.getTitle()).thenReturn(null);
             when(node.getSourceLocation()).thenReturn(sourceLocation);
             when(sourceLocation.getLineNumber()).thenReturn(10);
 
-            // When
+            // when
             List<ValidationMessage> results = validator.validate(node, config, context);
 
-            // Then
+            // then
             assertEquals(1, results.size());
             assertEquals(Severity.ERROR, results.get(0).getSeverity());
             assertEquals("Sidebar block requires a title", results.get(0).getMessage());
@@ -92,282 +83,212 @@ class SidebarBlockValidatorTest {
         }
 
         @Test
-        @DisplayName("should use title severity when specified")
         void shouldUseTitleSeverityWhenSpecified() {
-            // Given
-            SidebarBlock config = SidebarBlock
-                    .builder()
-                    .name("test")
-                    .severity(Severity.ERROR)
-                    .title(SidebarBlock.TitleConfig.builder().required(true).severity(Severity.WARN).build())
-                    .build();
+            // given
+            SidebarBlock.TitleConfig titleConfig = new SidebarBlock.TitleConfig(true, null, null, null, Severity.WARN);
+            SidebarBlock config = new SidebarBlock("test", Severity.ERROR, null, null, titleConfig, null, null);
 
             when(node.getTitle()).thenReturn(null);
             when(node.getSourceLocation()).thenReturn(sourceLocation);
             when(sourceLocation.getLineNumber()).thenReturn(10);
 
-            // When
+            // when
             List<ValidationMessage> results = validator.validate(node, config, context);
 
-            // Then
+            // then
             assertEquals(1, results.size());
             assertEquals(Severity.WARN, results.get(0).getSeverity());
         }
 
         @Test
-        @DisplayName("should validate title length")
         void shouldValidateTitleLength() {
-            // Given
-            SidebarBlock config = SidebarBlock
-                    .builder()
-                    .name("test")
-                    .severity(Severity.ERROR)
-                    .title(SidebarBlock.TitleConfig.builder().minLength(5).maxLength(10).build())
-                    .build();
+            // given
+            SidebarBlock.TitleConfig titleConfig = new SidebarBlock.TitleConfig(false, 5, 10, null, null);
+            SidebarBlock config = new SidebarBlock("test", Severity.ERROR, null, null, titleConfig, null, null);
 
             when(node.getTitle()).thenReturn("abc");
             when(node.getSourceLocation()).thenReturn(sourceLocation);
             when(sourceLocation.getLineNumber()).thenReturn(10);
 
-            // When
+            // when
             List<ValidationMessage> results = validator.validate(node, config, context);
 
-            // Then
+            // then
             assertEquals(1, results.size());
             assertTrue(results.get(0).getMessage().contains("too short"));
             assertEquals("3 characters", results.get(0).getActualValue().get());
         }
 
         @Test
-        @DisplayName("should validate title pattern")
         void shouldValidateTitlePattern() {
-            // Given
-            SidebarBlock config = SidebarBlock
-                    .builder()
-                    .name("test")
-                    .severity(Severity.ERROR)
-                    .title(SidebarBlock.TitleConfig.builder().pattern("^[A-Z].*$").build())
-                    .build();
+            // given
+            SidebarBlock.TitleConfig titleConfig = new SidebarBlock.TitleConfig(false, null, null, "^[A-Z].*$", null);
+            SidebarBlock config = new SidebarBlock("test", Severity.ERROR, null, null, titleConfig, null, null);
 
             when(node.getTitle()).thenReturn("lowercase");
             when(node.getSourceLocation()).thenReturn(sourceLocation);
             when(sourceLocation.getLineNumber()).thenReturn(10);
 
-            // When
+            // when
             List<ValidationMessage> results = validator.validate(node, config, context);
 
-            // Then
+            // then
             assertEquals(1, results.size());
             assertTrue(results.get(0).getMessage().contains("does not match required pattern"));
         }
 
         @Test
-        @DisplayName("should pass valid title")
         void shouldPassValidTitle() {
-            // Given
-            SidebarBlock config = SidebarBlock
-                    .builder()
-                    .name("test")
-                    .severity(Severity.ERROR)
-                    .title(SidebarBlock.TitleConfig
-                            .builder()
-                            .required(true)
-                            .minLength(5)
-                            .maxLength(50)
-                            .pattern("^[A-Z].*$")
-                            .build())
-                    .build();
+            // given
+            SidebarBlock.TitleConfig titleConfig = new SidebarBlock.TitleConfig(true, 5, 50, "^[A-Z].*$", null);
+            SidebarBlock config = new SidebarBlock("test", Severity.ERROR, null, null, titleConfig, null, null);
 
             when(node.getTitle()).thenReturn("Valid Title");
 
-            // When
+            // when
             List<ValidationMessage> results = validator.validate(node, config, context);
 
-            // Then
+            // then
             assertTrue(results.isEmpty());
         }
     }
 
     @Nested
-    @DisplayName("Content validation")
     class ContentValidation {
 
         @Test
-        @DisplayName("should pass when content is not configured")
         void shouldPassWhenContentNotConfigured() {
-            // Given
-            SidebarBlock config = SidebarBlock.builder().name("test").severity(Severity.ERROR).build();
+            // given
+            SidebarBlock config = new SidebarBlock("test", Severity.ERROR, null, null, null, null, null);
 
-            // When
+            // when
             List<ValidationMessage> results = validator.validate(node, config, context);
 
-            // Then
+            // then
             assertTrue(results.isEmpty());
         }
 
         @Test
-        @DisplayName("should fail when required content is missing")
         void shouldFailWhenRequiredContentMissing() {
-            // Given
-            SidebarBlock config = SidebarBlock
-                    .builder()
-                    .name("test")
-                    .severity(Severity.ERROR)
-                    .content(SidebarBlock.ContentConfig.builder().required(true).build())
-                    .build();
+            // given
+            SidebarBlock.ContentConfig contentConfig = new SidebarBlock.ContentConfig(true, null, null, null);
+            SidebarBlock config = new SidebarBlock("test", Severity.ERROR, null, null, null, contentConfig, null);
 
             when(node.getContent()).thenReturn(null);
             when(node.getSourceLocation()).thenReturn(sourceLocation);
             when(sourceLocation.getLineNumber()).thenReturn(10);
 
-            // When
+            // when
             List<ValidationMessage> results = validator.validate(node, config, context);
 
-            // Then
+            // then
             assertEquals(1, results.size());
             assertEquals("Sidebar block requires content", results.get(0).getMessage());
         }
 
         @Test
-        @DisplayName("should validate content length")
         void shouldValidateContentLength() {
-            // Given
-            SidebarBlock config = SidebarBlock
-                    .builder()
-                    .name("test")
-                    .severity(Severity.ERROR)
-                    .content(SidebarBlock.ContentConfig.builder().minLength(50).maxLength(100).build())
-                    .build();
+            // given
+            SidebarBlock.ContentConfig contentConfig = new SidebarBlock.ContentConfig(false, 50, 100, null);
+            SidebarBlock config = new SidebarBlock("test", Severity.ERROR, null, null, null, contentConfig, null);
 
             when(node.getContent()).thenReturn("Short content");
             when(node.getSourceLocation()).thenReturn(sourceLocation);
             when(sourceLocation.getLineNumber()).thenReturn(10);
 
-            // When
+            // when
             List<ValidationMessage> results = validator.validate(node, config, context);
 
-            // Then
+            // then
             assertEquals(1, results.size());
             assertTrue(results.get(0).getMessage().contains("too short"));
         }
 
         @Test
-        @DisplayName("should validate line count")
         void shouldValidateLineCount() {
-            // Given
-            SidebarBlock config = SidebarBlock
-                    .builder()
-                    .name("test")
-                    .severity(Severity.ERROR)
-                    .content(SidebarBlock.ContentConfig
-                            .builder()
-                            .lines(SidebarBlock.LinesConfig.builder().min(3).max(5).severity(Severity.WARN).build())
-                            .build())
-                    .build();
+            // given
+            SidebarBlock.LinesConfig linesConfig = new SidebarBlock.LinesConfig(3, 5, Severity.WARN);
+            SidebarBlock.ContentConfig contentConfig = new SidebarBlock.ContentConfig(false, null, null, linesConfig);
+            SidebarBlock config = new SidebarBlock("test", Severity.ERROR, null, null, null, contentConfig, null);
 
             when(node.getContent()).thenReturn("Line 1");
             when(node.getSourceLocation()).thenReturn(sourceLocation);
             when(sourceLocation.getLineNumber()).thenReturn(10);
 
-            // When
+            // when
             List<ValidationMessage> results = validator.validate(node, config, context);
 
-            // Then
+            // then
             assertEquals(1, results.size());
             assertEquals(Severity.WARN, results.get(0).getSeverity());
             assertTrue(results.get(0).getMessage().contains("too few lines"));
         }
 
         @Test
-        @DisplayName("should pass valid content")
         void shouldPassValidContent() {
-            // Given
-            SidebarBlock config = SidebarBlock
-                    .builder()
-                    .name("test")
-                    .severity(Severity.ERROR)
-                    .content(SidebarBlock.ContentConfig
-                            .builder()
-                            .required(true)
-                            .minLength(10)
-                            .maxLength(100)
-                            .lines(SidebarBlock.LinesConfig.builder().min(1).max(5).build())
-                            .build())
-                    .build();
+            // given
+            SidebarBlock.LinesConfig linesConfig = new SidebarBlock.LinesConfig(1, 5, null);
+            SidebarBlock.ContentConfig contentConfig = new SidebarBlock.ContentConfig(true, 10, 100, linesConfig);
+            SidebarBlock config = new SidebarBlock("test", Severity.ERROR, null, null, null, contentConfig, null);
 
             when(node.getContent()).thenReturn("This is valid sidebar content\nWith multiple lines");
 
-            // When
+            // when
             List<ValidationMessage> results = validator.validate(node, config, context);
 
-            // Then
+            // then
             assertTrue(results.isEmpty());
         }
     }
 
     @Nested
-    @DisplayName("Position validation")
     class PositionValidation {
 
         @Test
-        @DisplayName("should pass when position is not configured")
         void shouldPassWhenPositionNotConfigured() {
-            // Given
-            SidebarBlock config = SidebarBlock.builder().name("test").severity(Severity.ERROR).build();
+            // given
+            SidebarBlock config = new SidebarBlock("test", Severity.ERROR, null, null, null, null, null);
 
-            // When
+            // when
             List<ValidationMessage> results = validator.validate(node, config, context);
 
-            // Then
+            // then
             assertTrue(results.isEmpty());
         }
 
         @Test
-        @DisplayName("should fail when required position is missing")
         void shouldFailWhenRequiredPositionMissing() {
-            // Given
-            SidebarBlock config = SidebarBlock
-                    .builder()
-                    .name("test")
-                    .severity(Severity.ERROR)
-                    .position(SidebarBlock.PositionConfig.builder().required(true).build())
-                    .build();
+            // given
+            SidebarBlock.PositionConfig positionConfig = new SidebarBlock.PositionConfig(true, null, null);
+            SidebarBlock config = new SidebarBlock("test", Severity.ERROR, null, null, null, null, positionConfig);
 
             when(node.getAttribute("position")).thenReturn(null);
             when(node.getSourceLocation()).thenReturn(sourceLocation);
             when(sourceLocation.getLineNumber()).thenReturn(10);
 
-            // When
+            // when
             List<ValidationMessage> results = validator.validate(node, config, context);
 
-            // Then
+            // then
             assertEquals(1, results.size());
             assertEquals("Sidebar block requires a position attribute", results.get(0).getMessage());
         }
 
         @Test
-        @DisplayName("should validate allowed positions")
         void shouldValidateAllowedPositions() {
-            // Given
-            SidebarBlock config = SidebarBlock
-                    .builder()
-                    .name("test")
-                    .severity(Severity.ERROR)
-                    .position(SidebarBlock.PositionConfig
-                            .builder()
-                            .allowed(List.of("left", "right", "float"))
-                            .severity(Severity.INFO)
-                            .build())
-                    .build();
+            // given
+            SidebarBlock.PositionConfig positionConfig = new SidebarBlock.PositionConfig(false,
+                    List.of("left", "right", "float"), Severity.INFO);
+            SidebarBlock config = new SidebarBlock("test", Severity.ERROR, null, null, null, null, positionConfig);
 
             when(node.getAttribute("position")).thenReturn("center");
             when(node.getSourceLocation()).thenReturn(sourceLocation);
             when(sourceLocation.getLineNumber()).thenReturn(10);
 
-            // When
+            // when
             List<ValidationMessage> results = validator.validate(node, config, context);
 
-            // Then
+            // then
             assertEquals(1, results.size());
             assertEquals(Severity.INFO, results.get(0).getSeverity());
             assertTrue(results.get(0).getMessage().contains("Invalid sidebar position"));
@@ -375,52 +296,40 @@ class SidebarBlockValidatorTest {
         }
 
         @Test
-        @DisplayName("should pass valid position")
         void shouldPassValidPosition() {
-            // Given
-            SidebarBlock config = SidebarBlock
-                    .builder()
-                    .name("test")
-                    .severity(Severity.ERROR)
-                    .position(SidebarBlock.PositionConfig
-                            .builder()
-                            .required(true)
-                            .allowed(List.of("left", "right", "float"))
-                            .build())
-                    .build();
+            // given
+            SidebarBlock.PositionConfig positionConfig = new SidebarBlock.PositionConfig(true,
+                    List.of("left", "right", "float"), null);
+            SidebarBlock config = new SidebarBlock("test", Severity.ERROR, null, null, null, null, positionConfig);
 
             when(node.getAttribute("position")).thenReturn("left");
 
-            // When
+            // when
             List<ValidationMessage> results = validator.validate(node, config, context);
 
-            // Then
+            // then
             assertTrue(results.isEmpty());
         }
     }
 
     @Test
-    @DisplayName("should handle null node gracefully")
     void shouldHandleNullNodeGracefully() {
-        // Given
-        SidebarBlock config = SidebarBlock
-                .builder()
-                .name("test")
-                .severity(Severity.ERROR)
-                .title(SidebarBlock.TitleConfig.builder().required(true).build())
-                .content(SidebarBlock.ContentConfig.builder().required(true).build())
-                .position(SidebarBlock.PositionConfig.builder().required(true).build())
-                .build();
+        // given
+        SidebarBlock.TitleConfig titleConfig = new SidebarBlock.TitleConfig(true, null, null, null, null);
+        SidebarBlock.ContentConfig contentConfig = new SidebarBlock.ContentConfig(true, null, null, null);
+        SidebarBlock.PositionConfig positionConfig = new SidebarBlock.PositionConfig(true, null, null);
+        SidebarBlock config = new SidebarBlock("test", Severity.ERROR, null, null, titleConfig, contentConfig,
+                positionConfig);
 
         when(node.getTitle()).thenReturn(null);
         when(node.getContent()).thenReturn(null);
         when(node.getAttribute("position")).thenReturn(null);
         when(node.getSourceLocation()).thenReturn(null);
 
-        // When
+        // when
         List<ValidationMessage> results = validator.validate(node, config, context);
 
-        // Then
+        // then
         assertEquals(3, results.size());
         assertTrue(results.stream().allMatch(r -> r.getLocation().getStartLine() == 1));
     }

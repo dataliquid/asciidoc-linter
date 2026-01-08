@@ -1,6 +1,5 @@
 package com.dataliquid.asciidoc.linter.report;
 
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.time.Instant;
 import java.time.ZoneOffset;
@@ -13,8 +12,10 @@ import java.util.stream.Collectors;
 
 import com.dataliquid.asciidoc.linter.validator.ValidationMessage;
 import com.dataliquid.asciidoc.linter.validator.ValidationResult;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
+
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.SerializationFeature;
+import tools.jackson.databind.json.JsonMapper;
 
 /**
  * Formats validation results as JSON using Jackson. Supports both
@@ -28,7 +29,7 @@ public class JsonFormatter implements ReportFormatter {
     private static final int MILLIS_PER_SECOND = 1000;
 
     private final String name;
-    private final ObjectMapper objectMapper;
+    private final JsonMapper jsonMapper;
 
     /**
      * Creates a JSON formatter with the specified name and pretty-print setting.
@@ -38,12 +39,10 @@ public class JsonFormatter implements ReportFormatter {
      */
     public JsonFormatter(String name, boolean prettyPrint) {
         this.name = name;
-        this.objectMapper = new ObjectMapper();
-
         if (prettyPrint) {
-            this.objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
+            this.jsonMapper = JsonMapper.builder().enable(SerializationFeature.INDENT_OUTPUT).build();
         } else {
-            this.objectMapper.disable(SerializationFeature.INDENT_OUTPUT);
+            this.jsonMapper = JsonMapper.builder().disable(SerializationFeature.INDENT_OUTPUT).build();
         }
     }
 
@@ -93,14 +92,13 @@ public class JsonFormatter implements ReportFormatter {
 
         // Write JSON to PrintWriter
         try {
-            objectMapper.writeValue(writer, root);
+            jsonMapper.writeValue(writer, root);
             writer.flush();
-        } catch (IOException e) {
+        } catch (JacksonException e) {
             throw new RuntimeException("Failed to write JSON output", e);
         }
     }
 
-    @SuppressWarnings("PMD.UnusedPrivateMethod")
     private Map<String, Object> formatMessage(ValidationMessage message) {
         Map<String, Object> messageMap = Collections.synchronizedMap(new LinkedHashMap<>());
 

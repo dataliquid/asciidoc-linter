@@ -83,7 +83,7 @@ class AudioBlockValidatorTest {
         void shouldReturnEmptyListWhenNotAudioInstance() {
             // Given
             StructuralNode notAnAudio = mock(StructuralNode.class);
-            AudioBlock config = AudioBlock.builder().severity(Severity.ERROR).build();
+            AudioBlock config = new AudioBlock(null, Severity.ERROR, null, null, null, null, null);
 
             // When
             List<ValidationMessage> messages = validator.validate(notAnAudio, config, context);
@@ -96,7 +96,7 @@ class AudioBlockValidatorTest {
         @DisplayName("should return empty list when no validations configured")
         void shouldReturnEmptyListWhenNoValidationsConfigured() {
             // Given
-            AudioBlock config = AudioBlock.builder().severity(Severity.ERROR).build();
+            AudioBlock config = new AudioBlock(null, Severity.ERROR, null, null, null, null, null);
 
             // When
             List<ValidationMessage> messages = validator.validate(mockBlock, config, context);
@@ -114,9 +114,9 @@ class AudioBlockValidatorTest {
         @DisplayName("should validate required URL")
         void shouldValidateRequiredUrl() {
             // Given
-            AudioBlock.UrlConfig urlConfig = AudioBlock.UrlConfig.builder().required(true).build();
+            AudioBlock.UrlConfig urlConfig = new AudioBlock.UrlConfig(true, null, null);
 
-            AudioBlock config = AudioBlock.builder().severity(Severity.ERROR).url(urlConfig).build();
+            AudioBlock config = new AudioBlock(null, Severity.ERROR, null, null, urlConfig, null, null);
 
             when(mockBlock.getAttribute("target")).thenReturn(null);
             when(mockBlock.getContent()).thenReturn(null);
@@ -138,10 +138,10 @@ class AudioBlockValidatorTest {
         @DisplayName("should validate URL pattern")
         void shouldValidateUrlPattern() {
             // Given
-            Pattern pattern = Pattern.compile("^(https?://|\\./|/).*\\.(mp3|ogg|wav|m4a)$");
-            AudioBlock.UrlConfig urlConfig = AudioBlock.UrlConfig.builder().required(true).pattern(pattern).build();
+            AudioBlock.UrlConfig urlConfig = new AudioBlock.UrlConfig(true,
+                    "^(https?://|\\./|/).*\\.(mp3|ogg|wav|m4a)$", null);
 
-            AudioBlock config = AudioBlock.builder().severity(Severity.WARN).url(urlConfig).build();
+            AudioBlock config = new AudioBlock(null, Severity.WARN, null, null, urlConfig, null, null);
 
             when(mockBlock.getAttribute("target")).thenReturn("http://example.com/audio.txt");
 
@@ -161,13 +161,9 @@ class AudioBlockValidatorTest {
         @DisplayName("should use URL-specific severity when configured")
         void shouldUseUrlSpecificSeverity() {
             // Given
-            AudioBlock.UrlConfig urlConfig = AudioBlock.UrlConfig
-                    .builder()
-                    .required(true)
-                    .severity(Severity.ERROR)
-                    .build();
+            AudioBlock.UrlConfig urlConfig = new AudioBlock.UrlConfig(true, null, Severity.ERROR);
 
-            AudioBlock config = AudioBlock.builder().severity(Severity.INFO).url(urlConfig).build();
+            AudioBlock config = new AudioBlock(null, Severity.INFO, null, null, urlConfig, null, null);
 
             when(mockBlock.getAttribute("target")).thenReturn(null);
 
@@ -188,18 +184,11 @@ class AudioBlockValidatorTest {
         @DisplayName("should validate autoplay not allowed")
         void shouldValidateAutoplayNotAllowed() {
             // Given
-            AudioBlock.AutoplayConfig autoplayConfig = AudioBlock.AutoplayConfig
-                    .builder()
-                    .allowed(false)
-                    .severity(Severity.ERROR)
-                    .build();
+            AudioBlock.AutoplayConfig autoplayConfig = new AudioBlock.AutoplayConfig(false, Severity.ERROR);
 
-            AudioBlock.OptionsConfig optionsConfig = AudioBlock.OptionsConfig
-                    .builder()
-                    .autoplay(autoplayConfig)
-                    .build();
+            AudioBlock.OptionsConfig optionsConfig = new AudioBlock.OptionsConfig(autoplayConfig, null, null);
 
-            AudioBlock config = AudioBlock.builder().severity(Severity.INFO).options(optionsConfig).build();
+            AudioBlock config = new AudioBlock(null, Severity.INFO, null, null, null, optionsConfig, null);
 
             when(mockBlock.getAttribute("opts")).thenReturn("autoplay");
 
@@ -218,14 +207,11 @@ class AudioBlockValidatorTest {
         @DisplayName("should validate controls required")
         void shouldValidateControlsRequired() {
             // Given
-            AudioBlock.ControlsConfig controlsConfig = AudioBlock.ControlsConfig.builder().required(true).build();
+            AudioBlock.ControlsConfig controlsConfig = new AudioBlock.ControlsConfig(true, null);
 
-            AudioBlock.OptionsConfig optionsConfig = AudioBlock.OptionsConfig
-                    .builder()
-                    .controls(controlsConfig)
-                    .build();
+            AudioBlock.OptionsConfig optionsConfig = new AudioBlock.OptionsConfig(null, controlsConfig, null);
 
-            AudioBlock config = AudioBlock.builder().severity(Severity.WARN).options(optionsConfig).build();
+            AudioBlock config = new AudioBlock(null, Severity.WARN, null, null, null, optionsConfig, null);
 
             when(mockBlock.getAttribute("opts")).thenReturn("nocontrols");
 
@@ -244,15 +230,11 @@ class AudioBlockValidatorTest {
         @DisplayName("should validate loop allowed")
         void shouldValidateLoopAllowed() {
             // Given
-            AudioBlock.LoopConfig loopConfig = AudioBlock.LoopConfig
-                    .builder()
-                    .allowed(true)
-                    .severity(Severity.INFO)
-                    .build();
+            AudioBlock.LoopConfig loopConfig = new AudioBlock.LoopConfig(true, Severity.INFO);
 
-            AudioBlock.OptionsConfig optionsConfig = AudioBlock.OptionsConfig.builder().loop(loopConfig).build();
+            AudioBlock.OptionsConfig optionsConfig = new AudioBlock.OptionsConfig(null, null, loopConfig);
 
-            AudioBlock config = AudioBlock.builder().severity(Severity.ERROR).options(optionsConfig).build();
+            AudioBlock config = new AudioBlock(null, Severity.ERROR, null, null, null, optionsConfig, null);
 
             when(mockBlock.getAttribute("opts")).thenReturn("loop");
 
@@ -272,13 +254,9 @@ class AudioBlockValidatorTest {
         @DisplayName("should validate required title")
         void shouldValidateRequiredTitle() {
             // Given
-            AudioBlock.TitleConfig titleConfig = AudioBlock.TitleConfig
-                    .builder()
-                    .required(true)
-                    .severity(Severity.WARN)
-                    .build();
+            AudioBlock.TitleConfig titleConfig = new AudioBlock.TitleConfig(true, null, null, Severity.WARN);
 
-            AudioBlock config = AudioBlock.builder().severity(Severity.ERROR).title(titleConfig).build();
+            AudioBlock config = new AudioBlock(null, Severity.ERROR, null, null, null, null, titleConfig);
 
             when(mockBlock.getTitle()).thenReturn(null);
             when(mockBlock.getAttribute("caption")).thenReturn(null);
@@ -298,14 +276,9 @@ class AudioBlockValidatorTest {
         @DisplayName("should validate title length constraints")
         void shouldValidateTitleLengthConstraints() {
             // Given
-            AudioBlock.TitleConfig titleConfig = AudioBlock.TitleConfig
-                    .builder()
-                    .required(true)
-                    .minLength(10)
-                    .maxLength(100)
-                    .build();
+            AudioBlock.TitleConfig titleConfig = new AudioBlock.TitleConfig(true, 10, 100, null);
 
-            AudioBlock config = AudioBlock.builder().severity(Severity.INFO).title(titleConfig).build();
+            AudioBlock config = new AudioBlock(null, Severity.INFO, null, null, null, null, titleConfig);
 
             when(mockBlock.getTitle()).thenReturn("Short");
 
@@ -331,9 +304,9 @@ class AudioBlockValidatorTest {
         @DisplayName("should use block severity when nested severity not specified")
         void shouldUseBlockSeverityWhenNestedSeverityNotSpecified() {
             // Given
-            AudioBlock.UrlConfig urlConfig = AudioBlock.UrlConfig.builder().required(true).build();
+            AudioBlock.UrlConfig urlConfig = new AudioBlock.UrlConfig(true, null, null);
 
-            AudioBlock config = AudioBlock.builder().severity(Severity.WARN).url(urlConfig).build();
+            AudioBlock config = new AudioBlock(null, Severity.WARN, null, null, urlConfig, null, null);
 
             when(mockBlock.getAttribute("target")).thenReturn(null);
 
@@ -349,13 +322,9 @@ class AudioBlockValidatorTest {
         @DisplayName("should prefer nested severity over block severity")
         void shouldPreferNestedSeverityOverBlockSeverity() {
             // Given
-            AudioBlock.TitleConfig titleConfig = AudioBlock.TitleConfig
-                    .builder()
-                    .required(true)
-                    .severity(Severity.ERROR)
-                    .build();
+            AudioBlock.TitleConfig titleConfig = new AudioBlock.TitleConfig(true, null, null, Severity.ERROR);
 
-            AudioBlock config = AudioBlock.builder().severity(Severity.INFO).title(titleConfig).build();
+            AudioBlock config = new AudioBlock(null, Severity.INFO, null, null, null, null, titleConfig);
 
             when(mockBlock.getTitle()).thenReturn(null);
 
@@ -376,29 +345,11 @@ class AudioBlockValidatorTest {
         @DisplayName("should validate all configured rules")
         void shouldValidateAllConfiguredRules() {
             // Given
-            AudioBlock config = AudioBlock
-                    .builder()
-                    .severity(Severity.INFO)
-                    .url(AudioBlock.UrlConfig
-                            .builder()
-                            .required(true)
-                            .pattern("^https?://.*\\.mp3$")
-                            .severity(Severity.ERROR)
-                            .build())
-                    .options(AudioBlock.OptionsConfig
-                            .builder()
-                            .autoplay(
-                                    AudioBlock.AutoplayConfig.builder().allowed(false).severity(Severity.ERROR).build())
-                            .controls(
-                                    AudioBlock.ControlsConfig.builder().required(true).severity(Severity.ERROR).build())
-                            .build())
-                    .title(AudioBlock.TitleConfig
-                            .builder()
-                            .required(true)
-                            .minLength(10)
-                            .severity(Severity.WARN)
-                            .build())
-                    .build();
+            AudioBlock config = new AudioBlock(null, Severity.INFO, null, null,
+                    new AudioBlock.UrlConfig(true, "^https?://.*\\.mp3$", Severity.ERROR),
+                    new AudioBlock.OptionsConfig(new AudioBlock.AutoplayConfig(false, Severity.ERROR),
+                            new AudioBlock.ControlsConfig(true, Severity.ERROR), null),
+                    new AudioBlock.TitleConfig(true, 10, null, Severity.WARN));
 
             when(mockBlock.getAttribute("target")).thenReturn("file://audio.wav");
             when(mockBlock.getAttribute("opts")).thenReturn("autoplay,nocontrols");

@@ -1,6 +1,8 @@
 package com.dataliquid.asciidoc.linter.cli.display;
 
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Objects;
 
@@ -25,7 +27,7 @@ public class AsciiBoxDrawer {
      * @param width the total width of the box including borders
      */
     public AsciiBoxDrawer(int width) {
-        this(width, new PrintWriter(System.out, true)); // intentional console output for CLI display
+        this(width, new PrintWriter(new OutputStreamWriter(System.out, StandardCharsets.UTF_8), true));
     }
 
     /**

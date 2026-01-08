@@ -27,12 +27,12 @@ public class MessageRenderer {
 
     public void render(ValidationMessage message, PrintWriter writer) {
         // Format depends on OutputFormat
-        switch (config.getFormat()) {
-        case ENHANCED -> renderEnhanced(message, writer);
-        case SIMPLE -> renderSimple(message, writer);
-        case COMPACT -> renderCompact(message, writer);
-        default -> renderEnhanced(message, writer); // Default to enhanced format
-        }
+        Runnable renderer = switch (config.getFormat()) {
+        case ENHANCED -> () -> renderEnhanced(message, writer);
+        case SIMPLE -> () -> renderSimple(message, writer);
+        case COMPACT -> () -> renderCompact(message, writer);
+        };
+        renderer.run();
     }
 
     private void renderEnhanced(ValidationMessage message, PrintWriter writer) {

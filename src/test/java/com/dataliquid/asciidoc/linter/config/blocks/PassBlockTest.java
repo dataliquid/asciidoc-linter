@@ -33,38 +33,15 @@ class PassBlockTest {
         @DisplayName("should create PassBlock with builder")
         void shouldCreatePassBlockWithBuilder() {
             // Given
-            TypeConfig typeConfig = TypeConfig
-                    .builder()
-                    .required(true)
-                    .allowed(Arrays.asList("html", "xml", "svg"))
-                    .severity(Severity.ERROR)
-                    .build();
+            TypeConfig typeConfig = new TypeConfig(true, Arrays.asList("html", "xml", "svg"), Severity.ERROR);
 
-            ContentConfig contentConfig = ContentConfig
-                    .builder()
-                    .required(true)
-                    .maxLength(1000)
-                    .pattern("^<[^>]+>.*</[^>]+>$")
-                    .severity(Severity.ERROR)
-                    .build();
+            ContentConfig contentConfig = new ContentConfig(true, 1000, "^<[^>]+>.*</[^>]+>$", Severity.ERROR);
 
-            ReasonConfig reasonConfig = ReasonConfig
-                    .builder()
-                    .required(true)
-                    .minLength(20)
-                    .maxLength(200)
-                    .severity(Severity.ERROR)
-                    .build();
+            ReasonConfig reasonConfig = new ReasonConfig(true, 20, 200, Severity.ERROR);
 
             // When
-            PassBlock block = PassBlock
-                    .builder()
-                    .name("Custom HTML Pass")
-                    .severity(Severity.ERROR)
-                    .type(typeConfig)
-                    .content(contentConfig)
-                    .reason(reasonConfig)
-                    .build();
+            PassBlock block = new PassBlock("Custom HTML Pass", Severity.ERROR, null, null, typeConfig, contentConfig,
+                    reasonConfig);
 
             // Then
             assertNotNull(block);
@@ -79,20 +56,21 @@ class PassBlockTest {
         @Test
         @DisplayName("should require severity")
         void shouldRequireSeverity() {
-            assertThrows(NullPointerException.class, () -> PassBlock.builder().name("Invalid Block").build());
+            assertThrows(NullPointerException.class,
+                    () -> new PassBlock("Invalid Block", null, null, null, null, null, null));
         }
 
         @Test
         @DisplayName("should support equals and hashCode")
         void shouldSupportEqualsAndHashCode() {
             // Given
-            TypeConfig typeConfig = TypeConfig.builder().required(true).severity(Severity.ERROR).build();
+            TypeConfig typeConfig = new TypeConfig(true, null, Severity.ERROR);
 
-            PassBlock block1 = PassBlock.builder().severity(Severity.WARN).type(typeConfig).build();
+            PassBlock block1 = new PassBlock(null, Severity.WARN, null, null, typeConfig, null, null);
 
-            PassBlock block2 = PassBlock.builder().severity(Severity.WARN).type(typeConfig).build();
+            PassBlock block2 = new PassBlock(null, Severity.WARN, null, null, typeConfig, null, null);
 
-            PassBlock block3 = PassBlock.builder().severity(Severity.ERROR).type(typeConfig).build();
+            PassBlock block3 = new PassBlock(null, Severity.ERROR, null, null, typeConfig, null, null);
 
             // Then
             assertEquals(block1, block2);
@@ -112,7 +90,7 @@ class PassBlockTest {
             List<String> allowed = Arrays.asList("html", "xml", "svg");
 
             // When
-            TypeConfig config = TypeConfig.builder().required(true).allowed(allowed).severity(Severity.ERROR).build();
+            TypeConfig config = new TypeConfig(true, allowed, Severity.ERROR);
 
             // Then
             assertTrue(config.isRequired());
@@ -124,7 +102,7 @@ class PassBlockTest {
         @DisplayName("should handle empty allowed list")
         void shouldHandleEmptyAllowedList() {
             // When
-            TypeConfig config = TypeConfig.builder().required(false).severity(Severity.WARN).build();
+            TypeConfig config = new TypeConfig(false, null, Severity.WARN);
 
             // Then
             assertFalse(config.isRequired());
@@ -137,7 +115,7 @@ class PassBlockTest {
         void shouldMakeAllowedListImmutable() {
             // Given
             List<String> allowed = Arrays.asList("html", "xml");
-            TypeConfig config = TypeConfig.builder().allowed(allowed).severity(Severity.INFO).build();
+            TypeConfig config = new TypeConfig(false, allowed, Severity.INFO);
 
             // Then
             assertThrows(UnsupportedOperationException.class, () -> config.getAllowed().add("svg"));
@@ -147,26 +125,11 @@ class PassBlockTest {
         @DisplayName("should support equals and hashCode")
         void shouldSupportEqualsAndHashCode() {
             // Given
-            TypeConfig config1 = TypeConfig
-                    .builder()
-                    .required(true)
-                    .allowed(Arrays.asList("html", "xml"))
-                    .severity(Severity.ERROR)
-                    .build();
+            TypeConfig config1 = new TypeConfig(true, Arrays.asList("html", "xml"), Severity.ERROR);
 
-            TypeConfig config2 = TypeConfig
-                    .builder()
-                    .required(true)
-                    .allowed(Arrays.asList("html", "xml"))
-                    .severity(Severity.ERROR)
-                    .build();
+            TypeConfig config2 = new TypeConfig(true, Arrays.asList("html", "xml"), Severity.ERROR);
 
-            TypeConfig config3 = TypeConfig
-                    .builder()
-                    .required(false)
-                    .allowed(Arrays.asList("html", "xml"))
-                    .severity(Severity.ERROR)
-                    .build();
+            TypeConfig config3 = new TypeConfig(false, Arrays.asList("html", "xml"), Severity.ERROR);
 
             // Then
             assertEquals(config1, config2);
@@ -186,13 +149,7 @@ class PassBlockTest {
             Pattern pattern = Pattern.compile("^<[^>]+>.*</[^>]+>$");
 
             // When
-            ContentConfig config = ContentConfig
-                    .builder()
-                    .required(true)
-                    .maxLength(1000)
-                    .pattern(pattern)
-                    .severity(Severity.ERROR)
-                    .build();
+            ContentConfig config = new ContentConfig(true, 1000, pattern.pattern(), Severity.ERROR);
 
             // Then
             assertTrue(config.isRequired());
@@ -205,7 +162,7 @@ class PassBlockTest {
         @DisplayName("should accept pattern as string")
         void shouldAcceptPatternAsString() {
             // When
-            ContentConfig config = ContentConfig.builder().pattern("^<div.*>.*</div>$").severity(Severity.WARN).build();
+            ContentConfig config = new ContentConfig(false, null, "^<div.*>.*</div>$", Severity.WARN);
 
             // Then
             assertNotNull(config.getPattern());
@@ -216,13 +173,7 @@ class PassBlockTest {
         @DisplayName("should handle null pattern")
         void shouldHandleNullPattern() {
             // When
-            ContentConfig config = ContentConfig
-                    .builder()
-                    .required(false)
-                    .maxLength(500)
-                    .pattern((Pattern) null)
-                    .severity(Severity.INFO)
-                    .build();
+            ContentConfig config = new ContentConfig(false, 500, null, Severity.INFO);
 
             // Then
             assertNull(config.getPattern());
@@ -232,29 +183,11 @@ class PassBlockTest {
         @DisplayName("should support equals and hashCode with pattern")
         void shouldSupportEqualsAndHashCodeWithPattern() {
             // Given
-            ContentConfig config1 = ContentConfig
-                    .builder()
-                    .required(true)
-                    .maxLength(1000)
-                    .pattern("^<[^>]+>.*$")
-                    .severity(Severity.ERROR)
-                    .build();
+            ContentConfig config1 = new ContentConfig(true, 1000, "^<[^>]+>.*$", Severity.ERROR);
 
-            ContentConfig config2 = ContentConfig
-                    .builder()
-                    .required(true)
-                    .maxLength(1000)
-                    .pattern("^<[^>]+>.*$")
-                    .severity(Severity.ERROR)
-                    .build();
+            ContentConfig config2 = new ContentConfig(true, 1000, "^<[^>]+>.*$", Severity.ERROR);
 
-            ContentConfig config3 = ContentConfig
-                    .builder()
-                    .required(true)
-                    .maxLength(1000)
-                    .pattern("^<div>.*$")
-                    .severity(Severity.ERROR)
-                    .build();
+            ContentConfig config3 = new ContentConfig(true, 1000, "^<div>.*$", Severity.ERROR);
 
             // Then
             assertEquals(config1, config2);
@@ -271,13 +204,7 @@ class PassBlockTest {
         @DisplayName("should create ReasonConfig with builder")
         void shouldCreateReasonConfigWithBuilder() {
             // When
-            ReasonConfig config = ReasonConfig
-                    .builder()
-                    .required(true)
-                    .minLength(20)
-                    .maxLength(200)
-                    .severity(Severity.ERROR)
-                    .build();
+            ReasonConfig config = new ReasonConfig(true, 20, 200, Severity.ERROR);
 
             // Then
             assertTrue(config.isRequired());
@@ -290,7 +217,7 @@ class PassBlockTest {
         @DisplayName("should handle optional lengths")
         void shouldHandleOptionalLengths() {
             // When
-            ReasonConfig config = ReasonConfig.builder().required(false).severity(Severity.WARN).build();
+            ReasonConfig config = new ReasonConfig(false, null, null, Severity.WARN);
 
             // Then
             assertFalse(config.isRequired());
@@ -303,29 +230,11 @@ class PassBlockTest {
         @DisplayName("should support equals and hashCode")
         void shouldSupportEqualsAndHashCode() {
             // Given
-            ReasonConfig config1 = ReasonConfig
-                    .builder()
-                    .required(true)
-                    .minLength(10)
-                    .maxLength(100)
-                    .severity(Severity.ERROR)
-                    .build();
+            ReasonConfig config1 = new ReasonConfig(true, 10, 100, Severity.ERROR);
 
-            ReasonConfig config2 = ReasonConfig
-                    .builder()
-                    .required(true)
-                    .minLength(10)
-                    .maxLength(100)
-                    .severity(Severity.ERROR)
-                    .build();
+            ReasonConfig config2 = new ReasonConfig(true, 10, 100, Severity.ERROR);
 
-            ReasonConfig config3 = ReasonConfig
-                    .builder()
-                    .required(true)
-                    .minLength(20)
-                    .maxLength(100)
-                    .severity(Severity.ERROR)
-                    .build();
+            ReasonConfig config3 = new ReasonConfig(true, 20, 100, Severity.ERROR);
 
             // Then
             assertEquals(config1, config2);
@@ -342,10 +251,10 @@ class PassBlockTest {
         @DisplayName("should inherit occurrence from AbstractBlock")
         void shouldInheritOccurrenceFromAbstractBlock() {
             // Given
-            OccurrenceConfig occurrence = OccurrenceConfig.builder().min(0).max(1).severity(Severity.ERROR).build();
+            OccurrenceConfig occurrence = new OccurrenceConfig(null, 0, 1, Severity.ERROR);
 
             // When
-            PassBlock block = PassBlock.builder().severity(Severity.ERROR).occurrence(occurrence).build();
+            PassBlock block = new PassBlock(null, Severity.ERROR, occurrence, null, null, null, null);
 
             // Then
             assertEquals(occurrence, block.getOccurrence());
@@ -355,41 +264,17 @@ class PassBlockTest {
         @DisplayName("should support full configuration")
         void shouldSupportFullConfiguration() {
             // Given
-            TypeConfig typeConfig = TypeConfig
-                    .builder()
-                    .required(true)
-                    .allowed(Arrays.asList("html", "xml", "svg"))
-                    .severity(Severity.ERROR)
-                    .build();
+            TypeConfig typeConfig = new TypeConfig(true, Arrays.asList("html", "xml", "svg"), Severity.ERROR);
 
-            ContentConfig contentConfig = ContentConfig
-                    .builder()
-                    .required(true)
-                    .maxLength(1000)
-                    .pattern("^<[^>]+>.*</[^>]+>$")
-                    .severity(Severity.ERROR)
-                    .build();
+            ContentConfig contentConfig = new ContentConfig(true, 1000, "^<[^>]+>.*</[^>]+>$", Severity.ERROR);
 
-            ReasonConfig reasonConfig = ReasonConfig
-                    .builder()
-                    .required(true)
-                    .minLength(20)
-                    .maxLength(200)
-                    .severity(Severity.ERROR)
-                    .build();
+            ReasonConfig reasonConfig = new ReasonConfig(true, 20, 200, Severity.ERROR);
 
-            OccurrenceConfig occurrence = OccurrenceConfig.builder().min(0).max(1).severity(Severity.ERROR).build();
+            OccurrenceConfig occurrence = new OccurrenceConfig(null, 0, 1, Severity.ERROR);
 
             // When
-            PassBlock block = PassBlock
-                    .builder()
-                    .name("Passthrough Block")
-                    .severity(Severity.ERROR)
-                    .occurrence(occurrence)
-                    .type(typeConfig)
-                    .content(contentConfig)
-                    .reason(reasonConfig)
-                    .build();
+            PassBlock block = new PassBlock("Passthrough Block", Severity.ERROR, occurrence, null, typeConfig,
+                    contentConfig, reasonConfig);
 
             // Then
             assertEquals("Passthrough Block", block.getName());

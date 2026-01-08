@@ -5,10 +5,11 @@ import java.io.InputStream;
 import java.util.List;
 
 import com.dataliquid.asciidoc.linter.config.SchemaConstants;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.networknt.schema.Error;
+
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.dataformat.yaml.YAMLMapper;
 import com.networknt.schema.Schema;
 import com.networknt.schema.SchemaLocation;
 import com.networknt.schema.SchemaRegistry;
@@ -22,11 +23,11 @@ import com.networknt.schema.path.PathType;
 public class OutputSchemaValidator {
     private final String schemaPath;
     private final Schema schema;
-    private final ObjectMapper yamlMapper;
+    private final YAMLMapper yamlMapper;
 
     public OutputSchemaValidator(String schemaPath) {
         this.schemaPath = schemaPath;
-        this.yamlMapper = new ObjectMapper(new YAMLFactory());
+        this.yamlMapper = new YAMLMapper();
         this.schema = loadSchema();
     }
 
@@ -85,7 +86,7 @@ public class OutputSchemaValidator {
                 }
                 throw new OutputConfigurationException(errorMessage.toString());
             }
-        } catch (IOException e) {
+        } catch (JacksonException e) {
             throw new OutputConfigurationException("Failed to parse YAML", e);
         }
     }

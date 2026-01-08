@@ -51,7 +51,6 @@ import com.dataliquid.asciidoc.linter.util.StringUtils;
  */
 public final class ParagraphBlockValidator extends AbstractBlockValidator<ParagraphBlock> {
     private static final String AT_LEAST = "At least ";
-    private static final String LINES_UNIT = " lines";
     private static final String SENTENCES_UNIT = " sentences";
     private static final String WORDS_UNIT = " words";
 

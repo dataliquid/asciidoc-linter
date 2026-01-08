@@ -19,6 +19,7 @@ import org.mockito.MockitoAnnotations;
 
 import com.dataliquid.asciidoc.linter.config.blocks.BlockType;
 import com.dataliquid.asciidoc.linter.config.common.Severity;
+import com.dataliquid.asciidoc.linter.config.rule.OccurrenceConfig;
 import com.dataliquid.asciidoc.linter.config.blocks.PassBlock;
 import com.dataliquid.asciidoc.linter.config.blocks.PassBlock.ContentConfig;
 import com.dataliquid.asciidoc.linter.config.blocks.PassBlock.ReasonConfig;
@@ -47,7 +48,14 @@ class PassBlockValidatorTest {
         when(mockContext.getFilename()).thenReturn("test.adoc");
 
         // Create a proper location object instead of mocking it
-        mockLocation = SourceLocation.builder().filename("test.adoc").startLine(10).build();
+        mockLocation = SourceLocation
+                .builder()
+                .filename("test.adoc")
+                .startLine(10)
+                .endLine(10)
+                .startColumn(1)
+                .endColumn(1)
+                .build();
 
         // Default setup
         when(mockContext.createLocation(any())).thenReturn(mockLocation);
@@ -72,11 +80,8 @@ class PassBlockValidatorTest {
             // Given
             when(mockBlock.getAttribute("type")).thenReturn(null);
 
-            PassBlock config = PassBlock
-                    .builder()
-                    .severity(Severity.ERROR)
-                    .type(TypeConfig.builder().required(true).severity(Severity.ERROR).build())
-                    .build();
+            PassBlock config = new PassBlock(null, Severity.ERROR, null, null,
+                    new TypeConfig(true, null, Severity.ERROR), null, null);
 
             // When
             List<ValidationMessage> messages = validator.validate(mockBlock, config, mockContext);
@@ -95,16 +100,8 @@ class PassBlockValidatorTest {
             // Given
             when(mockBlock.getAttribute("type")).thenReturn("javascript");
 
-            PassBlock config = PassBlock
-                    .builder()
-                    .severity(Severity.ERROR)
-                    .type(TypeConfig
-                            .builder()
-                            .required(true)
-                            .allowed(Arrays.asList("html", "xml", "svg"))
-                            .severity(Severity.WARN)
-                            .build())
-                    .build();
+            PassBlock config = new PassBlock(null, Severity.ERROR, null, null,
+                    new TypeConfig(true, Arrays.asList("html", "xml", "svg"), Severity.WARN), null, null);
 
             // When
             List<ValidationMessage> messages = validator.validate(mockBlock, config, mockContext);
@@ -124,16 +121,8 @@ class PassBlockValidatorTest {
             // Given
             when(mockBlock.getAttribute("type")).thenReturn("html");
 
-            PassBlock config = PassBlock
-                    .builder()
-                    .severity(Severity.ERROR)
-                    .type(TypeConfig
-                            .builder()
-                            .required(true)
-                            .allowed(Arrays.asList("html", "xml", "svg"))
-                            .severity(Severity.ERROR)
-                            .build())
-                    .build();
+            PassBlock config = new PassBlock(null, Severity.ERROR, null, null,
+                    new TypeConfig(true, Arrays.asList("html", "xml", "svg"), Severity.ERROR), null, null);
 
             // When
             List<ValidationMessage> messages = validator.validate(mockBlock, config, mockContext);
@@ -148,15 +137,8 @@ class PassBlockValidatorTest {
             // Given
             when(mockBlock.getAttribute("type")).thenReturn(null);
 
-            PassBlock config = PassBlock
-                    .builder()
-                    .severity(Severity.WARN)
-                    .type(TypeConfig
-                            .builder()
-                            .required(true)
-                            .severity(null) // No severity specified
-                            .build())
-                    .build();
+            PassBlock config = new PassBlock(null, Severity.WARN, null, null, new TypeConfig(true, null, null), null,
+                    null);
 
             // When
             List<ValidationMessage> messages = validator.validate(mockBlock, config, mockContext);
@@ -177,11 +159,8 @@ class PassBlockValidatorTest {
             // Given
             when(mockBlock.getContent()).thenReturn("");
 
-            PassBlock config = PassBlock
-                    .builder()
-                    .severity(Severity.ERROR)
-                    .content(ContentConfig.builder().required(true).severity(Severity.ERROR).build())
-                    .build();
+            PassBlock config = new PassBlock(null, Severity.ERROR, null, null, null,
+                    new ContentConfig(true, null, null, Severity.ERROR), null);
 
             // When
             List<ValidationMessage> messages = validator.validate(mockBlock, config, mockContext);
@@ -200,11 +179,8 @@ class PassBlockValidatorTest {
             String longContent = "x".repeat(100);
             when(mockBlock.getContent()).thenReturn(longContent);
 
-            PassBlock config = PassBlock
-                    .builder()
-                    .severity(Severity.ERROR)
-                    .content(ContentConfig.builder().maxLength(50).severity(Severity.WARN).build())
-                    .build();
+            PassBlock config = new PassBlock(null, Severity.ERROR, null, null, null,
+                    new ContentConfig(false, 50, null, Severity.WARN), null);
 
             // When
             List<ValidationMessage> messages = validator.validate(mockBlock, config, mockContext);
@@ -224,11 +200,8 @@ class PassBlockValidatorTest {
             // Given
             when(mockBlock.getContent()).thenReturn("<script>alert('bad')</script>");
 
-            PassBlock config = PassBlock
-                    .builder()
-                    .severity(Severity.ERROR)
-                    .content(ContentConfig.builder().pattern("^<[^>]+>.*</[^>]+>$").severity(Severity.ERROR).build())
-                    .build();
+            PassBlock config = new PassBlock(null, Severity.ERROR, null, null, null,
+                    new ContentConfig(false, null, "^<[^>]+>.*</[^>]+>$", Severity.ERROR), null);
 
             // When
             List<ValidationMessage> messages = validator.validate(mockBlock, config, mockContext);
@@ -243,11 +216,8 @@ class PassBlockValidatorTest {
             // Given
             when(mockBlock.getContent()).thenReturn("plain text");
 
-            PassBlock config = PassBlock
-                    .builder()
-                    .severity(Severity.ERROR)
-                    .content(ContentConfig.builder().pattern("^<[^>]+>.*</[^>]+>$").severity(Severity.ERROR).build())
-                    .build();
+            PassBlock config = new PassBlock(null, Severity.ERROR, null, null, null,
+                    new ContentConfig(false, null, "^<[^>]+>.*</[^>]+>$", Severity.ERROR), null);
 
             // When
             List<ValidationMessage> messages = validator.validate(mockBlock, config, mockContext);
@@ -268,11 +238,8 @@ class PassBlockValidatorTest {
             // Given
             when(mockBlock.getAttribute("reason")).thenReturn(null);
 
-            PassBlock config = PassBlock
-                    .builder()
-                    .severity(Severity.ERROR)
-                    .reason(ReasonConfig.builder().required(true).severity(Severity.ERROR).build())
-                    .build();
+            PassBlock config = new PassBlock(null, Severity.ERROR, null, null, null, null,
+                    new ReasonConfig(true, null, null, Severity.ERROR));
 
             // When
             List<ValidationMessage> messages = validator.validate(mockBlock, config, mockContext);
@@ -291,11 +258,8 @@ class PassBlockValidatorTest {
             // Given
             when(mockBlock.getAttribute("reason")).thenReturn("Too short");
 
-            PassBlock config = PassBlock
-                    .builder()
-                    .severity(Severity.ERROR)
-                    .reason(ReasonConfig.builder().required(true).minLength(20).severity(Severity.WARN).build())
-                    .build();
+            PassBlock config = new PassBlock(null, Severity.ERROR, null, null, null, null,
+                    new ReasonConfig(true, 20, null, Severity.WARN));
 
             // When
             List<ValidationMessage> messages = validator.validate(mockBlock, config, mockContext);
@@ -316,11 +280,8 @@ class PassBlockValidatorTest {
             String longReason = "This is a very long reason that exceeds the maximum allowed length";
             when(mockBlock.getAttribute("reason")).thenReturn(longReason);
 
-            PassBlock config = PassBlock
-                    .builder()
-                    .severity(Severity.ERROR)
-                    .reason(ReasonConfig.builder().required(true).maxLength(50).severity(Severity.INFO).build())
-                    .build();
+            PassBlock config = new PassBlock(null, Severity.ERROR, null, null, null, null,
+                    new ReasonConfig(true, null, 50, Severity.INFO));
 
             // When
             List<ValidationMessage> messages = validator.validate(mockBlock, config, mockContext);
@@ -338,17 +299,8 @@ class PassBlockValidatorTest {
             // Given
             when(mockBlock.getAttribute("reason")).thenReturn("Custom widget for product gallery display");
 
-            PassBlock config = PassBlock
-                    .builder()
-                    .severity(Severity.ERROR)
-                    .reason(ReasonConfig
-                            .builder()
-                            .required(true)
-                            .minLength(20)
-                            .maxLength(200)
-                            .severity(Severity.ERROR)
-                            .build())
-                    .build();
+            PassBlock config = new PassBlock(null, Severity.ERROR, null, null, null, null,
+                    new ReasonConfig(true, 20, 200, Severity.ERROR));
 
             // When
             List<ValidationMessage> messages = validator.validate(mockBlock, config, mockContext);
@@ -370,31 +322,10 @@ class PassBlockValidatorTest {
             when(mockBlock.getAttribute("reason")).thenReturn("Custom widget for product gallery display");
             when(mockBlock.getContent()).thenReturn("<div class=\"product-slider\">Content</div>");
 
-            PassBlock config = PassBlock
-                    .builder()
-                    .name("Passthrough Block")
-                    .severity(Severity.ERROR)
-                    .type(TypeConfig
-                            .builder()
-                            .required(true)
-                            .allowed(Arrays.asList("html", "xml", "svg"))
-                            .severity(Severity.ERROR)
-                            .build())
-                    .content(ContentConfig
-                            .builder()
-                            .required(true)
-                            .maxLength(1000)
-                            .pattern("^<[^>]+>.*</[^>]+>$")
-                            .severity(Severity.ERROR)
-                            .build())
-                    .reason(ReasonConfig
-                            .builder()
-                            .required(true)
-                            .minLength(20)
-                            .maxLength(200)
-                            .severity(Severity.ERROR)
-                            .build())
-                    .build();
+            PassBlock config = new PassBlock("Passthrough Block", Severity.ERROR, null, null,
+                    new TypeConfig(true, Arrays.asList("html", "xml", "svg"), Severity.ERROR),
+                    new ContentConfig(true, 1000, "^<[^>]+>.*</[^>]+>$", Severity.ERROR),
+                    new ReasonConfig(true, 20, 200, Severity.ERROR));
 
             // When
             List<ValidationMessage> messages = validator.validate(mockBlock, config, mockContext);
@@ -411,13 +342,9 @@ class PassBlockValidatorTest {
             when(mockBlock.getAttribute("reason")).thenReturn("Short");
             when(mockBlock.getContent()).thenReturn("");
 
-            PassBlock config = PassBlock
-                    .builder()
-                    .severity(Severity.ERROR)
-                    .type(TypeConfig.builder().required(true).severity(Severity.ERROR).build())
-                    .content(ContentConfig.builder().required(true).severity(Severity.WARN).build())
-                    .reason(ReasonConfig.builder().required(true).minLength(20).severity(Severity.INFO).build())
-                    .build();
+            PassBlock config = new PassBlock(null, Severity.ERROR, null, null,
+                    new TypeConfig(true, null, Severity.ERROR), new ContentConfig(true, null, null, Severity.WARN),
+                    new ReasonConfig(true, 20, null, Severity.INFO));
 
             // When
             List<ValidationMessage> messages = validator.validate(mockBlock, config, mockContext);
@@ -444,26 +371,10 @@ class PassBlockValidatorTest {
             when(mockBlock.getAttribute("reason")).thenReturn("Short");
             when(mockBlock.getContent()).thenReturn("x".repeat(100));
 
-            PassBlock config = PassBlock
-                    .builder()
-                    .severity(Severity.ERROR) // Block severity
-                    .type(TypeConfig
-                            .builder()
-                            .required(true)
-                            .allowed(Arrays.asList("html", "xml", "svg"))
-                            .severity(Severity.INFO) // Override with INFO
-                            .build())
-                    .content(ContentConfig
-                            .builder()
-                            .maxLength(50)
-                            .severity(Severity.WARN) // Override with WARN
-                            .build())
-                    .reason(ReasonConfig
-                            .builder()
-                            .minLength(20)
-                            .severity(Severity.ERROR) // Keep ERROR
-                            .build())
-                    .build();
+            PassBlock config = new PassBlock(null, Severity.ERROR, null, null, // Block severity
+                    new TypeConfig(true, Arrays.asList("html", "xml", "svg"), Severity.INFO), // Override with INFO
+                    new ContentConfig(false, 50, null, Severity.WARN), // Override with WARN
+                    new ReasonConfig(false, 20, null, Severity.ERROR)); // Keep ERROR
 
             // When
             List<ValidationMessage> messages = validator.validate(mockBlock, config, mockContext);
@@ -504,25 +415,10 @@ class PassBlockValidatorTest {
             when(mockBlock.getAttribute("reason")).thenReturn(null);
             when(mockBlock.getContent()).thenReturn("");
 
-            PassBlock config = PassBlock
-                    .builder()
-                    .severity(Severity.WARN) // Block severity
-                    .type(TypeConfig
-                            .builder()
-                            .required(true)
-                            .severity(null) // No severity specified
-                            .build())
-                    .content(ContentConfig
-                            .builder()
-                            .required(true)
-                            .severity(null) // No severity specified
-                            .build())
-                    .reason(ReasonConfig
-                            .builder()
-                            .required(true)
-                            .severity(null) // No severity specified
-                            .build())
-                    .build();
+            PassBlock config = new PassBlock(null, Severity.WARN, null, null, // Block severity
+                    new TypeConfig(true, null, null), // No severity specified
+                    new ContentConfig(true, null, null, null), // No severity specified
+                    new ReasonConfig(true, null, null, null)); // No severity specified
 
             // When
             List<ValidationMessage> messages = validator.validate(mockBlock, config, mockContext);
@@ -542,26 +438,10 @@ class PassBlockValidatorTest {
             when(mockBlock.getAttribute("reason")).thenReturn("Valid reason for using pass block");
             when(mockBlock.getContent()).thenReturn("<div>Valid content</div>");
 
-            PassBlock config = PassBlock
-                    .builder()
-                    .severity(Severity.INFO) // Block severity
-                    .type(TypeConfig
-                            .builder()
-                            .required(true)
-                            .allowed(Arrays.asList("html", "xml"))
-                            .severity(Severity.ERROR) // Override type severity
-                            .build())
-                    .content(ContentConfig
-                            .builder()
-                            .required(true)
-                            .severity(null) // Use block severity
-                            .build())
-                    .reason(ReasonConfig
-                            .builder()
-                            .required(true)
-                            .severity(null) // Use block severity
-                            .build())
-                    .build();
+            PassBlock config = new PassBlock(null, Severity.INFO, null, null, // Block severity
+                    new TypeConfig(true, Arrays.asList("html", "xml"), Severity.ERROR), // Override type severity
+                    new ContentConfig(true, null, null, null), // Use block severity
+                    new ReasonConfig(true, null, null, null)); // Use block severity
 
             // When
             List<ValidationMessage> messages = validator.validate(mockBlock, config, mockContext);
