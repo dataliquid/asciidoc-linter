@@ -33,7 +33,7 @@
         <maven.compiler.target>17</maven.compiler.target>
         <asciidoctorj.version>3.0.1</asciidoctorj.version>
         <jackson.version>3.2.1</jackson.version>
-        <junit.version>6.1.2</junit.version>
+        <junit.version>6.1.3</junit.version>
         <jacoco.version>0.8.15</jacoco.version>
     </properties>
     
